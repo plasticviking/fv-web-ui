@@ -1,13 +1,19 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import FVButton from 'views/components/FVButton'
+import Button from '@material-ui/core/Button'
+import InputLabel from '@material-ui/core/InputLabel'
+import option from '@material-ui/core/MenuItem'
+import FormHelperText from '@material-ui/core/FormHelperText'
+import FormControl from '@material-ui/core/FormControl'
+import NativeSelect from '@material-ui/core/NativeSelect'
 
 import Text from 'views/components/Form/Common/Text'
 import Textarea from 'views/components/Form/Common/Textarea'
 import StringHelpers from 'common/StringHelpers'
 import { getError, getErrorFeedback } from 'common/FormHelpers'
 import CategoryDelete from 'views/components/Confirmation'
+
 const { string, element, array, bool, func, object } = PropTypes
 export class CategoryStateCreate extends React.Component {
   static propTypes = {
@@ -25,6 +31,7 @@ export class CategoryStateCreate extends React.Component {
     setFormRef: func,
     valueName: string,
     valueDescription: string,
+    dialectCategories: array,
     valuePhotoName: string,
     valuePhotoData: string,
   }
@@ -42,6 +49,7 @@ export class CategoryStateCreate extends React.Component {
     setFormRef: () => {},
     valueName: '',
     valueDescription: '',
+    dialectCategories: [],
     valuePhotoName: '',
     valuePhotoData: '',
     copy: {
@@ -50,6 +58,7 @@ export class CategoryStateCreate extends React.Component {
   }
   state = {
     deleting: false,
+    parentRef: '',
   }
   // NOTE: Using callback refs since on old React
   // https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
@@ -63,6 +72,7 @@ export class CategoryStateCreate extends React.Component {
       groupName,
       valueName,
       valueDescription,
+      dialectCategories,
       breadcrumb,
       errors,
       isBusy,
@@ -99,10 +109,12 @@ export class CategoryStateCreate extends React.Component {
               confirmationAction={this.props.deleteItem}
               className="Category__delete"
               reverse
-              copyIsConfirmOrDenyTitle={_copy.isConfirmOrDenyTitle}
-              copyBtnInitiate={_copy.btnInitiate}
-              copyBtnDeny={_copy.btnDeny}
-              copyBtnConfirm={_copy.btnConfirm}
+              copy={{
+                isConfirmOrDenyTitle: _copy.isConfirmOrDenyTitle,
+                btnInitiate: _copy.btnInitiate,
+                btnDeny: _copy.btnDeny,
+                btnConfirm: _copy.btnConfirm,
+              }}
             />
           ) : null}
         </div>
@@ -124,6 +136,30 @@ export class CategoryStateCreate extends React.Component {
           disabled={isTrashed}
         />
 
+        {/* Parent Category ------------- */}
+        <FormControl className={groupName} id={this._clean('parentRef')} disabled={isTrashed}>
+          <InputLabel shrink htmlFor="parentRef-native-simple">
+            {_copy.parent}
+          </InputLabel>
+          <NativeSelect
+            value={this.state.parentRef}
+            onChange={this._handleChange('parentRef')}
+            inputProps={{
+              name: 'parentRef',
+              id: 'parentRef-native-simple',
+            }}
+          >
+            {dialectCategories.map((category, index) => {
+              return (
+                <option key={index} value={category.uid}>
+                  {category.title}
+                </option>
+              )
+            })}
+          </NativeSelect>
+          <FormHelperText>Select Parent Category if desired</FormHelperText>
+        </FormControl>
+
         {/* Description ------------- */}
         <Textarea
           className={groupName}
@@ -139,11 +175,7 @@ export class CategoryStateCreate extends React.Component {
         {getErrorFeedback({ errors })}
 
         <div className="Category__btn-container">
-          {/* BTN: Create ------------- */}
-          {/* <button className="_btn _btn--primary" disabled={isBusy || isTrashed} type="submit">
-            {_copy.submit}
-          </button> */}
-          <FVButton
+          <Button
             variant="contained"
             color="primary"
             disabled={isBusy || isTrashed}
@@ -153,13 +185,19 @@ export class CategoryStateCreate extends React.Component {
             }}
           >
             {_copy.submit}
-          </FVButton>
+          </Button>
         </div>
       </form>
     )
   }
   _clean = (name) => {
     return StringHelpers.clean(name, 'CLEAN_ID')
+  }
+
+  _handleChange = (name) => (event) => {
+    this.setState({
+      [name]: event.target.value,
+    })
   }
 }
 

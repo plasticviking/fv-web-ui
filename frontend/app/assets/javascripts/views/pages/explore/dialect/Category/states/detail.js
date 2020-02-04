@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FVButton from 'views/components/FVButton'
+import Button from '@material-ui/core/Button'
 import NavigationHelpers from 'common/NavigationHelpers'
 
 // REDUX
@@ -9,8 +9,8 @@ import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 
 const { bool, string, element, object, func } = PropTypes
 const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
+  title: { plural: 'Categories', singular: 'Category' },
+  label: { plural: 'categories', singular: 'category' },
 }
 export class CategoryStateDetail extends React.Component {
   static propTypes = {
@@ -20,6 +20,7 @@ export class CategoryStateDetail extends React.Component {
     isTrashed: bool,
     valueName: string,
     valueDescription: string,
+    valueParent: string,
     // REDUX: reducers/state
     routeParams: object.isRequired,
     // REDUX: actions/dispatch/func
@@ -31,12 +32,13 @@ export class CategoryStateDetail extends React.Component {
     isTrashed: false,
     valueName: '',
     valueDescription: '',
+    valueParent: '',
     copy: {
       default: {},
     },
   }
   render() {
-    const { className, copy, isTrashed, valueName, valueDescription, breadcrumb, routeParams } = this.props
+    const { className, copy, isTrashed, valueName, valueDescription, valueParent, breadcrumb, routeParams } = this.props
     const { siteTheme, dialect_path, itemId } = routeParams
     const _copy = copy.detail
     const itemDeleted = isTrashed ? <div className="alert alert-danger">{_copy.isTrashed}</div> : null
@@ -53,23 +55,31 @@ export class CategoryStateDetail extends React.Component {
               </header>
               {/* Name ------------- */}
               <h2 className="visually-hidden">{_copy.name}</h2>
-              <p className="Category__name">{valueName}</p>
+              <h2 className="Category__name">{valueName}</h2>
+
+              <p className="visually-hidden">{_copy.parent}</p>
+              <p className="Category__parent">{valueParent}</p>
 
               {/* Description ------------- */}
-              <h2 className="visually-hidden">{_copy.biography}</h2>
+              <p className="visually-hidden">{_copy.description}</p>
               <div className="Category__description" dangerouslySetInnerHTML={{ __html: valueDescription }} />
             </div>
           </div>
+          <div className="Category__btn-container">
+            <Button
+              className="Category__btn-container"
+              variant="contained"
+              color="primary"
+              href={categoryEditUrl}
+              onClick={(e) => {
+                e.preventDefault()
+                NavigationHelpers.navigate(categoryEditUrl, this.props.pushWindowPath, false)
+              }}
+            >
+              {copy.create.success.editView}
+            </Button>
+          </div>
         </div>
-        <FVButton
-          href={categoryEditUrl}
-          onClick={(e) => {
-            e.preventDefault()
-            NavigationHelpers.navigate(categoryEditUrl, this.props.pushWindowPath, false)
-          }}
-        >
-          {copy.create.success.editView}
-        </FVButton>
       </div>
     )
   }

@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-// import ProviderHelpers from 'common/ProviderHelpers'
+import ProviderHelpers from 'common/ProviderHelpers'
 import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
 import StateSuccessDefault from './states/successCreate'
@@ -21,29 +21,20 @@ import { getFormData, handleSubmit } from 'common/FormHelpers'
 import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
-import {
-  STATE_LOADING,
-  STATE_DEFAULT,
-  STATE_ERROR,
-  STATE_SUCCESS,
-  STATE_ERROR_BOUNDARY,
-  DEFAULT_PAGE,
-  DEFAULT_PAGE_SIZE,
-  DEFAULT_LANGUAGE,
-  DEFAULT_SORT_COL,
-  DEFAULT_SORT_TYPE,
-} from 'common/Constants'
+import { STATE_LOADING, STATE_DEFAULT, STATE_ERROR, STATE_SUCCESS, STATE_ERROR_BOUNDARY } from 'common/Constants'
 
 import '!style-loader!css-loader!./styles.css'
+
+let categoriesPath = undefined
+let _computeCategories = undefined
 
 const { array, element, func, number, object, string } = PropTypes
 
 const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
+  title: { plural: 'Categories', singular: 'Category' },
+  label: { plural: 'categories', singular: 'category' },
 }
 
-let categoriesPath = undefined
 export class Category extends React.Component {
   static propTypes = {
     className: string,
@@ -74,11 +65,11 @@ export class Category extends React.Component {
     className: 'FormCategory',
     groupName: '',
     breadcrumb: null,
-    DEFAULT_PAGE,
-    DEFAULT_PAGE_SIZE,
-    DEFAULT_LANGUAGE,
-    DEFAULT_SORT_COL,
-    DEFAULT_SORT_TYPE,
+    DEFAULT_PAGE: 1,
+    DEFAULT_PAGE_SIZE: 100,
+    DEFAULT_LANGUAGE: 'english',
+    DEFAULT_SORT_COL: 'dc:title',
+    DEFAULT_SORT_TYPE: 'asc',
   }
 
   _commonInitialState = {
@@ -88,7 +79,6 @@ export class Category extends React.Component {
   }
   state = {
     componentState: STATE_LOADING,
-    is403: false,
     ...this._commonInitialState,
   }
   // NOTE: Using callback refs since on old React
@@ -100,47 +90,36 @@ export class Category extends React.Component {
 
   async componentDidMount() {
     const { routeParams /*, filter*/ } = this.props
-    const { pageSize, page } = routeParams
 
     const copy = this.props.copy
       ? this.props.copy
-      : await import(/* webpackChunkName: "CategoryInternationalization" */ './internationalization').then((_copy) => {
-          return _copy.default
-        })
+      : await import(/* webpackChunkName: "CategoriesInternationalization" */ './internationalization').then(
+          (_copy) => {
+            return _copy.default
+          }
+        )
 
     categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
 
     // Get data for computeDialect
     await this.props.fetchDialect('/' + this.props.routeParams.dialect_path)
+
     if (this.props.computeDialect.isError && this.props.computeDialect.error) {
       this.setState({
         componentState: STATE_DEFAULT,
-        // Note: Intentional == comparison
-        is403: this.props.computeDialect.error == '403',
         copy,
         errorMessage: this.props.computeDialect.error,
       })
       return
     }
 
-    let currentAppliedFilter = '' // eslint-disable-line
-    // TODO: ASK DANIEL ABOUT `filter` & `filter.currentAppliedFilter`
-    // if (filter.has('currentAppliedFilter')) {
-    //   currentAppliedFilter = Object.values(filter.get('currentAppliedFilter').toJS()).join('')
-    // }
-
-    await this.props.fetchCategories(
-      categoriesPath,
-      `${currentAppliedFilter}&currentPageIndex=${page - 1}&pageSize=${pageSize}&sortOrder=${
-        this.props.DEFAULT_SORT_TYPE
-      }&sortBy=${this.props.DEFAULT_SORT_COL}`
-    )
-
     const validator = this.props.validator
       ? this.props.validator
       : await import(/* webpackChunkName: "CategoryValidator" */ './validator').then((_validator) => {
           return _validator.default
         })
+
+    this._getData({ copy })
 
     // Flip to ready state...
     this.setState({
@@ -150,6 +129,12 @@ export class Category extends React.Component {
       errorMessage: undefined,
     })
   }
+  async componentDidUpdate() {
+    const { computeCategories } = this.props
+
+    _computeCategories = ProviderHelpers.getEntry(computeCategories, categoriesPath)
+  }
+
   render() {
     let content = null
     switch (this.state.componentState) {
@@ -193,7 +178,6 @@ export class Category extends React.Component {
     const { errors, isBusy } = this.state
     return (
       <AuthenticationFilter
-        is403={this.state.is403}
         login={this.props.computeLogin}
         anon={false}
         routeParams={this.props.routeParams}
@@ -218,6 +202,7 @@ export class Category extends React.Component {
               this._onRequestSaveForm()
             }}
             setFormRef={this.setFormRef}
+            dialectCategories={this._dialectCategories()}
           />
         </PromiseWrapper>
       </AuthenticationFilter>
@@ -246,17 +231,67 @@ export class Category extends React.Component {
     )
   }
 
+  _getData = async (addToState) => {
+    const { routeParams } = this.props
+    const { page } = routeParams
+
+    let currentAppliedFilter = '' // eslint-disable-line
+    // TODO: ASK DANIEL ABOUT `filter` & `filter.currentAppliedFilter`
+    // if (filter.has('currentAppliedFilter')) {
+    //   currentAppliedFilter = Object.values(filter.get('currentAppliedFilter').toJS()).join('')
+    // }
+
+    categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
+    // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
+    const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
+
+    await this.props.fetchCategories(
+      categoriesPath,
+      `${currentAppliedFilter}&currentPageIndex=${page - 1}&pageSize=200&sortOrder=${
+        this.props.DEFAULT_SORT_TYPE
+      }&sortBy=${this.props.DEFAULT_SORT_COL}${startsWithQuery}`
+    )
+    // NOTE: redux doesn't update on changes to deeply nested data, hence the manual re-render
+    this.setState({
+      rerender: Date.now(),
+      ...addToState,
+    })
+  }
+
+  _dialectCategories = () => {
+    const dialectCategories = [
+      {
+        uid: `${this.props.routeParams.dialect_path}/${categoryType.title.plural}`,
+        title: 'None',
+      },
+    ]
+    if (_computeCategories && _computeCategories.isFetching === false && _computeCategories.success) {
+      const entries = _computeCategories.response.entries
+      let obj = {}
+      // eslint-disable-next-line func-names
+      entries.forEach(function(entry) {
+        obj = {
+          uid: entry.uid,
+          title: entry.title,
+        }
+        dialectCategories.push(obj)
+      })
+    }
+    return dialectCategories
+  }
+
   _handleCreateItemSubmit = async (formData) => {
     // Submit here
     const now = Date.now()
     const name = formData['dc:title']
 
     const results = await this.props.createCategory(
-      `${this.props.routeParams.dialect_path}/${categoryType.title.plural}`, // parentDoc:
+      formData.parentRef, // parentDoc:
       {
         // docParams:
         type: 'FVCategory',
         name: name,
+        parentRef: formData.parentRef,
         properties: {
           'dc:description': formData['dc:description'],
           'dc:title': formData['dc:title'],

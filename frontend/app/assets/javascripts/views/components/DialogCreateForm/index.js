@@ -6,15 +6,17 @@ import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 
 import PageDialectPhrasesCreate from 'views/pages/explore/dialect/learn/phrases/Create'
-import PageDialectCategoryCreate from 'views/pages/explore/dialect/category/create'
 
+import PageDialectLinksCreate from 'views/pages/explore/dialect/links/create'
+import PageDialectCategoryCreate from 'views/pages/explore/dialect/Category/createV1'
 import PageDialectContributorsCreate from 'views/pages/explore/dialect/Contributor/createV1'
 import PageDialectPhraseBooksCreate from 'views/pages/explore/dialect/Phrasebook/createV1'
-import PageDialectLinksCreate from 'views/pages/explore/dialect/links/create'
 
 import PageDialectLinksEdit from 'views/pages/explore/dialect/links/edit'
+import PageDialectCategoryEdit from 'views/pages/explore/dialect/Category/editV1'
 import PageDialectContributorEdit from 'views/pages/explore/dialect/Contributor/editV1'
 import PageDialectPhraseBooksEdit from 'views/pages/explore/dialect/Phrasebook/editV1'
+
 import IntlService from 'views/services/intl'
 
 const intl = IntlService.instance
@@ -107,6 +109,27 @@ export default class DialogCreateForm extends React.Component {
             'Create New Category',
             'words'
           )
+
+          if (this.props.value) {
+            createNewButtonLabel = intl.trans(
+              'views.pages.explore.dialect.words.edit_category',
+              'Edit Category',
+              'words'
+            )
+            createForm = (
+              <PageDialectCategoryEdit
+                dialect={this.props.context}
+                routeParams={{
+                  dialect_path: this.props.context.path,
+                  siteTheme: 'explore',
+                }}
+                value={this.props.value}
+                embedded
+                onDocumentCreated={this._onDocumentCreated}
+                cancelMethod={this.handleClose}
+              />
+            )
+          }
         }
         break
 

@@ -17,6 +17,11 @@ import StateDetail from './states/detail'
 
 import '!style-loader!css-loader!./styles.css'
 
+let _computeCategories = undefined
+const categoryType = {
+  title: { plural: 'Categories', singular: 'Category' },
+  label: { plural: 'categories', singular: 'category' },
+}
 const { element, func, number, object, string } = PropTypes
 
 export class CategoryDetail extends React.Component {
@@ -34,6 +39,7 @@ export class CategoryDetail extends React.Component {
     validator: object,
     // REDUX: reducers/state
     computeCategory: object.isRequired,
+    computeCategories: object.isRequired,
     routeParams: object.isRequired,
     // REDUX: actions/dispatch/func
     fetchCategory: func.isRequired,
@@ -57,6 +63,14 @@ export class CategoryDetail extends React.Component {
 
     await this._getData({ copy })
   }
+
+  async componentDidUpdate() {
+    const { computeCategories, routeParams } = this.props
+    const categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
+
+    _computeCategories = ProviderHelpers.getEntry(computeCategories, categoriesPath)
+  }
+
   render() {
     let content = null
     switch (this.state.componentState) {
@@ -96,6 +110,7 @@ export class CategoryDetail extends React.Component {
         componentState: STATE_DEFAULT,
         valueName: item.name,
         valueDescription: item.description,
+        valueParent: item.parent,
         isTrashed: item.isTrashed,
         item: item.data,
         ...addToState,
@@ -111,7 +126,7 @@ export class CategoryDetail extends React.Component {
   }
   _stateGetDetail = () => {
     const { className, groupName } = this.props
-    const { isBusy, valueDescription, valueName, isTrashed } = this.state
+    const { isBusy, valueDescription, valueName, valueParent, isTrashed } = this.state
     return (
       <StateDetail
         copy={this.state.copy}
@@ -121,6 +136,7 @@ export class CategoryDetail extends React.Component {
         isTrashed={isTrashed}
         valueName={valueName}
         valueDescription={valueDescription}
+        valueParent={valueParent}
       />
     )
   }
@@ -133,28 +149,38 @@ export class CategoryDetail extends React.Component {
       // Extract data from object:
       const name = selectn(['response', 'properties', 'dc:title'], _computeCategory)
       const description = selectn(['response', 'properties', 'dc:description'], _computeCategory)
+      const parent = selectn(['response', 'parentRef'], _computeCategory)
       const isTrashed = selectn(['response', 'isTrashed'], _computeCategory) || false
       // Respond...
-      return { isTrashed, name, description, data: _computeCategory }
+      return { isTrashed, name, description, parent, data: _computeCategory }
     }
     return { isError: _computeCategory.isError, message: _computeCategory.message }
+  }
+
+  _getCategoryTitle = (id) => {
+    const dialectCategories = {}
+    if (_computeCategories && _computeCategories.isFetching === false && _computeCategories.success) {
+      const entries = _computeCategories.response.entries
+      // eslint-disable-next-line func-names
+      entries.forEach(function(entry) {
+        dialectCategories[entry.uid] = entry.title
+      })
+    }
+    return dialectCategories[id]
   }
 }
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
   const { fvCategory, navigation } = state
-
-  const { computeCategory } = fvCategory
-
+  const { computeCategory, computeCategories } = fvCategory
   const { route } = navigation
-
   return {
     computeCategory,
+    computeCategories,
     routeParams: route.routeParams,
   }
 }
-
 // REDUX: actions/dispatch/func
 const mapDispatchToProps = {
   fetchCategory,

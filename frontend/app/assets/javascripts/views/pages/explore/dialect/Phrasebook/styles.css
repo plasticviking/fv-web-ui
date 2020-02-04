@@ -1,68 +1,68 @@
 /* BLOCK */
-.Phrasebook {
+.Category {
   margin-bottom: 7rem;
   max-width: 750px;
 }
 /* ELEMENT */
-.Phrasebook .delete {
+.Category .delete {
   padding-left: 3.2rem;
 }
-.Phrasebook__heading {
+.Category__heading {
   font-size: 3rem;
 }
-.Phrasebook .Text,
-.Phrasebook .Textarea {
+.Category .Text,
+.Category .Textarea {
   margin-bottom: 3.5rem;
 }
 
-.Phrasebook__btn-container {
+.Category__btn-container {
   display: flex;
 }
-.Phrasebook__btnBack {
+.Category__btnBack {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
-.Phrasebook__btnHeader {
+.Category__btnHeader {
   display: flex;
   margin-left: -1.6rem;
 }
-.Phrasebook__btnHeader .delete {
+.Category__btnHeader .delete {
   margin-left: auto;
 }
-.Phrasebook__btn-container {
+.Category__btn-container {
   display: flex;
 }
-.Phrasebook__delete {
+.Category__delete {
   margin-left: auto;
 }
-.Phrasebook__main {
+.Category__main {
   flex-grow: 1;
   display: flex;
   align-items: center;
 }
-.Phrasebook__mainInner {
+.Category__mainInner {
   padding: 3rem;
 }
-.Phrasebook__successContent {
+.Category__successContent {
   display: flex;
 }
-.Phrasebook__successLinks {
+.Category__successLinks {
   list-style-type: none;
   padding: 0;
 }
-.Phrasebook__successMore {
+.Category__successMore {
   flex-grow: 1;
 }
-.Phrasebook__successReview {
+.Category__successReview {
   flex-grow: 1;
 }
 
 /* MODIFIER */
-.Phrasebook--detail {
+.Category--detail {
   margin-right: -15px;
   margin-left: -15px;
 }
-.Phrasebook--detail .Phrasebook__heading {
+.Category--detail .Category__heading {
   font-size: 1.8rem;
   font-weight: 100;
   margin: 0 0 2rem 0;

@@ -10,7 +10,7 @@ jest.mock('providers/redux/reducers/rest')
 jest.mock('common/NavigationHelpers')
 
 // Component to test
-import { Phrasebook } from '../create'
+import { Category } from '../create'
 const props = {
   // REDUX: reducers/state
   routeParams: {},
@@ -26,9 +26,9 @@ const props = {
   pushWindowPath: () => {},
 }
 
-describe('Phrase Book > Create', () => {
+describe('Category > Create', () => {
   test('Accessibility', async() => {
-    const html = ReactDOMServer.renderToString(<Phrasebook {...props} />)
+    const html = ReactDOMServer.renderToString(<Category {...props} />)
     const results = await axe(html)
     expect(results).toHaveNoViolations()
   })

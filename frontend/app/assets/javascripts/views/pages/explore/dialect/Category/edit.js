@@ -48,8 +48,8 @@ import '!style-loader!css-loader!./styles.css'
 const { array, element, func, number, object, string } = PropTypes
 
 const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
+  title: { plural: 'Categories', singular: 'Category' },
+  label: { plural: 'categories', singular: 'category' },
 }
 
 export class CategoryEdit extends React.Component {
@@ -100,7 +100,6 @@ export class CategoryEdit extends React.Component {
     errors: [],
     formData: {},
     isBusy: false,
-    is403: false,
   }
   state = {
     componentState: STATE_LOADING,
@@ -168,8 +167,6 @@ export class CategoryEdit extends React.Component {
     if (item.isError) {
       this.setState({
         componentState: STATE_DEFAULT,
-        // Note: Intentional == comparison
-        is403: item.message == '403',
         errorMessage: item.message,
         ...addToState,
       })
@@ -201,7 +198,6 @@ export class CategoryEdit extends React.Component {
     const { errors, isBusy, isTrashed, valueDescription, valueName } = this.state
     return (
       <AuthenticationFilter
-        is403={this.state.is403}
         login={this.props.computeLogin}
         anon={false}
         routeParams={this.props.routeParams}

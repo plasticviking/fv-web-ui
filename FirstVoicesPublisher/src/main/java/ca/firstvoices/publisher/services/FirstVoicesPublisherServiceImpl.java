@@ -386,7 +386,7 @@ public class FirstVoicesPublisherServiceImpl extends AbstractService implements 
 
     private boolean isAssetType(String type) {
         return "FVBookEntry".equals(type) || "FVBook".equals(type) || "FVPhrase".equals(type) || "FVWord".equals(type)
-                || "FVPicture".equals(type) || "FVVideo".equals(type) || "FVAudio".equals(type)
+                || "FVPicture".equals(type) || "FVVideo".equals(type) || "FVAudio".equals(type) || "FVCategory".equals(type)
                 || "FVCharacter".equals(type) || "FVGallery".equals(type) || "FVLink".equals(type);
     }
 
