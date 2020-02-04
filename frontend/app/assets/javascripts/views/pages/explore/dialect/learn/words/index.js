@@ -49,6 +49,7 @@ import AlphabetListView from 'views/components/AlphabetListView'
 const intl = IntlService.instance
 
 const { array, bool, func, object, string } = PropTypes
+
 class PageDialectLearnWords extends PageDialectLearnBase {
   static propTypes = {
     hasPagination: bool,
@@ -113,6 +114,10 @@ class PageDialectLearnWords extends PageDialectLearnBase {
         entity: props.computeDocument,
       },
       {
+        id: `/api/v1/path/${props.routeParams.dialect_path}/Categories/@children`,
+        entity: this.props.computeCategories,
+      },
+      {
         id: `/api/v1/path/FV/${props.routeParams.area}/SharedData/Shared Categories/@children`,
         entity: props.computeCategories,
       },
@@ -141,6 +146,7 @@ class PageDialectLearnWords extends PageDialectLearnBase {
     const { computeEntities, filterInfo, isKidsTheme } = this.state
 
     const { routeParams } = this.props
+
     const computeDocument = ProviderHelpers.getEntry(
       this.props.computeDocument,
       `${routeParams.dialect_path}/Dictionary`
@@ -150,9 +156,24 @@ class PageDialectLearnWords extends PageDialectLearnBase {
 
     const computeCategories = ProviderHelpers.getEntry(
       this.props.computeCategories,
+      `/api/v1/path/FV/${routeParams.dialect_path}/Categories/@children`
+    )
+    const computeSharedCategories = ProviderHelpers.getEntry(
+      this.props.computeCategories,
       `/api/v1/path/FV/${routeParams.area}/SharedData/Shared Categories/@children`
     )
-    const computeCategoriesSize = selectn('response.entries.length', computeCategories) || 0
+
+    let showCategories = false
+
+    let computeCategoriesResults = []
+
+    if (selectn('response.entries', computeCategories) != 0) {
+      computeCategoriesResults = selectn('response.entries', computeCategories)
+      showCategories = true
+    } else if (selectn('response.entries', computeSharedCategories) != 0) {
+      computeCategoriesResults = selectn('response.entries', computeSharedCategories)
+      showCategories = true
+    }
 
     const pageTitle = `${selectn('response.contextParameters.ancestry.dialect.dc:title', computePortal) ||
       ''} ${intl.trans('words', 'Words', 'first')}`
@@ -264,9 +285,7 @@ class PageDialectLearnWords extends PageDialectLearnBase {
           </div>
         </div>
         <div className="row">
-          <div
-            className={classNames('col-xs-12', 'col-md-3', computeCategoriesSize === 0 ? 'hidden' : null, 'PrintHide')}
-          >
+          <div className={classNames('col-xs-12', 'col-md-3', showCategories === false ? null : null, 'PrintHide')}>
             <div>
               <AlphabetListView
                 dialect={selectn('response', computePortal)}
@@ -288,13 +307,13 @@ class PageDialectLearnWords extends PageDialectLearnBase {
                 )}
                 handleDialectFilterClick={this.handleCategoryClick}
                 handleDialectFilterList={this.handleDialectFilterList} // NOTE: Comes from PageDialectLearnBase
-                facets={selectn('response.entries', computeCategories) || []}
+                facets={computeCategoriesResults}
                 clearDialectFilter={this.clearDialectFilter}
                 routeParams={this.props.routeParams}
               />
             </div>
           </div>
-          <div className={classNames('col-xs-12', computeCategoriesSize === 0 ? 'col-md-12' : 'col-md-9')}>
+          <div className={classNames('col-xs-12', showCategories === false ? 'col-md-12' : 'col-md-9')}>
             <h1 className="DialectPageTitle">{pageTitle}</h1>
             <div className={dialectClassName}>{wordListView}</div>
           </div>
@@ -372,6 +391,7 @@ class PageDialectLearnWords extends PageDialectLearnBase {
   fetchData(newProps) {
     newProps.fetchPortal(newProps.routeParams.dialect_path + '/Portal')
     newProps.fetchDocument(newProps.routeParams.dialect_path + '/Dictionary')
+    newProps.fetchCategories('/api/v1/path/' + newProps.routeParams.dialect_path + '/Categories/@children')
     newProps.fetchCategories('/api/v1/path/FV/' + newProps.routeParams.area + '/SharedData/Shared Categories/@children')
   }
 
