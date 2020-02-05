@@ -9,12 +9,8 @@ const copy = {
     btnDeny: 'No, do not delete selected categories',
     btnConfirm: 'Yes, delete selected categories',
   },
-  actions: {
-    th: '',
-    edit: 'Edit',
-  },
-  parentCategory: {
-    th: 'Parent Category',
+  title: {
+    th: 'Category Title',
   },
   description: {
     th: 'Description',
@@ -23,8 +19,12 @@ const copy = {
     select: 'Select all',
     deselect: 'Deselect all',
   },
-  category: {
-    th: 'Category Title',
+  actions: {
+    th: '',
+    edit: 'Edit',
+  },
+  parentCategory: {
+    th: 'Parent Category',
   },
 }
 export default copy
