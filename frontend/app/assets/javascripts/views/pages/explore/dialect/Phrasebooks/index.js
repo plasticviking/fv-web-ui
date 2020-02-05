@@ -183,7 +183,7 @@ export const Phrasebooks = (props) => {
         }}
         variant="contained"
       >
-        Create a new ${categoryType.title.singular}
+        Create a new {categoryType.title.singular}
       </FVButton>
       <Suspense fallback={<div>Loading...</div>}>
         <DictionaryListWithPagination

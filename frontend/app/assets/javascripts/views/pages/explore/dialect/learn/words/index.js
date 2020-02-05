@@ -21,7 +21,7 @@ import classNames from 'classnames'
 // REDUX
 import { connect } from 'react-redux'
 // REDUX: actions/dispatch/func
-import { fetchCategories } from 'providers/redux/reducers/fvCategory'
+import { fetchCategories, fetchSharedCategories } from 'providers/redux/reducers/fvCategory'
 import { fetchDocument } from 'providers/redux/reducers/document'
 import { fetchPortal } from 'providers/redux/reducers/fvPortal'
 import { overrideBreadcrumbs, updatePageProperties } from 'providers/redux/reducers/navigation'
@@ -56,6 +56,7 @@ class PageDialectLearnWords extends PageDialectLearnBase {
     routeParams: object.isRequired,
     // REDUX: reducers/state
     computeCategories: object.isRequired,
+    computeSharedCategories: object.isRequired,
     computeDocument: object.isRequired,
     computeLogin: object.isRequired,
     computePortal: object.isRequired,
@@ -106,20 +107,20 @@ class PageDialectLearnWords extends PageDialectLearnBase {
 
     const computeEntities = Immutable.fromJS([
       {
-        id: props.routeParams.dialect_path,
-        entity: props.computePortal,
+        id: this.props.routeParams.dialect_path,
+        entity: this.props.computePortal,
       },
       {
-        id: `${props.routeParams.dialect_path}/Dictionary`,
-        entity: props.computeDocument,
+        id: this.props.routeParams.dialect_path + '/Dictionary',
+        entity: this.props.computeDocument,
       },
       {
-        id: `/api/v1/path/${props.routeParams.dialect_path}/Categories/@children`,
+        id: '/api/v1/path/' + this.props.routeParams.dialect_path + '/Categories/@children',
         entity: this.props.computeCategories,
       },
       {
-        id: `/api/v1/path/FV/${props.routeParams.area}/SharedData/Shared Categories/@children`,
-        entity: props.computeCategories,
+        id: '/api/v1/path/FV/' + this.props.routeParams.area + '/SharedData/Shared Categories/@children',
+        entity: this.props.computeSharedCategories,
       },
     ])
 
@@ -145,22 +146,21 @@ class PageDialectLearnWords extends PageDialectLearnBase {
   render() {
     const { computeEntities, filterInfo, isKidsTheme } = this.state
 
-    const { routeParams } = this.props
-
     const computeDocument = ProviderHelpers.getEntry(
       this.props.computeDocument,
-      `${routeParams.dialect_path}/Dictionary`
+      this.props.routeParams.dialect_path + '/Dictionary'
     )
-
-    const computePortal = ProviderHelpers.getEntry(this.props.computePortal, `${routeParams.dialect_path}/Portal`)
-
+    const computePortal = ProviderHelpers.getEntry(
+      this.props.computePortal,
+      this.props.routeParams.dialect_path + '/Portal'
+    )
     const computeCategories = ProviderHelpers.getEntry(
       this.props.computeCategories,
-      `/api/v1/path/FV/${routeParams.dialect_path}/Categories/@children`
+      '/api/v1/path/' + this.props.routeParams.dialect_path + '/Categories/@children'
     )
     const computeSharedCategories = ProviderHelpers.getEntry(
-      this.props.computeCategories,
-      `/api/v1/path/FV/${routeParams.area}/SharedData/Shared Categories/@children`
+      this.props.computeSharedCategories,
+      '/api/v1/path/FV/' + this.props.routeParams.area + '/SharedData/Shared Categories/@children'
     )
 
     let showCategories = false
@@ -175,8 +175,8 @@ class PageDialectLearnWords extends PageDialectLearnBase {
       showCategories = true
     }
 
-    const pageTitle = `${selectn('response.contextParameters.ancestry.dialect.dc:title', computePortal) ||
-      ''} ${intl.trans('words', 'Words', 'first')}`
+    const dialect = selectn('response.contextParameters.ancestry.dialect.dc:title', computePortal) || ''
+    const pageTitle = intl.trans('views.pages.explore.dialect.words.x_words', `${dialect} Words`, null, [dialect])
 
     const { searchNxqlSort = {} } = this.props.computeSearchDialect
     const { DEFAULT_SORT_COL, DEFAULT_SORT_TYPE } = searchNxqlSort
@@ -392,7 +392,9 @@ class PageDialectLearnWords extends PageDialectLearnBase {
     newProps.fetchPortal(newProps.routeParams.dialect_path + '/Portal')
     newProps.fetchDocument(newProps.routeParams.dialect_path + '/Dictionary')
     newProps.fetchCategories('/api/v1/path/' + newProps.routeParams.dialect_path + '/Categories/@children')
-    newProps.fetchCategories('/api/v1/path/FV/' + newProps.routeParams.area + '/SharedData/Shared Categories/@children')
+    newProps.fetchSharedCategories(
+      '/api/v1/path/FV/' + newProps.routeParams.area + '/SharedData/Shared Categories/@children'
+    )
   }
 
   // NOTE: PageDialectLearnBase calls `_getPageKey`
@@ -526,6 +528,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
 // REDUX: actions/dispatch/func
 const mapDispatchToProps = {
   fetchCategories,
+  fetchSharedCategories,
   fetchDocument,
   fetchPortal,
   overrideBreadcrumbs,
