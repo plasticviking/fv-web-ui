@@ -149,7 +149,7 @@ export class CategoryDetail extends React.Component {
       // Extract data from object:
       const name = selectn(['response', 'properties', 'dc:title'], _computeCategory)
       const description = selectn(['response', 'properties', 'dc:description'], _computeCategory)
-      const parent = selectn(['response', 'parentRef'], _computeCategory)
+      const parent = selectn(['response', 'contextParameters', 'parentDoc', 'title'], _computeCategory)
       const isTrashed = selectn(['response', 'isTrashed'], _computeCategory) || false
       // Respond...
       return { isTrashed, name, description, parent, data: _computeCategory }
