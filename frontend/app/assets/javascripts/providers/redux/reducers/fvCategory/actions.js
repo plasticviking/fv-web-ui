@@ -96,7 +96,7 @@ export const fetchCategory = (pathOrId) => {
 */
 
 export const fetchCategory = fetch('FV_CATEGORY', 'FVCategory', {
-  headers: { 'enrichers.document': 'ancestry, breadcrumb' },
+  headers: { 'enrichers.document': 'ancestry, parentDoc, breadcrumb' },
 })
 
 export const fetchCategories = query('FV_CATEGORIES', 'FVCategory', {
