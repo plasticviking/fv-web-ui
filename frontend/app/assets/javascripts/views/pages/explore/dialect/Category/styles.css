@@ -10,6 +10,12 @@
 .Category__heading {
   font-size: 3rem;
 }
+.Category__label {
+  padding-left: 3rem;
+}
+.Category__content {
+  padding-left: 6rem;
+}
 .Category__select {
   font-size: 3rem;
 }

@@ -17,11 +17,11 @@ import StateDetail from './states/detail'
 
 import '!style-loader!css-loader!./styles.css'
 
-let _computeCategories = undefined
-const categoryType = {
-  title: { plural: 'Categories', singular: 'Category' },
-  label: { plural: 'categories', singular: 'category' },
-}
+// let _computeCategories = undefined
+// const categoryType = {
+//   title: { plural: 'Categories', singular: 'Category' },
+//   label: { plural: 'categories', singular: 'category' },
+// }
 const { element, func, number, object, string } = PropTypes
 
 export class CategoryDetail extends React.Component {
@@ -65,10 +65,9 @@ export class CategoryDetail extends React.Component {
   }
 
   async componentDidUpdate() {
-    const { computeCategories, routeParams } = this.props
-    const categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
-
-    _computeCategories = ProviderHelpers.getEntry(computeCategories, categoriesPath)
+    // const { computeCategories, routeParams } = this.props
+    // const categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
+    // _computeCategories = ProviderHelpers.getEntry(computeCategories, categoriesPath)
   }
 
   render() {
@@ -155,18 +154,6 @@ export class CategoryDetail extends React.Component {
       return { isTrashed, name, description, parent, data: _computeCategory }
     }
     return { isError: _computeCategory.isError, message: _computeCategory.message }
-  }
-
-  _getCategoryTitle = (id) => {
-    const dialectCategories = {}
-    if (_computeCategories && _computeCategories.isFetching === false && _computeCategories.success) {
-      const entries = _computeCategories.response.entries
-      // eslint-disable-next-line func-names
-      entries.forEach(function(entry) {
-        dialectCategories[entry.uid] = entry.title
-      })
-    }
-    return dialectCategories[id]
   }
 }
 

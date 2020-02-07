@@ -49,36 +49,39 @@ export class CategoryStateDetail extends React.Component {
           <div className="Category__main">
             <div className="Category__mainInner">
               {itemDeleted}
-              <header>
+              <div>
                 {breadcrumb}
-                <h1 className="Category__heading">{_copy.title}</h1>
-              </header>
-              {/* Name ------------- */}
-              <h2 className="visually-hidden">{_copy.name}</h2>
-              <h2 className="Category__name">{valueName}</h2>
-
-              <p className="visually-hidden">{_copy.parent}</p>
-              <p className="Category__parent">{valueParent}</p>
-
+                {/* Name ------------- */}
+                <h1 className="Category__heading">
+                  {_copy.title}: {valueName}
+                </h1>
+              </div>
+              {/* Parent Category ------------- */}
+              <div>
+                <h5 className="Category__label">{_copy.parent}</h5>
+                <p className="Category__content">{valueParent}</p>
+              </div>
               {/* Description ------------- */}
-              <p className="visually-hidden">{_copy.description}</p>
-              <div className="Category__description" dangerouslySetInnerHTML={{ __html: valueDescription }} />
+              <div>
+                <h5 className="Category__label">{_copy.description}</h5>
+                <p className="Category__content" dangerouslySetInnerHTML={{ __html: valueDescription }} />
+              </div>
             </div>
           </div>
-          <div className="Category__btn-container">
-            <Button
-              className="Category__btn-container"
-              variant="contained"
-              color="primary"
-              href={categoryEditUrl}
-              onClick={(e) => {
-                e.preventDefault()
-                NavigationHelpers.navigate(categoryEditUrl, this.props.pushWindowPath, false)
-              }}
-            >
-              {copy.create.success.editView}
-            </Button>
-          </div>
+        </div>
+        <div className="Category__btn-container">
+          <Button
+            className="Category__btn-container"
+            variant="contained"
+            color="primary"
+            href={categoryEditUrl}
+            onClick={(e) => {
+              e.preventDefault()
+              NavigationHelpers.navigate(categoryEditUrl, this.props.pushWindowPath, false)
+            }}
+          >
+            {copy.create.success.editView}
+          </Button>
         </div>
       </div>
     )

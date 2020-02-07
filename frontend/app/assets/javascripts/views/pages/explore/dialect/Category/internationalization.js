@@ -4,6 +4,7 @@ const copy = {
     description: 'Category description',
     name: 'Category name',
     title: 'Category',
+    parent: 'Parent category',
   },
   create: {
     btnBack: '< Back',
@@ -33,6 +34,7 @@ const copy = {
     btnConfirm: 'Yes, delete the category',
     btnDeny: 'No, do not delete the category',
     btnInitiate: 'Delete',
+    parent: 'Parent category',
     description: 'Category description',
     isConfirmOrDenyTitle: 'Delete category?',
     isTrashed: 'This category has been deleted and can not be edited',
