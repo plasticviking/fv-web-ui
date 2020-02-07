@@ -204,7 +204,16 @@ t.String.getValidationErrorMessage = (value, path, context) => {
 }
 
 const FVMedia = {
-  order: ['dc:title', 'dc:description', 'file', 'fvm:shared', 'fvm:child_focused', 'fvm:source', 'fvm:recorder'],
+  order: [
+    'dc:title',
+    'dc:description',
+    'file',
+    'fvm:shared',
+    'fvm:child_focused',
+    'fvm:source',
+    'fvm:external_media_url',
+    'fvm:recorder',
+  ],
   fields: {
     'dc:title': {
       label: intl.trans('name', 'Name', 'first'),
@@ -230,6 +239,10 @@ const FVMedia = {
         factory: SelectSuggestFactory,
         type: 'FVContributor',
       },
+    },
+    'fvm:external_media_url': {
+      label: intl.trans('external_media_url', 'Video TEST URL', 'first'),
+      type: 'text',
     },
     'fvm:recorder': {
       label: intl.trans('recorder', 'Recorder', 'first'),
@@ -424,6 +437,7 @@ const options = {
           locals: {
             labelAddMediaComponent: intl.trans('video_upload', 'Upload video', 'first'),
             labelSelectMediaComponent: intl.trans('videos_browse', 'Browse videos', 'first'),
+            labelEmbedMediaComponent: intl.trans('video_embed', 'Embed video', 'first'),
           },
         },
         template: RelatedMediaLayout,
@@ -590,6 +604,7 @@ const options = {
           locals: {
             labelAddMediaComponent: intl.trans('video_upload', 'Upload video', 'first'),
             labelSelectMediaComponent: intl.trans('videos_browse', 'Browse videos', 'first'),
+            labelEmbedMediaComponent: intl.trans('video_embed', 'Embed video', 'first'),
           },
         },
         template: RelatedMediaLayout,

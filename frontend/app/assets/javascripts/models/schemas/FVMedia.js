@@ -6,6 +6,7 @@ const FVMedia = {
   'fvm:child_focused': t.Boolean,
   'fvm:recorder': t.list(t.String),
   'fvm:source': t.list(t.String),
+  'fvm:external_media_url': t.String,
 }
 
 export default FVMedia

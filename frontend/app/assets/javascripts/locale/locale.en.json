@@ -913,6 +913,7 @@
     "version": "version",
     "video": "Video",
     "video_upload": "Upload video",
+    "video_embed": "Embed video",
     "video_limit": "Video Files must be in QuickTime format with a WIDTH=160 and height=120",
     "video_recording": "Video Recording",
     "video_restriction": "Video Files must end in<B> </B><B>.MOV</B>",

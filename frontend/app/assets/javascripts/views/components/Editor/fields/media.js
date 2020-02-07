@@ -80,6 +80,12 @@ function renderInput(locals) {
           onComplete={onComplete}
           dialect={locals.context}
         />
+        <AddMediaComponent
+          type={locals.type}
+          label={locals.labelEmbedMediaComponent || intl.trans('views.components.editor.upload_new', 'Embed New')}
+          onComplete={onComplete}
+          dialect={locals.context}
+        />
         {selectn('context.initialValues.' + locals.attrs.name, locals) ? (
           <FVButton variant="flat" onClick={onCancel}>
             {intl.trans('cancel', 'Cancel', 'first')}

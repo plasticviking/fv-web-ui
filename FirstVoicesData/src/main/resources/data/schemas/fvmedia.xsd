@@ -39,4 +39,7 @@
   <xs:element name="recorder" type="nxs:stringList"/>
   <xs:element name="shared" type="xs:boolean" default="false"/>
   <xs:element name="source" type="nxs:stringList"/>
+  <xs:element name="external_media_url" type="xs:string"/>
+<!--  look into making media type -->
+  <xs:element name="external_media_type" type="xs:string"/>
 </xs:schema>
