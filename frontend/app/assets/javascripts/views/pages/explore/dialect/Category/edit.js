@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import Immutable from 'immutable'
 import ProviderHelpers from 'common/ProviderHelpers'
 import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
@@ -10,6 +9,8 @@ import StateEdit from './states/create'
 import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
+// Immutable
+import Immutable from 'immutable'
 // REDUX
 import { connect } from 'react-redux'
 // REDUX: actions/dispatch/func
@@ -162,7 +163,9 @@ export class CategoryEdit extends React.Component {
     const { itemId } = routeParams
     await this.props.fetchDialect(`/${this.props.routeParams.dialect_path}`)
     await this.props.fetchCategory(itemId)
+    await this.props.fetchCategories(`/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`)
     const item = await this._getItem()
+    const categories = await this._getCategories()
 
     if (item.isError) {
       this.setState({
@@ -175,7 +178,9 @@ export class CategoryEdit extends React.Component {
         errorMessage: undefined,
         componentState: STATE_DEFAULT,
         valueName: item.name,
+        valueParent: item.parent,
         valueDescription: item.description,
+        valueCategories: categories.dialectCategories,
         isTrashed: item.isTrashed,
         item: item.data,
         ...this._commonInitialState,
@@ -195,7 +200,7 @@ export class CategoryEdit extends React.Component {
   }
   _stateGetEdit = () => {
     const { className, breadcrumb, groupName } = this.props
-    const { errors, isBusy, isTrashed, valueDescription, valueName } = this.state
+    const { errors, isBusy, isTrashed, valueDescription, valueName, valueParent, valueCategories } = this.state
     return (
       <AuthenticationFilter
         login={this.props.computeLogin}
@@ -231,7 +236,9 @@ export class CategoryEdit extends React.Component {
             }}
             setFormRef={this.setFormRef}
             valueName={valueName}
+            valueParent={valueParent}
             valueDescription={valueDescription}
+            valueCategories={valueCategories}
           />
         </PromiseWrapper>
       </AuthenticationFilter>
@@ -334,6 +341,7 @@ export class CategoryEdit extends React.Component {
       // Extract data from object:
       const name = selectn(['response', 'properties', 'dc:title'], _computeCategory)
       const description = selectn(['response', 'properties', 'dc:description'], _computeCategory)
+      const parent = selectn(['response', 'contextParameters', 'parentDoc', 'title'], _computeCategory)
       const isTrashed = selectn(['response', 'isTrashed'], _computeCategory)
 
       // Respond...
@@ -341,11 +349,45 @@ export class CategoryEdit extends React.Component {
         isError: _computeCategory.isError,
         name,
         description,
+        parent,
         isTrashed,
         data: _computeCategory,
       }
     }
     return { isError: _computeCategory.isError, message: _computeCategory.message }
+  }
+
+  _getCategories = async () => {
+    const { computeCategories, routeParams } = this.props
+    const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
+    // Set-up array for data extraction and allow for selecting no parent category - set Categories directory as value:
+    const dialectCategories = [
+      {
+        uid: `${this.props.routeParams.dialect_path}/Categories`,
+        title: 'None',
+      },
+    ]
+    // Extract data from immutable:
+    const _computeCategories = await ProviderHelpers.getEntry(computeCategories, categoriesPath)
+    if (_computeCategories.success) {
+      // Extract data from object:
+      let obj = {}
+      // eslint-disable-next-line func-names
+      _computeCategories.response.entries.forEach(function(entry) {
+        obj = {
+          uid: entry.uid,
+          title: entry.title,
+          isTrashed: entry.isTrashed,
+        }
+        dialectCategories.push(obj)
+      })
+      // Respond...
+      return {
+        isError: _computeCategories.isError,
+        dialectCategories,
+      }
+    }
+    return { isError: _computeCategories.isError, message: _computeCategories.message }
   }
 }
 

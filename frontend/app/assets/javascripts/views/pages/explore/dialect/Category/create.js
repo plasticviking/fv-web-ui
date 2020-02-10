@@ -5,28 +5,23 @@ import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
 import StateSuccessDefault from './states/successCreate'
 import StateCreate from './states/create'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 // Immutable
-import Immutable, { Map } from 'immutable' // eslint-disable-line
-
+import Immutable from 'immutable'
 // REDUX
 import { connect } from 'react-redux'
 // REDUX: actions/dispatch/func
-import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 import { createCategory, fetchCategories } from 'providers/redux/reducers/fvCategory'
-import { fetchDialect } from 'providers/redux/reducers/fvDialect'
+import { fetchDialect, fetchDialect2 } from 'providers/redux/reducers/fvDialect'
+import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 
 import { getFormData, handleSubmit } from 'common/FormHelpers'
-
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
-import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 import { STATE_LOADING, STATE_DEFAULT, STATE_ERROR, STATE_SUCCESS, STATE_ERROR_BOUNDARY } from 'common/Constants'
 
 import '!style-loader!css-loader!./styles.css'
-
-let categoriesPath = undefined
-let _computeCategories = undefined
 
 const { array, element, func, number, object, string } = PropTypes
 
@@ -57,6 +52,7 @@ export class Category extends React.Component {
     computeDialect2: object.isRequired,
     splitWindowPath: array.isRequired,
     // REDUX: actions/dispatch/func
+    createCategory: func.isRequired,
     fetchCategories: func.isRequired,
     fetchDialect: func.isRequired,
     pushWindowPath: func.isRequired,
@@ -89,60 +85,23 @@ export class Category extends React.Component {
   }
 
   async componentDidMount() {
-    const { routeParams /*, filter*/ } = this.props
-
     const copy = this.props.copy
       ? this.props.copy
-      : await import(/* webpackChunkName: "CategoriesInternationalization" */ './internationalization').then(
-          (_copy) => {
-            return _copy.default
-          }
-        )
-
-    categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
-
-    // Get data for computeDialect
-    await this.props.fetchDialect('/' + this.props.routeParams.dialect_path)
-
-    if (this.props.computeDialect.isError && this.props.computeDialect.error) {
-      this.setState({
-        componentState: STATE_DEFAULT,
-        copy,
-        errorMessage: this.props.computeDialect.error,
-      })
-      return
-    }
+      : await import(/* webpackChunkName: "CategoryInternationalization" */ './internationalization').then((_copy) => {
+          return _copy.default
+        })
 
     const validator = this.props.validator
       ? this.props.validator
       : await import(/* webpackChunkName: "CategoryValidator" */ './validator').then((_validator) => {
           return _validator.default
         })
-
-    this._getData({ copy })
-
-    // Flip to ready state...
-    this.setState({
-      componentState: STATE_DEFAULT,
-      copy,
-      validator,
-      errorMessage: undefined,
-    })
-  }
-  async componentDidUpdate() {
-    const { computeCategories } = this.props
-
-    _computeCategories = ProviderHelpers.getEntry(computeCategories, categoriesPath)
+    await this._getData({ copy, validator })
   }
 
   render() {
     let content = null
     switch (this.state.componentState) {
-      case STATE_LOADING: {
-        content = this._stateGetLoading()
-        break
-      }
-
       case STATE_DEFAULT: {
         content = this._stateGetCreate()
         break
@@ -156,14 +115,39 @@ export class Category extends React.Component {
         break
       }
       case STATE_ERROR_BOUNDARY: {
+        // STATE_ERROR_BOUNDARY === server or authentication issue
         content = this._stateGetErrorBoundary()
         break
       }
       default:
-        content = <div>{/* Shouldn't get here */}</div>
+        // STATE_LOADING === loading
+        content = this._stateGetLoading()
     }
-
     return content
+  }
+
+  _getData = async (addToState = {}) => {
+    // Do any loading here...
+    const { routeParams } = this.props
+    await this.props.fetchDialect(`/${this.props.routeParams.dialect_path}`)
+    await this.props.fetchCategories(`/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`)
+    const categories = await this._getCategories()
+
+    if (categories.isError) {
+      this.setState({
+        componentState: STATE_DEFAULT,
+        errorMessage: categories.message,
+        ...addToState,
+      })
+    } else {
+      this.setState({
+        errorMessage: undefined,
+        componentState: STATE_DEFAULT,
+        valueCategories: categories.dialectCategories,
+        ...this._commonInitialState,
+        ...addToState,
+      })
+    }
   }
 
   _stateGetLoading = () => {
@@ -171,11 +155,14 @@ export class Category extends React.Component {
     return <StateLoading className={className} copy={this.state.copy} />
   }
   _stateGetErrorBoundary = () => {
+    // Make `errorBoundary.explanation` === `errorBoundary.explanationEdit`
+    const _copy = Object.assign({}, this.state.copy)
+    _copy.errorBoundary.explanation = this.state.copy.errorBoundary.explanationEdit
     return <StateErrorBoundary errorMessage={this.state.errorMessage} copy={this.state.copy} />
   }
   _stateGetCreate = () => {
     const { className, breadcrumb, groupName } = this.props
-    const { errors, isBusy } = this.state
+    const { errors, isBusy, valueCategories } = this.state
     return (
       <AuthenticationFilter
         login={this.props.computeLogin}
@@ -192,8 +179,8 @@ export class Category extends React.Component {
           ])}
         >
           <StateCreate
-            className={className}
             copy={this.state.copy}
+            className={className}
             groupName={groupName}
             breadcrumb={breadcrumb}
             errors={errors}
@@ -202,7 +189,7 @@ export class Category extends React.Component {
               this._onRequestSaveForm()
             }}
             setFormRef={this.setFormRef}
-            dialectCategories={this._dialectCategories()}
+            valueCategories={valueCategories}
           />
         </PromiseWrapper>
       </AuthenticationFilter>
@@ -231,53 +218,47 @@ export class Category extends React.Component {
     )
   }
 
-  _getData = async (addToState) => {
-    const { routeParams } = this.props
-    const { page } = routeParams
+  // _getData = async(addToState) => {
+  //   const { routeParams } = this.props
+  //   const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
+  //   await this.props.fetchCategories(categoriesPath)
+  //   // NOTE: redux doesn't update on changes to deeply nested data, hence the manual re-render
+  //   this.setState({
+  //     rerender: Date.now(),
+  //     ...addToState,
+  //   })
+  // }
 
-    let currentAppliedFilter = '' // eslint-disable-line
-    // TODO: ASK DANIEL ABOUT `filter` & `filter.currentAppliedFilter`
-    // if (filter.has('currentAppliedFilter')) {
-    //   currentAppliedFilter = Object.values(filter.get('currentAppliedFilter').toJS()).join('')
-    // }
-
-    categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
-    // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
-    const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
-
-    await this.props.fetchCategories(
-      categoriesPath,
-      `${currentAppliedFilter}&currentPageIndex=${page - 1}&pageSize=200&sortOrder=${
-        this.props.DEFAULT_SORT_TYPE
-      }&sortBy=${this.props.DEFAULT_SORT_COL}${startsWithQuery}`
-    )
-    // NOTE: redux doesn't update on changes to deeply nested data, hence the manual re-render
-    this.setState({
-      rerender: Date.now(),
-      ...addToState,
-    })
-  }
-
-  _dialectCategories = () => {
+  _getCategories = async () => {
+    const { computeCategories, routeParams } = this.props
+    const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
+    // Set-up array for data extraction and allow for selecting no parent category - set Categories directory as value:
     const dialectCategories = [
       {
-        uid: `${this.props.routeParams.dialect_path}/${categoryType.title.plural}`,
+        uid: `${this.props.routeParams.dialect_path}/Categories`,
         title: 'None',
       },
     ]
+    // Extract data from immutable:
+    const _computeCategories = await ProviderHelpers.getEntry(computeCategories, categoriesPath)
     if (_computeCategories && _computeCategories.isFetching === false && _computeCategories.success) {
-      const entries = _computeCategories.response.entries
+      // Extract data from object:
       let obj = {}
       // eslint-disable-next-line func-names
-      entries.forEach(function(entry) {
+      _computeCategories.response.entries.forEach(function(entry) {
         obj = {
           uid: entry.uid,
           title: entry.title,
         }
         dialectCategories.push(obj)
       })
+      // Respond...
+      return {
+        isError: _computeCategories.isError,
+        dialectCategories,
+      }
     }
-    return dialectCategories
+    return { isError: _computeCategories.isError, message: _computeCategories.message }
   }
 
   _handleCreateItemSubmit = async (formData) => {
@@ -357,19 +338,19 @@ export class Category extends React.Component {
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
   const { fvCategory, fvDialect, windowPath, navigation, nuxeo } = state
-  const { computeCategories, computeCreateCategory, computeCategory } = fvCategory
+  const { computeCategory, computeCategories, computeCreateCategory } = fvCategory
   const { computeDialect, computeDialect2 } = fvDialect
   const { splitWindowPath } = windowPath
   const { route } = navigation
   const { computeLogin } = nuxeo
   return {
     computeLogin,
+    computeCategory,
     computeCategories,
     computeCreateCategory,
-    computeCategory,
-    routeParams: route.routeParams,
     computeDialect,
     computeDialect2,
+    routeParams: route.routeParams,
     splitWindowPath,
   }
 }
@@ -379,6 +360,7 @@ const mapDispatchToProps = {
   createCategory,
   fetchCategories,
   fetchDialect,
+  fetchDialect2,
   pushWindowPath,
 }
 

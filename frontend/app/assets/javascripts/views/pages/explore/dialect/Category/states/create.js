@@ -30,8 +30,9 @@ export class CategoryStateCreate extends React.Component {
     onRequestSaveForm: func,
     setFormRef: func,
     valueName: string,
+    valueParent: string,
     valueDescription: string,
-    dialectCategories: array,
+    valueCategories: array,
     valuePhotoName: string,
     valuePhotoData: string,
   }
@@ -48,8 +49,9 @@ export class CategoryStateCreate extends React.Component {
     onRequestSaveForm: () => {},
     setFormRef: () => {},
     valueName: '',
+    valueParent: '',
     valueDescription: '',
-    dialectCategories: [],
+    valueCategories: [],
     valuePhotoName: '',
     valuePhotoData: '',
     copy: {
@@ -71,8 +73,9 @@ export class CategoryStateCreate extends React.Component {
       copy,
       groupName,
       valueName,
+      valueParent,
       valueDescription,
-      dialectCategories,
+      valueCategories,
       breadcrumb,
       errors,
       isBusy,
@@ -136,20 +139,30 @@ export class CategoryStateCreate extends React.Component {
           disabled={isTrashed}
         />
 
+        <Text
+          className={groupName}
+          id={this._clean('ecm:parentRef')}
+          name="ecm:parentRef"
+          value={valueParent}
+          error={getError({ errors, fieldName: 'ecm:parentRef' })}
+          labelText={_copy.name}
+          disabled={isTrashed}
+        />
+
         {/* Parent Category ------------- */}
-        <FormControl className={groupName} id={this._clean('parentRef')} disabled={isTrashed}>
+        <FormControl className={groupName} id={this._clean('ecm:parentRef')} disabled={isTrashed}>
           <InputLabel shrink htmlFor="parentRef-native-simple">
             {_copy.parent}
           </InputLabel>
           <NativeSelect
-            value={this.state.parentRef}
+            value={valueParent}
             onChange={this._handleChange('parentRef')}
             inputProps={{
               name: 'parentRef',
               id: 'parentRef-native-simple',
             }}
           >
-            {dialectCategories.map((category, index) => {
+            {valueCategories.map((category, index) => {
               return (
                 <option key={index} value={category.uid}>
                   {category.title}
