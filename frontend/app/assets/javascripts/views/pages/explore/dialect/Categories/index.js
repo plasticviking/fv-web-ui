@@ -220,10 +220,10 @@ export const Categories = (props) => {
           // Listview: Batch
           batchTitleSelect="Deselect all"
           batchTitleDeselect="Select all"
-          batchFooterIsConfirmOrDenyTitle="Delete selected phrase books?"
+          batchFooterIsConfirmOrDenyTitle="Delete selected categories?"
           batchFooterBtnInitiate="Delete"
-          batchFooterBtnDeny="No, do not delete the selected phrase books"
-          batchFooterBtnConfirm="Yes, delete the selected phrase books"
+          batchFooterBtnDeny="No, do not delete the selected categories"
+          batchFooterBtnConfirm="Yes, delete the selected categories"
           batchConfirmationAction={(uids) => {
             // Delete all items in selected
             uids.forEach((uid) => {
