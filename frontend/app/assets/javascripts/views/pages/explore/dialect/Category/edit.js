@@ -165,7 +165,7 @@ export class CategoryEdit extends React.Component {
     await this.props.fetchCategory(itemId)
     await this.props.fetchCategories(`/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`)
     const item = await this._getItem()
-    const categories = await this._getCategories()
+    const categories = await this._getCategories(item.parent)
 
     if (item.isError) {
       this.setState({
@@ -178,7 +178,8 @@ export class CategoryEdit extends React.Component {
         errorMessage: undefined,
         componentState: STATE_DEFAULT,
         valueName: item.name,
-        valueParent: item.parent,
+        valueParent: item.parent.title,
+        valueParentId: item.parent.id,
         valueDescription: item.description,
         valueCategories: categories.dialectCategories,
         isTrashed: item.isTrashed,
@@ -200,7 +201,16 @@ export class CategoryEdit extends React.Component {
   }
   _stateGetEdit = () => {
     const { className, breadcrumb, groupName } = this.props
-    const { errors, isBusy, isTrashed, valueDescription, valueName, valueParent, valueCategories } = this.state
+    const {
+      errors,
+      isBusy,
+      isTrashed,
+      valueDescription,
+      valueName,
+      valueParent,
+      valueParentId,
+      valueCategories,
+    } = this.state
     return (
       <AuthenticationFilter
         login={this.props.computeLogin}
@@ -237,6 +247,7 @@ export class CategoryEdit extends React.Component {
             setFormRef={this.setFormRef}
             valueName={valueName}
             valueParent={valueParent}
+            valueParentId={valueParentId}
             valueDescription={valueDescription}
             valueCategories={valueCategories}
           />
@@ -273,7 +284,7 @@ export class CategoryEdit extends React.Component {
       <StateSuccessDelete createUrl={_createUrl} className={className} copy={this.state.copy} formData={formData} />
     )
   }
-  async _handleCreateItemSubmit(formData) {
+  async _handleUpdateItemSubmit(formData) {
     const { item } = this.state
 
     const newDocument = new Document(item.response, {
@@ -283,6 +294,7 @@ export class CategoryEdit extends React.Component {
 
     // Set new value property on document
     newDocument.set({
+      'ecm:parentRef': formData.parentRef,
       'dc:description': formData['dc:description'],
       'dc:title': formData['dc:title'],
     })
@@ -314,7 +326,7 @@ export class CategoryEdit extends React.Component {
           isBusy: true,
         },
         () => {
-          this._handleCreateItemSubmit(formData)
+          this._handleUpdateItemSubmit(formData)
         }
       )
     }
@@ -341,7 +353,7 @@ export class CategoryEdit extends React.Component {
       // Extract data from object:
       const name = selectn(['response', 'properties', 'dc:title'], _computeCategory)
       const description = selectn(['response', 'properties', 'dc:description'], _computeCategory)
-      const parent = selectn(['response', 'contextParameters', 'parentDoc', 'title'], _computeCategory)
+      const parent = selectn(['response', 'contextParameters', 'parentDoc'], _computeCategory)
       const isTrashed = selectn(['response', 'isTrashed'], _computeCategory)
 
       // Respond...
@@ -357,14 +369,14 @@ export class CategoryEdit extends React.Component {
     return { isError: _computeCategory.isError, message: _computeCategory.message }
   }
 
-  _getCategories = async () => {
+  _getCategories = async (parentDoc) => {
     const { computeCategories, routeParams } = this.props
     const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
     // Set-up array for data extraction and allow for selecting no parent category - set Categories directory as value:
     const dialectCategories = [
       {
-        uid: `${this.props.routeParams.dialect_path}/Categories`,
-        title: 'None',
+        uid: parentDoc.id,
+        title: parentDoc.title,
       },
     ]
     // Extract data from immutable:
