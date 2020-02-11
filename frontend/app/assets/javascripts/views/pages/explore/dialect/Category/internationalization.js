@@ -50,7 +50,7 @@ const copy = {
     successDelete: {
       title: 'We deleted the category',
     },
-    submit: 'Edit category',
+    submit: 'Save Changes',
     title: 'Edit a category',
   },
   errorBoundary: {

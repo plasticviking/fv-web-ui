@@ -21,7 +21,7 @@
 }
 .Category .Text,
 .Category .Textarea,
-.Category .FormControl {
+.Category .Select {
   margin-bottom: 3.5rem;
 }
 .Category__btn-container {

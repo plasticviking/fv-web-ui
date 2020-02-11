@@ -1,13 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import Button from '@material-ui/core/Button'
-import InputLabel from '@material-ui/core/InputLabel'
-import option from '@material-ui/core/MenuItem'
-import FormHelperText from '@material-ui/core/FormHelperText'
-import FormControl from '@material-ui/core/FormControl'
-import NativeSelect from '@material-ui/core/NativeSelect'
-
+import FVButton from 'views/components/FVButton'
+import Select from 'views/components/Form/Common/Select'
 import Text from 'views/components/Form/Common/Text'
 import Textarea from 'views/components/Form/Common/Textarea'
 import StringHelpers from 'common/StringHelpers'
@@ -60,7 +55,7 @@ export class CategoryStateCreate extends React.Component {
   }
   state = {
     deleting: false,
-    parentRef: '',
+    parentCategory: '',
   }
   // NOTE: Using callback refs since on old React
   // https://reactjs.org/docs/refs-and-the-dom.html#callback-refs
@@ -139,29 +134,17 @@ export class CategoryStateCreate extends React.Component {
           disabled={isTrashed}
         />
 
-        <Text
-          className={groupName}
-          id={this._clean('ecm:parentRef')}
-          name="ecm:parentRef"
-          value={valueParent}
-          error={getError({ errors, fieldName: 'ecm:parentRef' })}
-          labelText={_copy.name}
-          disabled={isTrashed}
-        />
-
         {/* Parent Category ------------- */}
-        <FormControl className={groupName} id={this._clean('ecm:parentRef')} disabled={isTrashed}>
-          <InputLabel shrink htmlFor="parentRef-native-simple">
-            {_copy.parent}
-          </InputLabel>
-          <NativeSelect
-            value={valueParent}
-            onChange={this._handleChange('parentRef')}
-            inputProps={{
-              name: 'parentRef',
-              id: 'parentRef-native-simple',
-            }}
-          >
+        <Select
+          className={groupName}
+          id={this._clean('parentRef')}
+          labelText={_copy.parent}
+          name="parentRef"
+          value={valueParent}
+          error={getError({ errors, fieldName: 'parentRef' })}
+        >
+          {/* Note: Using optgroup until React 16 when can use Fragments, eg: <React.Fragment> or <> */}
+          <optgroup>
             {valueCategories.map((category, index) => {
               return (
                 <option key={index} value={category.uid}>
@@ -169,9 +152,8 @@ export class CategoryStateCreate extends React.Component {
                 </option>
               )
             })}
-          </NativeSelect>
-          <FormHelperText>Select Parent Category if desired</FormHelperText>
-        </FormControl>
+          </optgroup>
+        </Select>
 
         {/* Description ------------- */}
         <Textarea
@@ -188,7 +170,7 @@ export class CategoryStateCreate extends React.Component {
         {getErrorFeedback({ errors })}
 
         <div className="Category__btn-container">
-          <Button
+          <FVButton
             variant="contained"
             color="primary"
             disabled={isBusy || isTrashed}
@@ -198,19 +180,13 @@ export class CategoryStateCreate extends React.Component {
             }}
           >
             {_copy.submit}
-          </Button>
+          </FVButton>
         </div>
       </form>
     )
   }
   _clean = (name) => {
     return StringHelpers.clean(name, 'CLEAN_ID')
-  }
-
-  _handleChange = (name) => (event) => {
-    this.setState({
-      [name]: event.target.value,
-    })
   }
 }
 

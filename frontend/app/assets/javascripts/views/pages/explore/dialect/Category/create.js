@@ -265,14 +265,15 @@ export class Category extends React.Component {
     // Submit here
     const now = Date.now()
     const name = formData['dc:title']
+    const parentRef = formData.parentRef
 
     const results = await this.props.createCategory(
-      formData.parentRef, // parentDoc:
+      parentRef, // parentDoc:
       {
         // docParams:
         type: 'FVCategory',
         name: name,
-        parentRef: formData.parentRef,
+        parentRef: parentRef,
         properties: {
           'dc:description': formData['dc:description'],
           'dc:title': formData['dc:title'],
