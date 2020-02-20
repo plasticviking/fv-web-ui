@@ -57,18 +57,18 @@ The Option B `run` command below assumes the following volumes on the host (chan
 ##### Startup the docker container
 If you used Option A and are in the fv-web-ui/docker/ directory:
 ```
-docker run --name nuxeo-dev --rm -ti -p 8080:8080 -v ${PWD}/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp -v ${PWD}/nuxeo_dev_docker/data:/opt/nuxeo/ext_data -v ${PWD}/nuxeo_dev_docker/logs:/var/log/nuxeo -e NUXEO_PACKAGES="nuxeo-dam nuxeo-jsf-ui" -e NUXEO_URL="http://localhost:8080" -e CYPRESS_FV_USERNAME -e CYPRESS_FV_PASSWORD me/nuxeo-dev
+docker run --name nuxeo-dev --rm -ti -p 8080:8080 -p 8787:8787 -v ${PWD}/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp -v ${PWD}/nuxeo_dev_docker/data:/opt/nuxeo/ext_data -v ${PWD}/nuxeo_dev_docker/logs:/var/log/nuxeo -e NUXEO_PACKAGES="nuxeo-dam nuxeo-jsf-ui" -e NUXEO_URL="http://localhost:8080" -e CYPRESS_FV_USERNAME -e CYPRESS_FV_PASSWORD me/nuxeo-dev
 ```
 
 If you used Option B:
 ```
-docker run --name nuxeo-dev --rm -ti -p 8080:8080 -v ~/Dev/Dependencies/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp -v ~/Dev/Dependencies/nuxeo_dev_docker/data:/opt/nuxeo/ext_data -v ~/Dev/Dependencies/nuxeo_dev_docker/logs:/var/log/nuxeo -e NUXEO_PACKAGES="nuxeo-dam nuxeo-jsf-ui" -e NUXEO_URL="http://localhost:8080" -e CYPRESS_FV_USERNAME -e CYPRESS_FV_PASSWORD me/nuxeo-dev
+docker run --name nuxeo-dev --rm -ti -p 8080:8080 -p 8787:8787 -v ~/Dev/Dependencies/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp -v ~/Dev/Dependencies/nuxeo_dev_docker/data:/opt/nuxeo/ext_data -v ~/Dev/Dependencies/nuxeo_dev_docker/logs:/var/log/nuxeo -e NUXEO_PACKAGES="nuxeo-dam nuxeo-jsf-ui" -e NUXEO_URL="http://localhost:8080" -e CYPRESS_FV_USERNAME -e CYPRESS_FV_PASSWORD me/nuxeo-dev
 ```
 
 This may take a few minutes as Nuxeo starts up.
 
 Notes:
-* To expose remote debugging via port 8787: ```-p 8787:8787```\
+* Remote debugging is exposed via port 8787: ```-p 8787:8787```\
 * To include automation traces: ```-e NUXEO_AUTOMATION_TRACE="true"```\
 * To enable Dev mode: ```-e NUXEO_DEV_MODE="true"```\
 * To change the data folder: ```-e NUXEO_DATA="/opt/nuxeo/ext_data"```\
@@ -96,8 +96,7 @@ This will setup the proper data structure for FirstVoices, and create an admin a
 By default, your instance will not have any archives to work in.
 You will need to create a language family, language and dialect (i.e. archive).
 
-Log into the backend, navigate to Workspace (top menu) -> FV -> Workspaces -> Data and create a Language Family, a Language and a Dialect (by clicking "New" in each view). You will then be able to work within that archive via the front end.
-
+Log into the backend, navigate to Workspace (top menu) -> FV -> Workspaces -> Data and create a Language Family, a Language and a Dialect (by clicking "New" in each view). You will then be able to work within that archive via the front en
 ## Pushing Changes
 After making a change to a Nuxeo module, you can deploy your change to the docker container in two ways:
 
