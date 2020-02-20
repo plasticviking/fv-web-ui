@@ -27,7 +27,7 @@
     "test:update": "jest -u",
     "test:coverage": "jest --coverage",
     "test:databaseSetup:local": "bash ./scripts/TestDatabaseSetup.sh http://127.0.0.1:8080",
-    "test:databaseSetup:dev": "bash ./scripts/TestDatabaseSetup.sh -skip-clone https://dev.firstvoices.com:8080",
+    "test:databaseSetup:dev": "bash ./scripts/TestDatabaseSetup.sh https://dev.firstvoices.com:8080 -skip-clone",
     "test:databaseTeardown:local": "bash ./scripts/TestDatabaseTeardown.sh http://127.0.0.1:8080",
     "test:databaseTeardown:dev": "bash ./scripts/TestDatabaseTeardown.sh https://dev.firstvoices.com:8080",
     "test:e2e": "start-server-and-test startPreprod http://127.0.0.1:3001 cy:open",
