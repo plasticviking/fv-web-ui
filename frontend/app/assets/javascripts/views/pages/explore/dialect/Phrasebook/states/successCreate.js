@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import NavigationHelpers from 'common/NavigationHelpers'
-
+import Link from 'views/components/Link'
 // REDUX
 import { connect } from 'react-redux'
 import { pushWindowPath } from 'providers/redux/reducers/windowPath'
@@ -92,7 +92,7 @@ export class CategoryStateSuccessCreate extends React.Component {
 
               {/* BROWSE ------------- */}
               <li>
-                <a href={categoryBrowseUrl}>{copy.create.success.browseView}</a>
+                <Link href={categoryBrowseUrl}>{copy.create.success.browseView}</Link>
               </li>
             </ul>
           </div>

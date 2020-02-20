@@ -81,8 +81,8 @@ export class BrowseComponent extends Component {
     const providedTitleFilter = selectn('otherContext.providedFilter', this.props.dialect)
     const appliedParams = providedTitleFilter
       ? Object.assign({}, DefaultFetcherParams, {
-          filters: { 'properties.dc:title': { appliedFilter: providedTitleFilter } },
-        })
+        filters: { 'properties.dc:title': { appliedFilter: providedTitleFilter } },
+      })
       : DefaultFetcherParams
 
     this.state = {
@@ -223,15 +223,20 @@ export class BrowseComponent extends Component {
         {/* Dialog */}
         <Dialog actions={actions} fullWidth maxWidth="md" open={this.state.open}>
           <DialogTitle>{title}</DialogTitle>
-          <DialogContent>
+          <DialogContent data-testid="BrowseComponent__dialogContent">
             {(() => {
               if (dialectPath) {
                 return view
               }
             })()}
           </DialogContent>
-          <DialogActions>
-            <FVButton variant="contained" color="secondary" onClick={this._handleClose}>
+          <DialogActions data-testid="BrowseComponent__dialogActions">
+            <FVButton
+              data-testid="Dialog__BrowseComponentCancel"
+              variant="contained"
+              color="secondary"
+              onClick={this._handleClose}
+            >
               {intl.trans('cancel', 'Cancel', 'first')}
             </FVButton>
           </DialogActions>

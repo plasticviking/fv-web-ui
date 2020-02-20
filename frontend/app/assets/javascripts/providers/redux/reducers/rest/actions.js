@@ -167,6 +167,13 @@ export const execute = (key, operationName, properties = {}) => {
 
 /*
  * fetch
+ *
+ * Initial call:
+ *  fetch(key, type, properties)
+ *
+ * Subsequent calls:
+ *  fetch(pathOrId, messageStart, messageSuccess, messageError, propertiesOverride)
+ *
  * --------------------------------------
  */
 export const fetch = (key, type, properties = {}) => {
@@ -299,10 +306,10 @@ export const update = (key, type, properties = {}, usePathAsId = true) => {
         message:
           _messageStart === undefined
             ? IntlService.instance.translate({
-                key: 'operations.update_started',
-                default: 'Update Started',
-                case: 'words',
-              }) + '...'
+              key: 'operations.update_started',
+              default: 'Update Started',
+              case: 'words',
+            }) + '...'
             : _messageStart,
       })
 
@@ -313,10 +320,10 @@ export const update = (key, type, properties = {}, usePathAsId = true) => {
             message:
               _messageSuccess === undefined
                 ? IntlService.instance.translate({
-                    key: 'providers.document_updated_successfully',
-                    default: 'Document updated successfully',
-                    case: 'first',
-                  }) + '!'
+                  key: 'providers.document_updated_successfully',
+                  default: 'Document updated successfully',
+                  case: 'first',
+                }) + '!'
                 : _messageSuccess,
             response: response,
             pathOrId: usePathAsId ? newDoc.path : newDoc.uid,
