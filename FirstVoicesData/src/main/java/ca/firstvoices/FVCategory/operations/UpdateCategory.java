@@ -1,6 +1,7 @@
 package ca.firstvoices.FVCategory.operations;
 
 import java.io.IOException;
+import java.util.Map;
 
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
@@ -9,7 +10,6 @@ import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
 import org.nuxeo.ecm.automation.core.util.DocumentHelper;
-import org.nuxeo.ecm.automation.core.util.Properties;
 import org.nuxeo.ecm.core.api.ConcurrentUpdateException;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -27,7 +27,7 @@ public class UpdateCategory {
     protected CoreSession session;
 
     @Param(name = "properties")
-    protected Properties properties;
+    protected Map<String, String> properties;
 
     @Param(name = "target", required = false)
     protected DocumentRef target; // the path or the ID
@@ -44,7 +44,9 @@ public class UpdateCategory {
         }
         if (target != null) {
             // update Parent Category i.e. move document
-            session.move(doc.getRef(), target, doc.getName());
+            DocumentRef src = doc.getRef();
+            String name = doc.getName();
+            doc = session.move(src, target, null);
         }
         return doc;
     }
