@@ -117,6 +117,7 @@ This will generate a jarfile for the module in the target directory (e.g. FirstV
 ```
 docker cp target/FirstVoicesSecurity-*.jar nuxeo-dev:/opt/nuxeo/server/nxserver/bundles/ && docker exec nuxeo-dev nuxeoctl restart
 ```
+docker cp FirstVoices-marketplace/target/FirstVoices-marketplace-package-latest.zip nuxeo-dev:/tmp/
 
 ## Useful commands/common tasks/tips
 

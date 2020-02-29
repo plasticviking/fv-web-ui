@@ -299,8 +299,10 @@ export class CategoryEdit extends React.Component {
       'dc:title': formData['dc:title'],
     })
 
+    const parentRef = formData.parentRef
+
     // Save document
-    const _updateCategory = await this.props.updateCategory(newDocument, null, null)
+    const _updateCategory = await this.props.updateCategory(newDocument, parentRef)
 
     if (_updateCategory.success) {
       this.setState({

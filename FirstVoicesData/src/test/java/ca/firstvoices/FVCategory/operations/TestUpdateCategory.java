@@ -61,7 +61,7 @@ import org.nuxeo.runtime.test.runner.*;
 @Deploy("org.nuxeo.ecm.platform.search.core")
 @Deploy("org.nuxeo.ecm.platform.webapp.types")
 
-@Deploy("FirstVoicesData:OSGI-INF/updatecategory-operation-contrib.xml")
+@Deploy("FirstVoicesData:OSGI-INF/ca.firstvoices.FVCategory.operations.xml")
 //@Deploy("FirstVoicesData")
 @PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})
 public class TestUpdateCategory extends AbstractJsonWriterTest.Local<DocumentModelJsonWriter, DocumentModel>{
@@ -110,33 +110,29 @@ public class TestUpdateCategory extends AbstractJsonWriterTest.Local<DocumentMod
     @Test
     public void updateCategory() throws OperationException {
 
-        Map<String, String> properties = new HashMap<>();
-        properties.put("dc:title", "Category Title");
-        properties.put("dc:description", "A description of the category without a target.");
+        category.setPropertyValue("dc:title", "Category Title");
+        category.setPropertyValue("dc:description", "A description of the category without a target.");
 
         OperationContext ctx = new OperationContext(session);
         ctx.setInput(category);
-        Map<String, Object> params = new HashMap<>();
-        params.put("properties", properties);
 
-        DocumentModel doc = (DocumentModel) automationService.run(ctx, UpdateCategory.ID, params);
+        DocumentModel doc = (DocumentModel) automationService.run(ctx, UpdateCategory.ID);
         assertEquals("A description of the category without a target.", doc.getPropertyValue("dc:description"));
     }
 
     @Test
     public void updateCategoryWithParameters() throws OperationException {
 
-        Map<String, String> properties = new HashMap<>();
-        properties.put("dc:title", "Category Title");
-        properties.put("dc:description", "A description of the category with a target.");
+        category.setPropertyValue("dc:title", "Category Title");
+        category.setPropertyValue("dc:description", "A description of the category with a target.");
 
-
-        final DocumentRef newParent = parentCategory2.getRef();
-        OperationContext ctx = new OperationContext(session);
-        ctx.setInput(category);
+        final String newParent = parentCategory2.getId();
         Map<String, Object> params = new HashMap<>();
         params.put("target", newParent);
-        params.put("properties", properties);
+
+        OperationContext ctx = new OperationContext(session);
+        ctx.setInput(category);
+
         DocumentModel doc = (DocumentModel) automationService.run(ctx, UpdateCategory.ID, params);
         assertEquals("/Family/Language/Dialect/Categories/TestParentCategory2/Category", doc.getPathAsString());
     }

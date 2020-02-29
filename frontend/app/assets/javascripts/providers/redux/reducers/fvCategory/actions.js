@@ -8,9 +8,14 @@ import {
   FV_CATEGORY_FETCH_ALL_START,
   FV_CATEGORY_FETCH_ALL_SUCCESS,
   FV_CATEGORY_FETCH_ALL_ERROR,
+  FV_CATEGORY_UPDATE_START,
+  FV_CATEGORY_UPDATE_SUCCESS,
+  FV_CATEGORY_UPDATE_ERROR,
 } from './actionTypes'
-import { _delete, fetch, update, query, create } from 'providers/redux/reducers/rest'
+import { _delete, fetch, query, create } from 'providers/redux/reducers/rest'
 import DirectoryOperations from 'operations/DirectoryOperations'
+import CategoryOperations from 'operations/CategoryOperations'
+import IntlService from 'views/services/intl'
 
 /*
  * fetch
@@ -82,9 +87,60 @@ export const deleteCategory = _delete('FV_CATEGORY')
  * updateCategory
  * --------------------------------------
  */
-export const updateCategory = update(
-  'FV_CATEGORY',
-  'FVCategory',
-  { headers: { 'enrichers.document': 'ancestry, parentDoc, breadcrumb, permissions' } },
-  false
-)
+
+export const updateCategory = (
+  newDoc,
+  newParentRef,
+  messageStart = undefined,
+  messageSuccess = undefined,
+  messageError = undefined
+) => {
+  const _messageStart = IntlService.instance.searchAndReplace(messageStart)
+  const _messageSuccess = IntlService.instance.searchAndReplace(messageSuccess)
+  const _messageError = IntlService.instance.searchAndReplace(messageError)
+  return (dispatch) => {
+    dispatch({
+      type: FV_CATEGORY_UPDATE_START,
+      pathOrId: newDoc.uid,
+      message:
+        _messageStart === undefined
+          ? IntlService.instance.translate({
+              key: 'operations.update_started',
+              default: 'Update Started',
+              case: 'words',
+            }) + '...'
+          : _messageStart,
+    })
+    return CategoryOperations.updateCategory(newDoc, newParentRef)
+      .then((response) => {
+        const dispatchObj = {
+          type: FV_CATEGORY_UPDATE_SUCCESS,
+          message:
+            _messageSuccess === undefined
+              ? IntlService.instance.translate({
+                  key: 'providers.document_updated_successfully',
+                  default: 'Document updated successfully',
+                  case: 'first',
+                }) + '!'
+              : _messageSuccess,
+          response: response,
+          pathOrId: newDoc.uid,
+        }
+        dispatch(dispatchObj)
+        // modify for components
+        dispatchObj.success = true
+        return dispatchObj
+      })
+      .catch((error) => {
+        const dispatchObj = {
+          type: FV_CATEGORY_UPDATE_ERROR,
+          message: _messageError || IntlService.instance.searchAndReplace(error),
+          pathOrId: newDoc.uid,
+        }
+        dispatch(dispatchObj)
+        // modify for components
+        dispatchObj.success = false
+        return dispatchObj
+      })
+  }
+}
