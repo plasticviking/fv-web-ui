@@ -16,8 +16,6 @@ import org.nuxeo.ecm.automation.OperationException;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentRef;
-import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.platform.test.PlatformFeature;
 import org.nuxeo.ecm.core.io.marshallers.json.AbstractJsonWriterTest;
 import org.nuxeo.ecm.core.io.marshallers.json.document.DocumentModelJsonWriter;
@@ -29,7 +27,8 @@ import org.nuxeo.elasticsearch.test.RepositoryElasticSearchFeature;
 import org.nuxeo.runtime.test.runner.*;
 
 @RunWith(FeaturesRunner.class)
-@Features({AutomationFeature.class, PlatformFeature.class, RuntimeFeature.class, CoreFeature.class, RepositoryElasticSearchFeature.class})
+@Features({ AutomationFeature.class, PlatformFeature.class, RuntimeFeature.class, CoreFeature.class,
+        RepositoryElasticSearchFeature.class })
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.METHOD)
 
 @Deploy("org.nuxeo.binary.metadata")
@@ -62,11 +61,10 @@ import org.nuxeo.runtime.test.runner.*;
 @Deploy("org.nuxeo.ecm.platform.webapp.types")
 
 @Deploy("FirstVoicesData:OSGI-INF/ca.firstvoices.FVCategory.operations.xml")
-//@Deploy("FirstVoicesData")
-@PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})
-public class TestUpdateCategory extends AbstractJsonWriterTest.Local<DocumentModelJsonWriter, DocumentModel>{
+@PartialDeploy(bundle = "FirstVoicesData", extensions = { TargetExtensions.ContentModel.class })
+public class TestUpdateCategory extends AbstractJsonWriterTest.Local<DocumentModelJsonWriter, DocumentModel> {
 
-    public TestUpdateCategory(){
+    public TestUpdateCategory() {
         super(DocumentModelJsonWriter.class, DocumentModel.class);
     }
 
@@ -78,9 +76,6 @@ public class TestUpdateCategory extends AbstractJsonWriterTest.Local<DocumentMod
     DocumentModel category = null;
 
     @Inject
-    private UpdateCategory updateCategoryInstance;
-
-    @Inject
     protected AutomationService automationService;
 
     @Before
@@ -89,21 +84,23 @@ public class TestUpdateCategory extends AbstractJsonWriterTest.Local<DocumentMod
         assertNotNull("Should have a valid session", session);
 
         // Create a FVCategory documents
-        session.createDocument(session.createDocumentModel("/", "FV", "Domain"));
         session.createDocument(session.createDocumentModel("/", "Family", "FVLanguageFamily"));
         session.createDocument(session.createDocumentModel("/Family", "Language", "FVLanguage"));
         session.createDocument(session.createDocumentModel("/Family/Language", "Dialect", "FVDialect"));
         session.createDocument(session.createDocumentModel("/Family/Language/Dialect", "Categories", "FVCategories"));
 
-        parentCategory1 = session.createDocumentModel("/Family/Language/Dialect/Categories", "TestParentCategory1", "FVCategory");
+        parentCategory1 = session.createDocumentModel("/Family/Language/Dialect/Categories", "TestParentCategory1",
+                "FVCategory");
         parentCategory1.setPropertyValue("dc:title", "Parent Category 1");
         parentCategory1 = session.createDocument(parentCategory1);
 
-        parentCategory2 = session.createDocumentModel("/Family/Language/Dialect/Categories", "TestParentCategory2", "FVCategory");
+        parentCategory2 = session.createDocumentModel("/Family/Language/Dialect/Categories", "TestParentCategory2",
+                "FVCategory");
         parentCategory2.setPropertyValue("dc:title", "Parent Category 2");
         parentCategory2 = session.createDocument(parentCategory2);
 
-        category = session.createDocumentModel("/Family/Language/Dialect/Categories/TestParentCategory1", "Category", "FVCategory");
+        category = session.createDocumentModel("/Family/Language/Dialect/Categories/TestParentCategory1", "Category",
+                "FVCategory");
         category = session.createDocument(category);
     }
 
