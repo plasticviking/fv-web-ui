@@ -8,9 +8,14 @@ import {
   FV_CATEGORY_FETCH_ALL_START,
   FV_CATEGORY_FETCH_ALL_SUCCESS,
   FV_CATEGORY_FETCH_ALL_ERROR,
+  FV_SHARED_CATEGORIES_SHARED_FETCH_START,
+  FV_SHARED_CATEGORIES_SHARED_FETCH_SUCCESS,
+  FV_SHARED_CATEGORIES_SHARED_FETCH_ERROR,
 } from './actionTypes'
 import { _delete, fetch, update, query, create } from 'providers/redux/reducers/rest'
 import DirectoryOperations from 'operations/DirectoryOperations'
+import CategoriesOperations from 'operations/CategoriesOperations'
+import IntlService from 'views/services/intl'
 
 /*
 export const createCategory = (parentDoc, docParams) => {
@@ -66,6 +71,48 @@ export const fetchCategoriesInPath = (path, queryAppend, headers = {}, params = 
       })
       .catch((error) => {
         dispatch({ type: FV_CATEGORIES_FETCH_ERROR, error: error })
+      })
+  }
+}
+
+// Fetch Shared Categories (Onboarding)
+
+export const fetchSharedCategoriesList = (
+  messageStart = undefined,
+  messageSuccess = undefined,
+  messageError = undefined
+) => {
+  const _messageStart = IntlService.instance.searchAndReplace(messageStart)
+  const _messageSuccess = IntlService.instance.searchAndReplace(messageSuccess)
+  const _messageError = IntlService.instance.searchAndReplace(messageError)
+  return (dispatch) => {
+    dispatch({
+      type: FV_SHARED_CATEGORIES_SHARED_FETCH_START,
+      message: _messageStart,
+      // pathOrId: '',
+    })
+    return CategoriesOperations.fetchSharedCategoriesList()
+      .then((response) => {
+        const dispatchObj = {
+          type: FV_SHARED_CATEGORIES_SHARED_FETCH_SUCCESS,
+          message: _messageSuccess,
+          response: response,
+          // pathOrId: newDoc.uid,
+        }
+        dispatch(dispatchObj)
+        // modify for components
+        dispatchObj.success = true
+        return dispatchObj
+      })
+      .catch((error) => {
+        const dispatchObj = {
+          type: FV_SHARED_CATEGORIES_SHARED_FETCH_ERROR,
+          message: _messageError || IntlService.instance.searchAndReplace(error),
+          // pathOrId: '',
+        }
+        dispatch(dispatchObj)
+        dispatchObj.success = false
+        return dispatchObj
       })
   }
 }

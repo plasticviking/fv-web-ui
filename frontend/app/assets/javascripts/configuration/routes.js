@@ -2324,6 +2324,14 @@ const routes = [
     page: <Pages.PageDialectCategoryCreate />,
     extractPaths: true,
   },
+  // Onboarding Route (Won't merge to master)
+  {
+    path: [KIDS_OR_DEFAULT, 'FV', 'SharedCategories'],
+    title: 'Shared Categories',
+    page: <Pages.Categories />,
+    extractPaths: true,
+  },
+
   {
     path: ['404-page-not-found'],
     title: PAGE_NOT_FOUND_TITLE,

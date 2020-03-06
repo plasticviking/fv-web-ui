@@ -112,6 +112,10 @@ import { default as RecorderDetail } from './explore/dialect/Recorder/detail' //
 import { default as RecorderCreate } from './explore/dialect/Recorder/create' // Create
 import { default as RecorderEdit } from './explore/dialect/Recorder/edit' // Edit
 
+// Onboarding
+// ----------------------
+import Categories from './explore/categories'
+
 export {
   PageTest,
   PageDebugAPI,
@@ -196,4 +200,6 @@ export {
   RecorderCreate,
   RecorderDetail,
   RecorderEdit,
+  // ONBOARDING
+  Categories,
 }

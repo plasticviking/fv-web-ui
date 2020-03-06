@@ -16,6 +16,9 @@ import {
   FV_CATEGORY_CREATE_START,
   FV_CATEGORY_CREATE_SUCCESS,
   FV_CATEGORY_CREATE_ERROR,
+  FV_SHARED_CATEGORIES_SHARED_FETCH_START,
+  FV_SHARED_CATEGORIES_SHARED_FETCH_SUCCESS,
+  FV_SHARED_CATEGORIES_SHARED_FETCH_ERROR,
 } from './actionTypes'
 
 const initialState = {
@@ -171,6 +174,21 @@ const computeCategoriesAll = (state = initialState, action) => {
   }
 }
 
+// Fetch Shared Categories (Onboarding)
+
+const computeFetchSharedCategoriesList = (state = initialState, action) => {
+  switch (action.type) {
+    case FV_SHARED_CATEGORIES_SHARED_FETCH_START:
+      return { ...state, isFetching: true, success: false }
+    case FV_SHARED_CATEGORIES_SHARED_FETCH_SUCCESS:
+      return { ...state, isFetching: false, success: true, response: action.response }
+    case FV_SHARED_CATEGORIES_SHARED_FETCH_ERROR:
+      return { ...state, isFetching: false, success: false }
+    default:
+      return { ...state, isFetching: false }
+  }
+}
+
 export const fvCategoryReducer = combineReducers({
   computeSharedCategories,
   computeCategoriesInPath,
@@ -178,4 +196,5 @@ export const fvCategoryReducer = combineReducers({
   computeCategories,
   computeCreateCategory,
   computeCategoriesAll,
+  computeFetchSharedCategoriesList,
 })
