@@ -66,6 +66,13 @@ docker run --name nuxeo-dev --rm -ti -p 8080:8080 -v ~/Dev/Dependencies/nuxeo_de
 ```
 
 This may take a few minutes as Nuxeo starts up.
+The initial backend setup script should automatically run, which will create the proper data structure and an admin account using the environment variables.
+
+If you want to rerun the initial setup script for any reason, you can do so by running the following command from the docker directory:
+
+```
+./initialsetup.sh
+```
 
 Notes:
 * To expose remote debugging via port 8787: ```-p 8787:8787```\
@@ -74,20 +81,6 @@ Notes:
 * To change the data folder: ```-e NUXEO_DATA="/opt/nuxeo/ext_data"```\
 
 ### Step 4:
-
-Run the initial backend setup script in a new terminal once the backend server has started:
-
-```
-./initialsetup.sh
-```
-You may have to give the script execute permission first:
-```
-chmod +x initialsetup.sh
-```
-
-This will setup the proper data structure for FirstVoices, and create an admin account based on your environment variables.
-
-### Step 5:
 
 * You can now access the FirstVoices backend by going to localhost:8080 and logging in.
 * You can also [run the frontend independently](https://github.com/First-Peoples-Cultural-Council/fv-web-ui/tree/master/frontend)
@@ -111,7 +104,16 @@ docker exec nuxeo-dev /bin/bash -c "nuxeoctl stop && nuxeoctl mp-install --accep
 ```
 
 ### Method 2 (deploy a single module):
+#### Easy Way:
+* From the root of your module run the command ```./UpdateModule.sh```. If you are creating a new module you will need to copy the UpdateModule.sh script from another module into the root of your module
+(eg: copy ```/FirstVoicesData/UpdateModule.sh``` into ```/YourNewModule```).
 
+* Alternatively navigate to ```docker/``` and run the command ```./UpdateModuleMain.sh <ModuleName>``` where ```<ModuleName>``` is the name of the module you have created/made changes to (eg: ```./UpdateModuleMain.sh FirstVoicesData```).
+  
+  Both of the above will build the module, remove any old copies inside of the docker container, copy the new jarfile into the docker container, and restart the nuxeo backend to deploy the changes/module.
+#### Manual method:
+* Ensure you remove any old versions of the module inside of the docker container that match the module you want to deploy.
+To do this you can run the command ```docker exec nuxeo-dev sh -c 'rm /opt/nuxeo/server/nxserver/bundles/<ModuleName>-*.jar'``` 
 * Navigate into the module you changed (e.g. FirstVoicesSecurity) and build it with the command: ```mvn clean install```
 This will generate a jarfile for the module in the target directory (e.g. FirstVoicesSecurity/target/FirstVoicesSecurity-*.jar).
 * Execute the following command to copy the JAR into the running backend docker container, and restart the server to apply the changes:
