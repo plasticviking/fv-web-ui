@@ -15,34 +15,58 @@ limitations under the License.
 */
 // LIBRARIES
 // ----------------------------------------
-import React, { Component } from 'react'
+import React, { Suspense, useEffect } from 'react'
 
 import { connect } from 'react-redux'
 import { fetchSharedCategoriesList } from 'providers/redux/reducers/fvCategory'
+import { dictionaryListSmallScreenColumnDataTemplate } from 'views/components/Browsing/DictionaryListSmallScreen'
 
-export class Categories extends Component {
-  constructor(props) {
-    super(props)
-  }
+const DictionaryList = React.lazy(() => import('views/components/Browsing/DictionaryList'))
 
-  componentDidMount() {
-    this.props.fetchSharedCategoriesList()
-  }
-
-  render() {
-    return <div>Hello World!</div>
-  }
+const getColumns = () => {
+  return [
+    {
+      name: 'title',
+      title: 'Shared Categories',
+      columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.cellRender,
+      render: (v) => {
+        return (
+          <p className="DictionaryList__link" href="/">
+            {v}
+          </p>
+        )
+      },
+      sortBy: 'dc:title',
+    },
+  ]
 }
 
-// REDUX: reducers/state
-const mapStateToProps = ({ fvCategory } /* ownProps */) => {
-  const { computeSharedCategories } = fvCategory
+export const Categories = (props) => {
+  useEffect(() => {
+    props.fetchSharedCategoriesList()
+  }, [])
+
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <DictionaryList
+        hasSorting={false}
+        hasPagination={false}
+        hasViewModeButtons={false}
+        columns={getColumns()}
+        cssModifier="DictionaryList--contributors"
+        items={props.computeFetchSharedCategoriesList.response.entries}
+      />
+    </Suspense>
+  )
+}
+
+const mapStateToProps = ({ fvCategory }) => {
+  const { computeFetchSharedCategoriesList } = fvCategory
   return {
-    computeSharedCategories,
+    computeFetchSharedCategoriesList,
   }
 }
 
-// REDUX: actions/dispatch/func
 const mapDispatchToProps = {
   fetchSharedCategoriesList,
 }
