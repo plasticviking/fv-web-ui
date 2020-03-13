@@ -11,6 +11,7 @@ import {
   SEARCH_BY_PHRASE_BOOK,
   SEARCH_DATA_TYPE_PHRASE,
   SEARCH_DATA_TYPE_WORD,
+  SEARCH_TYPE_DEFAULT_SEARCH,
   SEARCH_TYPE_APPROXIMATE_SEARCH,
   SEARCH_TYPE_EXACT_SEARCH,
   SEARCH_TYPE_CONTAINS_SEARCH,
@@ -208,6 +209,7 @@ export const SearchDialect = (props) => {
             }}
             className={`SearchDialectFormSelectSearchType ${getDialectClassname()}`}
           >
+            <option value={SEARCH_TYPE_DEFAULT_SEARCH}>Default</option>
             <option value={SEARCH_TYPE_APPROXIMATE_SEARCH}>Approximate</option>
             <option value={SEARCH_TYPE_EXACT_SEARCH}>Exact</option>
             <option value={SEARCH_TYPE_CONTAINS_SEARCH}>Contains</option>
@@ -285,6 +287,9 @@ export const SearchDialect = (props) => {
     let searchTypeLabel
 
     switch (_searchType) {
+      case SEARCH_TYPE_DEFAULT_SEARCH:
+        searchTypeLabel = ' match '
+        break
       case SEARCH_TYPE_APPROXIMATE_SEARCH:
         searchTypeLabel = ' approximately match '
         break
