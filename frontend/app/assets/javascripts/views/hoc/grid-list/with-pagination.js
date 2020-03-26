@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import selectn from 'selectn'
 
 import classNames from 'classnames'
 
@@ -10,79 +9,84 @@ import { MenuItem, Select, TextField } from '@material-ui/core'
 
 import UIHelpers from 'common/UIHelpers'
 import IntlService from 'views/services/intl'
-
 const intl = IntlService.instance
 /**
  * HOC: Adds pagination to a grid list
  */
-const { any, bool, func, object } = PropTypes
+const { any, bool, func, number } = PropTypes
 export default function withPagination(ComposedFilter, pageSize = 10, pageRange = 10) {
   class PaginatedGridList extends Component {
     static propTypes = {
       appendControls: any, // TODO: set appropriate propType
       disablePageSize: bool,
-      fetcher: func.isRequired,
-      fetcherParams: object.isRequired,
-      metadata: object,
+      paginationEventHandler: func.isRequired,
+      paginationCurrentPageIndex: number.isRequired,
+      paginationPageSize: number.isRequired,
+      paginationResultsCount: number.isRequired,
+      paginationPageCount: number.isRequired,
     }
     static defaultProps = {
       disablePageSize: false,
-      fetcher: () => {},
-      fetcherParams: {},
-      metadata: {
-        resultsCount: 0,
-        pageCount: 0,
-      },
+      paginationEventHandler: () => {},
+      paginationCurrentPageIndex: 0,
+      paginationPageSize: 10,
+      paginationResultsCount: 0,
+      paginationPageCount: 0,
     }
 
     constructor(props, context) {
       super(props, context)
 
       this.state = {
-        pageRange: pageRange,
-        initialPageSize: selectn('fetcherParams.pageSize', props) || pageSize,
-        currentPageSize: selectn('fetcherParams.pageSize', props) || pageSize,
+        pageRange,
+        initialPageSize: props.paginationPageSize || pageSize,
+        currentPageSize: props.paginationPageSize || pageSize,
         currentPageIndex: 1,
       }
-      ;['_onPageChange', '_onPageSizeChange', '_onGoToPage', '_getPageSizeControls'].forEach(
-        (method) => (this[method] = this[method].bind(this))
-      )
     }
 
-    _onPageSizeChange(event) {
-      const currentPageSize = event.target.value
-
-      this.props.fetcher(
-        Object.assign({}, this.props.fetcherParams, {
-          currentPageIndex: this.state.currentPageIndex,
-          pageSize: currentPageSize,
-        })
-      )
-
-      this.setState({ currentPageSize: currentPageSize })
+    _onPageSizeChange = (event) => {
+      this._paginationEventHandler({
+        currentPageIndex: this.state.currentPageIndex,
+        currentPageSize: event.target.value,
+      })
     }
 
-    _changePage(newPageIndex) {
-      this.props.fetcher(
-        Object.assign({}, this.props.fetcherParams, {
-          currentPageIndex: newPageIndex,
-          pageSize: this.state.currentPageSize,
-        })
-      )
-
-      this.setState({ currentPageIndex: newPageIndex })
+    _changePage(currentPageIndex) {
+      this._paginationEventHandler({
+        currentPageIndex,
+        currentPageSize: this.state.currentPageSize,
+      })
 
       // For longer pages, user should be taken to the top when changing pages
       document.body.scrollTop = document.documentElement.scrollTop = 0
     }
 
-    _onPageChange(pagination) {
+    _onPageChange = (pagination) => {
       this._changePage(pagination.selected + 1)
     }
 
-    _onGoToPage(event) {
+    _paginationEventHandler({ currentPageIndex, currentPageSize }) {
+      this.props.paginationEventHandler(
+        Object.assign(
+          {},
+          {
+            paginationCurrentPageIndex: this.props.paginationCurrentPageIndex,
+            paginationPageSize: this.props.paginationPageSize,
+          },
+          {
+            paginationCurrentPageIndex: currentPageIndex,
+            paginationPageSize: currentPageSize,
+          }
+        )
+      )
+
+      this.setState({ currentPageSize })
+    }
+
+    _onGoToPage = (event) => {
       let newPageIndex = event.target.value
-      const maxPageIndex = Math.ceil(selectn('resultsCount', this.props.metadata) / this.state.currentPageSize)
+      const maxPageIndex = Math.ceil(this.props.paginationResultsCount / this.state.currentPageSize)
 
       if (newPageIndex > maxPageIndex) {
         newPageIndex = maxPageIndex
@@ -105,8 +109,8 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
           <div className="row PrintHide" style={{ marginTop: '15px' }}>
             <div className={classNames('col-md-7', 'col-xs-12')} style={{ paddingBottom: '15px' }}>
               <Pagination
-                forcePage={this.props.fetcherParams.currentPageIndex - 1}
-                pageCount={selectn('pageCount', this.props.metadata)}
+                forcePage={this.props.paginationCurrentPageIndex - 1}
+                pageCount={this.props.paginationPageCount}
                 marginPagesDisplayed={0}
                 pageRangeDisplayed={UIHelpers.isViewSize('xs') ? 3 : 10}
                 onPageChange={this._onPageChange}
@@ -142,13 +146,13 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
       )
     }
 
-    _getPageSizeControls() {
+    _getPageSizeControls = () => {
       return (
         <div>
           <label style={{ verticalAlign: '4px', marginRight: '8px' }}>Page:</label>
           <span style={{ verticalAlign: '4px' }}>
-            {this.props.fetcherParams.currentPageIndex} /{' '}
-            {Math.ceil(selectn('resultsCount', this.props.metadata) / this.state.currentPageSize)}
+            {this.props.paginationCurrentPageIndex} /{' '}
+            {Math.ceil(this.props.paginationResultsCount / this.state.currentPageSize)}
           </span>
           <label
             style={{
@@ -183,7 +187,7 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
           >
             {intl.trans('results', 'Results', 'first')}:
           </label>
-          <span style={{ verticalAlign: '4px' }}>{selectn('resultsCount', this.props.metadata)}</span>
+          <span style={{ verticalAlign: '4px' }}>{this.props.paginationResultsCount}</span>
         </div>
       )
     }

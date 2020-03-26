@@ -21,10 +21,10 @@ import Typography from '@material-ui/core/Typography'
 import '!style-loader!css-loader!./DictionaryListSmallScreen.css'
 
 const DictionaryListSmallScreen = (props) => {
-  const { items, columns } = props
+  const { dictionaryListItems, dictionaryListHeaders } = props
 
   const getContent = () => {
-    const itemRows = items.map((item, inc) => {
+    const itemRows = dictionaryListItems.map((item, inc) => {
       const templateData = {}
 
       const firstName = 'firstName'
@@ -35,7 +35,7 @@ const DictionaryListSmallScreen = (props) => {
       const classNameDataItem = 'DictionaryListSmallScreen__dataItem'
       let _firstName
       let _lastName
-      columns.forEach((column) => {
+      dictionaryListHeaders.forEach((column) => {
         const cellValue = selectn(column.name, item)
         const cellRender = typeof column.render === 'function' ? column.render(cellValue, item, column) : cellValue
         const colName = column.name
@@ -179,7 +179,7 @@ const DictionaryListSmallScreen = (props) => {
   }
   const getSortBy = () => {
     const headerCells = []
-    columns.forEach((column, i) => {
+    dictionaryListHeaders.forEach((column, i) => {
       // Header
       if (column.sortBy) {
         headerCells.push(<span key={`getSortBy-${i}`}>{selectn('titleSmall', column)}</span>)
@@ -195,7 +195,7 @@ const DictionaryListSmallScreen = (props) => {
   const getBatch = () => {
     let selectDeselectButton = null
     let batchConfirmationElement = null
-    columns.forEach((column) => {
+    dictionaryListHeaders.forEach((column) => {
       if (column.name === 'batch') {
         // Select/Deselect
         selectDeselectButton = selectn('title', column)
@@ -232,17 +232,17 @@ const DictionaryListSmallScreen = (props) => {
 
 const { array, bool, func, string } = PropTypes
 DictionaryListSmallScreen.propTypes = {
-  columns: array,
+  dictionaryListHeaders: array,
   hasSorting: bool,
-  items: array,
+  dictionaryListItems: array,
   type: string,
   dictionaryListSmallScreenTemplate: func,
 }
 
 DictionaryListSmallScreen.defaultProps = {
-  columns: [],
+  dictionaryListHeaders: [],
   hasSorting: true,
-  items: [],
+  dictionaryListItems: [],
 }
 
 export default DictionaryListSmallScreen

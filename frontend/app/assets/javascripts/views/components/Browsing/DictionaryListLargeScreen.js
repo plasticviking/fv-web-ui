@@ -6,7 +6,7 @@ const DictionaryListLargeScreen = (props) => {
   const [columnClassNames, setColumnClassNames] = useState([])
   useEffect(() => {
     setColumnClassNames(
-      props.columns.map((currentValue) => {
+      props.dictionaryListHeaders.map((currentValue) => {
         const name = selectn('name', currentValue)
         const prefix = 'DictionaryList'
         let className = ''
@@ -38,15 +38,15 @@ const DictionaryListLargeScreen = (props) => {
         return className
       })
     )
-  }, [props.columns])
+  }, [props.dictionaryListHeaders])
 
-  const items = props.filteredItems || props.items || []
+  const items = props.filteredItems || props.dictionaryListItems || []
 
   // Construct Header & Footer
   const headerCells = []
   const footerCells = []
 
-  props.columns.forEach((column, i) => {
+  props.dictionaryListHeaders.forEach((column, i) => {
     // Header
     // Note: With a batch column use the column.title data
     headerCells.push(
@@ -95,7 +95,7 @@ const DictionaryListLargeScreen = (props) => {
               data-testid="DictionaryList__row"
               className={`DictionaryList__row ${i % 2 ? 'DictionaryList__row--b' : 'DictionaryList__row--a'}`}
             >
-              {props.columns.map((column, j) => {
+              {props.dictionaryListHeaders.map((column, j) => {
                 const cellValue = selectn(column.name, item)
                 const cellRender =
                   typeof column.render === 'function' ? column.render(cellValue, item, column) : cellValue
@@ -118,10 +118,10 @@ const DictionaryListLargeScreen = (props) => {
 
 const { array, bool, func, instanceOf, oneOfType, string } = PropTypes
 DictionaryListLargeScreen.propTypes = {
-  columns: array,
+  dictionaryListHeaders: array,
   cssModifier: string,
   filteredItems: oneOfType([array, instanceOf(List)]),
-  items: oneOfType([array, instanceOf(List)]),
+  dictionaryListItems: oneOfType([array, instanceOf(List)]),
   rowClickHandler: func,
   hasSorting: bool,
 }

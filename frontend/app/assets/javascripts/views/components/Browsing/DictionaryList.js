@@ -257,7 +257,7 @@ const VIEWMODE_LARGE_SCREEN = 3
 const DictionaryList = (props) => {
   const intl = IntlService.instance
   const DefaultFetcherParams = { currentPageIndex: 1, pageSize: 10, sortBy: 'fv:custom_order', sortOrder: 'asc' }
-  let columnsEnhanced = [...props.columns]
+  let columnsEnhanced = [...props.dictionaryListHeaders]
 
   // ============= SORT
   if (props.hasSorting) {
@@ -319,7 +319,7 @@ const DictionaryList = (props) => {
   }
   // ============= BATCH
 
-  const items = props.filteredItems || props.items
+  const items = props.filteredItems || props.dictionaryListItems
 
   const noResults =
     selectn('length', items) === 0 ? (
@@ -348,8 +348,8 @@ const DictionaryList = (props) => {
       metadata: props.metadata,
       // List: small screen
       // --------------------
-      items: props.items,
-      columns: columnsEnhanced,
+      dictionaryListItems: props.dictionaryListItems,
+      dictionaryListHeaders: columnsEnhanced,
       dictionaryListSmallScreenTemplate: props.dictionaryListSmallScreenTemplate,
     },
     hasPagination: props.hasPagination,
@@ -368,10 +368,10 @@ const DictionaryList = (props) => {
       metadata: props.metadata,
       // List: large screen
       // --------------------
-      columns: columnsEnhanced,
+      dictionaryListHeaders: columnsEnhanced,
       cssModifier: props.cssModifier,
       filteredItems: props.filteredItems,
-      items: props.items,
+      dictionaryListItems: props.dictionaryListItems,
     },
 
     hasPagination: props.hasPagination,
@@ -756,7 +756,7 @@ DictionaryList.propTypes = {
   batchTitleDeselect: string,
   batchTitleSelect: string,
   // Misc DictionaryList
-  columns: array.isRequired, // NOTE: Important prop. Defines table headers and how cells are rendered.
+  dictionaryListHeaders: array.isRequired, // NOTE: Important prop. Defines table headers and how cells are rendered.
   computedData: object, // TODO: Define how this is used
   cssModifier: string, // TODO: DROP?
   dictionaryListSmallScreenTemplate: func, // NOTE: Overides generic template/layout used by DictionaryListSmallScreen
@@ -766,7 +766,7 @@ DictionaryList.propTypes = {
   filteredItems: oneOfType([array, instanceOf(List)]), // TODO: Confusing, DROP?. Alternate source of data for list.
   hasSorting: bool, // NOTE: can explicitly disable sorting if needed. EG: since we are reusing components, sometimes the `columns` prop will have a sort property within the data but where you are reusing the component it doesn't make sense to sort, `hasSorting={false}` would help you.
   hasViewModeButtons: bool, // NOTE: Toggles all of the view mode buttons (currently there is only Flashcard but there used to be more options)
-  items: oneOfType([array, instanceOf(List)]), // NOTE: Important prop. Primary source of data (filteredItems is also used!)
+  dictionaryListItems: oneOfType([array, instanceOf(List)]), // NOTE: Important prop. Primary source of data (filteredItems is also used!)
   rowClickHandler: func, // NOTE: this list view is used in the browse mode where you can select items to add to other documents (eg: add a contributor to a word). This is the event handler for that action
   sortHandler: func, // NOTE: event handler for sort actions. If not defined, the url will be updated instead.
   style: object, // TODO: DROP?
@@ -798,7 +798,7 @@ DictionaryList.defaultProps = {
   batchTitleDeselect: 'Select all',
   batchTitleSelect: 'Deselect all',
   // DictionaryList
-  columns: [],
+  dictionaryListHeaders: [],
   cssModifier: '',
   dictionaryListClickHandlerViewMode: () => {},
   // sortHandler: () => {},

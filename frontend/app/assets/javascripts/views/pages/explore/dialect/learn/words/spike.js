@@ -17,17 +17,19 @@ class WordsList extends React.Component {
     return (
       <Suspense fallback={<div>Loading...</div>}>
         <DictionaryListWithPagination
-          items={this.props.entries}
-          columns={this.props.columns}
-          fetcher={(fetcherParams) => {
-            const { currentPageIndex, pageSize } = fetcherParams
-            this.props.handlePagination({ currentPageIndex, pageSize, uid: this.props.uid })
+          dictionaryListItems={this.props.entries}
+          dictionaryListHeaders={this.props.columns}
+          paginationEventHandler={({ paginationCurrentPageIndex, paginationPageSize }) => {
+            this.props.handlePagination({
+              currentPageIndex: paginationCurrentPageIndex,
+              pageSize: paginationPageSize,
+              uid: this.props.uid,
+            })
           }}
-          fetcherParams={{ currentPageIndex: this.props.pageIndex + 1, pageSize: this.props.pageSize }}
-          metadata={{
-            resultsCount: this.props.resultsCount,
-            pageCount: this.props.numberOfPages,
-          }}
+          paginationCurrentPageIndex={this.props.pageIndex + 1}
+          paginationPageSize={this.props.pageSize}
+          paginationResultsCount={this.props.resultsCount}
+          paginationPageCount={this.props.numberOfPages} // TODO: CAN BE CALCULATED
         />
       </Suspense>
     )
