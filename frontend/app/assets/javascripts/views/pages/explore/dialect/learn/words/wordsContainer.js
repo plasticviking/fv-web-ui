@@ -43,60 +43,85 @@ class WordsContainer extends React.Component {
     const prevAction = selectn('action', prevComputeDocument)
     if (curAction !== prevAction && curAction === 'FV_DOCUMENT_FETCH_SUCCESS') {
       const uid = selectn('response.uid', curComputeDocument)
-
-      const currentAppliedFilter = ''
-      // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
-      const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
-      const nql = `${currentAppliedFilter}&currentPageIndex=${1 -
-        1}&pageSize=${10}&sortOrder=${'asc'}&sortBy=${'fv:custom_order'}&enrichment=category_children${startsWithQuery}`
-
-      await this.props.fetchWords(uid, nql)
-      const data = selectn('response', ProviderHelpers.getEntry(this.props.computeWords, uid))
-
-      const { computeDialect2, computeLogin, routeParams } = this.props
-      const computedDialect2 = ProviderHelpers.getEntry(computeDialect2, routeParams.dialect_path)
-      const computedDialect2Response = selectn('response', computedDialect2)
-      const columns = getColumnsWords({
-        computedDialect2Response,
-        DEFAULT_LANGUAGE: 'english',
-        computeLogin,
-        routeParams,
-      })
-
-      const childrenWithExtraProps = React.Children.map(this.props.children, (child) => {
-        return React.cloneElement(child, {
-          entityType: selectn('entity-type', data),
-          isPaginable: selectn('isPaginable', data),
-          resultsCount: selectn('resultsCount', data),
-          pageSize: selectn('pageSize', data),
-          maxPageSize: selectn('maxPageSize', data),
-          resultsCountLimit: selectn('resultsCountLimit', data),
-          currentPageSize: selectn('currentPageSize', data),
-          currentPageIndex: selectn('currentPageIndex', data),
-          currentPageOffset: selectn('currentPageOffset', data),
-          numberOfPages: selectn('numberOfPages', data),
-          isPreviousPageAvailable: selectn('isPreviousPageAvailable', data),
-          isNextPageAvailable: selectn('isNextPageAvailable', data),
-          isLastPageAvailable: selectn('isLastPageAvailable', data),
-          isSortable: selectn('isSortable', data),
-          hasError: selectn('hasError', data),
-          errorMessage: selectn('errorMessage', data),
-          totalSize: selectn('totalSize', data),
-          pageIndex: selectn('pageIndex', data),
-          pageCount: selectn('pageCount', data),
-          // DictionaryList
-          entries: selectn('entries', data), // entries used as items in DictionaryList
-          columns,
-        })
-      })
-      this.setState({
-        childrenWithExtraProps,
-      })
+      const data = await this.getWords({ uid })
+      this.enhanceChildren({ data, uid })
     }
   }
 
   render() {
     return this.state.childrenWithExtraProps
+  }
+
+  enhanceChildren = ({ data, uid }) => {
+    const columns = this.getColumns()
+    const pageSize = selectn('pageSize', data)
+    const childrenWithExtraProps = React.Children.map(this.props.children, (child) => {
+      return React.cloneElement(child, {
+        currentPageIndex: selectn('currentPageIndex', data),
+        currentPageOffset: selectn('currentPageOffset', data),
+        currentPageSize: selectn('currentPageSize', data),
+        entityType: selectn('entity-type', data),
+        errorMessage: selectn('errorMessage', data),
+        hasError: selectn('hasError', data),
+        isLastPageAvailable: selectn('isLastPageAvailable', data),
+        isNextPageAvailable: selectn('isNextPageAvailable', data),
+        isPaginable: selectn('isPaginable', data),
+        isPreviousPageAvailable: selectn('isPreviousPageAvailable', data),
+        isSortable: selectn('isSortable', data),
+        maxPageSize: selectn('maxPageSize', data),
+        numberOfPages: selectn('numberOfPages', data),
+        pageCount: selectn('pageCount', data),
+        pageIndex: selectn('pageIndex', data),
+        pageSize,
+        resultsCount: selectn('resultsCount', data),
+        resultsCountLimit: selectn('resultsCountLimit', data),
+        totalSize: selectn('totalSize', data),
+        // DictionaryList
+        entries: selectn('entries', data), // entries used as items in DictionaryList
+        columns,
+        uid,
+        handlePagination: this.handlePagination,
+      })
+    })
+    this.setState({
+      childrenWithExtraProps,
+      pageSize,
+    })
+  }
+  getColumns = () => {
+    const { computeDialect2, computeLogin, routeParams } = this.props
+    const computedDialect2 = ProviderHelpers.getEntry(computeDialect2, routeParams.dialect_path)
+    const computedDialect2Response = selectn('response', computedDialect2)
+    return getColumnsWords({
+      computedDialect2Response,
+      DEFAULT_LANGUAGE: 'english',
+      computeLogin,
+      routeParams,
+    })
+  }
+  getWords = async ({ currentPageIndex = 1, pageSize = 10, sortOrder = 'asc', sortBy = 'fv:custom_order', uid }) => {
+    const currentAppliedFilter = ''
+    // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
+    const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
+    const nql = `${currentAppliedFilter}&currentPageIndex=${currentPageIndex -
+      1}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortBy=${sortBy}&enrichment=category_children${startsWithQuery}`
+
+    await this.props.fetchWords(uid, nql)
+    return selectn('response', ProviderHelpers.getEntry(this.props.computeWords, uid))
+  }
+  handlePagination = async ({ currentPageIndex, pageSize, sortOrder, sortBy, uid }) => {
+    let _currentPageIndex = currentPageIndex
+    if (this.state.pageSize !== pageSize) {
+      _currentPageIndex = 1
+    }
+    const data = await this.getWords({
+      currentPageIndex: _currentPageIndex,
+      pageSize,
+      sortOrder,
+      sortBy,
+      uid,
+    })
+    this.enhanceChildren({ data, uid })
   }
 }
 
