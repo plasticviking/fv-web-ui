@@ -159,7 +159,7 @@ const DIALECT_LEARN_WORDS = {
       default: 'Words',
       case: 'words',
     }) + ' | {$dialect_name}',
-  page: <Pages.PageDialectLearnWords />,
+  page: <Pages.PageDialectLearnWordsSpike />,
   extractPaths: true,
   redirects: [WORKSPACE_TO_SECTION_REDIRECT],
 }
