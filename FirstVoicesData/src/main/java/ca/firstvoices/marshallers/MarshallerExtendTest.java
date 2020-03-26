@@ -9,6 +9,7 @@ import org.nuxeo.ecm.core.io.registry.reflect.Priorities;
 import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /*
     This marshaller will add the field "additional" with the value "information" to any endpoints which return a DocumentModel
@@ -22,8 +23,11 @@ public class MarshallerExtendTest extends DocumentModelJsonWriter {
         String parentLanguageID = document.getPropertyValue("fva:language").toString();
         DocumentRef ref = new IdRef(parentLanguageID);
         DocumentModel doc = session.getDocument(ref);
-        jg.writeObjectField("parentLanguage", doc.getPropertyValue("dc:title"));
-        jg.writeObjectField("parentLanguageFamily", doc.getPropertyValue("fva:family"));
-//        jg.writeObjectField("parentLanguageFamily", );
+        Object testObj[] = new Object[5];
+        testObj[0] = doc.getPropertyValue("dc:title");
+        testObj[1] = doc.getPropertyValue("fva:family");
+//        jg.writeObjectField("parentLanguage", doc.getPropertyValue("dc:title"));
+//        jg.writeObjectField("parentLanguageFamily", doc.getPropertyValue("fva:family"));
+        jg.writeObjectField("parentLanguageFamily", testObj);
     }
 }
