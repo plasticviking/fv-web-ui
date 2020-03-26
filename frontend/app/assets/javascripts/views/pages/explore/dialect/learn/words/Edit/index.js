@@ -32,14 +32,13 @@ import NavigationHelpers, { getSearchObject } from 'common/NavigationHelpers'
 import StringHelpers from 'common/StringHelpers'
 import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
-import IntlService from 'views/services/intl'
 
 import { STATE_LOADING, STATE_DEFAULT, STATE_ERROR_BOUNDARY } from 'common/Constants'
 import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
+import FVLabel from 'views/components/FVLabel/index'
 import '!style-loader!css-loader!./WordsEdit.css'
 
-const intl = IntlService.instance
 // Models
 import { Document } from 'nuxeo'
 
@@ -310,12 +309,12 @@ export class WordsEdit extends Component {
         >
           <div className="WordsEdit WordsEdit--default">
             <h1 className="WordsEdit__heading">
-              {intl.trans(
-                'edit_x_word',
-                'Edit ' + selectn('response.properties.dc:title', computeWord) + ' word',
-                'first',
-                [selectn('response.properties.dc:title', computeWord)]
-              )}
+              <FVLabel
+                transKey="edit_x_word"
+                defaultStr={'Edit ' + selectn('response.properties.dc:title', computeWord) + ' word'}
+                transform="first"
+                params={[selectn('response.properties.dc:title', computeWord)]}
+              />
             </h1>
 
             <EditViewWithForm

@@ -102,6 +102,7 @@ public class LanguageRecorders extends AbstractSecurityPolicy {
                 allowedDocumentTypes.add("FVCategories");
                 allowedDocumentTypes.add("FVContributors");
                 allowedDocumentTypes.add("FVDictionary");
+                allowedDocumentTypes.add("FVLabelDictionary");
                 allowedDocumentTypes.add("FVResources");
                 allowedDocumentTypes.add("FVBook");
                 allowedDocumentTypes.add("FVBooks");

@@ -10,7 +10,7 @@ describe('LangAdminCreateDelete-Story.js > LangAdminCreateDelete-Story', () => {
       userName: 'TESTLANGUAGEONE_ADMIN',
     })
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageOne/learn/stories')
-    cy.wait(500)
+    cy.wait(1000)
     cy.queryByText('TestStoryTitle').should('not.exist')
     cy.queryByText('Continue to story').should('not.exist')
     cy.getByText('Create Story Book', { exact: true }).click()
@@ -124,7 +124,7 @@ describe('LangAdminCreateDelete-Story.js > LangAdminCreateDelete-Story', () => {
                         Check that the cancel button when editing story works.
                     */
     cy.getByText('TestStoryTitle').click()
-    cy.getByText('Edit book')
+    cy.getByText('Edit')
       .should('exist')
       .click()
     cy.get('fieldset.fieldset').within(() => {
@@ -136,12 +136,12 @@ describe('LangAdminCreateDelete-Story.js > LangAdminCreateDelete-Story', () => {
     cy.getByTestId('withForm__btnGroup1').within(() => {
       cy.getByText('Cancel').click()
     })
-    cy.getByText('Yes!').click()
+    cy.getByText('Yes').click()
 
     /*
                         Check that edit story saves properly.
                     */
-    cy.getByText('Edit book')
+    cy.getByText('Edit')
       .should('exist')
       .click()
     cy.get('fieldset.fieldset').within(() => {

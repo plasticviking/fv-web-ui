@@ -8,6 +8,14 @@
     <require>org.nuxeo.ecm.platform.video.filemanager.contrib</require>
     <require>org.nuxeo.ecm.platform.audio.filemanager.contrib</require>
 
+    <extension target="org.nuxeo.ecm.platform.query.api.PageProviderService" point="providers">
+        <genericPageProvider name="nuxeo_directory_entry_listing" class="org.nuxeo.ecm.directory.providers.DirectoryEntryPageProvider">
+            <property name="maxResults">PAGE_SIZE</property>
+            <maxPageSize>2000</maxPageSize>
+            <pageSize>100</pageSize>
+        </genericPageProvider>
+    </extension>
+
     <extension target="org.nuxeo.ecm.core.schema.TypeService" point="schema">
         <schema name="folder_old" prefix="folder_old" override="true" src="data/schemas/folder_old.xsd"/>
         <schema name="domain_schema" prefix="domain_schema" override="true" src="data/schemas/domain_schema.xsd"/>
@@ -50,6 +58,8 @@
         <schema name="inpersonalpronounce" prefix="inpersonalpronounce" override="true"
                 src="data/schemas/inpersonalpronounce.xsd"/>
         <schema name="inphrase" prefix="inphrase" override="true" src="data/schemas/inphrase.xsd"/>
+        <schema name="fvlabel" prefix="fvlabel" override="true" src="data/schemas/fvlabel.xsd"/>
+        <schema name="fvlabeldictionary" prefix="fvlabeldictionary" override="true" src="data/schemas/fvlabeldictionary.xsd"/>
         <schema name="inplacelocation" prefix="inplacelocation" override="true" src="data/schemas/inplacelocation.xsd"/>
         <schema name="inroot" prefix="inroot" override="true" src="data/schemas/inroot.xsd"/>
         <schema name="inverbending" prefix="inverbending" override="true" src="data/schemas/inverbending.xsd"/>
@@ -99,8 +109,8 @@
         <schema name="var_Task11b0" prefix="var_Task11b0" override="true" src="data/schemas/var_Task11b0.xsd"/>
         <schema name="var_Task11b1" prefix="var_Task11b1" override="true" src="data/schemas/var_Task11b1.xsd"/>
         <schema name="var_Task11b2" prefix="var_Task11b2" override="true" src="data/schemas/var_Task11b2.xsd"/>
-        <schema name="var_FVUnpublishLanguageAsset" prefix="var_FVUnpublishLanguageAsset" override="true"
-                src="data/schemas/var_FVUnpublishLanguageAsset.xsd"/>
+        <schema name="var_FVUnpublishLanguageAsset" prefix="var_FVUnpublishLanguageAsset" override="true" src="data/schemas/var_FVUnpublishLanguageAsset.xsd"/>
+        <schema name="fv_label_vocabulary" prefix="fv_label_vocabulary" override="true" src="data/schemas/fv_label_vocabulary.xsd"/>
     </extension>
     <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
         <doctype name="Folder" extends="Document">
@@ -234,6 +244,7 @@
             <facet name="PublishSpace"/>
             <subtypes>
                 <type>FVCategory</type>
+                <type>FVLabelCategory</type>
             </subtypes>
         </doctype>
         <doctype name="FVDialect" append="true">
@@ -316,6 +327,8 @@
                 <type>FVAlphabet</type>
                 <type>FVContributors</type>
                 <type>FVDictionary</type>
+                <type>FVLabelDictionary</type>
+                <type>FVLabel</type>
                 <type>FVDraftFolder</type>
                 <type>FVPortal</type>
                 <type>FVResources</type>
@@ -337,6 +350,15 @@
                 <type>FVWord</type>
             </subtypes>
         </doctype>
+        <doctype name="FVLabelDictionary" extends="Folder">
+            <schema name="fvlabeldictionary"/>
+            <schema name="fvancestry"/>
+            <facet name="Publishable"/>
+            <facet name="PublishSpace"/>
+            <subtypes>
+                <type>FVLabel</type>
+            </subtypes>
+        </doctype>
         <doctype name="FVDialect" append="true">
             <subtypes>
                 <type>FVDictionary</type>
@@ -353,6 +375,7 @@
                 <type>FVBooks</type>
                 <type>FVCategories</type>
                 <type>FVCategory</type>
+                <type>FVLabelCategory</type>
                 <type>FVCharacter</type>
                 <type>FVLink</type>
                 <type>FVPage</type>
@@ -360,6 +383,7 @@
                 <type>FVPicture</type>
                 <type>FVVideo</type>
                 <type>FVWord</type>
+                <type>FVLabel</type>
             </subtypes>
         </doctype>
         <doctype name="FVDialect" append="true">
@@ -781,6 +805,33 @@
         <doctype name="first_as" extends="DefaultSearch">
             <schema name="first_as"/>
         </doctype>
+        <doctype name="FVLabel" extends="Document">
+            <schema name="fvlabel"/>
+            <schema name="dublincore"/>
+            <schema name="common"/>
+            <schema name="uid"/>
+            <schema name="fvancestry"/>
+            <schema name="fvcore"/>
+            <schema name="fvlegacy"/>
+            <facet name="NXTag"/>
+            <facet name="Publishable"/>
+            <facet name="Commentable"/>
+            <facet name="HasRelatedText"/>
+        </doctype>
+        <doctype name="FVLabelCategory" extends="Document">
+            <schema name="fvcategory"/>
+            <schema name="dublincore"/>
+            <schema name="common"/>
+            <schema name="uid"/>
+            <schema name="fvancestry"/>
+            <schema name="fvlegacy"/>
+            <schema name="file"/>
+            <facet name="Folderish"/>
+            <facet name="Publishable"/>
+            <subtypes>
+                <type>FVLabelCategory</type>
+            </subtypes>
+        </doctype>
         <facet name="facet-var_Task2979">
             <schema name="var_Task2979"/>
         </facet>
@@ -871,6 +922,9 @@
             <type name="FVCategory">fv-lifecycle</type>
         </types>
         <types>
+            <type name="FVLabelCategory">fv-lifecycle</type>
+        </types>
+        <types>
             <type name="FVCharacter">fv-lifecycle</type>
         </types>
         <types>
@@ -884,6 +938,12 @@
         </types>
         <types>
             <type name="FVDictionary">fv-lifecycle</type>
+        </types>
+        <types>
+            <type name="FVLabel">fv-lifecycle</type>
+        </types>
+        <types>
+            <type name="FVLabelDictionary">fv-lifecycle</type>
         </types>
         <types>
             <type name="FVDraftFolder">default</type>
@@ -1136,6 +1196,27 @@
         </type>
         <type id="FVCategory">
             <label>Category</label>
+            <category>LanguageAssets</category>
+            <description></description>
+            <default-view>view_documents</default-view>
+            <layouts mode="create">
+                <layout>layout@FVCategory-create</layout>
+            </layouts>
+            <layouts mode="edit">
+                <layout>layout@FVCategory-edit</layout>
+            </layouts>
+            <layouts mode="view">
+                <layout>layout@FVCategory-view</layout>
+            </layouts>
+            <contentViews category="content">
+                <contentView showInExportView="false">document_content</contentView>
+            </contentViews>
+            <contentViews category="trash_content">
+                <contentView showInExportView="false">document_trash_content</contentView>
+            </contentViews>
+        </type>
+        <type id="FVLabelCategory">
+            <label>Label Category</label>
             <category>LanguageAssets</category>
             <description></description>
             <default-view>view_documents</default-view>
@@ -1852,423 +1933,431 @@
             </layouts>
 
         </type>
-    </extension>
-    <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="actions">
-        <action id="TAB_CONTENT_JBPM">
-            <filter id="folder.deny.tab_content_jbpm">
-                <rule grant="false">
-                    <type>Folder</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="folder.deny.tab_relations">
-                <rule grant="false">
-                    <type>Folder</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvaudio.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVAudio</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="view_comments">
-            <filter id="fvdialect.deny.view_comments">
-                <rule grant="false">
-                    <type>FVDialect</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_MANAGE">
-            <filter id="fvdialect.deny.tab_manage">
-                <rule grant="false">
-                    <type>FVDialect</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvdialect.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVDialect</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_CONTENT_HISTORY">
-            <filter id="fvdraftfolder.deny.tab_content_history">
-                <rule grant="false">
-                    <type>FVDraftFolder</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_FILES_EDIT">
-            <filter id="fvdraftfolder.deny.tab_files_edit">
-                <rule grant="false">
-                    <type>FVDraftFolder</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_FILES_EDIT">
-            <filter id="fvlanguage.deny.tab_files_edit">
-                <rule grant="false">
-                    <type>FVLanguage</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvlanguage.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVLanguage</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_VIEW">
-            <filter id="file.deny.tab_view">
-                <rule grant="false">
-                    <type>File</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvpicture.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVPicture</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvword.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVWord</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvplacename.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVPlaceName</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvresources.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVResources</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="CVTAB@FVResources_0" link="/studio_content_view_tabs/studio_cvtab_FVResources_0.xhtml" order="1"
-                label="Thumbnail View">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@CVTAB@FVResources_0">
-                <rule grant="true">
-                    <type>FVResources</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="fvvideo.deny.tab_relations">
-                <rule grant="false">
-                    <type>FVVideo</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="view_comments">
-            <filter id="indictionary.deny.view_comments">
-                <rule grant="false">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_EDIT">
-            <filter id="indictionary.deny.tab_edit">
-                <rule grant="false">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_CONTENT_HISTORY">
-            <filter id="indictionary.deny.tab_content_history">
-                <rule grant="false">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="indictionary.deny.tab_relations">
-                <rule grant="false">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_FILES_EDIT">
-            <filter id="workspace.deny.tab_files_edit">
-                <rule grant="false">
-                    <type>Workspace</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="TAB_RELATIONS">
-            <filter id="workspace.deny.tab_relations">
-                <rule grant="false">
-                    <type>Workspace</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVDisable" label="Quick Disable" enabled="true" order="0" type="link" immediate="false"
-                link="#{operationActionBean.doOperation('FVDisableDocument')}">
-            <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
-            <filter id="filter@FVDisable">
-                <rule grant="true">
-                    <type>FVAlphabet</type>
-                    <type>FVAudio</type>
-                    <type>FVBook</type>
-                    <type>FVCategory</type>
-                    <type>FVContributor</type>
-                    <type>FVDialect</type>
-                    <type>FVPhrase</type>
-                    <type>FVPicture</type>
-                    <type>FVVideo</type>
-                    <type>FVWord</type>
-                    <condition>
-                        #{currentDocument.currentLifeCycleState == 'Enabled' &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }
-                    </condition>
-                </rule>
-                <rule grant="false">
-                    <condition>document.isImmutable() || document.isProxy()</condition>
-                </rule>
-                <rule grant="false">
-                    <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVEnable" label="Quick Enable" enabled="true" order="0" type="link" immediate="false"
-                link="#{operationActionBean.doOperation('FVEnableDocument')}">
-            <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
-            <filter id="filter@FVEnable">
-                <rule grant="true">
-                    <type>FVAlphabet</type>
-                    <type>FVAudio</type>
-                    <type>FVBook</type>
-                    <type>FVCategory</type>
-                    <type>FVContributor</type>
-                    <type>FVDialect</type>
-                    <type>FVPhrase</type>
-                    <type>FVPicture</type>
-                    <type>FVVideo</type>
-                    <type>FVWord</type>
-                    <condition>
-                        #{(currentDocument.currentLifeCycleState == 'New' || currentDocument.currentLifeCycleState == 'Disabled') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve') ) }
-                    </condition>
-                </rule>
-                <rule grant="false">
-                    <condition>document.isImmutable() || document.isProxy()</condition>
-                </rule>
-                <rule grant="false">
-                    <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVPublishCategoryParents" label="Publish All Parents" enabled="true" order="0" type="link"
-                immediate="false" link="#{operationActionBean.doOperation('FVPublishCategoryParents')}">
-            <category>DOCUMENT_UPPER_ACTION</category>
-            <filter id="filter@FVPublishCategoryParents">
-                <rule grant="true">
-                    <permission>Write</permission>
-                    <type>FVCategory</type>
-                    <facet>Publishable</facet>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVPublishFromWorklist" label="Publish From Worklist" enabled="true" order="0" type="link"
-                immediate="false" link="#{operationActionBean.doOperation('FVPublishFromWorklist')}">
-            <category>DEFAULT_LIST</category>
-            <filter id="filter@FVPublishFromWorklist">
-                <rule grant="true"/>
-                <rule grant="false">
-                    <condition>!principal.isAdministrator()</condition>
-                </rule>
-                <rule grant="false">
-                    <condition>#{documentsListsManager.isWorkingListEmpty("CURRENT_SELECTION") == true}</condition>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVPublishOrRepublish" label="Publish/Republish" enabled="true" order="0" type="link"
-                immediate="false" link="#{operationActionBean.doOperation('javascript.FVPublishOrRepublish')}">
-            <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
-            <filter id="filter@FVPublishOrRepublish">
-                <rule grant="true">
-                    <facet>Publishable</facet>
-                    <condition>
-                        #{(currentDocument.currentLifeCycleState != 'Disabled') &amp;&amp; (currentDocument.currentLifeCycleState != 'New') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }
-                    </condition>
-                </rule>
-                <rule grant="false">
-                    <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVSaveAndPublish" label="Save and Publish" enabled="true" order="0" type="link" immediate="false"
-                link="#{operationActionBean.doOperation('FVSaveAndPublish')}">
-            <category>EDIT_DOCUMENT_FORM</category>
-            <filter id="filter@FVSaveAndPublish">
-                <rule grant="true">
-                    <type>FVCharacter</type>
-                    <facet>Publishable</facet>
-                    <condition>
-                        #{(currentDocument.currentLifeCycleState != 'Disabled') &amp;&amp; (currentDocument.currentLifeCycleState != 'New') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }
-                    </condition>
-                </rule>
-                <rule grant="false">
-                    <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVUnpublish" label="Unpublish" enabled="true" order="0" type="link" immediate="false"
-                link="#{operationActionBean.doOperation('FVUnpublishDialect')}">
-            <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
-            <filter id="filter@FVUnpublish">
-                <rule grant="true">
-                    <facet>Publishable</facet>
-                    <condition>
-                        #{(currentDocument.currentLifeCycleState == 'Published') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }
-                    </condition>
-                </rule>
-                <rule grant="false">
-                    <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
-                </rule>
-            </filter>
-        </action>
-        <action id="INCreateVerbEnding" label="New Verb Ending" enabled="true" order="0" type="link" immediate="false"
-                link="#{operationActionBean.doOperation('INCreateVerbEnding')}">
-            <category>cv_actions@INVerbEndingListing</category>
-        </action>
-        <action id="FVPhraseTab" link="/studio_tabs/studio_tab_FVPhraseTab.xhtml" order="11" label="Phrases"
-                type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@FVPhraseTab">
-                <rule grant="true">
-                    <type>FVDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="FVWordTab" link="/studio_tabs/studio_tab_FVWordTab.xhtml" order="10" label="Words"
-                type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@FVWordTab">
-                <rule grant="true">
-                    <type>FVDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="FileTab" link="/studio_tabs/studio_tab_FileTab.xhtml" order="0" label="action.view.summary"
-                type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@FileTab">
-                <rule grant="true">
-                    <type>File</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="INNounEndingTab" link="/studio_tabs/studio_tab_INNounEndingTab.xhtml" order="13" label="Noun Ending"
-                type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@INNounEndingTab">
-                <rule grant="true">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="INPhraseListing" link="/studio_tabs/studio_tab_INPhraseListing.xhtml" order="13"
-                label="Phrase Listing" type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@INPhraseListing">
-                <rule grant="true">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="INVerbEndingTab" link="/studio_tabs/studio_tab_INVerbEndingTab.xhtml" order="11" label="Verb Ending"
-                type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@INVerbEndingTab">
-                <rule grant="true">
-                    <type>INDictionary</type>
-                </rule>
-            </filter>
-        </action>
-        <action id="VoidTab" link="/studio_tabs/studio_tab_VoidTab.xhtml" order="0" label="VoidTab"
-                type="rest_document_link">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="filter@tab@VoidTab">
-                <rule grant="true">
-                    <type>Document</type>
-                </rule>
-            </filter>
-        </action>
+        
+        <type id="FVLabel">
+            <label>Label</label>
+            <category>SimpleDocument</category>
+            <icon>/img/file.png</icon>
+            <bigIcon>/img/file_100.png</bigIcon>
+            <description>A UI label translation</description>
+            <default-view>view_documents</default-view>
+            <layouts mode="create">
+                <layout>layout@FVLabel-create</layout>
+            </layouts>
+            <layouts mode="edit">
+                <layout>layout@FVPhrase-edit</layout>
+            </layouts>
+            <layouts mode="view">
+                <layout>layout@FVLabel-view</layout>
+            </layouts>
+        </type>
+        
+        <type id="FVLabelDictionary">
+            <label>FVLabelDictionary</label>
+            <category>LanguageAssets</category>
+            <description>TODO: fill in</description>
+            <default-view>view_documents</default-view>
+            <layouts mode="create">
+                <layout>layout@FVLabelDictionary-create</layout>
+            </layouts>
+            <layouts mode="edit">
+                <layout>layout@FVDictionary-edit</layout>
+            </layouts>
+            <layouts mode="view">
+                <layout>layout@FVDictionary-view</layout>
+            </layouts>
+            <contentViews category="content">
+                <contentView showInExportView="false">FVWordListing</contentView>
+            </contentViews>
+            <contentViews category="trash_content">
+                <contentView showInExportView="false">document_trash_content</contentView>
+            </contentViews>
+        </type>
+    </extension>  <extension target="org.nuxeo.ecm.platform.actions.ActionService" point="actions">    <action id="TAB_CONTENT_JBPM">      <filter id="folder.deny.tab_content_jbpm">        <rule grant="false">          <type>Folder</type>
+</rule>
+</filter>
+</action>
+    <action id="TAB_RELATIONS">
+        <filter id="folder.deny.tab_relations">
+            <rule grant="false">
+                <type>Folder</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvaudio.deny.tab_relations">
+            <rule grant="false">
+                <type>FVAudio</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="view_comments">
+        <filter id="fvdialect.deny.view_comments">
+            <rule grant="false">
+                <type>FVDialect</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_MANAGE">
+        <filter id="fvdialect.deny.tab_manage">
+            <rule grant="false">
+                <type>FVDialect</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvdialect.deny.tab_relations">
+            <rule grant="false">
+                <type>FVDialect</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_CONTENT_HISTORY">
+        <filter id="fvdraftfolder.deny.tab_content_history">
+            <rule grant="false">
+                <type>FVDraftFolder</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_FILES_EDIT">
+        <filter id="fvdraftfolder.deny.tab_files_edit">
+            <rule grant="false">
+                <type>FVDraftFolder</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_FILES_EDIT">
+        <filter id="fvlanguage.deny.tab_files_edit">
+            <rule grant="false">
+                <type>FVLanguage</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvlanguage.deny.tab_relations">
+            <rule grant="false">
+                <type>FVLanguage</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_VIEW">
+        <filter id="file.deny.tab_view">
+            <rule grant="false">
+                <type>File</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvpicture.deny.tab_relations">
+            <rule grant="false">
+                <type>FVPicture</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvword.deny.tab_relations">
+            <rule grant="false">
+                <type>FVWord</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvplacename.deny.tab_relations">
+            <rule grant="false">
+                <type>FVPlaceName</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvresources.deny.tab_relations">
+            <rule grant="false">
+                <type>FVResources</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="CVTAB@FVResources_0" link="/studio_content_view_tabs/studio_cvtab_FVResources_0.xhtml" order="1" label="Thumbnail View">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@CVTAB@FVResources_0">
+            <rule grant="true">
+                <type>FVResources</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="fvvideo.deny.tab_relations">
+            <rule grant="false">
+                <type>FVVideo</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="view_comments">
+        <filter id="indictionary.deny.view_comments">
+            <rule grant="false">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_EDIT">
+        <filter id="indictionary.deny.tab_edit">
+            <rule grant="false">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_CONTENT_HISTORY">
+        <filter id="indictionary.deny.tab_content_history">
+            <rule grant="false">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="indictionary.deny.tab_relations">
+            <rule grant="false">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_FILES_EDIT">
+        <filter id="workspace.deny.tab_files_edit">
+            <rule grant="false">
+                <type>Workspace</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="TAB_RELATIONS">
+        <filter id="workspace.deny.tab_relations">
+            <rule grant="false">
+                <type>Workspace</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVDisable" label="Quick Disable" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('FVDisableDocument')}">
+        <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
+        <filter id="filter@FVDisable">
+            <rule grant="true">
+                <type>FVAlphabet</type>
+                <type>FVAudio</type>
+                <type>FVBook</type>
+                <type>FVCategory</type>
+                <type>FVLabelCategory</type>
+                <type>FVContributor</type>
+                <type>FVDialect</type>
+                <type>FVPhrase</type>
+                <type>FVPicture</type>
+                <type>FVVideo</type>
+                <type>FVWord</type>
+                <condition>#{currentDocument.currentLifeCycleState == 'Enabled' &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }</condition>
+            </rule>
+            <rule grant="false">
+                <condition>document.isImmutable() || document.isProxy()</condition>
+            </rule>
+            <rule grant="false">
+                <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVEnable" label="Quick Enable" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('FVEnableDocument')}">
+        <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
+        <filter id="filter@FVEnable">
+            <rule grant="true">
+                <type>FVAlphabet</type>
+                <type>FVAudio</type>
+                <type>FVBook</type>
+                <type>FVCategory</type>
+                <type>FVLabelCategory</type>
+                <type>FVContributor</type>
+                <type>FVDialect</type>
+                <type>FVPhrase</type>
+                <type>FVPicture</type>
+                <type>FVVideo</type>
+                <type>FVWord</type>
+                <type>FVLabel</type>
+                <condition>#{(currentDocument.currentLifeCycleState == 'New' || currentDocument.currentLifeCycleState == 'Disabled') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve') ) }</condition>
+            </rule>
+            <rule grant="false">
+                <condition>document.isImmutable() || document.isProxy()</condition>
+            </rule>
+            <rule grant="false">
+                <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVPublishCategoryParents" label="Publish All Parents" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('FVPublishCategoryParents')}">
+        <category>DOCUMENT_UPPER_ACTION</category>
+        <filter id="filter@FVPublishCategoryParents">
+            <rule grant="true">
+                <permission>Write</permission>
+                <type>FVCategory</type>
+                <facet>Publishable</facet>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVPublishFromWorklist" label="Publish From Worklist" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('FVPublishFromWorklist')}">
+        <category>DEFAULT_LIST</category>
+        <filter id="filter@FVPublishFromWorklist">
+            <rule grant="true"/>
+            <rule grant="false">
+                <condition>!principal.isAdministrator()</condition>
+            </rule>
+            <rule grant="false">
+                <condition>#{documentsListsManager.isWorkingListEmpty("CURRENT_SELECTION") == true}</condition>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVPublishOrRepublish" label="Publish/Republish" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('javascript.FVPublishOrRepublish')}">
+        <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
+        <filter id="filter@FVPublishOrRepublish">
+            <rule grant="true">
+                <facet>Publishable</facet>
+                <condition>#{(currentDocument.currentLifeCycleState != 'Disabled') &amp;&amp; (currentDocument.currentLifeCycleState != 'New') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }</condition>
+            </rule>
+            <rule grant="false">
+                <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVSaveAndPublish" label="Save and Publish" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('FVSaveAndPublish')}">
+        <category>EDIT_DOCUMENT_FORM</category>
+        <filter id="filter@FVSaveAndPublish">
+            <rule grant="true">
+                <type>FVCharacter</type>
+                <facet>Publishable</facet>
+                <condition>#{(currentDocument.currentLifeCycleState != 'Disabled') &amp;&amp; (currentDocument.currentLifeCycleState != 'New') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }</condition>
+            </rule>
+            <rule grant="false">
+                <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVUnpublish" label="Unpublish" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('FVUnpublishDialect')}">
+        <category>DOCUMENT_SUMMARY_CUSTOM_ACTIONS</category>
+        <filter id="filter@FVUnpublish">
+            <rule grant="true">
+                <facet>Publishable</facet>
+                <condition>#{(currentDocument.currentLifeCycleState == 'Published') &amp;&amp; (documentManager.hasPermission(currentDocument.ref, 'Everything') || documentManager.hasPermission(currentDocument.ref, 'Approve')) }</condition>
+            </rule>
+            <rule grant="false">
+                <condition>!document.getPathAsString().startsWith("/FV/Workspaces/Data/")</condition>
+            </rule>
+        </filter>
+    </action>
+    <action id="INCreateVerbEnding" label="New Verb Ending" enabled="true" order="0" type="link" immediate="false" link="#{operationActionBean.doOperation('INCreateVerbEnding')}">
+        <category>cv_actions@INVerbEndingListing</category>
+    </action>
+    <action id="FVPhraseTab" link="/studio_tabs/studio_tab_FVPhraseTab.xhtml" order="11" label="Phrases" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@FVPhraseTab">
+            <rule grant="true">
+                <type>FVDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="FVWordTab" link="/studio_tabs/studio_tab_FVWordTab.xhtml" order="10" label="Words" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@FVWordTab">
+            <rule grant="true">
+                <type>FVDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="FileTab" link="/studio_tabs/studio_tab_FileTab.xhtml" order="0" label="action.view.summary" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@FileTab">
+            <rule grant="true">
+                <type>File</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="INNounEndingTab" link="/studio_tabs/studio_tab_INNounEndingTab.xhtml" order="13" label="Noun Ending" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@INNounEndingTab">
+            <rule grant="true">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="INPhraseListing" link="/studio_tabs/studio_tab_INPhraseListing.xhtml" order="13" label="Phrase Listing" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@INPhraseListing">
+            <rule grant="true">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="INVerbEndingTab" link="/studio_tabs/studio_tab_INVerbEndingTab.xhtml" order="11" label="Verb Ending" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@INVerbEndingTab">
+            <rule grant="true">
+                <type>INDictionary</type>
+            </rule>
+        </filter>
+    </action>
+    <action id="VoidTab" link="/studio_tabs/studio_tab_VoidTab.xhtml" order="0" label="VoidTab" type="rest_document_link">
+        <category>VIEW_ACTION_LIST</category>
+        <filter id="filter@tab@VoidTab">
+            <rule grant="true">
+                <type>Document</type>
+            </rule>
+        </filter>
+    </action>
 
 
-        <action icon="/icons/notifications.png" enabled="false" id="Notification" label="user.center.notification"
-                link="/incl/notification/user_subscriptions.xhtml" order="40">
+    <action icon="/icons/notifications.png" enabled="false" id="Notification" label="user.center.notification" link="/incl/notification/user_subscriptions.xhtml" order="40">
 
-            <category>USER_CENTER</category>
+        <category>USER_CENTER</category>
 
-            <filter-id>not_anonymous</filter-id>
+        <filter-id>not_anonymous</filter-id>
 
-        </action>
-
-
-        <action id="DashboardMain" link="/studio_tabs/studio_tab_VoidTab.xhtml" label="" order="10"
-                type="admin_rest_document_link">
-
-            <category>Dashboard_sub_tab</category>
-
-        </action>
+    </action>
 
 
-        <action id="FV_TAB_RELATIONS" link="/incl/tabs/document_relations.xhtml" enabled="true"
-                label="action.view.relations" order="55">
 
-            <category>VIEW_ACTION_LIST</category>
+    <action id="DashboardMain" link="/studio_tabs/studio_tab_VoidTab.xhtml" label="" order="10" type="admin_rest_document_link">
 
-            <filter id="cf_view_relations">
+        <category>Dashboard_sub_tab</category>
 
-                <rule grant="true">
-
-                    <permission>Folderish</permission>
-
-                </rule>
-
-            </filter>
-
-        </action>
+    </action>
 
 
-        <action id="Chain.FileManager.ImportWithMetaDataInSeam"
-                link="/nuxeo/dndFormCollector.faces?schemas=fvm,dc&amp;layouts=fvmedia_dnd%40create" order="30"
-                label="label.smart.import.with.md" help="desc.smart.import.with.md">
 
-            <category>ContentView</category>
+    <action id="FV_TAB_RELATIONS" link="/incl/tabs/document_relations.xhtml" enabled="true" label="action.view.relations" order="55">
 
-            <filter-id>create</filter-id>
+        <category>VIEW_ACTION_LIST</category>
 
-        </action>
-        <action id="TAB_VIEW_FOLDERISH" link="/incl/tabs/document_view.xhtml" order="11" label="action.view.summary"
-                icon="/icons/file.gif">
-            <category>VIEW_ACTION_LIST</category>
-            <filter id="viewTabForFolderish">
-                <rule grant="true">
-                    <type>FVBook</type>
-                    <type>FVCategory</type>
-                    <type>FVDialect</type>
-                    <type>FVGallery</type>
-                    <type>FVPortal</type>
-                </rule>
-            </filter>
-        </action>
-    </extension>
+        <filter id="cf_view_relations">
+
+            <rule grant="true">
+
+                <permission>Folderish</permission>
+
+            </rule>
+
+        </filter>
+
+    </action>
+
+
+
+    <action id="Chain.FileManager.ImportWithMetaDataInSeam" link="/nuxeo/dndFormCollector.faces?schemas=fvm,dc&amp;layouts=fvmedia_dnd%40create" order="30" label="label.smart.import.with.md" help="desc.smart.import.with.md">
+
+        <category>ContentView</category>
+
+        <filter-id>create</filter-id>
+
+    </action>
+    <action id="TAB_VIEW_FOLDERISH" link="/incl/tabs/document_view.xhtml" order="11" label="action.view.summary" icon="/icons/file.gif">      <category>VIEW_ACTION_LIST</category>
+        <filter id="viewTabForFolderish">
+            <rule grant="true">
+                <type>FVBook</type>
+                <type>FVCategory</type>
+                <type>FVDialect</type>
+                <type>FVGallery</type>
+                <type>FVPortal</type>
+            </rule>
+        </filter>
+    </action>
+</extension>
     <extension target="org.nuxeo.ecm.platform.forms.layout.WebLayoutManager" point="layouts">
         <layout name="layout@Folder-create">
             <templates>
@@ -22229,6 +22318,270 @@
                 </fields>
             </widget>
         </layout>
+        <layout name="layout@FVLabel-create">
+            <templates>
+                <template mode="any">/layouts/First-Voices_layout_template.xhtml</template>
+            </templates>
+            <rows>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>title</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>labelKey</widget>
+                </row>
+            </rows>
+            <widget name="title" type="text">
+                <labels>
+                    <label mode="any">Phrase</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>dc:title</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+            <widget name="labelKey" type="text">
+                <labels>
+                    <label mode="any">Label Key</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvlabel:labelKey</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+        </layout>
+        
+        <layout name="layout@FVPhrase-edit">
+            <templates>
+                <template mode="any">/layouts/First-Voices_layout_template.xhtml</template>
+            </templates>
+            <rows>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>title</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>labelKey</widget>
+                </row>
+            </rows>
+            <widget name="title" type="text">
+                <labels>
+                    <label mode="any">Phrase</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>dc:title</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="labelKey" type="text">
+                <labels>
+                    <label mode="any">Label Key</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvlabel:labelKey</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+        </layout>
+        <layout name="layout@FVLabel-view">
+            <templates>
+                <template mode="any">/layouts/First-Voices_layout_template.xhtml</template>
+            </templates>
+            <rows>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>title</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>labelKey</widget>
+                </row>
+            </rows>
+            <widget name="title" type="text">
+                <labels>
+                    <label mode="any">Phrase</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>dc:title</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="labelKey" type="text">
+                <labels>
+                    <label mode="any">Label Key</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvlabel:labelKey</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+        </layout>
+        
+        <layout name="layout@FVLabelDictionary-create">
+            <templates>
+                <template mode="any">/layouts/First-Voices_layout_template.xhtml</template>
+            </templates>
+            <rows>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>title</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>isPrivate</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
+                    <widget>type</widget>
+                </row>
+            </rows>
+            <widget name="title" type="text">
+                <labels>
+                    <label mode="any">Title</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>dc:title</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+            <widget name="isPrivate" type="checkbox">
+                <labels>
+                    <label mode="any">Is Private?</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvdictionary:private</field>
+                </fields>
+            </widget>
+            <widget name="type" type="text">
+                            <labels>
+                    <label mode="any">Document Type</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>type</field>
+                </fields>
+                <widgetModes>
+                    <mode value="create">view</mode>
+                </widgetModes>
+            </widget>
+        </layout>
+        <layout name="vocabulary-fv_labels">
+            <templates>
+                <template mode="any">/directory/directory_layout_template.xhtml</template>
+            </templates>
+            <rows>
+                <row>
+                    <widget>parent</widget>
+                </row>
+                <row>
+                    <widget>template_strings</widget>
+                </row>
+                <row>
+                    <widget>xvocabulary_id</widget>
+                </row>
+                <row>
+                    <widget>xvocabulary_label</widget>
+                </row>
+                <row>
+                    <widget>xvocabulary_obsolete</widget>
+                </row>
+                <row>
+                    <widget>xvocabulary_order</widget>
+                </row>
+            </rows>
+            <widget name="parent" type="selectOneDirectory">
+                <labels>
+                    <label mode="any">label.vocabulary.entry.parent</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>xvocabulary:parent</field>
+                </fields>
+                <properties mode="any">
+                    <property name="directoryName">fv_labels</property>
+                    <property name="localize">true</property>
+                </properties>
+                <properties widgetMode="edit">
+                    <property name="required">false</property>
+                    <property name="displayObsoleteEntries">true</property>
+                </properties>
+            </widget>
+            <widget name="template_strings" type="text">
+                <labels>
+                    <label mode="any">Template Variables (Separate by commas)</label>
+                </labels>
+                <translated>true</translated>
+                <fields>
+                    <field>fv_labels:template_strings</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                </properties>
+            </widget>
+        </layout>
     </extension>
     <extension target="org.nuxeo.theme.styling.service" point="flavors">
         <flavor name="logo" extends="default">
@@ -23824,6 +24177,7 @@ function run(input, params) {
                 <templateItem typeName="FVResources" id="Resources" title="Resources" description=""/>
                 <templateItem typeName="FVContributors" id="Contributors" title="Contributors" description=""/>
                 <templateItem typeName="INDictionary" id="Dictionary" title="Dictionary" description=""/>
+                <templateItem typeName="FVLabelDictionary" id="Label Dictionary" title="Label Dictionary" description=""/>
                 <templateItem typeName="Forum" id="Forum" title="Forum" description=""/>
                 <templateItem typeName="FVPortal" id="Portal" title="Portal" description=""/>
                 <templateItem typeName="FVCategories" id="Categories" title="Categories" description=""/>
@@ -24006,6 +24360,7 @@ function run(input, params) {
             <table>studio_vocabulary_parts_of_speech</table>
             <dataFile>data/vocabularies/parts_of_speech.csv</dataFile>
             <parentDirectory>parts_of_speech</parentDirectory>
+            <querySizeLimit>100</querySizeLimit>
             <cacheEntryName>vocab-parts_of_speech-cache</cacheEntryName>
             <cacheEntryWithoutReferencesName>vocab-parts_of_speech-cache-without-references
             </cacheEntryWithoutReferencesName>
@@ -24017,6 +24372,23 @@ function run(input, params) {
             <dataFile>data/vocabularies/reference.csv</dataFile>
             <cacheEntryName>vocab-reference-cache</cacheEntryName>
             <cacheEntryWithoutReferencesName>vocab-reference-cache-without-references</cacheEntryWithoutReferencesName>
+        </directory>
+        <directory name="fv_labels" extends="template-xvocabulary">
+            <schema>fv_label_vocabulary</schema>
+            <autoincrementIdField>false</autoincrementIdField>
+            <createTablePolicy>always</createTablePolicy>
+            <table>studio_vocabulary_fv_labels</table>
+            <dataFile>data/vocabularies/fv_labels.csv</dataFile>
+            <cacheEntryName>fv_labels-cache</cacheEntryName>
+            <cacheEntryWithoutReferencesName>vocab-labels-cache-without-references</cacheEntryWithoutReferencesName>
+        </directory>
+        <directory name="fv_label_categories" extends="template-xvocabulary">
+            <autoincrementIdField>false</autoincrementIdField>
+            <createTablePolicy>always</createTablePolicy>
+            <table>studio_vocabulary_fv_label_categories</table>
+            <dataFile>data/vocabularies/fv_label_categories.csv</dataFile>
+            <cacheEntryName>fv_label_categories-cache</cacheEntryName>
+            <cacheEntryWithoutReferencesName>vocab-label-categories-cache-without-references</cacheEntryWithoutReferencesName>
         </directory>
     </extension>
     <extension target="org.nuxeo.ecm.core.cache.CacheService" point="caches">
@@ -24200,6 +24572,26 @@ function run(input, params) {
             <option name="concurrencyLevel">500</option>
             <ttl>60</ttl>
         </cache>
+        <cache name="fv_labels-cache">
+            <option name="maxSize">1000</option>
+            <option name="concurrencyLevel">500</option>
+            <ttl>60</ttl>
+        </cache>
+        <cache name="vocab-labels-cache-without-references">
+            <option name="maxSize">1000</option>
+            <option name="concurrencyLevel">500</option>
+            <ttl>60</ttl>
+        </cache>
+        <cache name="fv_label_categories-cache">
+            <option name="maxSize">1000</option>
+            <option name="concurrencyLevel">500</option>
+            <ttl>60</ttl>
+        </cache>
+        <cache name="vocab-label-categories-cache-without-references">
+            <option name="maxSize">1000</option>
+            <option name="concurrencyLevel">500</option>
+            <ttl>60</ttl>
+        </cache>
     </extension>
     <extension target="org.nuxeo.ecm.directory.ui.DirectoryUIManager" point="directories">
         <directory name="WorkflowType" layout="vocabulary" sortField="label"/>
@@ -24223,6 +24615,18 @@ function run(input, params) {
         <directory name="in_possession" layout="vocabulary" sortField="label"/>
         <directory name="in_transitivity" layout="vocabulary" sortField="label"/>
         <directory name="in_word_classes" layout="vocabulary" sortField="label"/>
+        <directory name="fv_labels" layout="vocabulary-fv_labels" sortField="label">
+            <deleteConstraint class="org.nuxeo.ecm.directory.HierarchicalDirectoryDeleteConstraint">
+                <property name="targetDirectory">fv_labels</property>
+                <property name="targetDirectoryField">parent</property>
+            </deleteConstraint>
+        </directory>
+        <directory name="fv_label_categories" layout="vocabulary" sortField="label">
+            <deleteConstraint class="org.nuxeo.ecm.directory.HierarchicalDirectoryDeleteConstraint">
+                <property name="targetDirectory">fv_categories</property>
+                <property name="targetDirectoryField">parent</property>
+            </deleteConstraint>
+        </directory>
         <directory name="parts_of_speech" layout="vocabulary-parts_of_speech" sortField="label">
             <deleteConstraint class="org.nuxeo.ecm.directory.HierarchicalDirectoryDeleteConstraint">
                 <property name="targetDirectory">parts_of_speech</property>
@@ -24245,6 +24649,7 @@ function run(input, params) {
                 <type>FVAudio</type>
                 <type>FVBook</type>
                 <type>FVCategory</type>
+                <type>FVLabelCategory</type>
                 <type>FVCharacter</type>
                 <type>FVContributor</type>
                 <type>FVDialect</type>
@@ -24268,6 +24673,7 @@ function run(input, params) {
                 <type>FVAudio</type>
                 <type>FVBook</type>
                 <type>FVCategory</type>
+                <type>FVLabelCategory</type>
                 <type>FVCharacter</type>
                 <type>FVContributor</type>
                 <type>FVDialect</type>
@@ -24276,9 +24682,8 @@ function run(input, params) {
                 <type>FVPicture</type>
                 <type>FVVideo</type>
                 <type>FVWord</type>
-                <condition>
-                    #{ (currentDocument.currentLifeCycleState == 'New' || currentDocument.currentLifeCycleState == 'Disabled') &amp;&amp; ( documentManager.hasPermission(currentDocument.ref, 'Record') || documentManager.hasPermission(currentDocument.ref, 'Approve') || documentManager.hasPermission(currentDocument.ref, 'Everything')) }
-                </condition>
+                <type>FVLabel</type>
+                <condition>#{ (currentDocument.currentLifeCycleState == 'New' || currentDocument.currentLifeCycleState == 'Disabled') &amp;&amp; ( documentManager.hasPermission(currentDocument.ref, 'Record') || documentManager.hasPermission(currentDocument.ref, 'Approve') || documentManager.hasPermission(currentDocument.ref, 'Everything')) }</condition>
             </rule>
             <rule grant="false">
                 <condition>document.isImmutable() || document.isProxy()</condition>
@@ -24291,6 +24696,7 @@ function run(input, params) {
                 <type>FVAudio</type>
                 <type>FVBook</type>
                 <type>FVCategory</type>
+                <type>FVLabelCategory</type>
                 <type>FVCharacter</type>
                 <type>FVContributor</type>
                 <type>FVDialect</type>
@@ -24315,6 +24721,7 @@ function run(input, params) {
                 <type>FVAudio</type>
                 <type>FVBook</type>
                 <type>FVCategory</type>
+                <type>FVLabelCategory</type>
                 <type>FVCharacter</type>
                 <type>FVContributor</type>
                 <type>FVDialect</type>
