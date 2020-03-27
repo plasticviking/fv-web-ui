@@ -206,11 +206,11 @@ export class PageDialectLearnPhrases extends PageDialectLearnBase {
     const pageTitle = intl.trans('views.pages.explore.dialect.phrases.x_phrases', `${dialect} Phrases`, null, [dialect])
     // const { DEFAULT_PAGE, DEFAULT_PAGE_SIZE } = this._getURLPageProps() // NOTE: This function is in PageDialectLearnBase
 
-    const phraseListView = selectn('response.uid', computeDocument) ? (
+    const phraseListView = selectn('props.dictionaryListItems', this) ? (
       <Suspense fallback={<div>Loading...</div>}>
         <DictionaryListWithPagination
-          dictionaryListItems={this.props.entries}
-          dictionaryListHeaders={this.props.columns}
+          dictionaryListItems={this.props.dictionaryListItems}
+          dictionaryListHeaders={this.props.dictionaryListHeaders}
           paginationEventHandler={
             (/*{ paginationCurrentPageIndex, paginationPageSize }*/) => {
               //   this.props.handlePagination({
