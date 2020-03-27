@@ -42,10 +42,6 @@ import ReportBrowser from './browse-view'
 
 import { WORKSPACES, SECTIONS } from 'common/Constants'
 
-import IntlService from 'views/services/intl'
-
-const intl = IntlService.instance
-
 const { func, object, string } = PropTypes
 export class PageDialectReportsView extends PageDialectLearnBase {
   static propTypes = {
@@ -223,7 +219,7 @@ export class PageDialectReportsView extends PageDialectLearnBase {
           <div className={classNames('col-xs-12')}>
             <h1>
               {selectn('response.contextParameters.ancestry.dialect.dc:title', computePortal)}:{' '}
-              {StringHelpers.toTitleCase(intl.searchAndReplace(this.state.currentReport.get('name')))}
+              {StringHelpers.toTitleCase(this.props.intl.searchAndReplace(this.state.currentReport.get('name')))}
             </h1>
 
             <div className="row">
@@ -297,7 +293,7 @@ export class PageDialectReportsView extends PageDialectLearnBase {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvCategory, fvPortal, navigation, nuxeo, windowPath } = state
+  const { fvCategory, fvPortal, locale, navigation, nuxeo, windowPath } = state
 
   const { computeCategories } = fvCategory
   const { computePortal } = fvPortal
@@ -305,6 +301,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
   const { computeLogin } = nuxeo
   const { computeDocument } = document
   const { _windowPath } = windowPath
+  const { intlService } = locale
 
   return {
     computeCategories,
@@ -313,6 +310,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     routeParams: route.routeParams,
     computePortal,
     windowPath: _windowPath,
+    intl: intlService,
   }
 }
 

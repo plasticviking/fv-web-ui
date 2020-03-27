@@ -147,6 +147,7 @@ const DIALECT_PATH = [
 ]
 const PHRASES_PATH = DIALECT_PATH.concat(['learn', 'phrases'])
 const WORDS_PATH = DIALECT_PATH.concat(['learn', 'words'])
+const IMMERSION_PATH = DIALECT_PATH.concat(['immersion'])
 const REPORTS_PATH = DIALECT_PATH.concat(['reports'])
 const PAGINATION_PATH = [new paramMatch('pageSize', NUMBER), new paramMatch('page', NUMBER)]
 
@@ -173,6 +174,14 @@ const DIALECT_LEARN_PHRASES = {
       case: 'words',
     }) + ' | {$dialect_name}',
   page: <Pages.PageDialectLearnPhrases />,
+  extractPaths: true,
+  redirects: [WORKSPACE_TO_SECTION_REDIRECT],
+}
+
+const DIALECT_IMMERSION_WORDS = {
+  path: IMMERSION_PATH,
+  title: 'Immersion', // TODOSL add locale for this
+  page: <Pages.PageDialectImmersionList />,
   extractPaths: true,
   redirects: [WORKSPACE_TO_SECTION_REDIRECT],
 }
@@ -261,7 +270,14 @@ const addCategory = (route) => {
     page: <Pages.PageDialectLearnWordsFilteredByCategory />,
   })
 }
-// Category page (Phrases)
+
+const addImmersionCategory = (route) => {
+  return Object.assign({}, route, {
+    path: route.path.concat(['categories', new paramMatch('category', ANYTHING_BUT_SLASH)]),
+    title: 'Immersion Categories', // TODOSL locale translation template
+  })
+}
+
 const addBrowsePhraseBook = (route) => {
   return Object.assign({}, route, {
     path: route.path.concat(['book', new paramMatch('phraseBook', ANYTHING_BUT_SLASH)]),
@@ -283,6 +299,7 @@ const addBrowseAlphabet = (route) => {
     title: '{$letter}' + ` | ${selectn('title', route)}`,
   })
 }
+
 // eg: learn/phrases/alphabet/b
 const addBrowsePhraseBookByAlphabet = (route) => {
   return Object.assign({}, route, {
@@ -2333,6 +2350,10 @@ const routes = [
     title: PAGE_NOT_FOUND_TITLE,
     page: <Pages.PageError title={PAGE_NOT_FOUND_TITLE} body={PAGE_NOT_FOUND_BODY} />,
   },
+  DIALECT_IMMERSION_WORDS,
+  addPagination(DIALECT_IMMERSION_WORDS),
+  addImmersionCategory(DIALECT_IMMERSION_WORDS),
+  addPagination(addImmersionCategory(DIALECT_IMMERSION_WORDS)),
 ]
 
 export default routes

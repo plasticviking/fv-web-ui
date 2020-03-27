@@ -29,10 +29,7 @@ import { searchDialectUpdate } from 'providers/redux/reducers/searchDialect'
 import selectn from 'selectn'
 import classNames from 'classnames'
 import FVButton from 'views/components/FVButton'
-import IntlService from 'views/services/intl'
 import { getDialectClassname } from 'views/pages/explore/dialect/helpers'
-
-const intl = IntlService.instance
 
 /*
 SearchDialect
@@ -101,7 +98,7 @@ export const SearchDialect = (props) => {
   // Sets `partsOfSpeechOptions` when on a Word page
   // ------------------------------------------------------------
   useEffect(() => {
-    const partsOfSpeech = selectn('directories.parts_of_speech', props.computeDirectory) || []
+    const partsOfSpeech = selectn('directoryEntries.parts_of_speech', props.computeDirectory) || []
     // initiate
     // NOTE: used to rely on Redux booleans (isFetching, success) to determine if we should make a request
     // React would rerender before Redux could set the flag and so we'd initiate duplicate requests
@@ -117,7 +114,7 @@ export const SearchDialect = (props) => {
 
     // wait
     if (props.computeDirectory.success) {
-      const partsOfSpeechUnsorted = selectn('computeDirectory.directories.parts_of_speech', props) || []
+      const partsOfSpeechUnsorted = selectn('computeDirectory.directoryEntries.parts_of_speech', props) || []
       const partsOfSpeechSorted = partsOfSpeechUnsorted.sort((a, b) => {
         if (a.text < b.text) return -1
         if (a.text > b.text) return 1
@@ -188,7 +185,11 @@ export const SearchDialect = (props) => {
     let searchButtonText = ''
     switch (props.searchDialectDataType) {
       case SEARCH_DATA_TYPE_WORD:
-        searchButtonText = intl.trans('views.pages.explore.dialect.learn.words.search_words', 'Search Words', 'words')
+        searchButtonText = props.intl.trans(
+          'views.pages.explore.dialect.learn.words.search_words',
+          'Search Words',
+          'words'
+        )
         break
       case SEARCH_DATA_TYPE_PHRASE:
         searchButtonText = 'Search Phrases'
@@ -679,14 +680,16 @@ SearchDialect.defaultProps = {
 // ------------------------------------------------------------
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { directory, searchDialect } = state
+  const { directory, searchDialect, locale } = state
 
   const { computeDirectory } = directory
   const { computeSearchDialect } = searchDialect
+  const { intlService } = locale
 
   return {
     computeDirectory,
     computeSearchDialect,
+    intl: intlService,
   }
 }
 
