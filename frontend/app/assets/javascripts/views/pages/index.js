@@ -41,6 +41,7 @@ import PageDialectUsers from './explore/dialect/users'
 import PageDialectLearnWords from './explore/dialect/learn/words'
 import PageDialectLearnWordsSpike from './explore/dialect/learn/words/spike'
 import PageDialectLearnPhrases from './explore/dialect/learn/phrases'
+import PageDialectLearnPhrasesSpike from './explore/dialect/learn/phrases/spike'
 import PageDialectLearnStoriesAndSongs from './explore/dialect/learn/songs-stories'
 
 import PageDialectViewMedia from './explore/dialect/media/view'
@@ -134,6 +135,7 @@ export {
   PageDialectLearnWordsFilteredByCategory,
   PageDialectLearnWordsCategories,
   PageDialectLearnPhrases,
+  PageDialectLearnPhrasesSpike,
   PageDialectLearnPhrasesFilteredByCategory,
   PageDialectLearnPhrasesCategories,
   PageDialectLearnStoriesAndSongs,
