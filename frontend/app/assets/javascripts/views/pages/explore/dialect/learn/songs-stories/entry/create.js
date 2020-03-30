@@ -32,7 +32,7 @@ import ProviderHelpers from 'common/ProviderHelpers'
 import NavigationHelpers from 'common/NavigationHelpers'
 
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
 
 import Paper from '@material-ui/core/Paper'
@@ -51,7 +51,6 @@ export class PageDialectStoriesAndSongsBookEntryCreate extends Component {
     routeParams: object,
     typePlural: string.isRequired,
     // REDUX: reducers/state
-    computeLogin: object.isRequired,
     computeBook: object.isRequired,
     computeBookEntry: object.isRequired,
     computeDialect2: object.isRequired,
@@ -254,9 +253,7 @@ export class PageDialectStoriesAndSongsBookEntryCreate extends Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={
           <StateErrorBoundary /*copy={this.state.copy} errorMessage={this.state.errorMessage}*/ />
         }
@@ -303,18 +300,16 @@ export class PageDialectStoriesAndSongsBookEntryCreate extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvBook, fvDialect, nuxeo, windowPath } = state
+  const { fvBook, fvDialect, windowPath } = state
 
   const { computeBook, computeBookEntry } = fvBook
   const { computeDialect2 } = fvDialect
   const { splitWindowPath, _windowPath } = windowPath
-  const { computeLogin } = nuxeo
 
   return {
     computeBook,
     computeBookEntry,
     computeDialect2,
-    computeLogin,
     splitWindowPath,
     windowPath: _windowPath,
   }
@@ -329,7 +324,4 @@ const mapDispatchToProps = {
   replaceWindowPath,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PageDialectStoriesAndSongsBookEntryCreate)
+export default connect(mapStateToProps, mapDispatchToProps)(PageDialectStoriesAndSongsBookEntryCreate)

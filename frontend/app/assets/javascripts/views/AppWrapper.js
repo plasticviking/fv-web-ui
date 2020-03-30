@@ -37,6 +37,9 @@ import FirstVoicesTheme from 'views/themes/FirstVoicesTheme.js'
 import FirstVoicesKidsTheme from 'views/themes/FirstVoicesKidsTheme.js'
 import FirstVoicesWorkspaceTheme from 'views/themes/FirstVoicesWorkspaceTheme.js'
 
+export const LoginContext = React.createContext({})
+export const RouteParamsContext = React.createContext({})
+
 const getPreferences = function getPreferences(login, dialect) {
   const preferenceString = selectn('response.properties.preferences', login)
   const parsedPreferences = preferenceString ? JSON.parse(preferenceString) : {}
@@ -64,6 +67,7 @@ class AppWrapper extends Component {
     changeSiteTheme: func.isRequired,
     fetchDialect2: func.isRequired,
     // REDUX: reducers/state
+    routeParams: object.isRequired,
     computeDialect2: object.isRequired,
     computeLogin: object.isRequired,
     properties: object.isRequired,
@@ -107,9 +111,13 @@ class AppWrapper extends Component {
     }
     return (
       <MuiThemeProvider theme={theme}>
-        <div id="AppWrapper">
-          <AppFrontController preferences={preferences} warnings={{}} />
-        </div>
+        <LoginContext.Provider value={this.props.computeLogin}>
+          <RouteParamsContext.Provider value={this.props.routeParams}>
+            <div id="AppWrapper">
+              <AppFrontController preferences={preferences} warnings={{}} />
+            </div>
+          </RouteParamsContext.Provider>
+        </LoginContext.Provider>
       </MuiThemeProvider>
     )
   }
@@ -125,7 +133,7 @@ class AppWrapper extends Component {
 const mapStateToProps = (state /*, ownProps*/) => {
   const { fvDialect, navigation, nuxeo, windowPath } = state
 
-  const { properties } = navigation
+  const { properties, route } = navigation
   const { computeLogin } = nuxeo
   const { computeDialect2 } = fvDialect
   const { _windowPath } = windowPath
@@ -134,6 +142,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeDialect2,
     computeLogin,
     properties,
+    routeParams: route.routeParams,
     windowPath: _windowPath,
   }
 }

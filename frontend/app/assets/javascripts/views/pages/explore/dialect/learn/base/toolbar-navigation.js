@@ -31,7 +31,7 @@ import NavigationHelpers from 'common/NavigationHelpers'
 
 import EditorInsertChart from '@material-ui/icons/InsertChart'
 import FVButton from 'views/components/FVButton'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import IntlService from 'views/services/intl'
 
 const intl = IntlService.instance
@@ -42,12 +42,10 @@ const intl = IntlService.instance
 const { array, bool, func, object, string } = PropTypes
 export class ToolbarNavigation extends Component {
   static propTypes = {
-    routeParams: object.isRequired,
     handleShowStats: func,
     hideStatistics: bool,
     isStatisticsVisible: bool,
     // REDUX: reducers/state
-    computeLogin: object.isRequired,
     computeResultSet: object.isRequired,
     splitWindowPath: array.isRequired,
     windowPath: string.isRequired,
@@ -148,7 +146,7 @@ export class ToolbarNavigation extends Component {
             </div>
           </div>
           {this.props.hideStatistics !== true && this.props.isStatisticsVisible !== true && (
-            <AuthenticationFilter login={this.props.computeLogin} hideFromSections routeParams={this.props.routeParams}>
+            <AuthenticationFilter hideFromSections>
               <div className="col-xs-12 col-md-2">
                 <div className={classNames('hidden-xs')} float="right">
                   <FVButton variant="flat" style={{ color: '#fff' }} onClick={this.props.handleShowStats}>
@@ -166,14 +164,12 @@ export class ToolbarNavigation extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { document, nuxeo, windowPath } = state
+  const { document, windowPath } = state
 
   const { computeResultSet } = document
-  const { computeLogin } = nuxeo
   const { splitWindowPath, _windowPath } = windowPath
 
   return {
-    computeLogin,
     computeResultSet,
     splitWindowPath,
     windowPath: _windowPath,

@@ -28,7 +28,7 @@ import t from 'tcomb-form'
 import ProviderHelpers from 'common/ProviderHelpers'
 import NavigationHelpers, { routeHasChanged } from 'common/NavigationHelpers'
 
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 import { STATE_LOADING, STATE_DEFAULT, STATE_ERROR_BOUNDARY } from 'common/Constants'
@@ -262,9 +262,7 @@ export class PageDialectWordsCreate extends Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper renderOnError computeEntities={computeEntities}>

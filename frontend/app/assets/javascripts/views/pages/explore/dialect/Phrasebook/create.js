@@ -18,7 +18,7 @@ import { fetchDialect } from 'providers/redux/reducers/fvDialect'
 
 import { getFormData, handleSubmit } from 'common/FormHelpers'
 
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 import {
@@ -53,7 +53,6 @@ export class Phrasebook extends React.Component {
     validator: object,
     // REDUX: reducers/state
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     computeCategories: object.isRequired,
     computeCreateCategory: object,
     computeCategory: object,
@@ -191,9 +190,7 @@ export class Phrasebook extends React.Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper
@@ -318,14 +315,12 @@ export class Phrasebook extends React.Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvCategory, fvDialect, windowPath, navigation, nuxeo } = state
+  const { fvCategory, fvDialect, windowPath, navigation } = state
   const { computeCategories, computeCreateCategory, computeCategory } = fvCategory
   const { computeDialect, computeDialect2 } = fvDialect
   const { splitWindowPath } = windowPath
   const { route } = navigation
-  const { computeLogin } = nuxeo
   return {
-    computeLogin,
     computeCategories,
     computeCreateCategory,
     computeCategory,
@@ -344,7 +339,4 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Phrasebook)
+export default connect(mapStateToProps, mapDispatchToProps)(Phrasebook)

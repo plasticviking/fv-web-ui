@@ -17,7 +17,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Immutable, { is } from 'immutable'
 import classNames from 'classnames'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 // REDUX
@@ -55,7 +55,6 @@ export class PhrasesCreate extends Component {
     onDocumentCreated: func,
     // REDUX: reducers/state
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     computeDialect2: object.isRequired,
     computePhrase: object.isRequired,
     splitWindowPath: array.isRequired,
@@ -271,10 +270,8 @@ export class PhrasesCreate extends Component {
     ])
     return (
       <AuthenticationFilter
-        login={this.props.computeLogin}
         is403={this.state.is403}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper computeEntities={computeEntities}>
@@ -313,15 +310,14 @@ export class PhrasesCreate extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvDialect, fvPhrase, navigation, nuxeo, windowPath } = state
+  const { fvDialect, fvPhrase, navigation, windowPath } = state
 
   const { computePhrase } = fvPhrase
   const { computeDialect2 } = fvDialect
   const { splitWindowPath, _windowPath } = windowPath
   const { route } = navigation
-  const { computeLogin } = nuxeo
+
   return {
-    computeLogin,
     computeDialect2,
     computePhrase,
     routeParams: route.routeParams,

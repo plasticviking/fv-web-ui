@@ -64,7 +64,7 @@ import RecentActivityList from 'views/components/Dashboard/RecentActivityList'
 import TextHeader from 'views/components/Document/Typography/text-header'
 
 import AuthorizationFilter from 'views/components/Document/AuthorizationFilter'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 
 import ToolbarNavigation from 'views/pages/explore/dialect/learn/base/toolbar-navigation'
 import LearningSidebar from 'views/pages/explore/dialect/learn/base/learning-sidebar'
@@ -507,7 +507,7 @@ export class DialectLearn extends Component {
                           />
                         </div>
 
-                        <AuthenticationFilter login={this.props.computeLogin} anon={false}>
+                        <AuthenticationFilter anon={false}>
                           <div className={classNames('col-xs-6')}>
                             <RecentActivityList
                               siteTheme={this.props.routeParams.siteTheme}
@@ -596,7 +596,7 @@ export class DialectLearn extends Component {
                             docType="phrase"
                           />
                         </div>
-                        <AuthenticationFilter login={this.props.computeLogin} anon={false}>
+                        <AuthenticationFilter anon={false}>
                           <div className={classNames('col-xs-6')}>
                             <RecentActivityList
                               siteTheme={this.props.routeParams.siteTheme}
@@ -684,7 +684,7 @@ export class DialectLearn extends Component {
                             docType="song"
                           />
                         </div>
-                        <AuthenticationFilter login={this.props.computeLogin} anon={false}>
+                        <AuthenticationFilter anon={false}>
                           <div className={classNames('col-xs-6')}>
                             <RecentActivityList
                               siteTheme={this.props.routeParams.siteTheme}
@@ -772,7 +772,7 @@ export class DialectLearn extends Component {
                             docType="stories"
                           />
                         </div>
-                        <AuthenticationFilter login={this.props.computeLogin} anon={false}>
+                        <AuthenticationFilter anon={false}>
                           <div className={classNames('col-xs-6')}>
                             <RecentActivityList
                               siteTheme={this.props.routeParams.siteTheme}

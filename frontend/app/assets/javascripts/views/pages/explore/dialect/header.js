@@ -18,7 +18,7 @@ import PropTypes from 'prop-types'
 import NavigationHelpers from 'common/NavigationHelpers'
 import selectn from 'selectn'
 import PageStats from 'views/pages/explore/dialect/page-stats'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 // import { SECTIONS } from 'common/Constants'
 
 /**
@@ -29,7 +29,6 @@ export default class Header extends Component {
     backgroundImage: PropTypes.string,
     portal: PropTypes.object,
     dialect: PropTypes.object,
-    login: PropTypes.object,
     isStatisticsVisible: PropTypes.bool,
     handleShowStats: PropTypes.func,
     routeParams: PropTypes.object,
@@ -49,7 +48,7 @@ export default class Header extends Component {
   }
 
   render() {
-    const { portal, login, routeParams, isStatisticsVisible } = this.props
+    const { portal, routeParams, isStatisticsVisible } = this.props
 
     const backgroundImage = selectn(
       'response.contextParameters.portal.fv-portal:background_top_image.path',
@@ -76,7 +75,7 @@ export default class Header extends Component {
 
     return (
       <div className="Header row" style={portalBackgroundStyles}>
-        <AuthenticationFilter login={login} hideFromSections routeParams={routeParams}>
+        <AuthenticationFilter hideFromSections>
           {isStatisticsVisible && (
             <PageStats handleShowStats={this.props.handleShowStats} dialectPath={routeParams.dialect_path} />
           )}

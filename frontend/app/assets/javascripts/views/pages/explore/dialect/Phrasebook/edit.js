@@ -7,7 +7,7 @@ import StateErrorBoundary from 'views/components/ErrorBoundary'
 import StateSuccessEdit from './states/successEdit'
 import StateSuccessDelete from './states/successDelete'
 import StateEdit from './states/create'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 // REDUX
@@ -68,7 +68,6 @@ export class PhrasebookEdit extends React.Component {
     computeDialect: object.isRequired,
     computeDialect2: object.isRequired,
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     splitWindowPath: array.isRequired,
     // REDUX: actions/dispatch/func
     createCategory: func.isRequired,
@@ -199,9 +198,7 @@ export class PhrasebookEdit extends React.Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper
@@ -352,15 +349,13 @@ export class PhrasebookEdit extends React.Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvCategory, fvDialect, navigation, nuxeo, windowPath } = state
+  const { fvCategory, fvDialect, navigation, windowPath } = state
 
   const { computeCategory, computeCategories, computeCreateCategory } = fvCategory
   const { computeDialect, computeDialect2 } = fvDialect
   const { splitWindowPath } = windowPath
   const { route } = navigation
-  const { computeLogin } = nuxeo
   return {
-    computeLogin,
     computeCategory,
     computeCategories,
     computeCreateCategory,
@@ -383,7 +378,4 @@ const mapDispatchToProps = {
   updateCategory,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PhrasebookEdit)
+export default connect(mapStateToProps, mapDispatchToProps)(PhrasebookEdit)

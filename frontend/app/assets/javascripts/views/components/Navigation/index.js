@@ -52,7 +52,7 @@ import Reorder from '@material-ui/icons/Reorder'
 import Search from '@material-ui/icons/Search'
 import Settings from '@material-ui/icons/Settings'
 
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import Login from 'views/components/Navigation/Login'
 import AppLeftNav from 'views/components/Navigation/AppLeftNav/index.v2'
 import Link from 'views/components/Link'
@@ -63,7 +63,6 @@ import { getDialectClassname } from 'views/pages/explore/dialect/helpers'
 import { WORKSPACES, SECTIONS } from 'common/Constants'
 
 import '!style-loader!css-loader!./styles.css'
-
 const { array, func, object, string, bool } = PropTypes
 
 export class Navigation extends Component {
@@ -221,12 +220,7 @@ export class Navigation extends Component {
 
             <div className="Navigation__separator" />
 
-            <AuthenticationFilter
-              login={this.props.computeLogin}
-              anon={false}
-              routeParams={this.props.routeParams}
-              containerStyle={{ display: 'inline' }}
-            >
+            <AuthenticationFilter anon={false} containerStyle={{ display: 'inline' }}>
               <Link href={NavigationHelpers.generateStaticURL('/tasks')} className={`${appBar} Navigation__link`}>
                 View My Tasks
               </Link>

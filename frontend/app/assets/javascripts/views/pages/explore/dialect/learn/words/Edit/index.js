@@ -30,7 +30,7 @@ import selectn from 'selectn'
 import ProviderHelpers from 'common/ProviderHelpers'
 import NavigationHelpers, { getSearchObject } from 'common/NavigationHelpers'
 import StringHelpers from 'common/StringHelpers'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 import IntlService from 'views/services/intl'
 
@@ -61,7 +61,6 @@ export class WordsEdit extends Component {
     properties: object.isRequired,
     splitWindowPath: array.isRequired,
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     // REDUX: actions/dispatch/func
     changeTitleParams: func.isRequired,
     fetchDialect2: func.isRequired,
@@ -290,10 +289,8 @@ export class WordsEdit extends Component {
 
     return (
       <AuthenticationFilter
-        login={this.props.computeLogin}
         anon={false}
         is403={this.state.is403}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper
@@ -347,15 +344,13 @@ export class WordsEdit extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvDialect, fvWord, navigation, nuxeo, windowPath } = state
+  const { fvDialect, fvWord, navigation, windowPath } = state
 
   const { computeWord } = fvWord
   const { computeDialect2 } = fvDialect
   const { properties } = navigation
   const { splitWindowPath } = windowPath
-  const { computeLogin } = nuxeo
   return {
-    computeLogin,
     computeDialect2,
     computeWord,
     properties,

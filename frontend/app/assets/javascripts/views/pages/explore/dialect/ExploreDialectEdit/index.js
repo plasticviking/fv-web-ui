@@ -28,7 +28,7 @@ import selectn from 'selectn'
 
 import ProviderHelpers from 'common/ProviderHelpers'
 import NavigationHelpers from 'common/NavigationHelpers'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 import StateLoading from 'views/components/Loading'
@@ -55,7 +55,6 @@ export class ExploreDialectEdit extends Component {
   static propTypes = {
     // REDUX: reducers/state
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     computeDialect2: object.isRequired,
     computePortal: object.isRequired,
     splitWindowPath: array.isRequired,
@@ -206,9 +205,7 @@ export class ExploreDialectEdit extends Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper
@@ -262,18 +259,16 @@ export class ExploreDialectEdit extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvDialect, fvPortal, navigation, nuxeo, windowPath } = state
+  const { fvDialect, fvPortal, navigation, windowPath } = state
 
   const { computeDialect2 } = fvDialect
   const { computePortal } = fvPortal
   const { route } = navigation
   const { splitWindowPath } = windowPath
-  const { computeLogin } = nuxeo
 
   return {
     computeDialect2,
     computePortal,
-    computeLogin,
     routeParams: route.routeParams,
     splitWindowPath,
   }

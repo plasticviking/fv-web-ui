@@ -25,7 +25,7 @@ import { pushWindowPath, replaceWindowPath } from 'providers/redux/reducers/wind
 import { fetchDialect2 } from 'providers/redux/reducers/fvDialect'
 
 import selectn from 'selectn'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import ProviderHelpers from 'common/ProviderHelpers'
 import NavigationHelpers from 'common/NavigationHelpers'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
@@ -122,9 +122,7 @@ export class PageDialectAlphabetCharacterEdit extends Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={
           <StateErrorBoundary /*copy={this.state.copy} errorMessage={this.state.errorMessage}*/ />
         }
@@ -193,16 +191,15 @@ export class PageDialectAlphabetCharacterEdit extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvCharacter, fvDialect, nuxeo, windowPath } = state
+  const { fvCharacter, fvDialect, windowPath } = state
 
   const { computeCharacter } = fvCharacter
   const { computeDialect2 } = fvDialect
   const { splitWindowPath, _windowPath } = windowPath
-  const { computeLogin } = nuxeo
+
   return {
     computeCharacter,
     computeDialect2,
-    computeLogin,
     splitWindowPath,
     windowPath: _windowPath,
   }
@@ -217,7 +214,4 @@ const mapDispatchToProps = {
   updateCharacter,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PageDialectAlphabetCharacterEdit)
+export default connect(mapStateToProps, mapDispatchToProps)(PageDialectAlphabetCharacterEdit)

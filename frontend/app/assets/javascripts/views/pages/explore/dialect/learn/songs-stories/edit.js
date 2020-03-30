@@ -30,7 +30,7 @@ import ProviderHelpers from 'common/ProviderHelpers'
 import StringHelpers from 'common/StringHelpers'
 import NavigationHelpers from 'common/NavigationHelpers'
 
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
@@ -68,7 +68,6 @@ export class PageDialectBookEdit extends Component {
     typePlural: string,
     // REDUX: reducers/state
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     computeBook: object.isRequired,
     computeBookEntries: object.isRequired,
     computeDialect2: object.isRequired,
@@ -263,9 +262,7 @@ export class PageDialectBookEdit extends Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <div>
@@ -352,19 +349,17 @@ export class PageDialectBookEdit extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvBook, fvDialect, navigation, nuxeo, windowPath } = state
+  const { fvBook, fvDialect, navigation, windowPath } = state
 
   const { computeBook, computeBookEntries } = fvBook
   const { computeDialect2 } = fvDialect
   const { splitWindowPath } = windowPath
   const { properties } = navigation
-  const { computeLogin } = nuxeo
 
   return {
     computeBook,
     computeBookEntries,
     computeDialect2,
-    computeLogin,
     properties,
     splitWindowPath,
   }

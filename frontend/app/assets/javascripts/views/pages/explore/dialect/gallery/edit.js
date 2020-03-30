@@ -32,7 +32,7 @@ import selectn from 'selectn'
 import ProviderHelpers from 'common/ProviderHelpers'
 import StringHelpers from 'common/StringHelpers'
 import NavigationHelpers from 'common/NavigationHelpers'
-import AuthenticationFilter from 'views/components/Document/AuthenticationFilter'
+import AuthenticationFilter from 'views/components/Document/AuthenticationFilter/AuthenticationFilterHOC'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
@@ -58,7 +58,6 @@ export class PageDialectGalleryEdit extends Component {
     gallery: object,
     // REDUX: reducers/state
     routeParams: object.isRequired,
-    computeLogin: object.isRequired,
     computeGallery: object.isRequired,
     computeDialect2: object.isRequired,
     properties: object.isRequired,
@@ -267,9 +266,7 @@ export class PageDialectGalleryEdit extends Component {
     return (
       <AuthenticationFilter
         is403={this.state.is403}
-        login={this.props.computeLogin}
         anon={false}
-        routeParams={this.props.routeParams}
         notAuthenticatedComponent={<StateErrorBoundary copy={this.state.copy} errorMessage={this.state.errorMessage} />}
       >
         <PromiseWrapper computeEntities={computeEntities}>
@@ -351,18 +348,16 @@ export class PageDialectGalleryEdit extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvDialect, fvGallery, navigation, nuxeo, windowPath } = state
+  const { fvDialect, fvGallery, navigation, windowPath } = state
 
   const { computeGallery } = fvGallery
   const { computeDialect2 } = fvDialect
   const { route, properties } = navigation
   const { splitWindowPath } = windowPath
-  const { computeLogin } = nuxeo
 
   return {
     computeDialect2,
     computeGallery,
-    computeLogin,
     routeParams: route.routeParams,
     properties,
     splitWindowPath,
