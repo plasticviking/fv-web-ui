@@ -14,3 +14,6 @@ Nuxeo-Component: OSGI-INF/ca.firstvoices.operations.xml,OSGI-INF/ca.fi
  ,OSGI-INF/services/ca.firstvoices.services.cleanupcharacterservice.xm
  l,OSGI-INF/services/ca.firstvoices.services.sanitize.xml,OSGI-INF/ca.
  firstvoices.marshallers.xml
+Import-Package: org.nuxeo.ecm.core,
+ com.fasterxml.jackson.core,
+ org.nuxeo.common

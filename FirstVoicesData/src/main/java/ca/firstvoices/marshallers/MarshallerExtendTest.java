@@ -20,7 +20,12 @@ public class MarshallerExtendTest extends DocumentModelJsonWriter {
     public void extend(DocumentModel document, JsonGenerator jg) throws IOException {
         super.extend(document, jg);
         CoreSession session = document.getCoreSession();
-        String parentLanguageID = (String) document.getPropertyValue("fva:language");
+        String parentLanguageID;
+        try {
+            parentLanguageID = (String) document.getPropertyValue("fva:language");
+        } catch (PropertyException e) {
+            return;
+        }
         if (parentLanguageID != null) {
             DocumentRef ref = new IdRef(parentLanguageID);
             DocumentModel doc = session.getDocument(ref);
