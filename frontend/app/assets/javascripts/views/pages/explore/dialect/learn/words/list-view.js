@@ -398,9 +398,9 @@ class WordsListView extends DataListView {
         })
       )
     }
-
     const computeWords = ProviderHelpers.getEntry(this.props.computeWords, this._getPathOrParentID(this.props))
     const computeDialect2 = this.props.dialect || this.getDialect()
+    // console.log('WordsListView OLD', this._getPathOrParentID(this.props), computeWords)
 
     return (
       <PromiseWrapper renderOnError computeEntities={computeEntities}>

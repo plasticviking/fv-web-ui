@@ -238,21 +238,14 @@ import IntlService from 'views/services/intl'
 import FVButton from 'views/components/FVButton'
 import { dictionaryListSmallScreenColumnDataTemplate } from 'views/components/Browsing/DictionaryListSmallScreen'
 import { getSearchObject } from 'common/NavigationHelpers'
-import AuthorizationFilter from 'views/components/Document/AuthorizationFilter'
-const SearchDialect = React.lazy(() => import('views/components/SearchDialect'))
-const FlashcardList = React.lazy(() => import('views/components/Browsing/flashcard-list'))
+import { VIEWMODE_FLASHCARD, VIEWMODE_SMALL_SCREEN, VIEWMODE_LARGE_SCREEN } from './DictionaryListCommon'
 const DictionaryListSmallScreen = React.lazy(() => import('views/components/Browsing/DictionaryListSmallScreen'))
 const DictionaryListLargeScreen = React.lazy(() => import('views/components/Browsing/DictionaryListLargeScreen'))
-const ExportDialect = React.lazy(() => import('views/components/ExportDialect'))
 import '!style-loader!css-loader!./DictionaryList.css'
 
 // ===============================================================
 // DictionaryList
 // ===============================================================
-const VIEWMODE_DEFAULT = 0
-const VIEWMODE_FLASHCARD = 1
-const VIEWMODE_SMALL_SCREEN = 2
-const VIEWMODE_LARGE_SCREEN = 3
 
 const DictionaryList = (props) => {
   const intl = IntlService.instance
@@ -380,33 +373,14 @@ const DictionaryList = (props) => {
 
   return (
     <>
-      {props.hasSearch && (
-        <Suspense fallback={<div>Loading...</div>}>
-          <SearchDialect
-            handleSearch={props.handleSearch}
-            resetSearch={props.resetSearch}
-            searchUi={props.searchUi}
-            searchDialectDataType={props.searchDialectDataType}
-          />
-        </Suspense>
-      )}
+      {props.childSearchDialect && <Suspense fallback={<div>Loading...</div>}>{props.childSearchDialect}</Suspense>}
 
-      {generateListButtons({
-        // Export
-        dialect: props.dialect,
-        exportDialectColumns: props.exportDialectColumns,
-        exportDialectExportElement: props.exportDialectExportElement,
-        exportDialectLabel: props.exportDialectLabel,
-        exportDialectQuery: props.exportDialectQuery,
-        /*
-        // Commented out until export is fixed
-        hasExportDialect: props.hasExportDialect,
-         */
-        // View mode
-        clickHandlerViewMode: props.dictionaryListClickHandlerViewMode,
-        dictionaryListViewMode: props.dictionaryListViewMode,
-        hasViewModeButtons: props.hasViewModeButtons,
-      })}
+      {(props.childViewModeButtons || props.childExportDialect) && (
+        <div className="DictionaryList__ListButtonsGroup">
+          {props.childViewModeButtons}
+          {props.childExportDialect}
+        </div>
+      )}
 
       <Media
         queries={{
@@ -430,13 +404,7 @@ const DictionaryList = (props) => {
           //  Flashcard Specified: by view mode button or prop
           // -----------------------------------------
           if (props.dictionaryListViewMode === VIEWMODE_FLASHCARD) {
-            // TODO: SPECIFY FlashcardList PROPS
-            let flashCards = <FlashcardList {...props} />
-            if (props.hasPagination) {
-              const FlashcardsWithPagination = withPagination(FlashcardList, DefaultFetcherParams.pageSize)
-              flashCards = <FlashcardsWithPagination {...props} />
-            }
-            return flashCards
+            return props.childFlashcardList
           }
 
           //  Small Screen Specified: by view mode button or prop
@@ -483,72 +451,6 @@ const DictionaryList = (props) => {
         }}
       </Media>
     </>
-  )
-}
-
-// generateListButtons
-// ------------------------------------
-function generateListButtons({
-  // Export
-  dialect,
-  exportDialectColumns,
-  exportDialectExportElement,
-  exportDialectLabel,
-  exportDialectQuery,
-  hasExportDialect,
-  // View mode
-  clickHandlerViewMode = () => {},
-  dictionaryListViewMode,
-  hasViewModeButtons,
-}) {
-  let buttonFlashcard = null
-  let exportDialect = null
-
-  if (hasViewModeButtons) {
-    buttonFlashcard =
-      dictionaryListViewMode === VIEWMODE_FLASHCARD ? (
-        <FVButton
-          variant="contained"
-          color="primary"
-          className="DictionaryList__viewModeButton"
-          onClick={() => {
-            clickHandlerViewMode(VIEWMODE_DEFAULT)
-          }}
-        >
-          Cancel flashcard view
-        </FVButton>
-      ) : (
-        <FVButton
-          variant="contained"
-          className="DictionaryList__viewModeButton"
-          onClick={() => {
-            clickHandlerViewMode(VIEWMODE_FLASHCARD)
-          }}
-        >
-          Flashcard view
-        </FVButton>
-      )
-  }
-  if (hasExportDialect) {
-    exportDialect = (
-      <AuthorizationFilter filter={{ permission: 'Write', entity: dialect }}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <ExportDialect
-            exportDialectColumns={exportDialectColumns}
-            exportDialectExportElement={exportDialectExportElement}
-            exportDialectLabel={exportDialectLabel}
-            exportDialectQuery={exportDialectQuery}
-          />
-        </Suspense>
-      </AuthorizationFilter>
-    )
-  }
-
-  return (
-    <div className="DictionaryList__ListButtonsGroup">
-      {buttonFlashcard}
-      {exportDialect}
-    </div>
   )
 }
 
@@ -740,12 +642,6 @@ DictionaryList.propTypes = {
   fetcherParams: object, // NOTE: object of paging data: currentPageIndex, pageSize, filters
   hasPagination: bool,
   metadata: object, // TODO
-  // Export
-  hasExportDialect: bool,
-  exportDialectExportElement: string,
-  exportDialectColumns: string,
-  exportDialectLabel: string,
-  exportDialectQuery: string,
   dialect: object, // NOTE: used to determine permissions with export dialect
   // Batch
   batchConfirmationAction: func,

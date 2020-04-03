@@ -38,6 +38,7 @@ import PageDialectReports from './explore/dialect/reports'
 import PageDialectReportsView from './explore/dialect/reports/view'
 import PageDialectUsers from './explore/dialect/users'
 
+import wordsLayout from './explore/dialect/learn/words/wordsLayout'
 import PageDialectLearnWords from './explore/dialect/learn/words'
 import PageDialectLearnPhrases from './explore/dialect/learn/phrases'
 import PageDialectLearnStoriesAndSongs from './explore/dialect/learn/songs-stories'
@@ -130,6 +131,7 @@ export {
   PageExploreDialect,
   PageDialectLearn,
   PageDialectMedia,
+  wordsLayout,
   PageDialectLearnWords,
   PageDialectLearnWordsFilteredByCategory,
   PageDialectLearnWordsCategories,

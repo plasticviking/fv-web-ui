@@ -147,11 +147,24 @@ const DIALECT_PATH = [
 ]
 const PHRASES_PATH = DIALECT_PATH.concat(['learn', 'phrases'])
 const WORDS_PATH = DIALECT_PATH.concat(['learn', 'words'])
+const WORDS_PATH_OLD = DIALECT_PATH.concat(['learn', 'wordsOld'])
 const IMMERSION_PATH = DIALECT_PATH.concat(['immersion'])
 const REPORTS_PATH = DIALECT_PATH.concat(['reports'])
 const PAGINATION_PATH = [new paramMatch('pageSize', NUMBER), new paramMatch('page', NUMBER)]
 
 // Common Routes
+const DIALECT_LEARN_WORDS_OLD = {
+  path: WORDS_PATH_OLD,
+  title:
+    intl.translate({
+      key: 'words',
+      default: 'Words',
+      case: 'words',
+    }) + ' | {$dialect_name}',
+  page: <Pages.PageDialectLearnWords />,
+  extractPaths: true,
+  redirects: [WORKSPACE_TO_SECTION_REDIRECT],
+}
 const DIALECT_LEARN_WORDS = {
   path: WORDS_PATH,
   title:
@@ -160,7 +173,7 @@ const DIALECT_LEARN_WORDS = {
       default: 'Words',
       case: 'words',
     }) + ' | {$dialect_name}',
-  page: <Pages.PageDialectLearnWords />,
+  page: <Pages.wordsLayout />,
   extractPaths: true,
   redirects: [WORKSPACE_TO_SECTION_REDIRECT],
 }
@@ -1175,6 +1188,8 @@ const routes = [
     redirects: [WORKSPACE_TO_SECTION_REDIRECT],
     extractPaths: true,
   },
+  DIALECT_LEARN_WORDS_OLD,
+  addPagination(DIALECT_LEARN_WORDS_OLD),
   DIALECT_LEARN_WORDS,
   addPagination(DIALECT_LEARN_WORDS),
   {
