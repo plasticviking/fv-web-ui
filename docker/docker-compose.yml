@@ -46,3 +46,13 @@ services:
         depends_on:
             - elasticsearch
 #            - db
+    frontend:
+        image: me/fv-web-ui
+        container_name: fv-web-ui
+        volumes:
+            - '${PWD}/../frontend/:/app'
+            - '/app/node_modules'
+        ports:
+            - '3001:3001'
+        depends_on:
+          - nuxeo

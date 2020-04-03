@@ -102,7 +102,7 @@ module.exports = (env) => ({
     proxy: [
       {
         context: ['/nuxeo/**', '!/nuxeo/app/**'],
-        target: 'http://127.0.0.1:8080',
+        target: 'http://nuxeo:8080',
       },
     ],
   },

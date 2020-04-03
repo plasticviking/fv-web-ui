@@ -11,17 +11,29 @@ RED="\e[31m"
 GREEN="\e[32m"
 ENDCOLOR="\e[0m"
 
-# Build the docker image
+# Build the backend docker image
 cd ${DIRECTORY}
-echo 'Building Docker image'
+echo 'Building backend Docker image'
 docker build -t me/nuxeo-dev .
 if [[ "$?" -ne 0 ]]; then
     echo
-    echo -e "${RED}Docker build failed \n${ENDCOLOR}"; exit 1
+    echo -e "${RED}Docker backend build failed \n${ENDCOLOR}"; exit 1
     echo
 fi
 echo
 
+# Build the frontend docker image
+cd ${DIRECTORY}/../
+echo 'Building frontend Docker image'
+docker build -t me/fv-web-ui .
+if [[ "$?" -ne 0 ]]; then
+    echo
+    echo -e "${RED}Docker frontend build failed \n${ENDCOLOR}"; exit 1
+    echo
+fi
+echo
+
+cd ${DIRECTORY}
 # Create the docker volume directories to hold the server logs / data
 if [[ ! -d "$DIRECTORY/nuxeo_dev_docker" ]]; then
     echo 'Creating docker volume directories'
@@ -37,7 +49,7 @@ echo
 # Build main project.
 echo 'Building fv-web-ui (this make take a few minutes)'
 cd ..
-mvn clean install
+mvn clean install -Pbackend
 if [[ "$?" -ne 0 ]]; then
     echo
     echo -e "${RED}fv-web-ui build failed \n${ENDCOLOR}"; exit 1
