@@ -40,11 +40,9 @@ import FVButton from 'views/components/FVButton'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 import GroupAssignmentDialog from 'views/pages/users/group-assignment-dialog'
-import IntlService from 'views/services/intl'
 
 import AuthorizationFilter from 'views/components/Document/AuthorizationFilter'
-
-const intl = IntlService.instance
+import FVLabel from '../../components/FVLabel/index'
 
 const { func, object } = PropTypes
 export class UserTasks extends React.Component {
@@ -102,7 +100,7 @@ export class UserTasks extends React.Component {
             status: 'validate',
           },
           null,
-          intl.trans('views.pages.tasks.request_approved', 'Request Approved Successfully', 'words')
+          this.props.intl.trans('views.pages.tasks.request_approved', 'Request Approved Successfully', 'words')
         )
         break
 
@@ -114,7 +112,7 @@ export class UserTasks extends React.Component {
             status: 'reject',
           },
           null,
-          intl.trans('views.pages.tasks.request_rejected', 'Request Rejected Successfully', 'words')
+          this.props.intl.trans('views.pages.tasks.request_rejected', 'Request Rejected Successfully', 'words')
         )
         break
       default: // NOTE: do nothing
@@ -124,7 +122,10 @@ export class UserTasks extends React.Component {
   }
 
   _getRoleLabel(role) {
-    const roleLabel = selectn('text', ProviderHelpers.userRegistrationRoles.find((rolesVal) => rolesVal.value == role))
+    const roleLabel = selectn(
+      'text',
+      ProviderHelpers.userRegistrationRoles.find((rolesVal) => rolesVal.value == role)
+    )
     if (roleLabel && roleLabel != 'undefined') return roleLabel.replace('I am', '')
   }
 
@@ -254,7 +255,7 @@ export class UserTasks extends React.Component {
                 color="secondary"
                 onClick={this._handlePreApprovalOpen.bind(this, task, 'approve')}
               >
-                {intl.trans('add_to_group', 'Add to Group', 'first')}
+                <FVLabel transKey="add_to_group" defaultStr="Add to Group" transform="first" />
               </FVButton>
             </td>
           </tr>
@@ -288,13 +289,27 @@ export class UserTasks extends React.Component {
               <table border="1" style={{ width: '100%' }}>
                 <thead>
                   <tr style={{ borderBottom: '1px solid #000' }}>
-                    <th style={{ minWidth: '100px' }}>{intl.trans('last_name', 'Last Name', 'words')}</th>
-                    <th style={{ minWidth: '100px' }}>{intl.trans('first_name', 'First Name', 'words')}</th>
-                    <th>{intl.trans('email', 'Email', 'words')}</th>
-                    <th style={{ minWidth: '100px' }}>{intl.trans('role', 'Role', 'words')}</th>
-                    <th style={{ minWidth: '120px' }}>{intl.trans('comments', 'Comments', 'words')}</th>
-                    <th>{intl.trans('date_created', 'Date Created', 'words')}</th>
-                    <th style={{ minWidth: '150px' }}>{intl.trans('actions', 'Actions', 'words')}</th>
+                    <th style={{ minWidth: '100px' }}>
+                      <FVLabel transKey="last_name" defaultStr="Last Name" transform="words" />
+                    </th>
+                    <th style={{ minWidth: '100px' }}>
+                      <FVLabel transKey="first_name" defaultStr="First Name" transform="words" />
+                    </th>
+                    <th>
+                      <FVLabel transKey="email" defaultStr="Email" transform="words" />
+                    </th>
+                    <th style={{ minWidth: '100px' }}>
+                      <FVLabel transKey="role" defaultStr="Role" transform="words" />
+                    </th>
+                    <th style={{ minWidth: '120px' }}>
+                      <FVLabel transKey="comments" defaultStr="Comments" transform="words" />
+                    </th>
+                    <th>
+                      <FVLabel transKey="date_created" defaultStr="Date Added to FirstVoices" transform="words" />
+                    </th>
+                    <th style={{ minWidth: '150px' }}>
+                      <FVLabel transKey="actions" defaultStr="Actions" transform="words" />
+                    </th>
                   </tr>
                 </thead>
 
@@ -305,15 +320,17 @@ export class UserTasks extends React.Component {
               </table>
 
               <p>
-                {userTasks.length === 0 && userRegistrationTasks.length === 0
-                  ? intl.trans('views.pages.tasks.no_tasks', 'There are currently No tasks.')
-                  : ''}
+                {userTasks.length === 0 && userRegistrationTasks.length === 0 ? (
+                  <FVLabel transKey="views.pages.tasks.no_tasks" defaultStr="There are currently No tasks." />
+                ) : (
+                  ''
+                )}
               </p>
             </div>
           </AuthorizationFilter>
 
           <GroupAssignmentDialog
-            title={intl.trans('group_assignment', 'Group Assignment', 'words')}
+            title={this.props.intl.trans('group_assignment', 'Group Assignment', 'words')}
             fieldMapping={{
               id: 'uid',
               title: 'properties.dc:title',
@@ -334,7 +351,7 @@ export class UserTasks extends React.Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvDialect, fvUser, nuxeo, tasks } = state
+  const { fvDialect, fvUser, nuxeo, tasks, locale } = state
 
   const { computeLogin } = nuxeo
   const { computeDialect2 } = fvDialect
@@ -346,6 +363,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeUserTasksReject,
   } = tasks
   const { computeUserUpgrade } = fvUser
+  const { intlService } = locale
   return {
     computeDialect2,
     computeLogin,
@@ -355,6 +373,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeUserTasksApprove,
     computeUserTasksReject,
     computeUserUpgrade,
+    intl: intlService,
   }
 }
 
@@ -369,7 +388,4 @@ const mapDispatchToProps = {
   userUpgrade,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(UserTasks)
+export default connect(mapStateToProps, mapDispatchToProps)(UserTasks)

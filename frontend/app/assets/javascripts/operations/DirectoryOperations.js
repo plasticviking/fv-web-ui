@@ -224,13 +224,13 @@ export default class DirectoryOperations {
     })
   }
 
-  static getDirectory(name = '') {
+  static getDirectory(name = '', pageSize = 100) {
     const properties = BaseOperations.getProperties()
 
     return new Promise((resolve, reject) => {
       properties.client
         .directory(name)
-        .fetchAll()
+        .fetchAll({ queryParams: { pageSize: pageSize } })
         .then((directory) => {
           resolve(directory)
         })
@@ -246,32 +246,7 @@ export default class DirectoryOperations {
     })
   }
 
-  // Unused methods below (needs refactoring or removing soon)
-  getSubjects(client) {
-    return new Promise((resolve, reject) => {
-      client.request('directory/subtopic').get((error, data) => {
-        if (error) {
-          // something went wrong
-          throw error
-        }
-
-        if (data.entries.length > 0) {
-          //entry.properties.label
-          const subtopics = _.object(_.map(data.entries, (entry) => [entry.properties.id, entry.properties.id]))
-          resolve(subtopics)
-        } else {
-          reject(
-            IntlService.instance.translate({
-              key: 'operations.workspace_not_found',
-              default: 'Workspace not found',
-              case: 'first',
-            })
-          )
-        }
-      })
-    })
-  }
-
+  // Unused method. Remove.
   getPartsOfSpeech(client) {
     return new Promise((resolve, reject) => {
       client.request('directory/parts_speech').get((error, data) => {
@@ -362,9 +337,7 @@ export default class DirectoryOperations {
       // reject the promise
       (resolve, reject) => {
         const defaultParams = {
-          query: `SELECT * FROM ${
-            documentList.model.prototype.entityTypeName
-          } WHERE (ecm:path STARTSWITH '/${domain}${_path}' AND ${selectDefault}) ORDER BY dc:title`,
+          query: `SELECT * FROM ${documentList.model.prototype.entityTypeName} WHERE (ecm:path STARTSWITH '/${domain}${_path}' AND ${selectDefault}) ORDER BY dc:title`,
         }
 
         const defaultHeaders = {}
@@ -399,5 +372,71 @@ export default class DirectoryOperations {
           })
       }
     )
+  }
+
+  static getDocumentsViaResultSetQuery(
+    path = '',
+    type = 'Document',
+    select = '*',
+    queryAppend = ' ORDER BY dc:title',
+    headers = null,
+    params = null
+  ) {
+    const defaultHeaders = {}
+    const defaultParams = {}
+
+    const _headers = Object.assign(defaultHeaders, headers)
+
+    const properties = BaseOperations.getProperties()
+
+    const endPointToUse = 'Repository.ResultSetQuery'
+    const _params = Object.assign(defaultParams, params)
+
+    const where = StringHelpers.isUUID(path)
+      ? `ecm:parentId = '${path}'`
+      : `ecm:path STARTSWITH '${StringHelpers.clean(path)}'`
+
+    const _queryAppend = queryAppend
+
+    const nxqlQueryParams = Object.assign(
+      _params,
+      {
+        language: 'NXQL',
+      },
+      StringHelpers.queryStringToObject(
+        `?query=SELECT ${select} FROM ${type} WHERE ${where} AND ecm:isVersion = 0 AND ecm:isTrashed = 0 ${_queryAppend}`,
+        true
+      )
+    )
+
+    return new Promise((resolve, reject) => {
+      properties.client
+        .operation(endPointToUse)
+        .params(nxqlQueryParams)
+        .execute(_headers)
+        .then((docs) => {
+          resolve(docs)
+        })
+        .catch((error) => {
+          if (error.hasOwnProperty('response')) {
+            error.response.json().then((jsonError) => {
+              reject(StringHelpers.extractErrorMessage(jsonError))
+            })
+          } else {
+            return reject(
+              error ||
+                IntlService.instance.translate({
+                  key: 'operations.could_not_access_server',
+                  default: 'Could not access server',
+                  case: 'first',
+                })
+            )
+          }
+        })
+
+      setTimeout(() => {
+        reject('Server timeout while attempting to get documents.')
+      }, TIMEOUT)
+    })
   }
 }

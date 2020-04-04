@@ -16,7 +16,6 @@ import selectn from 'selectn'
 import Autosuggest from 'react-autosuggest'
 
 import LinearProgress from '@material-ui/core/LinearProgress'
-import IntlService from 'views/services/intl'
 
 const AutoSuggestTheme = {
   container: 'autosuggest dropdown',
@@ -29,7 +28,6 @@ const AutoSuggestTheme = {
 
 let suggestionThrottle
 
-const intl = IntlService.instance
 const { func, object, string } = PropTypes
 
 export class AutoSuggestComponent extends Component {
@@ -103,7 +101,8 @@ export class AutoSuggestComponent extends Component {
           if (entry.type === 'FVCategory') {
             let shared = ''
 
-            if (entry.path.indexOf('SharedData') !== -1) shared = ' (' + intl.trans('shared', 'Shared', 'first') + ')'
+            if (entry.path.indexOf('SharedData') !== -1)
+              shared = ' (' + this.props.intl.trans('shared', 'Shared', 'first') + ')'
 
             breadcrumb.push(
               <span key={i}>
@@ -290,7 +289,7 @@ export class AutoSuggestComponent extends Component {
   render() {
     const { value /*, isLoading */ } = this.state
     const inputProps = {
-      placeholder: intl.trans(
+      placeholder: this.props.intl.trans(
         'views.components.editor.start_typing_for_suggestions',
         'Start typing for suggestions...',
         'first'
@@ -332,7 +331,7 @@ export class AutoSuggestComponent extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvAudio, fvCategory, fvContributor, fvLink, fvPhrase, fvWord } = state
+  const { fvAudio, fvCategory, fvContributor, fvLink, fvPhrase, fvWord, locale } = state
 
   const { computeSharedAudios } = fvAudio
   const { computeSharedCategories } = fvCategory
@@ -340,6 +339,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
   const { computeSharedLinks } = fvLink
   const { computeSharedPhrases } = fvPhrase
   const { computeSharedWords } = fvWord
+  const { intlService } = locale
 
   return {
     computeSharedAudios,
@@ -348,6 +348,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeSharedLinks,
     computeSharedPhrases,
     computeSharedWords,
+    intl: intlService,
   }
 }
 
@@ -361,7 +362,4 @@ const mapDispatchToProps = {
   fetchSharedWords,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(AutoSuggestComponent)
+export default connect(mapStateToProps, mapDispatchToProps)(AutoSuggestComponent)

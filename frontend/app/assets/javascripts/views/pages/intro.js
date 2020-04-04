@@ -23,14 +23,13 @@ import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 
 import classNames from 'classnames'
 import FVButton from 'views/components/FVButton'
-import IntlService from 'views/services/intl'
+import FVLabel from '../components/FVLabel/index'
 
 /**
  * Explore Archive page shows all the families in the archive
  */
 const { func, object, string } = PropTypes
 export class PageHome extends Component {
-  intl = IntlService.instance
   static propTypes = {
     // REDUX: reducers/state
     properties: object.isRequired,
@@ -89,7 +88,7 @@ export class PageHome extends Component {
               </FVButton>
             </a>
             <FVButton variant="contained" onClick={() => this._onNavigateRequest('/')} style={{ textAlign: 'center' }}>
-              {this.intl.translate({ key: 'enter_firstvoices', default: 'Enter FirstVoices' })}
+              <FVLabel transKey="enter_firstvoices" defaultStr="Enter FirstVoices" />
             </FVButton>
             <p>
               <img
@@ -212,7 +211,4 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(PageHome)
+export default connect(mapStateToProps, mapDispatchToProps)(PageHome)

@@ -27,14 +27,13 @@ import { fetchWords } from 'providers/redux/reducers/fvWord'
 import selectn from 'selectn'
 
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
+import FVLabel from 'views/components/FVLabel/index'
 
 import ProviderHelpers from 'common/ProviderHelpers'
 import StringHelpers from 'common/StringHelpers'
 import NavigationHelpers from 'common/NavigationHelpers'
 import UIHelpers from 'common/UIHelpers'
-import IntlService from 'views/services/intl'
 
-const intl = IntlService.instance
 /**
  * Play games
  */
@@ -427,7 +426,7 @@ export class Picturethis extends Component {
     )
 
     if (remoteWords.size != this.state.selectedTheme.words.size) {
-      warning = intl.trans(
+      warning = this.props.intl.trans(
         'views.pages.explore.dialect.play.picture_this.warning',
         'Note: This archive does not contain all of the words required for this game. Placeholders will be used.'
       )
@@ -549,10 +548,18 @@ export class Picturethis extends Component {
         </div>
         <div style={tableStyle}>
           <div style={tableHeader}>
-            <div style={tableCellStyle}>{intl.trans('location', 'Location', 'first')}</div>
-            <div style={tableCellStyle}>{intl.trans('word', 'Word', 'first')}</div>
-            <div style={tableCellStyle}>{intl.trans('translation', 'Translation', 'first')}</div>
-            <div style={tableCellStyle}>{intl.trans('audio', 'Audio', 'first')}</div>
+            <div style={tableCellStyle}>
+              <FVLabel transKey="location" defaultStr="Location" transform="first" />
+            </div>
+            <div style={tableCellStyle}>
+              <FVLabel transKey="word" defaultStr="Word" transform="first" />
+            </div>
+            <div style={tableCellStyle}>
+              <FVLabel transKey="translation" defaultStr="Translation" transform="first" />
+            </div>
+            <div style={tableCellStyle}>
+              <FVLabel transKey="audio" defaultStr="Audio" transform="first" />
+            </div>
           </div>
           {remoteWords.map((word, key) => {
             let dotStyle = locationNumberStyle
@@ -637,12 +644,14 @@ export class Picturethis extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvWord } = state
+  const { fvWord, locale } = state
 
   const { computeWords } = fvWord
+  const { intlService } = locale
 
   return {
     computeWords,
+    intl: intlService,
   }
 }
 
@@ -651,7 +660,4 @@ const mapDispatchToProps = {
   fetchWords,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Picturethis)
+export default connect(mapStateToProps, mapDispatchToProps)(Picturethis)

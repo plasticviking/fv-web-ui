@@ -6,9 +6,7 @@ import AutoSuggestComponent from 'views/components/Editor/AutoSuggestComponent'
 import BrowseComponent from 'views/components/Editor/BrowseComponent'
 import Preview from 'views/components/Editor/Preview'
 import DialogCreateForm from 'views/components/DialogCreateForm'
-import IntlService from 'views/services/intl'
-
-const intl = IntlService.instance
+import FVLabel from '../../FVLabel/index'
 
 /**
  * Define auto-suggest factory
@@ -25,7 +23,6 @@ function renderInput(locals) {
   }
 
   const previewProps = selectn('attrs.previewProps', locals) || {}
-
   let content = (
     <div>
       <Preview
@@ -35,19 +32,13 @@ function renderInput(locals) {
         {...previewProps}
       />
       {locals.attrs.allowEdit ? (
-        // NOTE: For some odd reason the React Fragment suppresses a
-        // bug when using the `Browse *` button to insert an item (eg: a contributor),
-        // the newly inserted item will have a `Create new *` button below it,
-        // however the correct behaviout is to have an `Edit *` button
-        <>
-          <DialogCreateForm
-            context={locals.context}
-            value={locals.value}
-            expandedValue={selectn('attrs.expandedValue', locals)}
-            onChange={onChange}
-            fieldAttributes={locals.attrs}
-          />
-        </>
+        <DialogCreateForm
+          context={locals.context}
+          value={locals.value}
+          expandedValue={selectn('attrs.expandedValue', locals)}
+          onChange={onChange}
+          fieldAttributes={locals.attrs}
+        />
       ) : (
         ''
       )}
@@ -68,17 +59,18 @@ function renderInput(locals) {
         {locals.attrs.hideCreate ? (
           ''
         ) : (
-          // NOTE: For some odd reason when the react fragment is missing a newly created or inserted
-          // item has a 'Create New *' button below it.
-          <>
-            <DialogCreateForm context={locals.context} onChange={onChange} fieldAttributes={locals.attrs} />
-          </>
+          <DialogCreateForm context={locals.context} onChange={onChange} fieldAttributes={locals.attrs} />
         )}
         <BrowseComponent
           type={locals.type}
           label={
-            locals.labelBrowseComponent ||
-            intl.trans('views.components.editor.browse_existing', 'Browse Existing', 'words')
+            locals.labelBrowseComponent || (
+              <FVLabel
+                transKey="views.components.editor.browse_existing"
+                defaultStr="Browse Existing"
+                transform="words"
+              />
+            )
           }
           onComplete={onComplete}
           dialect={locals.context}

@@ -31,7 +31,7 @@ import AVPlayArrow from '@material-ui/icons/PlayArrow'
 import AVStop from '@material-ui/icons/Stop'
 
 import UIHelpers from 'common/UIHelpers'
-import IntlService from 'views/services/intl'
+import { connect } from 'react-redux'
 // const WhiteAVPlayArrow = withStyles({
 //   root: {
 //     color: 'white'
@@ -43,8 +43,7 @@ import IntlService from 'views/services/intl'
 //     color: 'white'
 //   }
 // })(AVStop)
-const intl = IntlService.instance
-export default class GridView extends Component {
+class GridView extends Component {
   static propTypes = {
     items: PropTypes.oneOfType([PropTypes.array, PropTypes.instanceOf(List)]),
     filteredItems: PropTypes.oneOfType([PropTypes.array, PropTypes.instanceOf(List)]),
@@ -82,11 +81,11 @@ export default class GridView extends Component {
 
     switch (this.props.type) {
       case 'FVWord':
-        single = intl.trans('word', 'word', 'lower')
+        single = this.props.intl.trans('word', 'word', 'lower')
         break
 
       case 'FVPhrase':
-        single = intl.trans('phrase', 'phrase', 'lower')
+        single = this.props.intl.trans('phrase', 'phrase', 'lower')
         break
       default: // Note: do nothing
     }
@@ -190,3 +189,14 @@ export default class GridView extends Component {
     )
   }
 }
+
+const mapStateToProps = (state) => {
+  const { locale } = state
+  const { intlService } = locale
+
+  return {
+    intl: intlService,
+  }
+}
+
+export default connect(mapStateToProps)(GridView)

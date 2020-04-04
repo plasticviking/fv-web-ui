@@ -1,8 +1,7 @@
-// NOTE: see `.../javascripts/providers/redux/reducers/index.js` about `_directory` vs `directory`
 import { combineReducers } from 'redux'
 import { DIRECTORY_FETCH_START, DIRECTORY_FETCH_SUCCESS, DIRECTORY_FETCH_ERROR } from './actionTypes'
 
-const initialState = { isFetching: false, directories: {}, directory: null, success: false }
+const initialState = { isFetching: false, directory: null, directoryEntries: {}, success: false }
 
 const computeDirectory = (state = initialState, action) => {
   switch (action.type) {
@@ -11,7 +10,7 @@ const computeDirectory = (state = initialState, action) => {
 
     case DIRECTORY_FETCH_SUCCESS:
       return Object.assign({}, state, {
-        directories: Object.assign(state.directories, action.directories),
+        directoryEntries: Object.assign(state.directoryEntries, action.directoryEntries),
         directory: action.name,
         isFetching: false,
         success: true,

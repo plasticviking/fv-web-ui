@@ -7,8 +7,8 @@ import selectn from 'selectn'
 // REDUX
 import { connect } from 'react-redux'
 import { pushWindowPath } from 'providers/redux/reducers/windowPath'
-
-import NavigationHelpers from 'common/NavigationHelpers'
+import Link from 'views/components/Link'
+import URLHelpers from '../../../common/URLHelpers'
 
 const { instanceOf, any, array, func, object, string } = PropTypes
 
@@ -129,7 +129,7 @@ export class DialectFilterList extends Component {
       const urlFragment = this.props.type === 'words' ? 'categories' : 'book'
       _splitWindowPath.push(urlFragment)
     }
-    const path = ('/' + _splitWindowPath.join('/')).replace(NavigationHelpers.getContextPath(), '')
+    const path = ('/' + _splitWindowPath.join('/')).replace(URLHelpers.getContextPath(), '')
 
     filters.forEach((filter) => {
       this.setUidUrlPath(filter, path)
@@ -254,17 +254,13 @@ export class DialectFilterList extends Component {
           this.clickParams[uidChild] = childClickParams
           const childListItem = (
             <li key={uidChild}>
-              <a
+              <Link
                 className={`DialectFilterListLink DialectFilterListLink--child ${childActiveClass}`}
                 href={childHref}
-                onClick={(e) => {
-                  e.preventDefault()
-                  this.handleClick(childClickParams)
-                }}
                 title={filterChild.title}
               >
                 {filterChild.title}
-              </a>
+              </Link>
             </li>
           )
           childrenItems.push(childListItem)
@@ -291,18 +287,13 @@ export class DialectFilterList extends Component {
       const parentListItem = (
         <li key={uidParent} className={`DialectFilterListItemParent ${listItemActiveClass}`}>
           <div className="DialectFilterListItemGroup">
-            <a
+            <Link
               className={`DialectFilterListLink DialectFilterListLink--parent ${parentActiveClass}`}
               href={parentHref}
-              onClick={(e) => {
-                e.preventDefault()
-                this.handleClick(parentClickParams)
-              }}
               title={filter.title}
             >
               {filter.title}
-            </a>
-            {/* {childrenItems.length > 0 && <button className="DialectFilterListItemToggle">Show subcategories</button>} */}
+            </Link>
           </div>
           {childrenItems.length > 0 ? <ul className="DialectFilterListList">{childrenItems}</ul> : null}
         </li>

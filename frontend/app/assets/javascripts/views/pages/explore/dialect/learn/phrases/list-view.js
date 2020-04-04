@@ -34,7 +34,6 @@ import AuthorizationFilter from 'views/components/Document/AuthorizationFilter'
 import DataListView from 'views/pages/explore/dialect/learn/base/data-list-view'
 import DocumentListView from 'views/components/Document/DocumentListView'
 import FVButton from 'views/components/FVButton'
-import IntlService from 'views/services/intl'
 import NavigationHelpers, { getSearchObject } from 'common/NavigationHelpers'
 import Preview from 'views/components/Editor/Preview'
 import PromiseWrapper from 'views/components/Document/PromiseWrapper'
@@ -48,8 +47,8 @@ import {
   dictionaryListSmallScreenColumnDataTemplateCustomInspectChildren,
   dictionaryListSmallScreenColumnDataTemplateCustomInspectChildrenCellRender,
   dictionaryListSmallScreenColumnDataTemplateCustomAudio,
+  dictionaryListSmallScreenTemplatePhrases,
 } from 'views/components/Browsing/DictionaryListSmallScreen'
-const intl = IntlService.instance
 /**
  * List view for phrases
  */
@@ -100,7 +99,7 @@ export class PhrasesListView extends DataListView {
     DEFAULT_PAGE: 1,
     DEFAULT_PAGE_SIZE: 10,
     DEFAULT_LANGUAGE: 'english',
-    DEFAULT_SORT_COL: 'dc:title',
+    DEFAULT_SORT_COL: 'fv:custom_order', // NOTE: Used when paging
     DEFAULT_SORT_TYPE: 'asc',
     ENABLED_COLS: ['title', 'fv:definitions', 'related_pictures', 'related_audio', 'fv-phrase:phrase_books'],
     dialect: null,
@@ -124,7 +123,7 @@ export class PhrasesListView extends DataListView {
       columns: [
         {
           name: 'title',
-          title: intl.trans('phrase', 'Phrase', 'first'),
+          title: props.intl.trans('phrase', 'Phrase', 'first'),
           columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.cellRender,
           render: (v, data) => {
             const href = NavigationHelpers.generateUIDPath(currentTheme, data, 'phrases')
@@ -159,7 +158,7 @@ export class PhrasesListView extends DataListView {
                       NavigationHelpers.navigate(hrefEditRedirect, this.props.pushWindowPath, false)
                     }}
                   >
-                    <Edit title={intl.trans('edit', 'Edit', 'first')} />
+                    <Edit title={props.intl.trans('edit', 'Edit', 'first')} />
                     {/* <span>{intl.trans('edit', 'Edit', 'first')}</span> */}
                   </FVButton>
                 </AuthorizationFilter>
@@ -178,7 +177,7 @@ export class PhrasesListView extends DataListView {
         },
         {
           name: 'fv:definitions',
-          title: intl.trans('definitions', 'Definitions', 'first'),
+          title: props.intl.trans('definitions', 'Definitions', 'first'),
           columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.custom,
           columnDataTemplateCustom: dictionaryListSmallScreenColumnDataTemplateCustomInspectChildrenCellRender,
           render: (v, data, cellProps) => {
@@ -198,7 +197,7 @@ export class PhrasesListView extends DataListView {
         },
         {
           name: 'related_audio',
-          title: intl.trans('audio', 'Audio', 'first'),
+          title: props.intl.trans('audio', 'Audio', 'first'),
           columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.custom,
           columnDataTemplateCustom: dictionaryListSmallScreenColumnDataTemplateCustomAudio,
           render: (v, data, cellProps) => {
@@ -221,7 +220,7 @@ export class PhrasesListView extends DataListView {
           name: 'related_pictures',
           width: 72,
           textAlign: 'center',
-          title: intl.trans('picture', 'Picture', 'first'),
+          title: props.intl.trans('picture', 'Picture', 'first'),
           columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.cellRender,
           render: (v, data, cellProps) => {
             const firstPicture = selectn('contextParameters.phrase.' + cellProps.name + '[0]', data)
@@ -238,7 +237,7 @@ export class PhrasesListView extends DataListView {
         },
         {
           name: 'fv-phrase:phrase_books',
-          title: intl.trans('phrase_books', 'Phrase Books', 'words'),
+          title: props.intl.trans('phrase_books', 'Phrase Books', 'words'),
           columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.custom,
           columnDataTemplateCustom: dictionaryListSmallScreenColumnDataTemplateCustomInspectChildren,
           render: (v, data) => {
@@ -251,7 +250,7 @@ export class PhrasesListView extends DataListView {
         {
           name: 'dc:modified',
           width: 210,
-          title: intl.trans('date_modified', 'Date Modified'),
+          title: props.intl.trans('date_modified', 'Date Modified'),
           render: (v, data) => {
             return StringHelpers.formatUTCDateString(selectn('lastModified', data))
           },
@@ -259,7 +258,7 @@ export class PhrasesListView extends DataListView {
         {
           name: 'dc:created',
           width: 210,
-          title: intl.trans('date_created', 'Date Created'),
+          title: props.intl.trans('date_created', 'Date Added to FirstVoices'),
           render: (v, data) => {
             return StringHelpers.formatUTCDateString(selectn('properties.dc:created', data))
           },
@@ -282,7 +281,7 @@ export class PhrasesListView extends DataListView {
     }
 
     // Bind methods to 'this'
-    [
+    ;[
       '_onEntryNavigateRequest',
       '_handleRefetch',
       '_handleSortChange',
@@ -341,25 +340,18 @@ export class PhrasesListView extends DataListView {
             // refetcher: this._handleRefetch,
             // NOTE: Pagination === refetcher
             refetcher={(dataGridProps, page, pageSize) => {
+              const searchObj = getSearchObject()
               this._handleRefetch2({
                 page,
                 pageSize,
                 preserveSearch: true,
+                // 1st: redux values, 2nd: url search query, 3rd: defaults
+                sortOrder:
+                  this.props.navigationRouteSearch.sortOrder || searchObj.sortOrder || this.props.DEFAULT_SORT_TYPE,
+                sortBy: this.props.navigationRouteSearch.sortBy || searchObj.sortBy || this.props.DEFAULT_SORT_COL,
               })
             }}
             sortHandler={({ page, pageSize, sortBy, sortOrder } = {}) => {
-              /*
-              NOTE: TOWER OF INDIRECTION!
-
-              Since `WordsListView extends DataListView`...
-
-              `DataListView` detects the sort change via it's `componentDidUpdate`
-              which then calls `WordsListView's > fetchData()` which gets the new
-              data via `this._fetchListViewData`
-
-              _handleRefetch2 is called to update the url
-              eg: A sort event happens on page 3, `_handleRefetch2` resets it to page 1
-              */
               this.props.setRouteParams({
                 search: {
                   pageSize,
@@ -368,6 +360,9 @@ export class PhrasesListView extends DataListView {
                   sortOrder,
                 },
               })
+
+              // _handleRefetch2 is called to update the url, eg:
+              // A sort event happened on page 3, `_handleRefetch2` will reset to page 1
               this._handleRefetch2({
                 page,
                 pageSize,
@@ -379,41 +374,7 @@ export class PhrasesListView extends DataListView {
             type={'FVPhrase'}
             dictionaryListClickHandlerViewMode={this.props.dictionaryListClickHandlerViewMode}
             dictionaryListViewMode={this.props.dictionaryListViewMode}
-            dictionaryListSmallScreenTemplate={({ templateData }) => {
-              return (
-                <div className="DictionaryListSmallScreen__item">
-                  <div className="DictionaryListSmallScreen__groupMain">
-                    {templateData.actions}
-                    {templateData.rowClick}
-                    <div className="DictionaryListSmallScreen__groupData DictionaryListSmallScreen__groupData--noHorizPad">
-                      {templateData.title}
-                      <span className="DictionaryListSmallScreen__partOfSpeech">
-                        {templateData['fv-word:part_of_speech']}
-                      </span>
-                    </div>
-                    <div className="DictionaryListSmallScreen__groupData DictionaryListSmallScreen__groupData--noHorizPad">
-                      {templateData.related_audio}
-                    </div>
-
-                    {templateData['fv:definitions'] && (
-                      <div className="DictionaryListSmallScreen__groupData">
-                        <h2 className="DictionaryListSmallScreen__definitionsHeading">Definitions</h2>
-                        {templateData['fv:definitions']}
-                      </div>
-                    )}
-
-                    <div className="DictionaryListSmallScreen__groupMainMiscellaneous">
-                      <div className="DictionaryListSmallScreen__groupData">
-                        {templateData['fv-phrase:phrase_books']}
-                      </div>
-                      <div className="DictionaryListSmallScreen__groupData">{templateData.state}</div>
-                    </div>
-                  </div>
-
-                  <div className="DictionaryListSmallScreen__groupData">{templateData.related_pictures}</div>
-                </div>
-              )
-            }}
+            dictionaryListSmallScreenTemplate={dictionaryListSmallScreenTemplatePhrases}
             // SEARCH:
             handleSearch={this.props.handleSearch}
             hasSearch={this.props.hasSearch}
@@ -460,11 +421,10 @@ export class PhrasesListView extends DataListView {
 
     // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
     const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
-    props.fetchPhrases(
-      this._getPathOrParentID(props),
-      `${currentAppliedFilter}&currentPageIndex=${pageIndex -
-        1}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortBy=${sortBy}${startsWithQuery}`
-    )
+    const nql = `${currentAppliedFilter}&currentPageIndex=${pageIndex -
+      1}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortBy=${sortBy}${startsWithQuery}`
+
+    props.fetchPhrases(this._getPathOrParentID(props), nql)
   }
 
   _getPathOrParentID(newProps) {
@@ -486,13 +446,14 @@ export class PhrasesListView extends DataListView {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvDialect, fvPhrase, navigation, nuxeo, windowPath } = state
+  const { fvDialect, fvPhrase, navigation, nuxeo, windowPath, locale } = state
 
   const { properties, route } = navigation
   const { computeLogin } = nuxeo
   const { computeDialect2 } = fvDialect
   const { computePhrases } = fvPhrase
   const { splitWindowPath, _windowPath } = windowPath
+  const { intlService } = locale
 
   return {
     computeDialect2,
@@ -502,6 +463,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     properties,
     splitWindowPath,
     windowPath: _windowPath,
+    intl: intlService,
   }
 }
 

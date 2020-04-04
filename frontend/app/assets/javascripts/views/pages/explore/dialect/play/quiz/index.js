@@ -38,9 +38,8 @@ import { connect } from 'react-redux'
 import { fetchWords } from 'providers/redux/reducers/fvWord'
 
 import selectn from 'selectn'
-import IntlService from 'views/services/intl'
+import FVLabel from 'views/components/FVLabel/index'
 
-const intl = IntlService.instance
 const containerStyle = {
   background: 'url(/assets/games/fv-games-wordscramble/images/background.png)',
   backgroundSize: 'cover',
@@ -364,26 +363,34 @@ export class Quiz extends Component {
     let skillLevel = ''
 
     if (this.state.attempts == this.state.totalQuestions) {
-      skillLevel = intl.trans(
-        'views.pages.explore.dialect.play.quiz.looks_like_your_an_expert',
-        "Looks like you're an expert!"
+      skillLevel = (
+        <FVLabel
+          transKey="views.pages.explore.dialect.play.quiz.looks_like_your_an_expert"
+          defaultStr="Looks like you're an expert!"
+        />
       )
     } else if (this.state.attempts > this.state.totalQuestions && this.state.attempts < this.state.totalQuestions * 2) {
-      skillLevel = intl.trans(
-        'views.pages.explore.dialect.play.quiz.on_your_way_to_becoming_an_expert',
-        'On your way to becoming an expert!'
+      skillLevel = (
+        <FVLabel
+          transKey="views.pages.explore.dialect.play.quiz.on_your_way_to_becoming_an_expert"
+          defaultStr="On your way to becoming an expert!"
+        />
       )
     }
     let feedback = ''
     if (isSelected) {
       feedback = isCorrect ? (
         <div>
-          {intl.trans('good_job', 'Good Job', 'words')}! <strong>{selectn('word', selectedAnswer)}</strong>{' '}
-          {intl.trans('translates_to', 'translates to')}
+          <FVLabel transKey="good_job" defaultStr="Good Job" transform="words" />!{' '}
+          <strong>{selectn('word', selectedAnswer)}</strong>{' '}
+          <FVLabel transKey="translates_to" defaultStr="translates to" />
           &nbsp; <strong>{selectn('translation', selectedAnswer)}</strong>
         </div>
       ) : (
-        intl.trans('try_again', 'Try again', 'first') + '...'
+        <>
+          <FVLabel transKey="try_again" defaultStr="Try again" transform="first" />
+          ...
+        </>
       )
     }
     return (
@@ -410,13 +417,17 @@ export class Quiz extends Component {
                       padding: '0',
                     }}
                   >
-                    {intl.trans(
-                      'views.pages.explore.dialect.play.quiz.completed_this_quiz',
-                      "Nice! You've completed this quiz!"
-                    )}{' '}
+                    <FVLabel
+                      transKey="views.pages.explore.dialect.play.quiz.completed_this_quiz"
+                      defaultStr="Nice! You've completed this quiz!"
+                    />{' '}
                     {skillLevel}
                     <FVButton variant="contained" onClick={this._restart} style={{ marginLeft: '10px' }}>
-                      {intl.trans('views.pages.explore.dialect.play.quiz.new_quiz', 'New Quiz', 'words')}
+                      <FVLabel
+                        transKey="views.pages.explore.dialect.play.quiz.new_quiz"
+                        defaultStr="New Quiz"
+                        transform="words"
+                      />
                     </FVButton>
                   </div>
                 ) : (
@@ -454,7 +465,7 @@ export class Quiz extends Component {
           <div className={classNames('row', 'row-navigation')}>
             <div className={classNames('col-xs-2', 'text-left')}>
               <Tooltip
-                title={intl.trans(
+                title={this.props.intl.trans(
                   'views.pages.explore.dialect.play.quiz.previous_question',
                   'Previous Question',
                   'words'
@@ -465,7 +476,7 @@ export class Quiz extends Component {
                   onClick={this._handleNavigate.bind(this, 'previous')}
                 >
                   <ChevronLeft
-                    aria-label={intl.trans(
+                    aria-label={this.props.intl.trans(
                       'views.pages.explore.dialect.play.quiz.previous_question',
                       'Previous Question',
                       'words'
@@ -490,11 +501,15 @@ export class Quiz extends Component {
 
             <div className={classNames('col-xs-2', 'text-right')}>
               <Tooltip
-                title={intl.trans('views.pages.explore.dialect.play.quiz.next_question', 'Next Question', 'words')}
+                title={this.props.intl.trans(
+                  'views.pages.explore.dialect.play.quiz.next_question',
+                  'Next Question',
+                  'words'
+                )}
               >
                 <IconButton style={{ backgroundColor: '#ffffff' }} onClick={this._handleNavigate.bind(this, 'next')}>
                   <ChevronRight
-                    aria-label={intl.trans(
+                    aria-label={this.props.intl.trans(
                       'views.pages.explore.dialect.play.quiz.next_question',
                       'Next Question',
                       'words'
@@ -514,8 +529,8 @@ export class Quiz extends Component {
                 backgroundColor: 'rgba(0,0,0,0.5)',
               }}
             >
-              {intl.trans('questions', 'Questions', 'first')}: {this.state.currentAnswerIndex + 1} /{' '}
-              <strong>{this.state.totalQuestions}</strong>
+              <FVLabel transKey="questions" defaultStr="Questions" transform="first" />:{' '}
+              {this.state.currentAnswerIndex + 1} / <strong>{this.state.totalQuestions}</strong>
             </span>
           </div>
         </div>
@@ -526,12 +541,14 @@ export class Quiz extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvWord } = state
+  const { fvWord, locale } = state
 
   const { computeWords } = fvWord
+  const { intlService } = locale
 
   return {
     computeWords,
+    intl: intlService,
   }
 }
 
@@ -540,7 +557,4 @@ const mapDispatchToProps = {
   fetchWords,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Quiz)
+export default connect(mapStateToProps, mapDispatchToProps)(Quiz)

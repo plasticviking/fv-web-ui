@@ -27,12 +27,10 @@ import { fetchSourceDocument, fetchResultSet } from 'providers/redux/reducers/do
 import ProviderHelpers from 'common/ProviderHelpers'
 import StringHelpers from 'common/StringHelpers'
 
-import IntlService from 'views/services/intl'
 import { WORKSPACES, SECTIONS } from 'common/Constants'
 
 import '!style-loader!css-loader!./WorkspaceSwitcher.css'
-
-const intl = IntlService.instance
+import FVLabel from '../FVLabel/index'
 
 const { array, func, object, string } = PropTypes
 
@@ -150,11 +148,7 @@ export class WorkspaceSwitcher extends Component {
               }
             }}
           >
-            {intl.translate({
-              key: 'workspace',
-              default: 'Workspace',
-              case: 'words',
-            })}
+            <FVLabel transKey="workspace" defaultStr="Workspace" transform="words" />
           </button>
         </li>
         <li
@@ -171,11 +165,7 @@ export class WorkspaceSwitcher extends Component {
               }
             }}
           >
-            {intl.translate({
-              key: 'public_view',
-              default: 'Public View',
-              case: 'words',
-            })}
+            <FVLabel transKey="public_view" defaultStr="Public View" transform="words" />
             {noPublishedDocFound}
           </button>
         </li>
@@ -208,7 +198,4 @@ const mapDispatchToProps = {
   fetchResultSet,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(WorkspaceSwitcher)
+export default connect(mapStateToProps, mapDispatchToProps)(WorkspaceSwitcher)

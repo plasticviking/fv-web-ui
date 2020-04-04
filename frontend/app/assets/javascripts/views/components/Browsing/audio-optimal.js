@@ -20,8 +20,7 @@ import Tooltip from '@material-ui/core/Tooltip'
 import Info from '@material-ui/icons/Info'
 import Close from '@material-ui/icons/Close'
 import IconButton from '@material-ui/core/IconButton'
-import IntlService from 'views/services/intl'
-const intl = IntlService.instance
+import FVLabel from '../FVLabel/index'
 
 export default class AudioOptimal extends Component {
   static propTypes = {
@@ -40,8 +39,6 @@ export default class AudioOptimal extends Component {
     // Bind methods to 'this'
     ;['_getMoreAudioInfo'].forEach((method) => (this[method] = this[method].bind(this)))
   }
-
-  intl = IntlService.instance
 
   _getDescription(metadata) {
     return metadata.description ? (
@@ -104,13 +101,7 @@ export default class AudioOptimal extends Component {
     return (
       <div className="AudioOptimal">
         {this.props.audioTag}
-        <Tooltip
-          title={intl.translate({
-            key: 'audio_information',
-            default: 'Audio Information',
-            case: 'words',
-          })}
-        >
+        <Tooltip title={<FVLabel transKey="audio_information" defaultStr="Audio Information" transform="words" />}>
           <IconButton onClick={this._getMoreAudioInfo}>
             <Info aria-label="Show Audio Information" />
           </IconButton>
@@ -121,11 +112,7 @@ export default class AudioOptimal extends Component {
           {this._getRecorders(metadata)}
 
           <Tooltip
-            title={intl.translate({
-              key: 'audio_information',
-              default: 'Hide Audio Information',
-              case: 'words',
-            })}
+            title={<FVLabel transKey="audio_information" defaultStr="Hide Audio Information" transform="words" />}
           >
             <IconButton onClick={() => this.setState({ showAudioMetadata: false })}>
               <Close aria-label="Hide Audio Information" />

@@ -28,8 +28,7 @@ import MenuItem from '@material-ui/core/MenuItem'
 import FormControl from '@material-ui/core/FormControl'
 import InputLabel from '@material-ui/core/InputLabel'
 import StringHelpers, { CLEAN_ID } from 'common/StringHelpers'
-import IntlService from 'views/services/intl'
-const intl = IntlService.instance
+import FVLabel from '../FVLabel/index'
 
 const { bool, func, object, string } = PropTypes
 
@@ -77,14 +76,20 @@ export class DirectoryList extends Component {
   render() {
     const { computeDirectory } = this.props
 
-    const entries = selectn('directories.' + this.props.dir, computeDirectory) || []
+    const entries = selectn('directoryEntries.' + this.props.dir, computeDirectory) || []
     const dataTestId = StringHelpers.clean(this.props.dataTestId, CLEAN_ID)
     return (
       <div>
         {this.props.fancy ? (
           <FormControl style={{ minWidth: 200 }}>
             <InputLabel htmlFor={`${this.props.label}_select`}>
-              {intl.trans('select_x', 'Select ' + this.props.label, 'first', [this.props.label]) + ':'}
+              <FVLabel
+                transKey="select_x"
+                defaultStr={'Select ' + this.props.label}
+                transform="first"
+                params={[this.props.label]}
+              />
+              :
             </InputLabel>
 
             <Select
@@ -132,7 +137,4 @@ const mapDispatchToProps = {
   fetchDirectory,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(DirectoryList)
+export default connect(mapStateToProps, mapDispatchToProps)(DirectoryList)

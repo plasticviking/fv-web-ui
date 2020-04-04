@@ -39,9 +39,8 @@ import { connect } from 'react-redux'
 import { fetchPhrases } from 'providers/redux/reducers/fvPhrase'
 
 import selectn from 'selectn'
-import IntlService from 'views/services/intl'
+import FVLabel from 'views/components/FVLabel/index'
 
-const intl = IntlService.instance
 const containerStyle = {
   background: 'url(/assets/games/fv-games-wordscramble/images/background.png)',
   backgroundSize: 'cover',
@@ -365,7 +364,7 @@ export class Scramble extends Component {
           })}
           {this.state.complete ? (
             <FVButton variant="contained" color="primary" onMouseUp={this.reset.bind(this)}>
-              {intl.trans('reset', 'Reset', 'first')}
+              <FVLabel transKey="reset" defaultStr="Reset" transform="first" />
             </FVButton>
           ) : (
             false
@@ -378,13 +377,13 @@ export class Scramble extends Component {
             color="secondary"
             onMouseUp={this.checkAnswer.bind(this)}
           >
-            {intl.trans('check', 'Check', 'first')}
+            <FVLabel transKey="check" defaultStr="Check" transform="first" />
           </FVButton>
           {this.state.complete ? (
             false
           ) : (
             <FVButton variant="contained" color="primary" onMouseUp={this.reset.bind(this)}>
-              {intl.trans('reset', 'Reset', 'first')}
+              <FVLabel transKey="reset" defaultStr="Reset" transform="first" />
             </FVButton>
           )}
         </div>
@@ -409,7 +408,4 @@ const mapDispatchToProps = {
   fetchPhrases,
 }
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Wordscramble)
+export default connect(mapStateToProps, mapDispatchToProps)(Wordscramble)

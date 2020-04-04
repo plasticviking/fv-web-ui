@@ -30,10 +30,7 @@ import CircularProgress from '@material-ui/core/CircularProgress'
 import NavigationHelpers from 'common/NavigationHelpers'
 import PortalListDialects from 'views/components/Browsing/portal-list-dialects'
 import { WORKSPACES, SECTIONS } from 'common/Constants'
-
-import IntlService from 'views/services/intl'
-
-const intl = IntlService.instance
+import FVLabel from '../../../components/FVLabel/index'
 
 /**
  * Explore Archive page shows all the families in the archive
@@ -123,7 +120,9 @@ export class ExploreDialects extends Component {
         <div className="row">
           <div className="col-xs-12">
             <div className={classNames({ hidden: this.props.routeParams.siteTheme === 'kids' })}>
-              <h1>{intl.translate({ key: 'general.explore', default: 'Explore Languages', case: 'title' })}</h1>
+              <h1>
+                <FVLabel transKey="general.explore" defaultStr="Explore Languages" transform="title" />
+              </h1>
             </div>
             {introText1}
             {content}

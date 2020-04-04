@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
-import IntlService from 'views/services/intl'
+import FVLabel from 'views/components/FVLabel/index'
 import PromiseHelpers from 'common/PromiseHelpers'
-const intl = IntlService.instance
 /**
  * Play games
  */
@@ -116,7 +114,9 @@ export default class ColouringBook extends Component {
       <div>
         <div className="row">
           <div className="col-xs-12">
-            <h1>{intl.trans('colouring_book', 'Colouring Book', 'words')}</h1>
+            <h1>
+              <FVLabel transKey="colouring_book" defaultStr="Colouring Book" transform="words" />
+            </h1>
             <div style={gameContainerStyles} ref={this.gameContainer} />
           </div>
         </div>

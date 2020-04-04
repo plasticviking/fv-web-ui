@@ -51,9 +51,7 @@ import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
 
 import PreviewMetaDataContributor from 'views/components/Editor/PreviewMetaDataContributor'
-import IntlService from 'views/services/intl'
-
-const intl = IntlService.instance
+import FVLabel from '../FVLabel/index'
 
 const { bool, func, object, string } = PropTypes
 
@@ -215,7 +213,7 @@ export class Preview extends Component {
         } else if (word && word.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', word)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', word)}
             </div>
           )
         }
@@ -244,7 +242,7 @@ export class Preview extends Component {
         } else if (phrase && phrase.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', phrase)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', phrase)}
             </div>
           )
         }
@@ -269,7 +267,8 @@ export class Preview extends Component {
             if (entry.type === 'FVCategory') {
               let shared = ''
 
-              if (entry.path.indexOf('SharedData') !== -1) shared = ' (' + intl.trans('shared', 'Shared', 'first') + ')'
+              if (entry.path.indexOf('SharedData') !== -1)
+                shared = ' (' + this.props.intl.trans('shared', 'Shared', 'first') + ')'
 
               breadcrumb.push(
                 <span key={i}>
@@ -288,7 +287,7 @@ export class Preview extends Component {
         } else if (category && category.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', category)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', category)}
             </div>
           )
         }
@@ -364,7 +363,7 @@ export class Preview extends Component {
                   }
                   subheader={
                     description && description != 'undefined'
-                      ? intl.trans('description', 'Description', 'first') + ': ' + description
+                      ? this.props.intl.trans('description', 'Description', 'first') + ': ' + description
                       : ''
                   }
                   style={{ lineHeight: 'initial', fontSize: '18px', height: 'inherit', padding: '16px 0' }}
@@ -382,7 +381,7 @@ export class Preview extends Component {
                         color: themePalette.secondary.contrastText,
                       }}
                     >
-                      {intl.trans('more_image_info', 'MORE IMAGE INFO', 'upper')}
+                      <FVLabel transKey="more_image_info" defaultStr="MORE IMAGE INFO" transform="upper" />
                       <IconButton
                         onClick={() => {
                           this._toggleOpen()
@@ -418,7 +417,7 @@ export class Preview extends Component {
         } else if (picture && picture.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', picture)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', picture)}
             </div>
           )
         }
@@ -514,7 +513,7 @@ export class Preview extends Component {
                         color: themePalette.secondary.contrastText,
                       }}
                     >
-                      {intl.trans('more_audio_info', 'MORE AUDIO INFO', 'upper')}
+                      <FVLabel transKey="more_audio_info" defaultStr="MORE AUDIO INFO" transform="upper" />
                       <IconButton
                         onClick={() => {
                           this._toggleOpen()
@@ -550,7 +549,7 @@ export class Preview extends Component {
         } else if (audio && audio.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', audio)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', audio)}
             </div>
           )
         }
@@ -632,7 +631,7 @@ export class Preview extends Component {
                         color: themePalette.secondary.contrastText,
                       }}
                     >
-                      {intl.trans('more_video_info', 'MORE VIDEO INFO', 'upper')}
+                      <FVLabel transKey="more_video_info" defaultStr="MORE VIDEO INFO" transform="upper" />
                       <IconButton
                         onClick={() => {
                           this._toggleOpen()
@@ -668,7 +667,7 @@ export class Preview extends Component {
         } else if (video && video.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', video)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', video)}
             </div>
           )
         }
@@ -705,7 +704,7 @@ export class Preview extends Component {
         } else if (contributor && contributor.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', contributor)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', contributor)}
             </div>
           )
         }
@@ -744,7 +743,7 @@ export class Preview extends Component {
         } else if (link && link.isError) {
           body = (
             <div>
-              {intl.trans('error', 'Error', 'first')}: {selectn('message', link)}
+              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', link)}
             </div>
           )
         }
@@ -752,10 +751,12 @@ export class Preview extends Component {
         break
       }
       default:
-        body = intl.trans(
-          'preview_option_not_available',
-          'Preview option not available. Please report to Administrator',
-          'first'
+        body = (
+          <FVLabel
+            transKey="preview_option_not_available"
+            defaultStr="Preview option not available. Please report to Administrator"
+            transform="first"
+          />
         )
 
         break
@@ -806,7 +807,7 @@ export class Preview extends Component {
     })
 
     metadata.push({
-      label: intl.trans('contributor_s', 'Contributor(s)', 'first'),
+      label: this.props.intl.trans('contributor_s', 'Contributor(s)', 'first'),
       value: contributors,
     })
 
@@ -815,7 +816,7 @@ export class Preview extends Component {
      */
     if (selectn('contextParameters.media.origin', response)) {
       metadata.push({
-        label: intl.trans('original_associated_word_phrase', 'Original Associated Word/Phrase', 'words'),
+        label: this.props.intl.trans('original_associated_word_phrase', 'Original Associated Word/Phrase', 'words'),
         value:
           selectn('contextParameters.media.origin.dc:title', response) +
           ' (Path: ' +
@@ -828,20 +829,20 @@ export class Preview extends Component {
      * Child Focused
      */
     metadata.push({
-      label: intl.trans('models.child_focused', 'Child Focused', 'words'),
+      label: this.props.intl.trans('models.child_focused', 'Child Focused', 'words'),
       value: selectn('properties.fvm:child_focused', response)
-        ? intl.trans('yes', 'Yes', 'first')
-        : intl.trans('no', 'No', 'first'),
+        ? this.props.intl.trans('yes', 'Yes', 'first')
+        : this.props.intl.trans('no', 'No', 'first'),
     })
 
     /**
      * Shared
      */
     metadata.push({
-      label: intl.trans('shared', 'Shared', 'first'),
+      label: this.props.intl.trans('shared', 'Shared', 'first'),
       value: selectn('properties.fvm:shared', response)
-        ? intl.trans('yes', 'Yes', 'first')
-        : intl.trans('no', 'No', 'first'),
+        ? this.props.intl.trans('yes', 'Yes', 'first')
+        : this.props.intl.trans('no', 'No', 'first'),
     })
 
     /**
@@ -851,7 +852,7 @@ export class Preview extends Component {
       const directLinkValue = NavigationHelpers.generateUIDPath('explore', response, 'media')
 
       metadata.push({
-        label: intl.trans('direct_link', 'Direct Link', 'words'),
+        label: this.props.intl.trans('direct_link', 'Direct Link', 'words'),
         value: (
           <span>
             <input
@@ -862,7 +863,7 @@ export class Preview extends Component {
             />{' '}
             <br />
             <a href={directLinkValue} target="_blank" rel="noopener noreferrer">
-              {intl.trans('go_to_record', 'Go to Record', 'words')}
+              <FVLabel transKey="go_to_record" defaultStr="Go to Record" transform="words" />
             </a>
           </span>
         ),
@@ -873,7 +874,7 @@ export class Preview extends Component {
      * File size
      */
     metadata.push({
-      label: intl.trans('size', 'Size', 'first'),
+      label: this.props.intl.trans('size', 'Size', 'first'),
       value: selectn('properties.file:content.length', response)
         ? StringHelpers.getReadableFileSize(selectn('properties.file:content.length', response))
         : '-',
@@ -883,7 +884,7 @@ export class Preview extends Component {
      * Status
      */
     metadata.push({
-      label: intl.trans('status', 'Status', 'first'),
+      label: this.props.intl.trans('status', 'Status', 'first'),
       value: selectn('state', response) ? selectn('state', response) : '-',
     })
 
@@ -891,7 +892,7 @@ export class Preview extends Component {
      * Date created
      */
     metadata.push({
-      label: intl.trans('date_created', 'Date Created', 'first'),
+      label: this.props.intl.trans('date_created', 'Date Added to FirstVoices', 'first'),
       value: selectn('properties.dc:created', response)
         ? StringHelpers.formatUTCDateString(selectn('properties.dc:created', response))
         : '-',
@@ -908,7 +909,7 @@ export class Preview extends Component {
 
 // REDUX: reducers/state
 const mapStateToProps = (state /*, ownProps*/) => {
-  const { fvWord, fvPhrase, fvCategory, fvPicture, fvAudio, fvVideo, fvContributor, fvLink, navigation } = state
+  const { fvWord, fvPhrase, fvCategory, fvPicture, fvAudio, fvVideo, fvContributor, fvLink, navigation, locale } = state
 
   const { computeAudio } = fvAudio
   const { computeCategory } = fvCategory
@@ -919,6 +920,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
   const { computeVideo } = fvVideo
   const { computeWord } = fvWord
   const { properties } = navigation
+  const { intlService } = locale
 
   return {
     computeAudio,
@@ -930,6 +932,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeVideo,
     computeWord,
     properties,
+    intl: intlService,
   }
 }
 
