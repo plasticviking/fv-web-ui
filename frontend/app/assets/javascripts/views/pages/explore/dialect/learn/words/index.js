@@ -478,7 +478,7 @@ class PageDialectLearnWords extends PageDialectLearnBase {
     )
     const computeCategories = ProviderHelpers.getEntry(
       this.props.computeCategories,
-      `/api/v1/path/FV/${routeParams.dialect_path}/Categories/@children`
+      `/api/v1/path/${routeParams.dialect_path}/Categories/@children`
     )
 
     if (selectn('response.entries', computeCategories) != 0) {
