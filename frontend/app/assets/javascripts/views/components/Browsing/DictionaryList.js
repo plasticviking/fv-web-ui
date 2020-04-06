@@ -211,16 +211,12 @@ Flashcard
 
 */
 // Libraries
-import React, { Suspense, useState } from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import selectn from 'selectn'
 import { List, Map } from 'immutable'
 import Media from 'react-media'
-// REDUX
-import { connect } from 'react-redux'
-// REDUX: actions/dispatch/func
-import { pushWindowPath } from 'providers/redux/reducers/windowPath'
-import { setRouteParams } from 'providers/redux/reducers/navigation'
+
 // Components
 import {
   batchTitle,
@@ -237,7 +233,6 @@ import withPagination from 'views/hoc/grid-list/with-pagination'
 import IntlService from 'views/services/intl'
 import FVButton from 'views/components/FVButton'
 import { dictionaryListSmallScreenColumnDataTemplate } from 'views/components/Browsing/DictionaryListSmallScreen'
-import { getSearchObject } from 'common/NavigationHelpers'
 import { VIEWMODE_FLASHCARD, VIEWMODE_SMALL_SCREEN, VIEWMODE_LARGE_SCREEN } from './DictionaryListCommon'
 const DictionaryListSmallScreen = React.lazy(() => import('views/components/Browsing/DictionaryListSmallScreen'))
 const DictionaryListLargeScreen = React.lazy(() => import('views/components/Browsing/DictionaryListLargeScreen'))
@@ -254,33 +249,11 @@ const DictionaryList = (props) => {
 
   // ============= SORT
   if (props.hasSorting) {
-    // If window.location.search has sortOrder & sortBy,
-    // Ensure the same values are in redux
-    // before generating the sort markup
-    const windowLocationSearch = getSearchObject()
-    const windowLocationSearchSortOrder = windowLocationSearch.sortOrder
-    const windowLocationSearchSortBy = windowLocationSearch.sortBy
-    if (
-      windowLocationSearchSortOrder &&
-      windowLocationSearchSortBy &&
-      (props.navigationRouteSearch.sortOrder !== windowLocationSearchSortOrder ||
-        props.navigationRouteSearch.sortBy !== windowLocationSearchSortBy)
-    ) {
-      props.setRouteParams({
-        search: {
-          page: props.navigationRouteRouteParams.page,
-          pageSize: props.navigationRouteRouteParams.pageSize,
-          sortOrder: windowLocationSearchSortOrder,
-          sortBy: windowLocationSearchSortBy,
-        },
-      })
-    }
-
     columnsEnhanced = generateSortTitleLargeSmall({
       columns: columnsEnhanced,
-      pageSize: props.navigationRouteRouteParams.pageSize,
-      sortOrder: props.navigationRouteSearch.sortOrder,
-      sortBy: props.navigationRouteSearch.sortBy,
+      pageSize: props.pageSize,
+      sortOrder: props.sortOrder,
+      sortBy: props.sortBy,
       navigationFunc: props.pushWindowPath,
       sortHandler: props.sortHandler,
     })
@@ -373,7 +346,7 @@ const DictionaryList = (props) => {
 
   return (
     <>
-      {props.childSearchDialect && <Suspense fallback={<div>Loading...</div>}>{props.childSearchDialect}</Suspense>}
+      {props.childSearchDialect}
 
       {(props.childViewModeButtons || props.childExportDialect) && (
         <div className="DictionaryList__ListButtonsGroup">
@@ -607,7 +580,7 @@ function generateRowClick({ rowClickHandler, columns }) {
 }
 
 // getListSmallScreen
-// Passing in arg (instead of defining them in the function) because
+// NOTE: Passing in arg (instead of defining them in the function) because
 // getListSmallScreen is being exported and can be called from other
 // components
 // ------------------------------------
@@ -633,7 +606,7 @@ function getListLargeScreen({ dictionaryListLargeScreenProps = {}, hasPagination
 
 // ===============================================================
 
-const { array, bool, func, instanceOf, number, object, oneOfType, string } = PropTypes
+const { array, bool, func, element, instanceOf, number, object, oneOfType, string } = PropTypes
 DictionaryList.propTypes = {
   // Pagination
   appendControls: array, // NOTE: array of elements to append just after the paging controls
@@ -642,7 +615,6 @@ DictionaryList.propTypes = {
   fetcherParams: object, // NOTE: object of paging data: currentPageIndex, pageSize, filters
   hasPagination: bool,
   metadata: object, // TODO
-  dialect: object, // NOTE: used to determine permissions with export dialect
   // Batch
   batchConfirmationAction: func,
   batchFooterBtnConfirm: string,
@@ -668,19 +640,24 @@ DictionaryList.propTypes = {
   style: object, // TODO: DROP?
   type: string, // TODO: DROP?
   wrapperStyle: object, // TODO: DROP?
-  // <SearchDialect />
+  // SearchDialect
   handleSearch: func, // NOTE: After <SearchDialect /> updates search data in redux, this callback is called. TODO: could drop if all components are subscribed to Redux > Search updates.
   hasSearch: bool, // NOTE: Toggles the <SearchDialect /> component
   searchDialectDataType: number, // NOTE: tells SearchDialect what it's working with (eg: SEARCH_DATA_TYPE_WORD, SEARCH_DATA_TYPE_PHRASE). Used in preparing appropriate UI messages & form markup
   resetSearch: func, // NOTE: SearchDialect handles resetting (setting form back to initial state & updating redux), this is a followup callback after that happens
   searchUi: array, // NOTE: array of objects used to generate the search form elements (eg: inputs, selects, if they are checked, etc), this prop is used to reset to the initial state when 'Reset' search is pressed
-  // REDUX: reducers/state
-  navigationRouteRouteParams: object.isRequired, // NOTE: redux saved route params, using page & pageSize
-  navigationRouteSearch: object.isRequired, // NOTE: redux saved search settings, using sortOrder & sortBy. TODO: is this a logical spot for sort?
-  listView: object.isRequired,
-  // REDUX: actions/dispatch/func
+  // Misc
   pushWindowPath: func.isRequired,
   setRouteParams: func.isRequired,
+  sortOrder: string,
+  sortBy: string,
+  page: string,
+  pageSize: string,
+  // Optional Children
+  childSearchDialect: element,
+  childViewModeButtons: element,
+  childExportDialect: element,
+  childFlashcardList: element,
 }
 
 DictionaryList.defaultProps = {
@@ -697,7 +674,6 @@ DictionaryList.defaultProps = {
   columns: [],
   cssModifier: '',
   dictionaryListClickHandlerViewMode: () => {},
-  // sortHandler: () => {},
   style: null,
   wrapperStyle: null,
   // General List
@@ -707,24 +683,7 @@ DictionaryList.defaultProps = {
   handleSearch: () => {},
   hasSearch: false,
   resetSearch: () => {},
-  // REDUX: actions/dispatch/func
   pushWindowPath: () => {},
 }
 
-// REDUX: reducers/state
-const mapStateToProps = (state /*, ownProps*/) => {
-  const { navigation, listView } = state
-  return {
-    navigationRouteRouteParams: navigation.route.routeParams,
-    navigationRouteSearch: navigation.route.search,
-    listView,
-  }
-}
-
-// REDUX: actions/dispatch/func
-const mapDispatchToProps = {
-  pushWindowPath,
-  setRouteParams,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DictionaryList)
+export default DictionaryList
