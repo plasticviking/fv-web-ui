@@ -3,10 +3,6 @@ import PropTypes from 'prop-types'
 // eslint-disable-next-line
 import Immutable, { Set } from 'immutable'
 import selectn from 'selectn'
-
-// REDUX
-import { connect } from 'react-redux'
-import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 import Link from 'views/components/Link'
 import URLHelpers from '../../../common/URLHelpers'
 
@@ -23,10 +19,10 @@ export class DialectFilterList extends Component {
     styles: object,
     title: string.isRequired,
     type: string.isRequired,
-    // REDUX: reducers/state
     splitWindowPath: array,
-    // REDUX: actions/dispatch/func
     pushWindowPath: func.isRequired,
+    categoryCategory: string,
+    categoryPhrasebook: string,
   }
 
   static defaultProps = {
@@ -61,9 +57,7 @@ export class DialectFilterList extends Component {
     window.addEventListener('popstate', this.handleHistoryEvent)
 
     const selectedDialectFilter =
-      this.props.type === 'words'
-        ? selectn('routeParams.category', this.props)
-        : selectn('routeParams.phraseBook', this.props)
+      this.props.type === 'words' ? this.props.categoryCategory : this.props.categoryPhrasebook
     if (selectedDialectFilter) {
       this.selectedDialectFilter = selectedDialectFilter
     }
@@ -79,6 +73,8 @@ export class DialectFilterList extends Component {
     this._isMounted = false
     window.removeEventListener('popstate', this.handleHistoryEvent)
     const { lastCheckedUid, lastCheckedChildrenUids, lastCheckedParentFacetUid } = this.state
+
+    // TODO: THIS IS PROBABLY UNNECESSARY
     // 'uncheck' previous
     if (lastCheckedUid) {
       const unselected = {
@@ -133,6 +129,7 @@ export class DialectFilterList extends Component {
 
     filters.forEach((filter) => {
       this.setUidUrlPath(filter, path)
+      // TODO: STAMP COUPLING
       const children = selectn('contextParameters.children.entries', filter)
       if (children.length > 0) {
         children.forEach((filterChild) => {
@@ -145,10 +142,7 @@ export class DialectFilterList extends Component {
 
   handleHistoryEvent = () => {
     if (this._isMounted) {
-      const _filterId =
-        this.props.type === 'words'
-          ? selectn('routeParams.category', this.props)
-          : selectn('routeParams.phraseBook', this.props)
+      const _filterId = this.props.type === 'words' ? this.props.category : this.props.phraseBook
       // const _catId = selectn('category', this.props.routeParams)
       if (_filterId) {
         const selectedParams = this.clickParams[_filterId]
@@ -218,7 +212,7 @@ export class DialectFilterList extends Component {
 
       const parentIsActive = appliedFilterIds.includes(uidParent)
       const parentActiveClass = parentIsActive ? 'DialectFilterListLink--active' : ''
-
+      // TODO: STAMP COUPLING
       const children = selectn('contextParameters.children.entries', filter)
       let hasActiveChild = false
       if (children.length > 0) {
@@ -374,6 +368,7 @@ export class DialectFilterList extends Component {
     _filters.sort(this.sortByTitle)
     const _filtersSorted = _filters.map((filter) => {
       // Sort children
+      // TODO: STAMP COUPLING
       const children = selectn('contextParameters.children.entries', filter)
       if (children.length > 0) {
         children.sort(this.sortByTitle)
@@ -384,20 +379,4 @@ export class DialectFilterList extends Component {
   }
 }
 
-// REDUX: reducers/state
-const mapStateToProps = (state /*, ownProps*/) => {
-  const { windowPath } = state
-
-  const { splitWindowPath } = windowPath
-
-  return {
-    splitWindowPath,
-  }
-}
-
-// REDUX: actions/dispatch/func
-const mapDispatchToProps = {
-  pushWindowPath,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(DialectFilterList)
+export default DialectFilterList
