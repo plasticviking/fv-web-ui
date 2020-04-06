@@ -1,30 +1,22 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-// REDUX
-import { connect } from 'react-redux'
-
 import Typography from '@material-ui/core/Typography'
 import CircularProgress from '@material-ui/core/CircularProgress'
 
-import selectn from 'selectn'
 import FVLabel from '../FVLabel/index'
 
-const { array, func, object, string } = PropTypes
-// TODO: REFACTOR - convert to hooks
+const { array, func, string } = PropTypes
 export class AlphabetListView extends Component {
   static propTypes = {
     characters: array,
     dialectClassName: string,
     handleClick: func,
     letter: string,
-    // REDUX: reducers/state
-    routeParams: object.isRequired,
     splitWindowPath: array.isRequired,
   }
   static defaultProps = {
     handleClick: () => {},
-    fetchCharacters: () => {},
   }
 
   _isMounted = false
@@ -33,7 +25,7 @@ export class AlphabetListView extends Component {
     super(props)
   }
 
-  async componentDidMount() {
+  componentDidMount() {
     this._isMounted = true
     window.addEventListener('popstate', this.handleHistoryEvent)
   }
@@ -46,12 +38,12 @@ export class AlphabetListView extends Component {
   render() {
     let content = null
     if (this.props.characters === undefined) {
-      content = this.stateIsLoading()
+      content = this.componentIsLoading()
     } else {
       if (this.props.characters.length === 0) {
-        content = this.stateHasNoContent()
+        content = this.componentHasNoContent()
       } else {
-        content = this.stateHasContent()
+        content = this.componentHasContent()
       }
     }
     return (
@@ -83,14 +75,13 @@ export class AlphabetListView extends Component {
 
   handleHistoryEvent = () => {
     if (this._isMounted) {
-      const _letter = selectn('letter', this.props.routeParams)
-      if (_letter) {
-        this.props.handleClick(_letter, false)
+      if (this.props.letter) {
+        this.props.handleClick(this.props.letter, false)
       }
     }
   }
 
-  stateIsLoading = () => {
+  componentIsLoading = () => {
     return (
       <div className="AlphabetListView__loading">
         <CircularProgress className="AlphabetListView__loadingSpinner" color="secondary" mode="indeterminate" />
@@ -101,7 +92,7 @@ export class AlphabetListView extends Component {
     )
   }
 
-  stateHasNoContent = () => {
+  componentHasNoContent = () => {
     return (
       <Typography className="AlphabetListView__noCharacters" variant="caption">
         Characters are unavailable at this time
@@ -109,7 +100,7 @@ export class AlphabetListView extends Component {
     )
   }
 
-  stateHasContent = () => {
+  componentHasContent = () => {
     const { characters = [] } = this.props
     const { letter } = this.props
     const _characters = characters.map((value, index) => {
@@ -137,16 +128,4 @@ export class AlphabetListView extends Component {
   }
 }
 
-// REDUX: reducers/state
-const mapStateToProps = (state /*, ownProps*/) => {
-  const { navigation, windowPath } = state
-
-  const { route } = navigation
-  const { splitWindowPath } = windowPath
-
-  return {
-    routeParams: route.routeParams,
-    splitWindowPath,
-  }
-}
-export default connect(mapStateToProps, null)(AlphabetListView)
+export default AlphabetListView
