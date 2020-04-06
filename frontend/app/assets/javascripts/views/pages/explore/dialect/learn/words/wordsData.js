@@ -17,12 +17,11 @@ limitations under the License.
 // -------------------------------------------
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { is, Map, Set } from 'immutable'
+import { Map, Set } from 'immutable'
 // REDUX
 import { connect } from 'react-redux'
 // REDUX: actions/dispatch/func
 import { fetchCategories } from 'providers/redux/reducers/fvCategory'
-import { fetchCharacters } from 'providers/redux/reducers/fvCharacter'
 import { fetchDocument } from 'providers/redux/reducers/document'
 import { fetchPortal } from 'providers/redux/reducers/fvPortal'
 import { fetchWords } from 'providers/redux/reducers/fvWord'
@@ -55,20 +54,16 @@ import selectn from 'selectn'
 import { getDialectClassname } from 'views/pages/explore/dialect/helpers'
 import {
   getCategoriesOrPhrasebooks,
-  getCharacters,
   handleDialectFilterList,
   //   onNavigateRequest,
   sortHandler,
-  updateFilter,
   updateUrlAfterResetSearch,
   updateUrlIfPageOrPageSizeIsDifferent,
   useIdOrPathFallback,
 } from 'views/pages/explore/dialect/learn/base'
-import {
-  SEARCH_BY_ALPHABET,
-  SEARCH_BY_CATEGORY,
-  SEARCH_PART_OF_SPEECH_ANY,
-} from 'views/components/SearchDialect/constants'
+import { SEARCH_BY_CATEGORY, SEARCH_PART_OF_SPEECH_ANY } from 'views/components/SearchDialect/constants'
+
+import AlphabetListViewData from 'views/components/AlphabetListView/AlphabetListViewData'
 const intl = IntlService.instance
 
 // WordsData
@@ -110,7 +105,7 @@ class WordsData extends Component {
   // a re-render happens and we then have id within computeDocument, and when we try to extract the data from computeDocument
   // the providerHelper can't find it becuause it's using an ID to find a path.
   async componentDidMount() {
-    const { computeDocument, computeCharacters, computePortal, computeCategories, routeParams } = this.props
+    const { computeDocument, computePortal, computeCategories, routeParams } = this.props
     // Portal
     await ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Portal`, this.props.fetchPortal, computePortal)
     // Document
@@ -119,19 +114,11 @@ class WordsData extends Component {
       this.props.fetchDocument,
       computeDocument
     )
-
     // Category
     await ProviderHelpers.fetchIfMissing(
       `/api/v1/path/FV/${routeParams.area}/SharedData/Shared Categories/@children`,
       this.props.fetchCategories,
       computeCategories
-    )
-    // Alphabet
-    await ProviderHelpers.fetchIfMissing(
-      `${routeParams.dialect_path}/Alphabet`,
-      this.props.fetchCharacters,
-      computeCharacters,
-      '&currentPageIndex=0&pageSize=100&sortOrder=asc&sortBy=fvcharacter:alphabet_order'
     )
 
     await this.reviewUrlParams()
@@ -160,7 +147,6 @@ class WordsData extends Component {
     const {
       children,
       computeCategories,
-      computeCharacters,
       computeDialect2,
       computeDocument,
       computePortal,
@@ -175,28 +161,13 @@ class WordsData extends Component {
 
     const computedDocument = ProviderHelpers.getEntry(computeDocument, `${routeParams.dialect_path}/Dictionary`)
     const computedDocumentUid = selectn('response.uid', computedDocument)
-    /*
-    <AuthorizationFilter
-    filter={{
-    entity: selectn('response', computedDocument),
-    login: computeLogin,
-    role: ['Record', 'Approve', 'Everything'],
-    }}
-    hideFromSections
-    routeParams={routeParams}
-    >
-    */
+
     // TODO: EXTRACT MINIMAL CATEGORIES DATA
     const categoryList = getCategoriesOrPhrasebooks({
       getEntryId: `/api/v1/path/FV/${routeParams.area}/SharedData/Shared Categories/@children`,
       computeCategories,
     })
     const categoryFacetField = ProviderHelpers.switchWorkspaceSectionKeys('fv-word:categories', routeParams.area)
-    // TODO: EXTRACT MINIMAL CHARACTER DATA
-    const characters = getCharacters({
-      computeCharacters,
-      routeParamsDialectPath: routeParams.dialect_path,
-    })
 
     // Words
     const computedWords = ProviderHelpers.getEntry(this.props.computeWords, computedDocumentUid)
@@ -204,48 +175,54 @@ class WordsData extends Component {
     const computedDialect2 = ProviderHelpers.getEntry(computeDialect2, routeParams.dialect_path)
     const computedDialect2Response = selectn('response', computedDialect2)
 
-    return children({
-      // Portal
-      dialectDcTitle,
-      dialectClassName,
-      // Document
-      documentUid: computedDocumentUid,
-      // Category
-      categoryList,
-      categorySelected: new Set([routeParams.category]),
-      categoryClearDialectFilter: this.clearDialectFilter,
-      categoryFacetField,
-      categoryFilterInfo: this.state.filterInfo,
-      categoryHandleCategoryClick: this.handleCategoryClick,
-      categoryHandleDialectFilterList: this.categoryHandleDialectFilterList,
-      categoryCategory: routeParams.category,
-      categoryPhraseBook: routeParams.phraseBook,
-      // Alphabet
-      characters,
-      letter: selectn('letter', routeParams),
-      handleAlphabetClick: this.handleAlphabetClick,
-      // Words
-      listViewItems: words,
-      listViewColumns: this.getColumns(),
-      listViewSetListViewMode: this.props.setListViewMode,
-      listViewMode: listView.mode,
-      listViewDialect: computedDialect2Response,
-      listViewHandleSearch: this.listViewHandleSearch,
-      listViewResetSearch: this.listViewResetSearch,
-      listViewFetcher: this.listViewFetcher,
-      listViewMetadata: selectn('response', computedWords),
-      listViewSortHandler: this.listViewSortHandler,
-      // Misc
-      page: this.props.routeParams.page,
-      pageSize: this.props.routeParams.pageSize,
-      pushWindowPath: this.props.pushWindowPath,
-      routeParams: this.props.routeParams,
-      search: navigationRouteSearch,
-      setRouteParams: this.props.setRouteParams,
-      sortBy: selectn('sortBy', navigationRouteSearch),
-      sortOrder: selectn('sortOrder', navigationRouteSearch),
-      splitWindowPath: this.props.splitWindowPath,
-    })
+    return (
+      <AlphabetListViewData>
+        {({ characters, letter, handleAlphabetClick }) => {
+          return children({
+            // Portal
+            dialectDcTitle,
+            dialectClassName,
+            // Document
+            documentUid: computedDocumentUid,
+            // Category
+            categoryList,
+            categorySelected: new Set([routeParams.category]),
+            categoryClearDialectFilter: this.clearDialectFilter,
+            categoryFacetField,
+            categoryFilterInfo: this.state.filterInfo,
+            categoryHandleCategoryClick: this.handleCategoryClick,
+            categoryHandleDialectFilterList: this.categoryHandleDialectFilterList,
+            categoryCategory: routeParams.category,
+            categoryPhraseBook: routeParams.phraseBook,
+            // Alphabet
+            characters,
+            letter,
+            handleAlphabetClick,
+            // Words
+            listViewItems: words,
+            listViewColumns: this.getColumns(),
+            listViewSetListViewMode: this.props.setListViewMode,
+            listViewMode: listView.mode,
+            listViewDialect: computedDialect2Response,
+            listViewHandleSearch: this.listViewHandleSearch,
+            listViewResetSearch: this.listViewResetSearch,
+            listViewFetcher: this.listViewFetcher,
+            listViewMetadata: selectn('response', computedWords),
+            listViewSortHandler: this.listViewSortHandler,
+            // Misc
+            page: this.props.routeParams.page,
+            pageSize: this.props.routeParams.pageSize,
+            pushWindowPath: this.props.pushWindowPath,
+            routeParams: this.props.routeParams,
+            search: navigationRouteSearch,
+            setRouteParams: this.props.setRouteParams,
+            sortBy: selectn('sortBy', navigationRouteSearch),
+            sortOrder: selectn('sortOrder', navigationRouteSearch),
+            splitWindowPath: this.props.splitWindowPath,
+          })
+        }}
+      </AlphabetListViewData>
+    )
   }
   // =============================================
   // CATEGORIES
@@ -563,59 +540,6 @@ class WordsData extends Component {
       pushWindowPath: this.props.pushWindowPath,
     })
   }
-  // =============================================
-  // ALPHABET
-  // =============================================
-  handleAlphabetClick = async (letter, href) => {
-    await this.props.searchDialectUpdate({
-      searchByAlphabet: letter,
-      searchByMode: SEARCH_BY_ALPHABET,
-      searchBySettings: {
-        searchByTitle: true,
-        searchByDefinitions: false,
-        searchByTranslations: false,
-        searchPartOfSpeech: SEARCH_PART_OF_SPEECH_ANY,
-      },
-      searchTerm: '',
-    })
-
-    this.changeFilter()
-
-    NavigationHelpers.navigate(href, this.props.pushWindowPath)
-  }
-
-  changeFilter = () => {
-    const { filterInfo } = this.state
-    const { computeSearchDialect, routeParams, splitWindowPath } = this.props
-    const { searchByMode, searchNxqlQuery } = computeSearchDialect
-
-    const newFilter = updateFilter({
-      filterInfo,
-      searchByMode,
-      searchNxqlQuery,
-    })
-
-    // When facets change, pagination should be reset.
-    // In these pages (words/phrase), list views are controlled via URL
-    if (is(filterInfo, newFilter) === false) {
-      this.setState({ filterInfo: newFilter }, () => {
-        // NOTE: `updateUrlIfPageOrPageSizeIsDifferent` below can trigger FW-256:
-        // "Back button is not working properly when paginating within alphabet chars
-        // (Navigate to /learn/words/alphabet/a/1/1 - go to page 2, 3, 4. Use back button.
-        // You will be sent to the first page)"
-        //
-        // The above test (`is(...) === false`) prevents updates triggered by back or forward buttons
-        // and any other unnecessary updates (ie: the filter didn't change)
-        updateUrlIfPageOrPageSizeIsDifferent({
-          // pageSize, // TODO ?
-          preserveSearch: true,
-          pushWindowPath: this.props.pushWindowPath,
-          routeParams,
-          splitWindowPath,
-        })
-      })
-    }
-  }
   // NOTE: Ensure window.location.search and redux have the same values
   // ==============================================================================
   reviewUrlParams = async () => {
@@ -651,7 +575,6 @@ WordsData.propTypes = {
   DEFAULT_LANGUAGE: any, // TODO ?
   // REDUX: reducers/state
   computeCategories: object.isRequired,
-  computeCharacters: object.isRequired,
   computeDialect2: object.isRequired,
   computeDocument: object.isRequired,
   computeLogin: object.isRequired,
@@ -666,7 +589,6 @@ WordsData.propTypes = {
   windowPath: string.isRequired,
   // REDUX: actions/dispatch/func
   fetchCategories: func.isRequired,
-  fetchCharacters: func.isRequired,
   fetchDocument: func.isRequired,
   fetchPortal: func.isRequired,
   fetchWords: func.isRequired,
@@ -685,7 +607,6 @@ WordsData.defaultProps = {
 const mapStateToProps = (state /*, ownProps*/) => {
   const {
     document,
-    fvCharacter,
     fvCategory,
     fvDialect,
     fvPortal,
@@ -698,7 +619,6 @@ const mapStateToProps = (state /*, ownProps*/) => {
   } = state
 
   const { computeCategories } = fvCategory
-  const { computeCharacters } = fvCharacter
   const { computeDialect2 } = fvDialect
   const { computeDocument } = document
   const { computeLogin } = nuxeo
@@ -709,7 +629,6 @@ const mapStateToProps = (state /*, ownProps*/) => {
   const { splitWindowPath, _windowPath } = windowPath
   return {
     computeCategories,
-    computeCharacters,
     computeDialect2,
     computeDocument,
     computeLogin,
@@ -728,7 +647,6 @@ const mapStateToProps = (state /*, ownProps*/) => {
 // REDUX: actions/dispatch/func
 const mapDispatchToProps = {
   fetchCategories,
-  fetchCharacters,
   fetchDocument,
   fetchPortal,
   fetchWords,
