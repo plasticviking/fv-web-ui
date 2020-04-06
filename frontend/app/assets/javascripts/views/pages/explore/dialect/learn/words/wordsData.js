@@ -134,35 +134,13 @@ class WordsData extends Component {
       '&currentPageIndex=0&pageSize=100&sortOrder=asc&sortBy=fvcharacter:alphabet_order'
     )
 
-    // NOTE: MOVING URL PARAMS INTO REDUX STORE
-    // ==============================================================================
-    // If window.location.search has sortOrder & sortBy,
-    // Ensure the same values are in redux
-    // before generating the sort markup
-    const windowLocationSearch = getSearchObject()
-    const windowLocationSearchSortOrder = windowLocationSearch.sortOrder
-    const windowLocationSearchSortBy = windowLocationSearch.sortBy
-    const storeSortBy = selectn('sortBy', this.props.navigationRouteSearch)
-    const storeSortOrder = selectn('sortOrder', this.props.navigationRouteSearch)
-
-    if (
-      windowLocationSearchSortOrder &&
-      windowLocationSearchSortBy &&
-      (storeSortOrder !== windowLocationSearchSortOrder || storeSortBy !== windowLocationSearchSortBy)
-    ) {
-      this.props.setRouteParams({
-        search: {
-          pageIndex: this.props.routeParams.page,
-          pageSize: this.props.routeParams.pageSize,
-          sortBy: windowLocationSearchSortBy,
-          sortOrder: windowLocationSearchSortOrder,
-        },
-      })
-    }
+    await this.reviewUrlParams()
 
     // Words
     this.fetchListViewData()
   }
+  // TODO: Need a better way to detect changes
+  // TODO: SHOULDN'T DIVIDE URL (...words/10/1/) FROM SEARCH (...?sortOrder=desc...)
   componentDidUpdate(prevProps) {
     if (
       routeHasChanged({
@@ -173,6 +151,8 @@ class WordsData extends Component {
       })
     ) {
       this.fetchListViewData({ pageIndex: this.props.routeParams.page, pageSize: this.props.routeParams.pageSize })
+    } else {
+      this.reviewUrlParams()
     }
   }
 
@@ -633,6 +613,30 @@ class WordsData extends Component {
           routeParams,
           splitWindowPath,
         })
+      })
+    }
+  }
+  // NOTE: Ensure window.location.search and redux have the same values
+  // ==============================================================================
+  reviewUrlParams = async () => {
+    const windowLocationSearch = getSearchObject()
+    const windowLocationSearchSortOrder = windowLocationSearch.sortOrder
+    const windowLocationSearchSortBy = windowLocationSearch.sortBy
+    const storeSortBy = selectn('sortBy', this.props.navigationRouteSearch)
+    const storeSortOrder = selectn('sortOrder', this.props.navigationRouteSearch)
+
+    if (
+      windowLocationSearchSortOrder &&
+      windowLocationSearchSortBy &&
+      (storeSortOrder !== windowLocationSearchSortOrder || storeSortBy !== windowLocationSearchSortBy)
+    ) {
+      await this.props.setRouteParams({
+        search: {
+          pageIndex: this.props.routeParams.page,
+          pageSize: this.props.routeParams.pageSize,
+          sortBy: windowLocationSearchSortBy,
+          sortOrder: windowLocationSearchSortOrder,
+        },
       })
     }
   }
