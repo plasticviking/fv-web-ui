@@ -32,7 +32,6 @@ class WordsLayout extends Component {
     return (
       <WordsData>
         {({
-          routeParams,
           // Portal
           dialectDcTitle,
           dialectClassName,
@@ -46,6 +45,8 @@ class WordsLayout extends Component {
           categoryFilterInfo,
           categoryHandleCategoryClick,
           categoryHandleDialectFilterList,
+          categoryCategory,
+          categoryPhraseBook,
           // Alphabet
           characters,
           letter,
@@ -60,7 +61,16 @@ class WordsLayout extends Component {
           listViewResetSearch,
           listViewFetcher,
           listViewMetadata,
-          listViewSortHandler,
+          // MISC
+          page,
+          pageSize,
+          pushWindowPath,
+          routeParams,
+          search,
+          setRouteParams,
+          sortBy,
+          sortOrder,
+          splitWindowPath,
         }) => {
           const FlashcardsWithPagination = withPagination(FlashcardList, 10)
           const childFlashcardList = <FlashcardsWithPagination flashcardTitle={dialectDcTitle} />
@@ -74,6 +84,7 @@ class WordsLayout extends Component {
                       dialectClassName={dialectClassName}
                       handleClick={handleAlphabetClick}
                       letter={letter}
+                      splitWindowPath={splitWindowPath}
                     />
                   </Suspense>
                 )}
@@ -94,6 +105,10 @@ class WordsLayout extends Component {
                         'words'
                       )}
                       type={'words'}
+                      splitWindowPath={splitWindowPath}
+                      pushWindowPath={pushWindowPath}
+                      categoryCategory={categoryCategory}
+                      categoryPhraseBook={categoryPhraseBook}
                     />
                   </Suspense>
                 )}
@@ -118,40 +133,38 @@ class WordsLayout extends Component {
                       fetcherParams={{ currentPageIndex: routeParams.page, pageSize: routeParams.pageSize }}
                       metadata={listViewMetadata}
                       // ===============================================
-                      // Sort
-                      // -----------------------------------------------
-                      sortHandler={listViewSortHandler}
-                      // ===============================================
                       // ==================================================
                       // Search
                       // --------------------------------------------------
                       childSearchDialect={
-                        <SearchDialect
-                          handleSearch={listViewHandleSearch}
-                          resetSearch={listViewResetSearch}
-                          searchUi={[
-                            {
-                              defaultChecked: true,
-                              idName: 'searchByTitle',
-                              labelText: 'Word',
-                            },
-                            {
-                              defaultChecked: true,
-                              idName: 'searchByDefinitions',
-                              labelText: 'Definitions',
-                            },
-                            {
-                              idName: 'searchByTranslations',
-                              labelText: 'Literal translations',
-                            },
-                            {
-                              type: 'select',
-                              idName: 'searchPartOfSpeech',
-                              labelText: 'Parts of speech:',
-                            },
-                          ]}
-                          // searchDialectDataType={props.searchDialectDataType}
-                        />
+                        <Suspense fallback={<div>Loading...</div>}>
+                          <SearchDialect
+                            handleSearch={listViewHandleSearch}
+                            resetSearch={listViewResetSearch}
+                            searchUi={[
+                              {
+                                defaultChecked: true,
+                                idName: 'searchByTitle',
+                                labelText: 'Word',
+                              },
+                              {
+                                defaultChecked: true,
+                                idName: 'searchByDefinitions',
+                                labelText: 'Definitions',
+                              },
+                              {
+                                idName: 'searchByTranslations',
+                                labelText: 'Literal translations',
+                              },
+                              {
+                                type: 'select',
+                                idName: 'searchPartOfSpeech',
+                                labelText: 'Parts of speech:',
+                              },
+                            ]}
+                            // searchDialectDataType={props.searchDialectDataType}
+                          />
+                        </Suspense>
                       }
                       // ==================================================
                       // Flashcards
@@ -199,6 +212,14 @@ class WordsLayout extends Component {
                           </FVButton>
                         )
                       }
+                      pushWindowPath={pushWindowPath}
+                      routeParams={routeParams}
+                      page={page}
+                      pageSize={pageSize}
+                      search={search}
+                      setRouteParams={setRouteParams}
+                      sortBy={sortBy}
+                      sortOrder={sortOrder}
                     />
                   </Suspense>
                 )}
