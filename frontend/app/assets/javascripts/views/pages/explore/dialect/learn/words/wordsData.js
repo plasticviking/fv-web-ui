@@ -44,7 +44,11 @@ import Link from 'views/components/Link'
 import Preview from 'views/components/Editor/Preview'
 import UIHelpers from 'common/UIHelpers'
 import AuthorizationFilter from 'views/components/Document/AuthorizationFilter'
-import NavigationHelpers, { getSearchObject, appendPathArrayAfterLandmark } from 'common/NavigationHelpers'
+import NavigationHelpers, {
+  getSearchObject,
+  appendPathArrayAfterLandmark,
+  routeHasChanged,
+} from 'common/NavigationHelpers'
 import IntlService from 'views/services/intl'
 import ProviderHelpers from 'common/ProviderHelpers'
 import selectn from 'selectn'
@@ -100,27 +104,76 @@ class WordsData extends Component {
       filterInfo,
     }
   }
-  componentDidMount() {
+  // NOTE: need to wait for fetchDocument to finish before calling fetchListViewData.
+  // Within fetchListViewData there's a 'helper' function that will return a dialect path or id pulled from computeDocument
+  // if we don't wait for fetchDocument, the helper will return a dialect path, this works UNTIL
+  // a re-render happens and we then have id within computeDocument, and when we try to extract the data from computeDocument
+  // the providerHelper can't find it becuause it's using an ID to find a path.
+  async componentDidMount() {
     const { computeDocument, computeCharacters, computePortal, computeCategories, routeParams } = this.props
     // Portal
-    ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Portal`, this.props.fetchPortal, computePortal)
+    await ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Portal`, this.props.fetchPortal, computePortal)
     // Document
-    ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Dictionary`, this.props.fetchDocument, computeDocument)
+    await ProviderHelpers.fetchIfMissing(
+      `${routeParams.dialect_path}/Dictionary`,
+      this.props.fetchDocument,
+      computeDocument
+    )
+
     // Category
-    ProviderHelpers.fetchIfMissing(
+    await ProviderHelpers.fetchIfMissing(
       `/api/v1/path/FV/${routeParams.area}/SharedData/Shared Categories/@children`,
       this.props.fetchCategories,
       computeCategories
     )
     // Alphabet
-    ProviderHelpers.fetchIfMissing(
+    await ProviderHelpers.fetchIfMissing(
       `${routeParams.dialect_path}/Alphabet`,
       this.props.fetchCharacters,
       computeCharacters,
       '&currentPageIndex=0&pageSize=100&sortOrder=asc&sortBy=fvcharacter:alphabet_order'
     )
+
+    // NOTE: MOVING URL PARAMS INTO REDUX STORE
+    // ==============================================================================
+    // If window.location.search has sortOrder & sortBy,
+    // Ensure the same values are in redux
+    // before generating the sort markup
+    const windowLocationSearch = getSearchObject()
+    const windowLocationSearchSortOrder = windowLocationSearch.sortOrder
+    const windowLocationSearchSortBy = windowLocationSearch.sortBy
+    const storeSortBy = selectn('sortBy', this.props.navigationRouteSearch)
+    const storeSortOrder = selectn('sortOrder', this.props.navigationRouteSearch)
+
+    if (
+      windowLocationSearchSortOrder &&
+      windowLocationSearchSortBy &&
+      (storeSortOrder !== windowLocationSearchSortOrder || storeSortBy !== windowLocationSearchSortBy)
+    ) {
+      this.props.setRouteParams({
+        search: {
+          pageIndex: this.props.routeParams.page,
+          pageSize: this.props.routeParams.pageSize,
+          sortBy: windowLocationSearchSortBy,
+          sortOrder: windowLocationSearchSortOrder,
+        },
+      })
+    }
+
     // Words
     this.fetchListViewData()
+  }
+  componentDidUpdate(prevProps) {
+    if (
+      routeHasChanged({
+        prevWindowPath: prevProps.windowPath,
+        curWindowPath: this.props.windowPath,
+        prevRouteParams: prevProps.routeParams,
+        curRouteParams: this.props.routeParams,
+      })
+    ) {
+      this.fetchListViewData({ pageIndex: this.props.routeParams.page, pageSize: this.props.routeParams.pageSize })
+    }
   }
 
   render() {
@@ -131,8 +184,8 @@ class WordsData extends Component {
       computeDialect2,
       computeDocument,
       computePortal,
-      computeWords,
       listView,
+      navigationRouteSearch,
       routeParams,
     } = this.props
 
@@ -166,7 +219,7 @@ class WordsData extends Component {
     })
 
     // Words
-    const computedWords = ProviderHelpers.getEntry(computeWords, `${routeParams.dialect_path}/Dictionary`)
+    const computedWords = ProviderHelpers.getEntry(this.props.computeWords, computedDocumentUid)
     const words = selectn('response.entries', computedWords)
     const computedDialect2 = ProviderHelpers.getEntry(computeDialect2, routeParams.dialect_path)
     const computedDialect2Response = selectn('response', computedDialect2)
@@ -185,7 +238,8 @@ class WordsData extends Component {
       categoryFilterInfo: this.state.filterInfo,
       categoryHandleCategoryClick: this.handleCategoryClick,
       categoryHandleDialectFilterList: this.categoryHandleDialectFilterList,
-      routeParams: this.props.routeParams,
+      categoryCategory: routeParams.category,
+      categoryPhraseBook: routeParams.phraseBook,
       // Alphabet
       characters,
       letter: selectn('letter', routeParams),
@@ -201,6 +255,16 @@ class WordsData extends Component {
       listViewFetcher: this.listViewFetcher,
       listViewMetadata: selectn('response', computedWords),
       listViewSortHandler: this.listViewSortHandler,
+      // Misc
+      page: this.props.routeParams.page,
+      pageSize: this.props.routeParams.pageSize,
+      pushWindowPath: this.props.pushWindowPath,
+      routeParams: this.props.routeParams,
+      search: navigationRouteSearch,
+      setRouteParams: this.props.setRouteParams,
+      sortBy: selectn('sortBy', navigationRouteSearch),
+      sortOrder: selectn('sortOrder', navigationRouteSearch),
+      splitWindowPath: this.props.splitWindowPath,
     })
   }
   // =============================================
@@ -317,8 +381,10 @@ class WordsData extends Component {
     // 1st: redux values, 2nd: url search query, 3rd: defaults
     const sortOrder = navigationRouteSearch.sortOrder || searchObj.sortOrder || this.DEFAULT_SORT_TYPE
     const sortBy = navigationRouteSearch.sortBy || searchObj.sortBy || this.DEFAULT_SORT_COL
-
     const computedDocument = ProviderHelpers.getEntry(computeDocument, `${routeParams.dialect_path}/Dictionary`)
+
+    // NOTE: see information over at `componentDidMount` regarding this bug causing useIdOrPathFallback
+    // Pulling out data will fail if this funciton first uses a path and then an id
     const uid = useIdOrPathFallback({ id: selectn('response.uid', computedDocument), routeParams })
     const nql = `${currentAppliedFilter}&currentPageIndex=${pageIndex -
       1}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortBy=${sortBy}&enrichment=category_children${startsWithQuery}`
