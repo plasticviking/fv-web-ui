@@ -5,8 +5,8 @@ services:
     container_name: cypress
     command: "--browser chrome --record false --headless"
     volumes:
-      - '../frontend/cypress/videos:/cypress/videos'
-      - '../frontend/cypress/screenshots:/cypress/screenshots'
+      - '${PWD}/../frontend/cypress/videos:/app/cypress/videos'
+      - '${PWD}/../frontend/cypress/screenshots:/app/cypress/screenshots'
     depends_on:
       - frontend
       - nuxeo
