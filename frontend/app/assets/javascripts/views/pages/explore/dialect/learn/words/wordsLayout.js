@@ -1,5 +1,6 @@
 import React, { Component, Suspense } from 'react'
 import WordsData from './wordsData'
+import WordsDataHooks from './wordsDataHooks'
 import IntlService from 'views/services/intl'
 import {
   // dictionaryListSmallScreenColumnDataTemplate,
@@ -29,6 +30,7 @@ import {
 
 class WordsLayout extends Component {
   render() {
+    // console.log('WordsDataHooks', WordsDataHooks())
     return (
       <WordsData>
         {({
@@ -77,6 +79,26 @@ class WordsLayout extends Component {
           return (
             <div style={{ display: 'flex' }}>
               <div style={{ maxWidth: '25%' }}>
+                <WordsDataHooks>
+                  {({ searchParamsTesting, routeParamsSet }) => {
+                    return (
+                      <>
+                        <h2>DataComponents working with DataSourceComponents</h2>
+                        <div>
+                          <h3>{'Redux > navigation > route > search > testing'}</h3>
+                          <p>{searchParamsTesting || '(not set)'}</p>
+                        </div>
+                        <button
+                          onClick={() => {
+                            routeParamsSet({ search: { testing: '👋' } })
+                          }}
+                        >
+                          {'Click to Update `testing`'}
+                        </button>
+                      </>
+                    )
+                  }}
+                </WordsDataHooks>
                 {characters && (
                   <Suspense fallback={<div>Loading...</div>}>
                     <AlphabetListView
