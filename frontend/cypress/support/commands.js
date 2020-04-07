@@ -203,7 +203,15 @@ Cypress.Commands.add('AlphabetListView', (obj) => {
 // })
 Cypress.Commands.add('DialectFilterList', (obj) => {
   const _obj = Object.assign(
-    {category: undefined, confirmData: true, shouldPaginate: false, clearFilter: true, clearFilterText: 'stop browsing by category'},
+    {
+      category: undefined,
+      confirmData: true,
+      shouldPaginate: false,
+      clearFilter: true,
+      clearFilterText: 'stop browsing by category',
+      confirmActiveClass: false,
+      activeClassName: '',
+    },
     obj
   )
   cy.log('--- Running cypress/support/commands.js > DialectFilterList ---')
@@ -214,6 +222,11 @@ Cypress.Commands.add('DialectFilterList', (obj) => {
     cy.getByText(_obj.category).click()
   })
   cy.wait(500)
+  if (_obj.confirmActiveClass) {
+    cy.getByTestId('DialectFilterList').within(() => {
+      cy.getByText(_obj.category).should('have.class', _obj.activeClassName)
+    })
+  }
 
   if (_obj.confirmData) {
     cy.log('--- DialectFilterList: Confirm data  ---')
@@ -238,6 +251,11 @@ Cypress.Commands.add('DialectFilterList', (obj) => {
   if (_obj.clearFilter) {
     cy.log('--- DialectFilterList: Clear filter ---')
     cy.queryByText(new RegExp(_obj.clearFilterText, 'i')).click()
+    if (_obj.confirmActiveClass) {
+      cy.getByTestId('DialectFilterList').within(() => {
+        cy.getByText(_obj.category).should('not.have.class', _obj.activeClassName)
+      })
+    }
   }
 })
 
@@ -459,7 +477,7 @@ Cypress.Commands.add('formPopulateRelatedAudio', ({name, description}) => {
       // So we can't use getByLabelText. Have to getByText and move up the dom
       cy.getByText('name', { exact: false }).parent().find('input[type=text]').type(name)
       cy.getByText('description', { exact: false }).parent().find('textarea').type(description)
-      cy.getByText('Shared accross dialects', { exact: false }).parent().find('input[type=checkbox]').check()
+      cy.getByText('Shared across dialects', { exact: false }).parent().find('input[type=checkbox]').check()
       cy.getByText('Child focused', { exact: false }).parent().find('input[type=checkbox]').check()
 
       const fileName = 'TestRelatedAudio.wav'
@@ -492,7 +510,7 @@ Cypress.Commands.add('formPopulateRelatedPictures', ({name, description}) => {
       cy.getByText('description', { exact: false }).parent().find('textarea').type(
         description
       )
-      cy.getByText('Shared accross dialects', { exact: false }).parent().find('input[type=checkbox]').check()
+      cy.getByText('Shared across dialects', { exact: false }).parent().find('input[type=checkbox]').check()
       cy.getByText('Child focused', { exact: false }).parent().find('input[type=checkbox]').check()
       const fileName = 'TestRelatedImage.png'
       cy.fixture(fileName, 'base64').then((fileContent) => {
@@ -524,7 +542,7 @@ Cypress.Commands.add('formPopulateRelatedVideos', ({name, description}) => {
       cy.getByText('description', { exact: false }).parent().find('textarea').type(
         description
       )
-      cy.getByText('Shared accross dialects', { exact: false }).parent().find('input[type=checkbox]').check()
+      cy.getByText('Shared across dialects', { exact: false }).parent().find('input[type=checkbox]').check()
       cy.getByText('Child focused', { exact: false }).parent().find('input[type=checkbox]').check()
       const fileName = 'TestRelatedVideo.mp4'
       cy.fixture(fileName, 'base64').then((fileContent) => {

@@ -147,6 +147,7 @@ const DIALECT_PATH = [
 ]
 const PHRASES_PATH = DIALECT_PATH.concat(['learn', 'phrases'])
 const WORDS_PATH = DIALECT_PATH.concat(['learn', 'words'])
+const IMMERSION_PATH = DIALECT_PATH.concat(['immersion'])
 const REPORTS_PATH = DIALECT_PATH.concat(['reports'])
 const PAGINATION_PATH = [new paramMatch('pageSize', NUMBER), new paramMatch('page', NUMBER)]
 
@@ -173,6 +174,14 @@ const DIALECT_LEARN_PHRASES = {
       case: 'words',
     }) + ' | {$dialect_name}',
   page: <Pages.PageDialectLearnPhrases />,
+  extractPaths: true,
+  redirects: [WORKSPACE_TO_SECTION_REDIRECT],
+}
+
+const DIALECT_IMMERSION_WORDS = {
+  path: IMMERSION_PATH,
+  title: 'Immersion', // TODOSL add locale for this
+  page: <Pages.PageDialectImmersionList />,
   extractPaths: true,
   redirects: [WORKSPACE_TO_SECTION_REDIRECT],
 }
@@ -246,6 +255,7 @@ const addPagination = (route) => {
   })
 }
 
+// Category page
 const addCategory = (route) => {
   return Object.assign({}, route, {
     path: route.path.concat(['categories', new paramMatch('category', ANYTHING_BUT_SLASH)]),
@@ -257,15 +267,17 @@ const addCategory = (route) => {
       }) +
       ' | ' +
       selectn('title', route),
+    page: <Pages.PageDialectLearnWordsFilteredByCategory />,
   })
 }
 
-const addBrowseAlphabet = (route) => {
+const addImmersionCategory = (route) => {
   return Object.assign({}, route, {
-    path: route.path.concat(['alphabet', new paramMatch('letter', ANYTHING_BUT_SLASH)]),
-    title: '{$letter}' + ` | ${selectn('title', route)}`,
+    path: route.path.concat(['categories', new paramMatch('category', ANYTHING_BUT_SLASH)]),
+    title: 'Immersion Categories', // TODOSL locale translation template
   })
 }
+
 const addBrowsePhraseBook = (route) => {
   return Object.assign({}, route, {
     path: route.path.concat(['book', new paramMatch('phraseBook', ANYTHING_BUT_SLASH)]),
@@ -277,8 +289,17 @@ const addBrowsePhraseBook = (route) => {
       }) +
       ' | ' +
       selectn('title', route),
+    page: <Pages.PageDialectLearnPhrasesFilteredByCategory />,
   })
 }
+
+const addBrowseAlphabet = (route) => {
+  return Object.assign({}, route, {
+    path: route.path.concat(['alphabet', new paramMatch('letter', ANYTHING_BUT_SLASH)]),
+    title: '{$letter}' + ` | ${selectn('title', route)}`,
+  })
+}
+
 // eg: learn/phrases/alphabet/b
 const addBrowsePhraseBookByAlphabet = (route) => {
   return Object.assign({}, route, {
@@ -1673,8 +1694,8 @@ const routes = [
   },
   DIALECT_LEARN_PHRASES,
   addPagination(DIALECT_LEARN_PHRASES),
-  addBrowsePhraseBook(DIALECT_LEARN_PHRASES),
-  addPagination(addBrowsePhraseBook(DIALECT_LEARN_PHRASES)),
+  addBrowsePhraseBook(DIALECT_LEARN_PHRASES), // NOTE: THIS IS PHRASE'S BROWSE BY CATEGORY
+  addPagination(addBrowsePhraseBook(DIALECT_LEARN_PHRASES)), // NOTE: THIS IS PHRASE'S BROWSE BY CATEGORY
   addBrowsePhraseBookByAlphabet(DIALECT_LEARN_PHRASES),
   addPagination(addBrowsePhraseBookByAlphabet(DIALECT_LEARN_PHRASES)),
   {
@@ -1700,8 +1721,8 @@ const routes = [
     extractPaths: true,
     redirects: [WORKSPACE_TO_SECTION_REDIRECT],
   },
-  addCategory(DIALECT_LEARN_PHRASES),
-  addPagination(addCategory(DIALECT_LEARN_PHRASES)),
+  addCategory(DIALECT_LEARN_PHRASES), // NOTE: This creates `.../learn/phrases/categories/[catId]` but it's not being used! `addBrowsePhraseBook` above is phrase's category view
+  addPagination(addCategory(DIALECT_LEARN_PHRASES)), // NOTE: This creates `.../learn/phrases/categories/[catId]` but it's not being used! `addBrowsePhraseBook` above is phrase's category view
   {
     path: [
       KIDS_OR_DEFAULT,
@@ -2337,6 +2358,10 @@ const routes = [
     title: PAGE_NOT_FOUND_TITLE,
     page: <Pages.PageError title={PAGE_NOT_FOUND_TITLE} body={PAGE_NOT_FOUND_BODY} />,
   },
+  DIALECT_IMMERSION_WORDS,
+  addPagination(DIALECT_IMMERSION_WORDS),
+  addImmersionCategory(DIALECT_IMMERSION_WORDS),
+  addPagination(addImmersionCategory(DIALECT_IMMERSION_WORDS)),
 ]
 
 export default routes
