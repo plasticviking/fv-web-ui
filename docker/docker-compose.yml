@@ -10,7 +10,7 @@ services:
     environment:
       - discovery.type=single-node
       - cluster.name=firstvoices
-  nuxeo:
+  nuxeo-backend:
     image: me/nuxeo-dev
     container_name: nuxeo-dev
     volumes:

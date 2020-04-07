@@ -21,7 +21,7 @@ describe('LangAdminPortal.js > LangAdminPortal', () => {
     cy.get('div.Header.row').should(
       'have.css',
       'background-image',
-      'url("http://127.0.0.1:3001/explore/FV/Workspaces/Data/Test/Test/assets/images/cover.png")'
+      'url("' + Cypress.env('FRONTEND') + '/explore/FV/Workspaces/Data/Test/Test/assets/images/cover.png")'
     )
 
     cy.getByText('Edit').click()
@@ -62,7 +62,9 @@ describe('LangAdminPortal.js > LangAdminPortal', () => {
     cy.getByTestId('DialogCreateForm__DialogContent').within(() => {
       cy.get('[name="dc:title"]').type('TestPortalRelatedLinkTitle')
       cy.get('[name="dc:description"]').type('TestPortalRelatedLinkDescription')
-      cy.get('[name="fvlink:url"]').type('http://127.0.0.1:3001/explore/FV/Workspaces/Data/Test/Test/TestLanguageSix')
+      cy.get('[name="fvlink:url"]').type(
+        Cypress.env('FRONTEND') + '/explore/FV/Workspaces/Data/Test/Test/TestLanguageSix'
+      )
       cy.getByText('Save').click()
     })
 
@@ -137,7 +139,7 @@ describe('LangAdminPortal.js > LangAdminPortal', () => {
     cy.get('div.Header.row').should(
       'not.have.css',
       'background-image',
-      'url("http://127.0.0.1:3001/explore/FV/Workspaces/Data/Test/Test/assets/images/cover.png")'
+      'url("' + Cypress.env('FRONTEND') + '/explore/FV/Workspaces/Data/Test/Test/assets/images/cover.png")'
     )
 
     /*
@@ -173,7 +175,7 @@ describe('LangAdminPortal.js > LangAdminPortal', () => {
     cy.get('div.Header.row').should(
       'not.have.css',
       'background-image',
-      'url("http://127.0.0.1:3001/explore/FV/Workspaces/Data/Test/Test/assets/images/cover.png")'
+      'url("' + Cypress.env('FRONTEND') + '/explore/FV/Workspaces/Data/Test/Test/assets/images/cover.png")'
     )
   })
 })

@@ -1,5 +1,13 @@
 FROM maven:3.6.3-jdk-8
 
+# a few environment variables to make NPM installs easier
+# good colors for most applications
+ENV TERM xterm
+# avoid million NPM install messages
+ENV npm_config_loglevel warn
+# allow installing when the main user is root
+ENV npm_config_unsafe_perm true
+
 # Install Cypress dependencies
 RUN apt-get update && \
   apt-get install --no-install-recommends -y \
@@ -89,6 +97,3 @@ RUN chmod +x /wait
 
 # Remove the non-ci cypress.json and rename the CI version
 RUN rm cypress.json && cp cypress_CI.json cypress.json
-
-# Set the commands that run on container startup
-ENTRYPOINT /wait && /app/scripts/TestDatabaseSetup.sh http://nuxeo:8080 && npm run cy:trashCopy && npm run cy:copy && cypress run
