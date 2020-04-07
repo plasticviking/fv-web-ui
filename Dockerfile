@@ -5,6 +5,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 ENV GIT_DISCOVERY_ACROSS_FILESYSTEM=1
 COPY frontend /app
 COPY .git /.git
+RUN apt-get update && apt-get install -y libgl1-mesa-dev
 RUN npm ci
 RUN npm run production
 
@@ -45,5 +46,8 @@ a2enmod ssl
 COPY --from=build /app/public /opt/fv/www/
 COPY docker/apache2/000-default.conf /etc/apache2/sites-enabled/000-default.conf
 
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.7.3/wait /wait
+RUN chmod +x /wait
+
 # Launch Apache
-CMD ["/usr/sbin/apache2ctl", "-DFOREGROUND"]
+CMD /wait && /usr/sbin/apache2ctl -DFOREGROUND

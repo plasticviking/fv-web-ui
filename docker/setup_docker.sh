@@ -33,6 +33,17 @@ if [[ "$?" -ne 0 ]]; then
 fi
 echo
 
+# Build the cypress docker image
+cd ${DIRECTORY}/../
+echo 'Building Cypress Docker image'
+docker build -f Dockerfile_cypress -t me/cypress .
+if [[ "$?" -ne 0 ]]; then
+    echo
+    echo -e "${RED}Docker frontend build failed \n${ENDCOLOR}"; exit 1
+    echo
+fi
+echo
+
 cd ${DIRECTORY}
 # Create the docker volume directories to hold the server logs / data
 if [[ ! -d "$DIRECTORY/nuxeo_dev_docker" ]]; then

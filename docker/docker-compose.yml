@@ -31,11 +31,3 @@ services:
       - CYPRESS_FV_PASSWORD
     depends_on:
       - elasticsearch
-
-  frontend:
-    image: me/fv-web-ui
-    container_name: fv-web-ui
-    ports:
-      - '80:80'
-    depends_on:
-      - nuxeo
