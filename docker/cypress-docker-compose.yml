@@ -3,7 +3,7 @@ services:
   cypress:
     image: "me/cypress"
     container_name: cypress
-    command: ["/bin/sh", "-c", '/wait && /app/scripts/TestDatabaseSetup.sh http://nuxeo-backend:8080 && npm run cy:trashCopy && npm run cy:copy && cypress run --browser chrome --record true --headless --tag "AWS-server-test"']
+    command: ["/bin/sh", "-c", '/wait && /app/scripts/TestDatabaseSetup.sh http://nuxeo-backend:8080 && npm run cy:trashCopy && npm run cy:copy && cypress run --browser chrome --record true --headless --tag "local"']
     volumes:
       - '${PWD}/../frontend/cypress/videos:/app/cypress/videos'
       - '${PWD}/../frontend/cypress/screenshots:/app/cypress/screenshots'
