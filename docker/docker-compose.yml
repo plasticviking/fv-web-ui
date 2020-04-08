@@ -26,7 +26,7 @@ services:
       - NUXEO_DEV_MODE=false
       - NUXEO_DATA=/opt/nuxeo/ext_data
       - NUXEO_CLID=CLID
-      - 'NUXEO_URL=http://localhost:8080/nuxeo'
+      - NUXEO_URL=http://localhost:8080/nuxeo
       - CYPRESS_FV_USERNAME
       - CYPRESS_FV_PASSWORD
     depends_on:
