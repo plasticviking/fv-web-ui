@@ -6158,6 +6158,12 @@
                     <properties mode="any">
                         <property name="nxl_colspan_0">1</property>
                     </properties>
+                    <widget>maps_id</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
                     <widget>country</widget>
                 </row>
                 <row>
@@ -6233,6 +6239,15 @@
                 <properties widgetMode="edit">
                     <property name="styleClass">dataInputText</property>
                 </properties>
+            </widget>
+            <widget name="maps_id" type="int">
+                <labels>
+                    <label mode="any">Maps Language ID</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvdialect:maps_language_id</field>
+                </fields>
             </widget>
             <widget name="country" type="selectOneDirectory">
                 <labels>
@@ -6377,6 +6392,12 @@
                     <properties mode="any">
                         <property name="nxl_colspan_0">1</property>
                     </properties>
+                    <widget>maps_id</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
                     <widget>country</widget>
                 </row>
                 <row>
@@ -6476,6 +6497,15 @@
                 <properties widgetMode="edit">
                     <property name="styleClass">dataInputText</property>
                 </properties>
+            </widget>
+            <widget name="maps_id" type="int">
+                <labels>
+                    <label mode="any">Maps Language ID</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvdialect:maps_language_id</field>
+                </fields>
             </widget>
             <widget name="country" type="selectOneDirectory">
                 <labels>
@@ -6665,6 +6695,12 @@
                     <properties mode="any">
                         <property name="nxl_colspan_0">1</property>
                     </properties>
+                    <widget>maps_id</widget>
+                </row>
+                <row>
+                    <properties mode="any">
+                        <property name="nxl_colspan_0">1</property>
+                    </properties>
                     <widget>country</widget>
                 </row>
                 <row>
@@ -6722,6 +6758,15 @@
                 <properties widgetMode="view">
                     <property name="styleClass">dataInputText</property>
                 </properties>
+            </widget>
+            <widget name="maps_id" type="text">
+                <labels>
+                    <label mode="any">Maps Language ID</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>fvdialect:maps_language_id</field>
+                </fields>
             </widget>
             <widget name="country" type="selectOneDirectory">
                 <labels>
