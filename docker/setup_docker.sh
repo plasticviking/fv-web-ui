@@ -2,6 +2,8 @@
 
 #
 # Run this to setup everything docker needs to run the backend.
+# Optionally add the --cypress or --frontend flags to include the building
+# of the docker images for those components.
 #
 
 DIRECTORY=$PWD
@@ -22,27 +24,35 @@ if [[ "$?" -ne 0 ]]; then
 fi
 echo
 
-# Build the frontend docker image
-cd ${DIRECTORY}/../
-echo 'Building frontend Docker image'
-docker build -t me/fv-web-ui .
-if [[ "$?" -ne 0 ]]; then
+if [ "$1" == "--frontend" ] || [ "$2" == "--frontend" ]; then
+    # Build the frontend docker image
+    cd ${DIRECTORY}/../
+    echo 'Building frontend Docker image'
+    docker build -t me/fv-web-ui .
+    if [[ "$?" -ne 0 ]]; then
+        echo
+        echo -e "${RED}Docker frontend build failed \n${ENDCOLOR}"; exit 1
+        echo
+    fi
     echo
-    echo -e "${RED}Docker frontend build failed \n${ENDCOLOR}"; exit 1
-    echo
+else
+    echo 'Skipping the frontend docker image build'
 fi
-echo
 
-# Build the cypress docker image
-cd ${DIRECTORY}/../
-echo 'Building Cypress Docker image'
-docker build -f Dockerfile_cypress -t me/cypress .
-if [[ "$?" -ne 0 ]]; then
+if [ "$1" == "--cypress" ] || [ "$2" == "--cypress" ]; then
+    # Build the cypress docker image
+    cd ${DIRECTORY}/../
+    echo 'Building Cypress Docker image'
+    docker build -f Dockerfile_cypress -t me/cypress .
+    if [[ "$?" -ne 0 ]]; then
+        echo
+        echo -e "${RED}Docker frontend build failed \n${ENDCOLOR}"; exit 1
+        echo
+    fi
     echo
-    echo -e "${RED}Docker frontend build failed \n${ENDCOLOR}"; exit 1
-    echo
+else
+    echo 'Skipping the Cypress docker image build'
 fi
-echo
 
 cd ${DIRECTORY}
 # Create the docker volume directories to hold the server logs / data

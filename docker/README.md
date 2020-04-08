@@ -98,6 +98,22 @@ If you want to rerun the initial setup script for any reason, you can do so by r
 * You can now access the FirstVoices backend by going to localhost:8080 and logging in.
 * You can also [run the frontend independently](https://github.com/First-Peoples-Cultural-Council/fv-web-ui/tree/master/frontend)
 
+## Frontend and Cypress containers
+If you want to create docker containers for the frontend and Cypress test suite add the flags ```--frontend``` and ```--cypress```
+to the ```./setup_docker.sh``` command in step 2A. This will build docker images for each. To build all docker images run the following command from the docker directory:
+```
+./setup_docker.sh --frontend --cypress
+```
+
+To startup a copy of the frontend using apache, (not for frontend dev work), along with the backend run the following command in place of the command on step 3:
+```
+docker-compose -f docker-compose.yml -f frontend-docker-compose.yml up
+```
+To startup the frontend, backend, and run the complete Cypress test suite run the following command (requires :
+```
+docker-compose -f docker-compose.yml -f frontend-docker-compose.yml -f cypress-docker-compose.yml up --abort-on-container-exit
+```
+
 ## Creating an archive to work in
 
 By default, your instance will not have any archives to work in.
