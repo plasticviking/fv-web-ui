@@ -111,6 +111,7 @@
         <schema name="var_Task11b2" prefix="var_Task11b2" override="true" src="data/schemas/var_Task11b2.xsd"/>
         <schema name="var_FVUnpublishLanguageAsset" prefix="var_FVUnpublishLanguageAsset" override="true" src="data/schemas/var_FVUnpublishLanguageAsset.xsd"/>
         <schema name="fv_label_vocabulary" prefix="fv_label_vocabulary" override="true" src="data/schemas/fv_label_vocabulary.xsd"/>
+        <schema name="maps_language_ids" prefix="maps_language_ids" override="true" src="data/schemas/maps_language_ids.xsd"/>
     </extension>
     <extension target="org.nuxeo.ecm.core.schema.TypeService" point="doctype">
         <doctype name="Folder" extends="Document">
@@ -22382,6 +22383,93 @@
                 </properties>
             </widget>
         </layout>
+        <layout name="vocabulary-maps_language_ids">
+            <templates>
+                <template mode="any">/directory/directory_layout_template.xhtml</template>
+            </templates>
+            <rows>
+                <row>
+                    <widget>language</widget>
+                </row>
+                <row>
+                    <widget>id</widget>
+                </row>
+                <row>
+                    <widget>color</widget>
+                </row>
+                <row>
+                    <widget>family</widget>
+                </row>
+            </rows>
+            <widget name="language" type="text">
+                <labels>
+                    <label mode="any">Language</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>maps_language_ids:language</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+            <widget name="id" type="text">
+                <labels>
+                    <label mode="any">ID</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>maps_language_ids:id</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+            <widget name="color" type="text">
+                <labels>
+                    <label mode="any">Color</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>maps_language_ids:color</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+            <widget name="family" type="text">
+                <labels>
+                    <label mode="any">Family</label>
+                </labels>
+                <translated>false</translated>
+                <fields>
+                    <field>maps_language_ids:family</field>
+                </fields>
+                <properties widgetMode="edit">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+                <properties widgetMode="view">
+                    <property name="styleClass">dataInputText</property>
+                    <property name="required">true</property>
+                </properties>
+            </widget>
+        </layout>
         <layout name="Task297b@taskLayout">
             <templates>
                 <template mode="any">/layouts/First-Voices_layout_template.xhtml</template>
@@ -24542,6 +24630,16 @@ function run(input, params) {
             <cacheEntryName>fv_label_categories-cache</cacheEntryName>
             <cacheEntryWithoutReferencesName>vocab-label-categories-cache-without-references</cacheEntryWithoutReferencesName>
         </directory>
+        <directory name="maps_language_ids" extends="template-vocabulary">
+            <schema>maps_language_ids</schema>
+            <autoincrementIdField>false</autoincrementIdField>
+            <createTablePolicy>always</createTablePolicy>
+            <table>studio_vocabulary_maps_language_ids</table>
+            <dataFile>data/vocabularies/maps_language_ids.csv</dataFile>
+            <parentDirectory>maps_language_ids</parentDirectory>
+            <cacheEntryName>vocab-maps_language_ids-cache</cacheEntryName>
+            <cacheEntryWithoutReferencesName>vocab-maps_language_ids-cache-without-references</cacheEntryWithoutReferencesName>
+        </directory>
     </extension>
     <extension target="org.nuxeo.ecm.core.cache.CacheService" point="caches">
         <cache name="vocab-WorkflowType-cache">
@@ -24744,6 +24842,16 @@ function run(input, params) {
             <option name="concurrencyLevel">500</option>
             <ttl>60</ttl>
         </cache>
+        <cache name="vocab-maps_language_ids-cache">
+            <option name="maxSize">1000</option>
+            <option name="concurrencyLevel">500</option>
+            <ttl>60</ttl>
+        </cache>
+        <cache name="vocab-maps_language_ids-cache-without-references">
+            <option name="maxSize">1000</option>
+            <option name="concurrencyLevel">500</option>
+            <ttl>60</ttl>
+        </cache>
     </extension>
     <extension target="org.nuxeo.ecm.directory.ui.DirectoryUIManager" point="directories">
         <directory name="WorkflowType" layout="vocabulary" sortField="label"/>
@@ -24786,6 +24894,7 @@ function run(input, params) {
             </deleteConstraint>
         </directory>
         <directory name="reference" layout="vocabulary" sortField="label"/>
+        <directory name="maps_language_ids" layout="vocabulary-maps_language_ids" sortField="language"/>
     </extension>
     <extension target="org.nuxeo.ecm.platform.routing.service" point="routeModelImporter">
         <template-resource id="FVDisableLanguageAsset" path="data/FVDisableLanguageAsset.zip"/>
