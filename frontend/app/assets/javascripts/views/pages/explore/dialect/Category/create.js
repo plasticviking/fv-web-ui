@@ -244,8 +244,8 @@ export class Category extends React.Component {
     if (_computeCategories && _computeCategories.isFetching === false && _computeCategories.success) {
       // Extract data from object:
       let obj = {}
-      // eslint-disable-next-line func-names
-      _computeCategories.response.entries.forEach(function(entry) {
+
+      _computeCategories.response.entries.forEach((entry) => {
         obj = {
           uid: entry.uid,
           title: entry.title,
@@ -254,11 +254,12 @@ export class Category extends React.Component {
       })
       // Respond...
       return {
-        isError: _computeCategories.isError,
+        hasError: _computeCategories.response.hasError,
+        message: _computeCategories.response.errorMessage,
         dialectCategories,
       }
     }
-    return { isError: _computeCategories.isError, message: _computeCategories.message }
+    return { hasError: _computeCategories.response.hasError, message: _computeCategories.response.errorMessage }
   }
 
   _handleCreateItemSubmit = async (formData) => {

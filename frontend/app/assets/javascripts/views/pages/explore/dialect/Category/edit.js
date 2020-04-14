@@ -386,8 +386,8 @@ export class CategoryEdit extends React.Component {
     if (_computeCategories.success) {
       // Extract data from object:
       let obj = {}
-      // eslint-disable-next-line func-names
-      _computeCategories.response.entries.forEach(function(entry) {
+
+      _computeCategories.response.entries.forEach((entry) => {
         obj = {
           uid: entry.uid,
           title: entry.title,
@@ -401,7 +401,8 @@ export class CategoryEdit extends React.Component {
         dialectCategories,
       }
     }
-    return { isError: _computeCategories.isError, message: _computeCategories.message }
+    const error = _computeCategories.isError
+    return { isError: error, message: _computeCategories.message }
   }
 }
 
