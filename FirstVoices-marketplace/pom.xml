@@ -41,6 +41,10 @@
       <groupId>ca.firstvoices</groupId>
       <artifactId>firstvoices-web-ui</artifactId>
     </dependency>
+    <dependency>
+      <groupId>ca.firstvoices</groupId>
+      <artifactId>FirstVoicesCognitoAuth</artifactId>
+    </dependency>
   </dependencies>
   <build>
     <plugins>

@@ -19,6 +19,7 @@
   <version>3.2.1-RC</version>
 
   <modules>
+    <module>FirstVoicesCognitoAuth</module>
     <module>FirstVoices-marketplace</module>
     <module>FirstVoicesPublisher</module>
     <module>FirstVoicesEnrichers</module>
@@ -104,7 +105,12 @@
         <groupId>ca.firstvoices</groupId>
         <artifactId>FirstVoicesData</artifactId>
         <version>${project.version}</version>
-      </dependency>
+    </dependency>
+       <dependency>
+         <groupId>ca.firstvoices</groupId>
+         <artifactId>FirstVoicesCognitoAuth</artifactId>
+         <version>${project.version}</version>
+       </dependency>
     </dependencies>
   </dependencyManagement>
 

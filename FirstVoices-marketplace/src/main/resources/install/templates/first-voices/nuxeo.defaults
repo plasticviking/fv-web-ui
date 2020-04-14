@@ -9,3 +9,7 @@ nuxeo.template.includes=common
 
 ## on production servers should be left empty like this:
 fv.contextPath=
+
+nuxeo.openid.cognito.domain=replace_me_with_cognito_domain
+nuxeo.openid.cognito.id=replace_me_with_client_id
+nuxeo.openid.cognito.secret=replace_me_with_client_secret
