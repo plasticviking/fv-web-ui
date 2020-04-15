@@ -10,7 +10,7 @@ const createCategories = (start, max) => {
   }
 
   const categoryName = `[CY] A Category ${start}`
-  cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/create/category')
+  cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/create/category')
   cy.wait(2000)
   cy.getByLabelText(copy.create.name).type(categoryName)
   cy.getByText(copy.create.submit).click()
@@ -65,7 +65,7 @@ const performBatchDelete = () => {
 describe('CategoryCreate.js > Category', () => {
   it('Delete a category from edit screen', () => {
     cy.login({
-      userName: 'TESTLANGUAGETWO_RECORDER',
+      userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
     // Create a Category
@@ -100,7 +100,7 @@ describe('CategoryCreate.js > Category', () => {
 
   it('Deletes a category from browse screen', () => {
     cy.login({
-      userName: 'TESTLANGUAGETWO_RECORDER',
+      userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
     const categoryName = '[CY] A Category 0'
@@ -148,7 +148,7 @@ describe('CategoryCreate.js > Category', () => {
 
   it('Batch deletes entries from from browse screen', () => {
     cy.login({
-      userName: 'TESTLANGUAGETWO_RECORDER',
+      userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
     // Create 10 Categories

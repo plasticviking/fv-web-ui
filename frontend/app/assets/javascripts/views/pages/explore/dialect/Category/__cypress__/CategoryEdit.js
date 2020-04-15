@@ -33,10 +33,10 @@ const editCategory = () => {
 describe('CategoryCreate.js > Category', () => {
   it('Edit a Category After Creation', () => {
     cy.login({
-      userName: 'TESTLANGUAGETWO_RECORDER',
+      userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
-    cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/create/category')
+    cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/create/category')
     cy.wait(2000)
 
     // Create a Category
@@ -53,11 +53,11 @@ describe('CategoryCreate.js > Category', () => {
 
   it('Edit a Category From The Browse List', () => {
     cy.login({
-      userName: 'TESTLANGUAGETWO_RECORDER',
+      userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
     // Create a Category
-    cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/create/category')
+    cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/create/category')
     cy.wait(2000)
     cy.getByLabelText(copy.create.name).type('[CY] Category name')
     cy.getByText(copy.create.submit).click()

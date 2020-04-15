@@ -10,10 +10,10 @@ describe('CategoryCreate.js > Category', () => {
   it('Create', () => {
     // Login
     cy.login({
-      userName: 'TESTLANGUAGETWO_RECORDER',
+      userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
-    cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/create/category')
+    cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/create/category')
     cy.wait(500)
     cy.queryByText(copy.create.title).should('exist')
 

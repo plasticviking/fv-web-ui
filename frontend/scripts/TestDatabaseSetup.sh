@@ -307,6 +307,63 @@ if [[ "$?" -ne 0 ]]; then
   echo
 fi
 
+cd $DIRECTORY/temp/fv-utils-temp/target/
+# Create a fresh TestLanguageEight directory and all files
+java -jar fv-nuxeo-utils-*.jar create-language -username $CYPRESS_FV_USERNAME -password $CYPRESS_FV_PASSWORD -url $TARGET/nuxeo -language-directory Test/Test/ -language-name TestLanguageEight
+if [[ "$?" -ne 0 ]]; then
+  echo -e 'fv-utils TestLanguageEight creation failed \n'; exit 1
+  echo
+fi
+# Create a category to group the words
+echo "Creating TestLanguageEight category"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.Create' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"type":"FVCategory","name":"TestCategory","properties":"dc:title=TestCategory"},"input":"/FV/Workspaces/Data/Test/Test/TestLanguageEight/Categories","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 200 ]]; then
+    echo -e 'TestLanguageEight category creation failed: Error ' $response ' \n'; exit 1
+    echo
+fi
+# Publish the TestLanguageEight categories directory
+echo "Publishing TestLanguageEight shared category"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.PublishToSections' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"target":"/FV/Workspaces/Data/Test/Test/TestLanguageEight","override":"true"},"input":"/FV/Workspaces/Data/Test/Test/TestLanguageEight/Categories","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 200 ]]; then
+    echo -e 'TestLanguageEight category publish failed: Error ' $response ' \n'; exit 1
+    echo
+fi
+# Publish the category
+echo "Publishing TestLanguageEight category"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.PublishToSections' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"target":"/FV/Workspaces/Data/Test/Test/TestLanguageEight/Categories","override":"true"},"input":"/FV/Workspaces/Data/Test/Test/TestLanguageEight/Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 200 ]]; then
+    echo -e 'TestLanguageEight category publish failed: Error ' $response ' \n'; exit 1
+    echo
+fi
+# Publish the category
+echo "Publishing TestLanguageEight category"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/FVPublish' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{},"input":"/FV/Workspaces/Data/Test/Test/TestLanguageEight/Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 200 ]]; then
+    echo -e 'TestLanguageEight category publish failed: Error ' $response ' \n'; exit 1
+    echo
+fi
+# Import Words using fv-batch-import
+cd $DIRECTORY/temp/fv-batch-import-temp/target
+java -jar fv-batch-import-*.jar -url "$TARGET/nuxeo" -username $CYPRESS_FV_USERNAME -password $CYPRESS_FV_PASSWORD -domain FV -csv-file $DIRECTORY/scripts/files/testLangEightWord.csv -data-path $DIRECTORY/scripts/files/testLangTwoMedia/ -dialect-id fillerID -language-path Test/Test/TestLanguageEight
+if [[ "$?" -ne 0 ]]; then
+  echo -e 'fv-batch-import TestLanguageEight Words batch failed \n'; exit 1
+  echo
+fi
+# Import Alphabet using fv-batch-import
+cd $DIRECTORY/scripts/batch_jarfiles/
+java -jar fv-batch-import-alphabet.jar -url "$TARGET/nuxeo" -username $CYPRESS_FV_USERNAME -password $CYPRESS_FV_PASSWORD -domain FV -csv-file $DIRECTORY/scripts/files/alphabet.csv -data-path $DIRECTORY/scripts/files/testLangTwoMedia/ -dialect-id fillerID -language-path Test/Test/TestLanguageEight
+if [[ "$?" -ne 0 ]]; then
+  echo -e 'fv-batch-import TestLanguageEight Alphabet batch failed \n'; exit 1
+  echo
+fi
+# Publish the language TestLanguageEight
+echo "Publishing language TestLanguageEight"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/javascript.FVPublishOrRepublish' -H 'Nuxeo-Transaction-Timeout: 10' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{},"input":"/FV/Workspaces/Data/Test/Test/TestLanguageEight","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 200 ]]; then
+    echo -e 'TestLanguageEight publish failed: Error ' $response ' \n'; exit 1
+    echo
+fi
+
 # Publishing FV/Workspaces/Site/Resources for pages use
 echo "Publishing Resources folder for pages use"
 response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.PublishToSections' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"target":["/FV/sections/Site"],"override":"false"},"input":"/FV/Workspaces/Site/Resources","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
