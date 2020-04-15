@@ -16,7 +16,7 @@ limitations under the License.
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import Immutable, { Map } from 'immutable'
-import classNames from 'classnames'
+import '!style-loader!css-loader!./view.css'
 
 // REDUX
 import { connect } from 'react-redux'
@@ -51,6 +51,8 @@ import PhraseListView from 'views/pages/explore/dialect/learn/phrases/list-view'
 import { WORKSPACES } from 'common/Constants'
 
 import '!style-loader!css-loader!react-image-gallery/styles/css/image-gallery.css'
+import LiteralUnicodePresentation from './LiteralUnicode/LiteralUnicodePresentation'
+import LiteralUnicodeData from './LiteralUnicode/LiteralUnicodeData'
 
 /**
  * View character entry
@@ -108,6 +110,7 @@ export class AlphabetView extends Component {
 
     const computeCharacter = ProviderHelpers.getEntry(this.props.computeCharacter, this._getCharacterPath())
     const computeDialect2 = ProviderHelpers.getEntry(this.props.computeDialect2, this.props.routeParams.dialect_path)
+    const character = selectn('response.title', computeCharacter)
 
     // Generate photos
     const photos = []
@@ -140,7 +143,7 @@ export class AlphabetView extends Component {
     })
 
     // Clean character to make it NXQL friendly
-    const searchByAlphabetValue = StringHelpers.clean(selectn('response.title', computeCharacter), CLEAN_NXQL) || ''
+    const searchByAlphabetValue = StringHelpers.clean(character, CLEAN_NXQL) || ''
 
     // Set filter
     const currentAppliedFilter = new Map({
@@ -203,7 +206,7 @@ export class AlphabetView extends Component {
       })
 
       relatedWords = (
-        <div>
+        <div className="AlphabetViewRowItem">
           <h3>
             <FVLabel transKey="related_words" defaultStr="Related Words" transform="words" />:
           </h3>
@@ -211,7 +214,7 @@ export class AlphabetView extends Component {
         </div>
       )
     }
-
+    const hasMedia = photos.length !== 0 || videos.length !== 0
     /**
      * Generate definitions body
      */
@@ -231,9 +234,9 @@ export class AlphabetView extends Component {
                         ? this.props.intl.trans('words', 'Words', 'first')
                         : this.props.intl.trans(
                             'views.pages.explore.dialect.learn.alphabet.words_starting_with_x',
-                            'Words Starting with ' + selectn('response.title', computeCharacter),
+                            'Words Starting with ' + character,
                             'words',
-                            [selectn('response.title', computeCharacter)]
+                            [character]
                           ),
                       id: 'find_words',
                       className: 'fontAboriginalSans',
@@ -243,9 +246,9 @@ export class AlphabetView extends Component {
                         ? this.props.intl.trans('phrases', 'Phrases', 'first')
                         : this.props.intl.trans(
                             'views.pages.explore.dialect.learn.alphabet.phrases_starting_with_x',
-                            'Phrases Starting with ' + selectn('response.title', computeCharacter),
+                            'Phrases Starting with ' + character,
                             'words',
-                            [selectn('response.title', computeCharacter)]
+                            [character]
                           ),
                       id: 'find_phrases',
                       className: 'fontAboriginalSans',
@@ -257,19 +260,36 @@ export class AlphabetView extends Component {
 
                 {/* TAB: DEFINITION */}
                 {this.state.tabValue === 0 && (
-                  <Typography component="div" style={{ padding: 8 * 3 }}>
-                    <div>
-                      <CardContent>
-                        <div className="col-xs-8 fontAboriginalSans">
-                          <h2>{selectn('response.title', computeCharacter)}</h2>
-
-                          <div className="row">
-                            {this._getAudio()}
-
-                            <div className={classNames('col-md-6', 'col-xs-12')}>{relatedWords}</div>
+                  <Typography component="div">
+                    <CardContent>
+                      <div className={`${hasMedia ? 'col-xs-8' : ''} fontAboriginalSans`}>
+                        <div className="AlphabetViewRow">
+                          <div className="AlphabetViewRowItem">
+                            <Typography component="h2" variant="headline">
+                              {character}
+                            </Typography>
                           </div>
                         </div>
 
+                        <div className="AlphabetViewRow">
+                          {this._getAudio()}
+
+                          {relatedWords}
+
+                          {character && (
+                            <LiteralUnicodeData character={character}>
+                              {(literalUnicode) => (
+                                <LiteralUnicodePresentation
+                                  literalUnicode={literalUnicode}
+                                  className="AlphabetViewRowItem"
+                                />
+                              )}
+                            </LiteralUnicodeData>
+                          )}
+                        </div>
+                      </div>
+
+                      {hasMedia && (
                         <div className="col-xs-4">
                           <MediaPanel
                             label={this.props.intl.trans('photo_s', 'Photo(s)', 'first')}
@@ -282,8 +302,8 @@ export class AlphabetView extends Component {
                             items={videos}
                           />
                         </div>
-                      </CardContent>
-                    </div>
+                      )}
+                    </CardContent>
                   </Typography>
                 )}
 
@@ -295,9 +315,9 @@ export class AlphabetView extends Component {
                         <h2>
                           <FVLabel
                             transKey="views.pages.explore.dialect.learn.alphabet.words_starting_with_x"
-                            defaultStr={'Words Starting with ' + selectn('response.title', computeCharacter)}
+                            defaultStr={'Words Starting with ' + character}
                             transform="words"
-                            params={[selectn('response.title', computeCharacter)]}
+                            params={[character]}
                           />
                         </h2>
                         <div className="row">
@@ -319,9 +339,9 @@ export class AlphabetView extends Component {
                         <h2>
                           <FVLabel
                             transKey="views.pages.explore.dialect.learn.alphabet.phrases_starting_with_x"
-                            defaultStr={'Phrases Starting with ' + selectn('response.title', computeCharacter)}
+                            defaultStr={'Phrases Starting with ' + character}
                             transform="words"
-                            params={[selectn('response.title', computeCharacter)]}
+                            params={[character]}
                           />
                         </h2>
                         <div className="row">
@@ -367,9 +387,9 @@ export class AlphabetView extends Component {
     })
     if (audioPreview.length > 0 || noAudioMessage !== null) {
       return (
-        <div className={classNames('col-md-6', 'col-xs-12')}>
+        <div className="AlphabetViewRowItem">
           <h3>
-            <FVLabel transKey="audio" defaultStr="Audio" transform="first" />
+            <FVLabel transKey="audio" defaultStr="Audio" transform="first" />:
           </h3>
           <div>
             {noAudioMessage}
