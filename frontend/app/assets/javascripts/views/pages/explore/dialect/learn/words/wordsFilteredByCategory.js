@@ -99,7 +99,11 @@ class WordsFilteredByCategory extends Component {
     // Portal
     ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Portal`, this.props.fetchPortal, computePortal)
     // Document
-    ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Dictionary`, this.props.fetchDocument, computeDocument)
+    await ProviderHelpers.fetchIfMissing(
+      `${routeParams.dialect_path}/Dictionary`,
+      this.props.fetchDocument,
+      computeDocument
+    )
 
     // Alphabet
     // ---------------------------------------------
@@ -746,7 +750,7 @@ WordsFilteredByCategory.propTypes = {
   splitWindowPath: array.isRequired,
   windowPath: string.isRequired,
   // REDUX: actions/dispatch/func
-  fetchCategories: func.isRequired,
+  // fetchCategories: func.isRequired,
   fetchCharacters: func.isRequired,
   fetchDocument: func.isRequired,
   fetchPortal: func.isRequired,
