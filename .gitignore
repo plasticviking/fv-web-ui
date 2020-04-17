@@ -29,3 +29,4 @@ nashorn_code_cache
 *.log
 /frontend/temp/*
 /docker/database/*
+/docker/frontend/
