@@ -13,7 +13,7 @@ describe('ContributorDelete.js > Contributor', () => {
     cy.createContributor().then((response) => {
       const uid = response.body.uid
       cy.log(`--- CONTRIBUTOR ${uid} EXISTS ---`)
-      const url = `http://127.0.0.1:3001/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/contributor/${uid}`
+      const url = Cypress.env('FRONTEND') + `/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/contributor/${uid}`
       cy.visit(url)
       cy.deleteContributor(uid).then(() => {
         cy.visit(url)
