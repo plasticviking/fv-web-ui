@@ -8,12 +8,16 @@ import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.collectors.DocumentModelCollector;
-import org.nuxeo.ecm.core.api.*;
+import org.nuxeo.ecm.core.api.ConcurrentUpdateException;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.IdRef;
 
 /**
  *
  */
-@Operation(id=UpdateCategory.ID, category=Constants.CAT_DOCUMENT, label="Update Category", description="Set multiple properties on the input document. The properties are specified as key=value pairs separated by a new line. The key used for a property is the property xpath.")
+@Operation(id = UpdateCategory.ID, category = Constants.CAT_DOCUMENT, label = "Update Category", description = "Set multiple properties on the input document. Move document to new target location.")
 public class UpdateCategory {
 
     public static final String ID = "Document.UpdateCategory";
@@ -23,7 +27,6 @@ public class UpdateCategory {
 
     @Param(name = "target", required = false)
     protected String target; // the path or the ID
-
 
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws ConcurrentUpdateException, IOException {

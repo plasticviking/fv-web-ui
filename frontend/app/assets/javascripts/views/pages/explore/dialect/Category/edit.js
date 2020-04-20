@@ -380,6 +380,10 @@ export class CategoryEdit extends React.Component {
         uid: parentDoc.id,
         title: parentDoc.title,
       },
+      {
+        uid: `${this.props.routeParams.dialect_path}/Categories`,
+        title: 'None',
+      },
     ]
     // Extract data from immutable:
     const _computeCategories = await ProviderHelpers.getEntry(computeCategories, categoriesPath)
@@ -397,12 +401,12 @@ export class CategoryEdit extends React.Component {
       })
       // Respond...
       return {
-        isError: _computeCategories.isError,
+        hasError: _computeCategories.response.hasError,
+        message: _computeCategories.response.errorMessage,
         dialectCategories,
       }
     }
-    const error = _computeCategories.isError
-    return { isError: error, message: _computeCategories.message }
+    return { hasError: _computeCategories.response.hasError, message: _computeCategories.response.errorMessage }
   }
 }
 

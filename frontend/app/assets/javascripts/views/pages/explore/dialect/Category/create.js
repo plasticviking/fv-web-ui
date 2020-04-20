@@ -218,17 +218,6 @@ export class Category extends React.Component {
     )
   }
 
-  // _getData = async(addToState) => {
-  //   const { routeParams } = this.props
-  //   const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
-  //   await this.props.fetchCategories(categoriesPath)
-  //   // NOTE: redux doesn't update on changes to deeply nested data, hence the manual re-render
-  //   this.setState({
-  //     rerender: Date.now(),
-  //     ...addToState,
-  //   })
-  // }
-
   _getCategories = async () => {
     const { computeCategories, routeParams } = this.props
     const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
@@ -241,7 +230,7 @@ export class Category extends React.Component {
     ]
     // Extract data from immutable:
     const _computeCategories = await ProviderHelpers.getEntry(computeCategories, categoriesPath)
-    if (_computeCategories && _computeCategories.isFetching === false && _computeCategories.success) {
+    if (_computeCategories.success) {
       // Extract data from object:
       let obj = {}
 
@@ -249,6 +238,7 @@ export class Category extends React.Component {
         obj = {
           uid: entry.uid,
           title: entry.title,
+          isTrashed: entry.isTrashed,
         }
         dialectCategories.push(obj)
       })
