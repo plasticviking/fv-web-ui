@@ -36,7 +36,7 @@ public class UpdateCategory {
         if (!doc.getType().equals("FVCategory")) {
             throw new NuxeoException("Document type must be FVCategory.");
         }
-//        Do a doc check type
+
         if (properties.size() > 0) {
             for (Map.Entry<String, String> entry : properties.entrySet()) {
                 if (entry.getKey().equals("ecm:parentRef")) {
