@@ -91,12 +91,12 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
         cy.getByText('Tiger').should('exist')
       })
   })
-
+  // Repeat Tests on a dialect that uses its own categories (Test Language)
   it('From a language that has its own categories, Select category with enough results for pagination, confirm has data, navigate to next page, confirm has data', () => {
     cy.visit('/explore/FV/sections/Data/Test/Test/TestLanguageEight/learn/words')
     cy.wait(500)
 
-    const category = 'TestCategory'
+    const category = 'TestDialectCategory'
     cy.DialectFilterList({
       category,
       confirmData: true,
@@ -111,7 +111,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/learn/words')
     cy.wait(500)
 
-    const category = 'TestCategory'
+    const category = 'TestDialectCategory'
     cy.DialectFilterList({
       category,
       confirmData: false,
@@ -136,7 +136,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/learn/words')
     cy.wait(1000)
 
-    const category = 'TestCategory'
+    const category = 'TestDialectCategory'
 
     cy.DialectFilterList({
       category,
@@ -162,7 +162,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
     cy.visit('/explore/FV/sections/Data/Test/Test/TestLanguageEight/learn/words')
     cy.wait(1000)
 
-    const category = 'TestCategory'
+    const category = 'TestDialectCategory'
 
     cy.DialectFilterList({
       category,
