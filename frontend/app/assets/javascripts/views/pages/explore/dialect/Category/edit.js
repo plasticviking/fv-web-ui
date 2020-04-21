@@ -165,7 +165,7 @@ export class CategoryEdit extends React.Component {
     await this.props.fetchCategory(itemId)
     await this.props.fetchCategories(`/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`)
     const item = await this._getItem()
-    const categories = await this._getCategories(item.parent)
+    const categories = await this._getCategories(item)
 
     if (item.isError) {
       this.setState({
@@ -371,15 +371,11 @@ export class CategoryEdit extends React.Component {
     return { isError: _computeCategory.isError, message: _computeCategory.message }
   }
 
-  _getCategories = async (parentDoc) => {
+  _getCategories = async ({ parent, data }) => {
     const { computeCategories, routeParams } = this.props
     const categoriesPath = `/api/v1/path/${routeParams.dialect_path}/${categoryType.title.plural}/@children`
     // Set-up array for data extraction and allow for selecting no parent category - set Categories directory as value:
     const dialectCategories = [
-      {
-        uid: parentDoc.id,
-        title: parentDoc.title,
-      },
       {
         uid: `${this.props.routeParams.dialect_path}/Categories`,
         title: 'None',
@@ -397,7 +393,13 @@ export class CategoryEdit extends React.Component {
           title: entry.title,
           isTrashed: entry.isTrashed,
         }
-        dialectCategories.push(obj)
+        if (data.id !== entry.uid) {
+          if (entry.uid === parent.id) {
+            dialectCategories.unshift(obj)
+          } else {
+            dialectCategories.push(obj)
+          }
+        }
       })
       // Respond...
       return {

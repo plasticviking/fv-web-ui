@@ -58,7 +58,7 @@ export const updateCategory = (
             }) + '...'
           : _messageStart,
     })
-    return CategoryOperations.updateCategory(newDoc, newParentRef)
+    return CategoryOperations.updateCategory(newDoc)
       .then((response) => {
         const dispatchObj = {
           type: FV_CATEGORY_UPDATE_SUCCESS,

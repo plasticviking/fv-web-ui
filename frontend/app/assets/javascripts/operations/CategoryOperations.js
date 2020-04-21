@@ -22,13 +22,13 @@ export default class CategoryOperations {
    * updateDocument
    * --------------------------------------
    */
-  static updateCategory(doc, newParentRef) {
+  static updateCategory(doc) {
     const properties = BaseOperations.getProperties()
 
     return new Promise((resolve, reject) => {
       properties.client
         .operation('Document.UpdateCategory')
-        .param('target', newParentRef)
+        .param('properties', doc._dirtyProperties)
         .input(doc)
         .execute()
         .then((newDoc) => {
