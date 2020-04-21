@@ -1,7 +1,7 @@
 package ca.firstvoices.FVCategory.operations;
 
 import java.io.IOException;
-
+import java.util.Map;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
@@ -13,6 +13,8 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoException;
+import org.nuxeo.ecm.core.api.PathRef;
 
 /**
  *
@@ -25,20 +27,35 @@ public class UpdateCategory {
     @Context
     protected CoreSession session;
 
-    @Param(name = "target", required = false)
-    protected String target; // the path or the ID
+    @Param(name="properties", required = false)
+    protected Map<String, String> properties;
 
     @OperationMethod(collector = DocumentModelCollector.class)
     public DocumentModel run(DocumentModel doc) throws ConcurrentUpdateException, IOException {
 
-        doc = session.saveDocument(doc); // may throw ConcurrentUpdateException if bad change token
-
-        if (target != null) {
-            IdRef targetRef = new IdRef(target);
-            // update Parent Category i.e. move document
-            DocumentRef src = doc.getRef();
-            doc = session.move(src, targetRef, null);
+        if (!doc.getType().equals("FVCategory")) {
+            throw new NuxeoException("Document type must be FVCategory.");
         }
-        return doc;
+//        Do a doc check type
+        if (properties.size() > 0) {
+            for (Map.Entry<String, String> entry : properties.entrySet()) {
+                if (entry.getKey().equals("ecm:parentRef")) {
+                    session.saveDocument(doc);
+                    String newTarget = entry.getValue();
+                    if (newTarget.contains("/Categories")) {
+                        newTarget = session.getDocument(new PathRef(newTarget)).getId();
+                    }
+
+                    IdRef targetRef = new IdRef(newTarget);
+                    // update Parent Category i.e. move document
+                    DocumentRef src = doc.getRef();
+                    doc = session.move(src, targetRef, doc.getPropertyValue("dc:title").toString());
+                } else {
+                    doc.setPropertyValue(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        return session.saveDocument(doc);
     }
 }
