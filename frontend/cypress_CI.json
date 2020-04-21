@@ -1,0 +1,15 @@
+{
+  "chromeWebSecurity": false,
+  "baseUrl": "http://fv-web-ui",
+  "video": true,
+  "videoUploadOnPasses": true,
+  "projectId": "CYPRESS_PROJECT_ID",
+  "videoCompression": 0,
+  "env": {
+    "TARGET": "http://nuxeo-backend:8080",
+    "FRONTEND": "http://fv-web-ui"
+  },
+  "viewportHeight": 660,
+  "viewportWidth": 1000,
+  "defaultCommandTimeout": 10000
+}

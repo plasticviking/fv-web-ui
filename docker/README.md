@@ -1,139 +1,176 @@
-# Docker development environment (meant for localhost work)
+# Docker Development Environment
 
-This environment is setup for localhost work. It includes an embedded database (Derby), and embedded Elasticsearch.
+This environment is setup for localhost work. It includes:
+
+1. A Nuxeo instance.
+2. An embedded database (Derby)
+3. A standalone instance of Elasticsearch (for caching and search)
+4. Optionally, the compiled FirstVoices front-end behind an Apache2 server
 
 ## Prerequisites
 
 1. You must have Docker installed and running with at least 4GB of memory allocated to docker (preferrably more), as well as git installed. Docker can be downloaded from [this link](https://docs.docker.com/install/) and git can be downloaded from [this link](https://git-scm.com/downloads). You will also need the following dependencies:
 
-- Java 8 (jdk 1.8.0_xxx [openjdk recommended](https://openjdk.java.net/install/))
-- [Apache Maven v3.6.3](https://maven.apache.org/)
-- NodeJS v10.19.0 ([node version manager recommended](https://github.com/nvm-sh/nvm))
-- NPM v6.13.4 ([node version manager recommended](https://github.com/nvm-sh/nvm))
+   - Java 8 (jdk 1.8.0_xxx [openjdk recommended](https://openjdk.java.net/install/))
+   - [Apache Maven v3.6.3](https://maven.apache.org/)
+   - NodeJS v10.19.0 ([node version manager recommended](https://github.com/nvm-sh/nvm))
+   - NPM v6.13.4 ([node version manager recommended](https://github.com/nvm-sh/nvm))
 
 2. Basic knowledge of Docker, Nuxeo and bash.
-3. Ensure you have the two environment variables set for CYPRESS_FV_USERNAME and CYPRESS_FV_PASSWORD which will be passed into the container and used to create an admin account during the initial setup. After setting environment variables they can be checked by running the following in your terminal window:
+   
+3. Ensure you have two environment variables set for CYPRESS_FV_USERNAME and CYPRESS_FV_PASSWORD which will be passed into the container and used to create an admin account during the initial setup. After setting environment variables they can be checked by running the following in your terminal window: `printenv`
 
-```
-printenv
-```
+### Before beginning
 
-## Initial Setup
-
-### Step 1:
-
-Clone the fv-web-ui repository and navigate into fv-web-ui/docker/
+Clone the fv-web-ui repository and navigate into `fv-web-ui/docker/`. All steps are performed in this directory.
 
 ```
 git clone https://github.com/First-Peoples-Cultural-Council/fv-web-ui.git
 cd ./fv-web-ui/docker
 ```
 
-### Step 2:
+---
 
-#### There are now two options:
+## Back-End Only Setup
 
-#### Option A - Run the setup script (easier but less control - recommended):
+In this setup you will have the back-end of FirstVoices running, and will be able to [run and point the front-end development environment](https://github.com/First-Peoples-Cultural-Council/fv-web-ui/tree/master/frontend) to this instance.
 
-##### A-1:
+### Step 1: Run the setup script
 
-```
-./setup_docker.sh
-```
-
-You may have to give the script execute permission first:
+Give the script execute permission first:
 
 ```
 chmod +x setup_docker.sh
 ```
 
+Execute via terminal:
+
+```
+./setup_docker.sh
+```
+
+This setup script will:
+1. Create a docker image called `nuxeo-dev` for the back-end
+2. Create volumes on your host machine (in `fv-web-ui/docker/nuxeo_dev_docker`). These will be mounted on the `nuxeo-dev` container.
+3. Build the back-end using Maven and copy the generated ZIP file into `fv-web-ui/docker/nuxeo_dev_docker`.
+
+### Step 2: Startup the environment
+
+Run the following in terminal:
+
+```
+docker-compose up
+```
+
+This command will:
+1. Start all the docker services defined in docker-compose.yml (this may take a few minutes as the environment starts up.)
+2. Automatically execute `./initialsetup.sh` which will create the proper data structure and an admin account using the environment variables.
+
 #### Option B - Run the commands individually:
 
-##### B-1:
+**Note for Windows environments:** You may need to replace ```${PWD}``` in docker-compose.yml with your full path to your ```fv-web-ui/docker/``` directory, since ```${PWD}``` will not work in Windows terminals.
 
-Navigate to the cloned folder and build this image locally:
-`docker build -t me/nuxeo-dev .`
+### Step 3: Access your URLs
 
-##### B-2::
+* You can now access the FirstVoices backend by going to localhost:8080 and logging in with the username and password you set for CYPRESS_FV_USERNAME / CYPRESS_FV_PASSWORD
+* You can also [run the frontend independently](https://github.com/First-Peoples-Cultural-Council/fv-web-ui/tree/master/frontend), which will point to your local docker container.
 
-Setup a folder on your local machine to store some persistant data from within the container (e.g. Nuxeo data), and a built package of FirstVoices, for example: `~/Dev/Dependencies/nuxeo_dev_docker`
+**Your FirstVoices instance will start out empty. Go to the `Getting Started` section to learn how to create a new language.**
 
-##### B-3:
+---
 
-In the `fv-web-ui` project (cloned from https://github.com/First-Peoples-Cultural-Council/fv-web-ui), run `mvn clean install`, then copy the package `FirstVoices-marketplace/target/FirstVoices-marketplace-package-latest.zip` into the `nuxeo_dev_docker` folder. It is best to build the application outside of the docker container to make use of Maven and Node caching.
+## Full Setup (Back-end, Front-end)
 
-The Option B `run` command below assumes the following volumes on the host (change to match your file structure):
+You can use docker to have a self-contained environment with both the front-end and back-end of FirstVoices for testing of other components. Please review the "Back-End Only Setup" above to gain some insight into the various steps. The following instructions supplement those steps.
 
-`~/Dev/Dependencies/nuxeo_dev_docker` = Directory on host mapped to /tmp/ directory. Useful for storing data you want to persist in the container.
-`~/Dev/Dependencies/nuxeo_dev_docker/data` = Directory where Nuxeo data will be stored persisted.
-`~/Dev/Dependencies/nuxeo_dev_docker/logs` = Directory where log files will be mapped.
-
-### Step 3:
-
-##### Startup the docker container
-
-If you used Option A and are in the fv-web-ui/docker/ directory:
+### Step 1: Run the setup script, including the front-end image:
 
 ```
-docker run --name nuxeo-dev --rm -ti -p 8080:8080 -p 8787:8787 -v ${PWD}/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp -v ${PWD}/nuxeo_dev_docker/data:/opt/nuxeo/ext_data -v ${PWD}/nuxeo_dev_docker/logs:/var/log/nuxeo -e NUXEO_PACKAGES="nuxeo-dam nuxeo-jsf-ui" -e NUXEO_URL="http://localhost:8080" -e CYPRESS_FV_USERNAME -e CYPRESS_FV_PASSWORD me/nuxeo-dev
+./setup_docker.sh --frontend
 ```
 
-If you are in the fv-web-ui/docker/ directory:
+In addition to the back-end instructions, with this argument the setup script will create a docker image called `nuxeo-dev` for the front-end.
 
+### Step 2: Startup the environment
+
+Run the following in terminal:
 ```
-docker run --name nuxeo-dev --rm -ti -p 8080:8080 -p 8787:8787 -v ~/Dev/Dependencies/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp -v ~/Dev/Dependencies/nuxeo_dev_docker/data:/opt/nuxeo/ext_data -v ~/Dev/Dependencies/nuxeo_dev_docker/logs:/var/log/nuxeo -e NUXEO_PACKAGES="nuxeo-dam nuxeo-jsf-ui" -e NUXEO_URL="http://localhost:8080" -e CYPRESS_FV_USERNAME -e CYPRESS_FV_PASSWORD me/nuxeo-dev
+docker-compose -f docker-compose.yml -f frontend-docker-compose.yml up
 ```
 
-**Note:** you may have to change the volumes `${PWD}` part in docker-compose.yml to match the path to your `fv-web-ui/docker/` directory
+In addition to the back-end instructions, with this argument docker will:
+1. Build the front-end
+2. Setup apache2 web server to serve the front-end static files
 
-This may take a few minutes as Nuxeo starts up.
-The initial backend setup script should automatically run, which will create the proper data structure and an admin account using the environment variables.
+### Step 3: Access your URLs
 
-Notes:
+* You can now access the FirstVoices frond-end by going to localhost:3001 and logging in with the username and password you set for CYPRESS_FV_USERNAME / CYPRESS_FV_PASSWORD
 
-- Remote debugging is exposed via port 8787: `-p 8787:8787`\
-- To include automation traces: `-e NUXEO_AUTOMATION_TRACE="true"`\
-- To enable Dev mode: `-e NUXEO_DEV_MODE="true"`\
-- To change the data folder: `-e NUXEO_DATA="/opt/nuxeo/ext_data"`\
+**Your FirstVoices instance will start out empty. Go to the `Getting Started` section to learn how to create a new language.**
 
-### Step 4:
+---
 
-Run the initial backend setup script in a new terminal once the backend server has started:
+## Getting Started
+
+At this point you should have either the back-end running independently, [with the front-end pointing to it](https://github.com/First-Peoples-Cultural-Council/fv-web-ui/tree/master/frontend); or the back-end and front-end running together using docker.
+
+By default, your instance will not have any archives to work in. You are ready to setup your first archive on FirstVoices! In order to do so, you will need to create a language family, language and dialect (i.e. archive) in the back-end.
+
+You have two options:
+
+1) Log into the backend, navigate to Workspace (top menu) -> FV -> Workspaces -> Data and create a Language Family, a Language and a Dialect (by clicking "New" in each view). You will then be able to work within that archive via the front end.
+
+2) You can use our `demo` language. From the frontend directory run the command ```npm run local:language:setup``` to create a language called "DevLangOne" language which contains some words, phrases, and an alphabet. You can remove this demo language by running the command ```npm run local:language:teardown```.
+
+You should now see your new FirstVoices language archive when you access the front-end!
+
+---
+
+## Other Setup Notes and Configuration Options
+
+These are not required for getting started, but contain some useful information if you wish to modify the environment for your needs.
+
+### Manually running the initial setup script
+
+This should not be required, but if you need to run it manually, you can do so by running the following command from the docker directory:
 
 ```
 ./initialsetup.sh
 ```
 
-**Notes:** (change the following in docker-compose.yml under nuxeo -> environment)
+### Additional Nuxeo Docker configuration 
 
-- To include automation traces: `NUXEO_AUTOMATION_TRACE=true`
+You can specify additional options on the nuxeo (back-end) docker container in docker-compose.yml, under nuxeo -> environment. For example:
+
+- To include automation traces change `NUXEO_AUTOMATION_TRACE=true`
 - To enable Dev mode: `NUXEO_DEV_MODE=true`
 - To change the data folder: `NUXEO_DATA=/opt/nuxeo/ext_data`
 
-### Step 4:
+For additional options, consult: https://hub.docker.com/_/nuxeo
 
-- You can now access the FirstVoices backend by going to localhost:8080 and logging in.
-- You can also [run the frontend independently](https://github.com/First-Peoples-Cultural-Council/fv-web-ui/tree/master/frontend)
+### Cypress (testing) Containers
 
-## Creating an archive to work in
+You can use docker to setup an environment that includes FirstVoices and Cypress, in order to run Cypress tests against the platform.
 
-By default, your instance will not have any archives to work in.
-You will need to create a language family, language and dialect (i.e. archive).
+To build all docker images run the following command from the docker directory:
+```
+./setup_docker.sh --frontend --cypress
+```
 
-##### Premade dev language:
+To startup the frontend, backend, and run the complete Cypress test suite run the following command (requires :
+```
+docker-compose -f docker-compose.yml -f frontend-docker-compose.yml -f cypress-docker-compose.yml up --abort-on-container-exit
+```
 
-From the frontend directory run the command `npm run local:language:setup` to create a premade DevLangOne language which contains some words, phrases, and an alphabet.
-You can remove this premade language by running the command `npm run local:language:teardown`.
+---
 
-##### Manually:
+## Development Procedures
 
-Log into the backend, navigate to Workspace (top menu) -> FV -> Workspaces -> Data and create a Language Family, a Language and a Dialect (by clicking "New" in each view). You will then be able to work within that archive via the front end.
-
-## Pushing Changes
+### Pushing Changes
 
 After making a change to a Nuxeo module, you can deploy your change to the docker container in two ways:
 
-### Method 1 (deploy entire ZIP - recommended for changes in multiple modules):
+#### Method 1 (deploy entire ZIP - recommended for changes in multiple modules):
 
 - Build the project at `fv-web-ui`
 - Copy `FirstVoices-marketplace/target/FirstVoices-marketplace-package-latest.zip` to your mounted directory (e.g. in Option A: `docker/nuxeo_dev_docker`
@@ -143,59 +180,57 @@ After making a change to a Nuxeo module, you can deploy your change to the docke
 docker exec nuxeo-dev /bin/bash -c "nuxeoctl stop && nuxeoctl mp-install --accept=yes /opt/nuxeo/server/nxserver/tmp/FirstVoices-marketplace-package-latest.zip && nuxeoctl start"
 ```
 
-### Method 2 (deploy a single module):
+#### Method 2 (deploy a single module):
 
-#### Easy Way:
+Easy Way:
 
-- From the root of your module run the command `./UpdateModule.sh`. If you are creating a new module you will need to copy the UpdateModule.sh script from another module into the root of your module
-  (eg: copy `/FirstVoicesData/UpdateModule.sh` into `/YourNewModule`).
+* From the root of your module run the command ```./UpdateModule.sh```. If you are creating a new module you will need to copy the UpdateModule.sh script from another module into the root of your module
+(eg: copy ```/FirstVoicesData/UpdateModule.sh``` into ```/YourNewModule```).
 
-      Optionally you can add the flag ```-skip-tests``` to skip the compilation and running of unit tests during the module deploy (eg: ```./UpdateModule.sh -skip-tests```).
+    Optionally you can add the flag ```-skip-tests``` to skip the compilation and running of unit tests during the module deploy (eg: ```./UpdateModule.sh -skip-tests```).
 
-- Alternatively navigate to `docker/` and run the command `./UpdateModuleMain.sh <ModuleName>` where `<ModuleName>` is the name of the module you have created/made changes to (eg: `./UpdateModuleMain.sh FirstVoicesData`).
-
+* Alternatively navigate to ```docker/``` and run the command ```./UpdateModuleMain.sh <ModuleName>``` where ```<ModuleName>``` is the name of the module you have created/made changes to (eg: ```./UpdateModuleMain.sh FirstVoicesData```).
+  
   Both of the above will build the module, remove any old copies inside of the docker container, copy the new jarfile into the docker container, and restart the nuxeo backend to deploy the changes/module.
 
-#### Manual method:
+Manual method:
 
-- Ensure you remove any old versions of the module inside of the docker container that match the module you want to deploy.
-  To do this you can run the command `docker exec nuxeo-dev sh -c 'rm /opt/nuxeo/server/nxserver/bundles/<ModuleName>-*.jar'`
-- Navigate into the module you changed (e.g. FirstVoicesSecurity) and build it with the command: `mvn clean install`
-  This will generate a jarfile for the module in the target directory (e.g. FirstVoicesSecurity/target/FirstVoicesSecurity-\*.jar).
-- Execute the following command to copy the JAR into the running backend docker container, and restart the server to apply the changes:
-
+* Ensure you remove any old versions of the module inside of the docker container that match the module you want to deploy.
+To do this you can run the command ```docker exec nuxeo-dev sh -c 'rm /opt/nuxeo/server/nxserver/bundles/<ModuleName>-*.jar'``` 
+* Navigate into the module you changed (e.g. FirstVoicesSecurity) and build it with the command: ```mvn clean install```
+This will generate a jarfile for the module in the target directory (e.g. FirstVoicesSecurity/target/FirstVoicesSecurity-*.jar).
+* Execute the following command to copy the JAR into the running backend docker container, and restart the server to apply the changes:
 ```
 docker cp target/FirstVoicesSecurity-*.jar nuxeo-dev:/opt/nuxeo/server/nxserver/bundles/ && docker exec nuxeo-dev nuxeoctl restart
 ```
 
-docker cp FirstVoices-marketplace/target/FirstVoices-marketplace-package-latest.zip nuxeo-dev:/tmp/
+### Useful commands/common tasks/tips
 
-## Useful commands/common tasks/tips
-
-### List running containers:
+#### List running containers:
 
 `docker ps`
 
-### Log into container called 'nuxeo-dev':
+#### Log into container called 'nuxeo-dev':
 
 `docker exec -it nuxeo-dev /bin/bash`
 
-## Testing
+---
+
+## Testing Procedures
 
 ### Tips & Tricks
 
 When setting up unit tests:
-
-- Ensure that all the necessary imports are at the top
-- Check that all @Deploy dependencies are set up in the pom.xml, and that the pom.xml
-- Make sure that the @PartialDeploy uses FirstVoicesData as its bundle if you are using the DocumentModel
+* Ensure that all the necessary imports are at the top
+* Check that all @Deploy dependencies are set up in the pom.xml, and that the pom.xml
+* Make sure that the @PartialDeploy uses FirstVoicesData as its bundle if you are using the DocumentModel
 
 Errors:
+* If you encounter 137 or similar errors with docker you may need to allocate more memory for the containers to use.
 
-- If you encounter 137 or similar errors with docker you may need to allocate more memory for the containers to use
+---
 
 ## TODO
 
-1. Use `docker-compose` to optionally setup Apache2, Elasticsearch, and Postgresql
-2. Add additional requirements such as FFMPEG and CCExtractor to image.
-3. Figure out how to hot-reload into a docker container (potentially tied into IntelliJ). See https://doc.nuxeo.com/nxdoc/nuxeo-cli/.
+1. Add additional requirements such as FFMPEG and CCExtractor to image.
+2. Figure out how to hot-reload into a docker container (potentially tied into IntelliJ). See https://doc.nuxeo.com/nxdoc/nuxeo-cli/.

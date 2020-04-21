@@ -1,39 +1,25 @@
-version: "3"
+version: '3'
 services:
-  #    db:
-  #        image: postgres
-  #        container_name: nuxeo-db
-  #        restart: always
-  #        environment:
-  #            - POSTGRES_USER=postgres
-  #            - POSTGRES_PASSWORD=nuxeo
-  #            - POSTGRES_DB=nuxeo
-  #        volumes:
-  #            - '${PWD}/database/postgres:/var/lib/postgresql/data/'
-  #            - '${PWD}/postgresql.conf:/etc/postgresql.conf'
-  #        ports:
-  #            - '5432:5432'
-  #        command: postgres -c config_file=/etc/postgresql.conf
-  # elasticsearch:
-  #     image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-  #     container_name: nuxeo-elasticsearch
-  #     ports:
-  #         - '9200:9200'
-  #         - '9300:9300'
-  #         - '443:443'
-  #     environment:
-  #         - "discovery.type=single-node"
-  #         - "cluster.name=firstvoices"
-  nuxeo:
+  elasticsearch:
+    image: 'docker.elastic.co/elasticsearch/elasticsearch:6.5.4'
+    container_name: nuxeo-elasticsearch
+    ports:
+      - '9200:9200'
+      - '9300:9300'
+      - '443:443'
+    environment:
+      - discovery.type=single-node
+      - cluster.name=firstvoices
+  nuxeo-backend:
     image: me/nuxeo-dev
     container_name: nuxeo-dev
     volumes:
-      - "${PWD}/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp"
-      - "${PWD}/nuxeo_dev_docker/data:/opt/nuxeo/ext_data"
-      - "${PWD}/nuxeo_dev_docker/logs:/var/log/nuxeo"
+      - '${PWD}/nuxeo_dev_docker:/opt/nuxeo/server/nxserver/tmp'
+      - '${PWD}/nuxeo_dev_docker/data:/opt/nuxeo/ext_data'
+      - '${PWD}/nuxeo_dev_docker/logs:/var/log/nuxeo'
     ports:
-      - "8080:8080"
-      - "8787:8787"
+      - '8080:8080'
+      - '8787:8787'
     environment:
       - NUXEO_PACKAGES=nuxeo-dam nuxeo-jsf-ui
       - NUXEO_AUTOMATION_TRACE=false
@@ -43,6 +29,5 @@ services:
       - NUXEO_URL=http://localhost:8080/nuxeo
       - CYPRESS_FV_USERNAME
       - CYPRESS_FV_PASSWORD
-    # depends_on:
-    #   - elasticsearch
-#            - db
+    depends_on:
+      - elasticsearch

@@ -145,6 +145,7 @@
   padding: 10px 0;
 }
 .Navigation__immersionSwitch {
+  display: none;
   color: #fff !important;
 }
 .Navigation__immersionSwitch label {
