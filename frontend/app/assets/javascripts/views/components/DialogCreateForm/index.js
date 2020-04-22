@@ -8,8 +8,6 @@ import DialogContent from '@material-ui/core/DialogContent'
 import PageDialectPhrasesCreate from 'views/pages/explore/dialect/learn/phrases/Create'
 import PageDialectCategoryCreate from 'views/pages/explore/dialect/category/create'
 
-import PageDialectLinksCreate from 'views/pages/explore/dialect/links/create'
-import PageDialectCategoryCreate from 'views/pages/explore/dialect/Category/createV1'
 import PageDialectContributorsCreate from 'views/pages/explore/dialect/Contributor/createV1'
 import PageDialectPhraseBooksCreate from 'views/pages/explore/dialect/Phrasebook/createV1'
 import PageDialectLinksCreate from 'views/pages/explore/dialect/links/create'
