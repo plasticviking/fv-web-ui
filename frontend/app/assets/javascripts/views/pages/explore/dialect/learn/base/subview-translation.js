@@ -27,6 +27,7 @@ import Tabs from '@material-ui/core/Tabs'
 import Typography from '@material-ui/core/Typography'
 import { connect } from 'react-redux'
 
+
 class SubViewTranslation extends Component {
   static defaultProps = {}
   static propTypes = {
@@ -123,6 +124,7 @@ class SubViewTranslation extends Component {
     )
   }
 }
+
 
 const mapStateToProps = (state) => {
   const { locale } = state

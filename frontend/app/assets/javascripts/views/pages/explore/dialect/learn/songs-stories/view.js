@@ -307,4 +307,7 @@ const mapDispatchToProps = {
   unpublishBook,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SongsStoriesView)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(SongsStoriesView)

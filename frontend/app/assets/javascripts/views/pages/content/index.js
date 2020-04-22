@@ -35,6 +35,7 @@ import PromiseWrapper from 'views/components/Document/PromiseWrapper'
 
 import Typography from '@material-ui/core/Typography'
 
+
 /**
  * Explore Archive page shows all the families in the archive
  */
@@ -196,7 +197,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     properties,
     routeParams: route.routeParams,
     windowPath: _windowPath,
-    intl: intlService,
+    intl: intlService
   }
 }
 
@@ -207,4 +208,7 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageContent)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageContent)

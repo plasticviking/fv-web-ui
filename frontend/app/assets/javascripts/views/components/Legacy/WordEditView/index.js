@@ -26,7 +26,6 @@ import Words from 'models/Words'
 
 // Operations
 import DocumentOperations from 'operations/DocumentOperations'
-import DirectoryOperations from 'operations/DirectoryOperations'
 
 class EditForm extends React.Component {
   constructor(props) {
@@ -91,7 +90,7 @@ class EditForm extends React.Component {
         }
 
         doc.set(value)
-        doc.save(function() {
+        doc.save(function(error, doc) {
           self.props.router.navigate('browse/word/' + doc.uid, { trigger: true })
         })
       })
@@ -144,10 +143,10 @@ class WordEditView extends React.Component {
   }
 
   render() {
-    let renderForm
     if (this.state.word != null) {
-      renderForm = <EditForm client={this.props.client} router={this.props.router} word={this.state.word} />
+      var renderForm = <EditForm client={this.props.client} router={this.props.router} word={this.state.word} />
     }
+
     return <div>{renderForm}</div>
   }
 }

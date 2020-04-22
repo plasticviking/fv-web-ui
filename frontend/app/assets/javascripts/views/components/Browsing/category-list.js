@@ -45,6 +45,7 @@ class CategoryList extends Component {
     style: null,
   }
 
+
   constructor(props, context) {
     super(props, context)
   }
@@ -55,7 +56,11 @@ class CategoryList extends Component {
     if (!items || selectn('length', items) === 0) {
       return (
         <div style={{ margin: '20px 0' }}>
-          <FVLabel transKey="no_results_found" defaultStr="No Results Found" append="." />
+          <FVLabel
+            transKey="no_results_found"
+            defaultStr="No Results Found"
+            append="."
+          />
         </div>
       )
     }

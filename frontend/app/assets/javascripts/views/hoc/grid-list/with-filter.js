@@ -119,9 +119,11 @@ export default function withFilter(ComposedFilter, DefaultFetcherParams) {
             >
               <form>
                 <FiltersWithToggle
-                  label={
-                    <FVLabel transKey="views.pages.search.filter_items" defaultStr="Filter items" transform="first" />
-                  }
+                  label={<FVLabel
+                    transKey="views.pages.search.filter_items"
+                    defaultStr="Filter items"
+                    transform="first"
+                  />}
                   mobileOnly
                 >
                   <t.form.Form
@@ -139,14 +141,22 @@ export default function withFilter(ComposedFilter, DefaultFetcherParams) {
                         this._onReset(e, this.props)
                       }}
                     >
-                      <FVLabel transKey="reset" defaultStr="Reset" transform="first" />
+                      <FVLabel
+                        transKey="reset"
+                        defaultStr="Reset"
+                        transform="first"
+                      />
                     </button>
                     <button
                       type="button"
                       onClick={this._onFilterSaveForm}
                       className="FilteredGridList__btn RaisedButton RaisedButton--primary"
                     >
-                      <FVLabel transKey="filter" defaultStr="Filter" transform="first" />
+                      <FVLabel
+                        transKey="filter"
+                        defaultStr="Filter"
+                        transform="first"
+                      />
                     </button>
                   </div>
                 </FiltersWithToggle>

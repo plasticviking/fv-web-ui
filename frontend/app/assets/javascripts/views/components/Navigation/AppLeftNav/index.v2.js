@@ -185,11 +185,7 @@ export class AppLeftNav extends Component {
       this.navCommon.getStarted,
       <ListItem key="navExploreLoggedIn" button onClick={this.handleNestedClick}>
         <ListItemText
-          primary={this.props.intlService.translate({
-            key: 'general.explore',
-            default: 'Explore Languages',
-            case: 'first',
-          })}
+          primary={this.props.intlService.translate({ key: 'general.explore', default: 'Explore Languages', case: 'first' })}
           primaryTypographyProps={{ style: { fontSize: '1.6rem' } }}
         />
         {this.state.navExploreOpen ? <ExpandLess /> : <ExpandMore />}
@@ -214,10 +210,7 @@ export class AppLeftNav extends Component {
               primaryTypographyProps={{ style: { fontSize: '1.6rem' } }}
               secondary={
                 <span>
-                  <FVLabel
-                    transKey="views.components.navigation.view_work_in_progress"
-                    defaultStr="View work in progress or unpublished content"
-                  />
+                  <FVLabel transKey="views.components.navigation.view_work_in_progress" defaultStr="View work in progress or unpublished content"  />
                   .
                 </span>
               }
@@ -242,10 +235,7 @@ export class AppLeftNav extends Component {
               primaryTypographyProps={{ style: { fontSize: '1.6rem' } }}
               secondary={
                 <span>
-                  <FVLabel
-                    transKey="views.components.navigation.view_dialects_as_end_user"
-                    defaultStr="View dialects as an end user would view them"
-                  />
+                  <FVLabel transKey="views.components.navigation.view_dialects_as_end_user" defaultStr="View dialects as an end user would view them"  />
                   .
                 </span>
               }
@@ -298,11 +288,7 @@ export class AppLeftNav extends Component {
         }}
       >
         <ListItemText
-          primary={this.props.intlService.translate({
-            key: 'general.explore',
-            default: 'Explore Languages',
-            case: 'first',
-          })}
+          primary={this.props.intlService.translate({ key: 'general.explore', default: 'Explore Languages', case: 'first' })}
           primaryTypographyProps={{ style: { fontSize: '1.6rem' } }}
         />
       </ListItem>,
@@ -343,4 +329,9 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default withTheme()(connect(mapStateToProps, mapDispatchToProps)(AppLeftNav))
+export default withTheme()(
+  connect(
+    mapStateToProps,
+    mapDispatchToProps
+  )(AppLeftNav)
+)

@@ -214,4 +214,7 @@ const mapDispatchToProps = {
   fetchWords,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Wordsearch)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Wordsearch)

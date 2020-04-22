@@ -145,7 +145,7 @@ export class Preview extends Component {
   render() {
     const themePalette = this.props.theme.palette
 
-    let handleExpandChange = () => {}
+    let handleExpandChange = () => { }
 
     const previewStyles = Object.assign(
       {
@@ -213,7 +213,12 @@ export class Preview extends Component {
         } else if (word && word.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', word)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', word)}
             </div>
           )
         }
@@ -242,7 +247,11 @@ export class Preview extends Component {
         } else if (phrase && phrase.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', phrase)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />: {selectn('message', phrase)}
             </div>
           )
         }
@@ -263,17 +272,16 @@ export class Preview extends Component {
 
         if (categoryResponse && category.success) {
           const breadcrumb = []
-          ;(selectn('contextParameters.breadcrumb.entries', categoryResponse) || []).map((entry, i) => {
+            ; (selectn('contextParameters.breadcrumb.entries', categoryResponse) || []).map((entry, i) => {
             if (entry.type === 'FVCategory') {
               let shared = ''
 
-              if (entry.path.indexOf('SharedData') !== -1)
-                shared = ' (' + this.props.intl.trans('shared', 'Shared', 'first') + ')'
+              if (entry.path.indexOf('SharedData') !== -1) shared = ' (' + this.props.intl.trans('shared', 'Shared', 'first') + ')'
 
               breadcrumb.push(
                 <span key={i}>
                   {' '}
-                  &raquo; {entry.title} {shared}
+                    &raquo; {entry.title} {shared}
                 </span>
               )
             }
@@ -287,7 +295,12 @@ export class Preview extends Component {
         } else if (category && category.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', category)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', category)}
             </div>
           )
         }
@@ -350,7 +363,7 @@ export class Preview extends Component {
               <Card style={{ boxShadow: 'none' }}>
                 <CardContent style={{ backgroundColor: themePalette.primary2Color, margin: '5px 0', padding: '8px' }}>
                   {selectn('properties.file:content.data', pictureResponse) ||
-                  (selectn('path', pictureResponse) && selectn('path', pictureResponse).indexOf('nxfile') != -1)
+                    (selectn('path', pictureResponse) && selectn('path', pictureResponse).indexOf('nxfile') != -1)
                     ? pictureTag
                     : null}
                 </CardContent>
@@ -381,7 +394,11 @@ export class Preview extends Component {
                         color: themePalette.secondary.contrastText,
                       }}
                     >
-                      <FVLabel transKey="more_image_info" defaultStr="MORE IMAGE INFO" transform="upper" />
+                      <FVLabel
+                        transKey="more_image_info"
+                        defaultStr="MORE IMAGE INFO"
+                        transform="upper"
+                      />
                       <IconButton
                         onClick={() => {
                           this._toggleOpen()
@@ -417,7 +434,12 @@ export class Preview extends Component {
         } else if (picture && picture.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', picture)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', picture)}
             </div>
           )
         }
@@ -496,7 +518,7 @@ export class Preview extends Component {
                 />
                 <div style={{ backgroundColor: themePalette.primary2Color, margin: '5px 0', padding: '8px' }}>
                   {selectn('properties.file:content.data', audioResponse) ||
-                  (selectn('path', audioResponse) && selectn('path', audioResponse).indexOf('nxfile') != -1)
+                    (selectn('path', audioResponse) && selectn('path', audioResponse).indexOf('nxfile') != -1)
                     ? audioTag
                     : null}
                 </div>
@@ -513,7 +535,11 @@ export class Preview extends Component {
                         color: themePalette.secondary.contrastText,
                       }}
                     >
-                      <FVLabel transKey="more_audio_info" defaultStr="MORE AUDIO INFO" transform="upper" />
+                      <FVLabel
+                        transKey="more_audio_info"
+                        defaultStr="MORE AUDIO INFO"
+                        transform="upper"
+                      />
                       <IconButton
                         onClick={() => {
                           this._toggleOpen()
@@ -549,7 +575,12 @@ export class Preview extends Component {
         } else if (audio && audio.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', audio)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', audio)}
             </div>
           )
         }
@@ -603,7 +634,7 @@ export class Preview extends Component {
               <Card style={{ boxShadow: 'none' }}>
                 <div style={{ backgroundColor: themePalette.primary2Color, margin: '5px 0', padding: '8px' }}>
                   {selectn('properties.file:content.data', videoResponse) ||
-                  (selectn('path', videoResponse) && selectn('path', videoResponse).indexOf('nxfile') != -1)
+                    (selectn('path', videoResponse) && selectn('path', videoResponse).indexOf('nxfile') != -1)
                     ? videoTag
                     : null}
                 </div>
@@ -631,7 +662,11 @@ export class Preview extends Component {
                         color: themePalette.secondary.contrastText,
                       }}
                     >
-                      <FVLabel transKey="more_video_info" defaultStr="MORE VIDEO INFO" transform="upper" />
+                      <FVLabel
+                        transKey="more_video_info"
+                        defaultStr="MORE VIDEO INFO"
+                        transform="upper"
+                      />
                       <IconButton
                         onClick={() => {
                           this._toggleOpen()
@@ -667,7 +702,12 @@ export class Preview extends Component {
         } else if (video && video.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', video)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', video)}
             </div>
           )
         }
@@ -704,7 +744,12 @@ export class Preview extends Component {
         } else if (contributor && contributor.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', contributor)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', contributor)}
             </div>
           )
         }
@@ -743,7 +788,12 @@ export class Preview extends Component {
         } else if (link && link.isError) {
           body = (
             <div>
-              <FVLabel transKey="error" defaultStr="Error" transform="first" />: {selectn('message', link)}
+              <FVLabel
+                transKey="error"
+                defaultStr="Error"
+                transform="first"
+              />
+              : {selectn('message', link)}
             </div>
           )
         }
@@ -751,13 +801,11 @@ export class Preview extends Component {
         break
       }
       default:
-        body = (
-          <FVLabel
-            transKey="preview_option_not_available"
-            defaultStr="Preview option not available. Please report to Administrator"
-            transform="first"
-          />
-        )
+        body = <FVLabel
+          transKey="preview_option_not_available"
+          defaultStr="Preview option not available. Please report to Administrator"
+          transform="first"
+        />
 
         break
     }
@@ -863,7 +911,11 @@ export class Preview extends Component {
             />{' '}
             <br />
             <a href={directLinkValue} target="_blank" rel="noopener noreferrer">
-              <FVLabel transKey="go_to_record" defaultStr="Go to Record" transform="words" />
+              <FVLabel
+                transKey="go_to_record"
+                defaultStr="Go to Record"
+                transform="words"
+              />
             </a>
           </span>
         ),

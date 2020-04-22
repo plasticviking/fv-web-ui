@@ -106,9 +106,9 @@ export class SongsStoriesListViewAlt extends DataListView {
             const clickHandler = props.disableClickItem
               ? NavigationHelpers.disable
               : (/*e*/) => {
-                  // e.preventDefault()
-                  // NavigationHelpers.navigate(href, this.props.pushWindowPath, false)
-                }
+                // e.preventDefault()
+                // NavigationHelpers.navigate(href, this.props.pushWindowPath, false)
+              }
             return (
               <a className="DictionaryList__link DictionaryList__link--indigenous" onClick={clickHandler} href={href}>
                 {v}

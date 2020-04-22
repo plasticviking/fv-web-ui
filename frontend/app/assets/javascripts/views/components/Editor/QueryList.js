@@ -95,10 +95,7 @@ export class QueryList extends Component {
             value={this.props.value}
             onChange={this._handleChange}
             floatingLabelText={
-              this.props.intl.trans('select', 'Select', 'first') +
-              ' ' +
-              this.props.intl.searchAndReplace(this.props.label) +
-              ':'
+              this.props.intl.trans('select', 'Select', 'first') + ' ' + this.props.intl.searchAndReplace(this.props.label) + ':'
             }
           >
             {entries.map((entry) => (
@@ -140,4 +137,7 @@ const mapDispatchToProps = {
   fetchResultSet,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(QueryList)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(QueryList)

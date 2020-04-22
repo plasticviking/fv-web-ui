@@ -84,8 +84,7 @@ export class Statistics extends Component {
                     defaultStr="Created Today"
                     transform="first"
                   />
-                  :{' '}
-                </strong>
+                  : </strong>
                 {dataResponse[docType].created_today}
               </li>
               <li>
@@ -94,9 +93,7 @@ export class Statistics extends Component {
                     transKey="views.components.dashboard.modified_today"
                     defaultStr="Modified Today"
                     transform="first"
-                  />
-                  :{' '}
-                </strong>
+                  />: </strong>
                 {dataResponse[docType].modified_today}
               </li>
               <li>
@@ -105,8 +102,7 @@ export class Statistics extends Component {
                     transKey="views.components.dashboard.created_last_7_days"
                     defaultStr="Created Last 7 Days"
                     transform="words"
-                  />
-                  :{' '}
+                  />:{' '}
                 </strong>
                 {dataResponse[docType].created_within_7_days}
               </li>
@@ -116,8 +112,7 @@ export class Statistics extends Component {
                     transKey="views.components.dashboard.available_in_kids_area"
                     defaultStr="Available In Kids Area"
                     transform="words"
-                  />
-                  :{' '}
+                  />:{' '}
                 </strong>
                 {dataResponse[docType].available_in_childrens_archive}
               </li>

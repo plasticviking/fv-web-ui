@@ -40,6 +40,7 @@ export default class AudioOptimal extends Component {
     ;['_getMoreAudioInfo'].forEach((method) => (this[method] = this[method].bind(this)))
   }
 
+
   _getDescription(metadata) {
     return metadata.description ? (
       <span className="AudioOptimalMetadataRow">
@@ -52,7 +53,7 @@ export default class AudioOptimal extends Component {
 
   _getSpeakers(metadata) {
     const speakersCont = []
-    ;(metadata.speakers || []).map(function(speaker) {
+      ; (metadata.speakers || []).map(function(speaker) {
       if (speaker) {
         speakersCont.push(
           <span className="AudioOptimalMetadataRowValue" key={selectn('uid', speaker)}>
@@ -72,7 +73,7 @@ export default class AudioOptimal extends Component {
 
   _getRecorders(metadata) {
     const recordersCont = []
-    ;(metadata.recorders || []).map(function(recorder) {
+      ; (metadata.recorders || []).map(function(recorder) {
       if (recorder) {
         recordersCont.push(
           <span className="AudioOptimalMetadataRowValue" key={selectn('uid', recorder)}>
@@ -101,7 +102,13 @@ export default class AudioOptimal extends Component {
     return (
       <div className="AudioOptimal">
         {this.props.audioTag}
-        <Tooltip title={<FVLabel transKey="audio_information" defaultStr="Audio Information" transform="words" />}>
+        <Tooltip
+          title={<FVLabel
+            transKey="audio_information"
+            defaultStr="Audio Information"
+            transform="words"
+          />}
+        >
           <IconButton onClick={this._getMoreAudioInfo}>
             <Info aria-label="Show Audio Information" />
           </IconButton>
@@ -112,7 +119,13 @@ export default class AudioOptimal extends Component {
           {this._getRecorders(metadata)}
 
           <Tooltip
-            title={<FVLabel transKey="audio_information" defaultStr="Hide Audio Information" transform="words" />}
+            title={
+              <FVLabel
+                transKey="audio_information"
+                defaultStr="Hide Audio Information"
+                transform="words"
+              />
+            }
           >
             <IconButton onClick={() => this.setState({ showAudioMetadata: false })}>
               <Close aria-label="Hide Audio Information" />

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import classNames from 'classnames'
 
 import NavigationHelpers from 'common/NavigationHelpers'
@@ -33,7 +34,11 @@ export default class ForgotPassword extends Component {
     return (
       <div>
         <h1>
-          <FVLabel transKey="forgot_password" defaultStr="Forgot your password" transform="first" />
+          <FVLabel
+            transKey="forgot_password"
+            defaultStr="Forgot your password"
+            transform="first"
+          />
         </h1>
 
         <p>

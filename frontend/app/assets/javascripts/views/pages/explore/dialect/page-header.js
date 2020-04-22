@@ -16,7 +16,9 @@ limitations under the License.
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
+import classNames from 'classnames'
 import NavigationHelpers from 'common/NavigationHelpers'
+import selectn from 'selectn'
 import { connect } from 'react-redux'
 
 /**

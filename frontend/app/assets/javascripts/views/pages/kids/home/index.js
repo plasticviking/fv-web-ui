@@ -80,7 +80,11 @@ export class PageKidsHome extends Component {
                   }}
                   style={{ marginTop: '20vh' }}
                 >
-                  <FVLabel transKey="views.pages.kids.enter" defaultStr="Enter Kids Area" transform="words" />
+                  <FVLabel
+                    transKey="views.pages.kids.enter"
+                    defaultStr="Enter Kids Area"
+                    transform="words"
+                  />
                 </FVButton>
               </span>
             </div>
@@ -107,4 +111,7 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageKidsHome)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageKidsHome)

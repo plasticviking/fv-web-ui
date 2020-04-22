@@ -190,9 +190,7 @@ export class Breadcrumb extends Component {
                 NavigationHelpers.navigate(hrefPath, this.props.pushWindowPath, false)
               }}
             >
-              {`${this.props.intl.searchAndReplace(decodeURIComponent(pathTitle).replace('&amp;', '&'), {
-                case: 'lower',
-              })}`}
+              {`${this.props.intl.searchAndReplace(decodeURIComponent(pathTitle).replace('&amp;', '&'), { case: 'lower' })}`}
             </a>
           </li>
         )
@@ -223,4 +221,7 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Breadcrumb)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Breadcrumb)

@@ -39,7 +39,7 @@ import '!style-loader!css-loader!./modalStyles.css'
  */
 const { func, object, string } = PropTypes
 
-const styles = () => ({
+const styles = (theme) => ({
   inputRoot: {
     padding: '0',
     marginBottom: '16px',
@@ -164,8 +164,8 @@ class ModalContent extends Component {
 
   renderTranslation = (label) => {
     if (label.type === 'phrase') return label.base
-    const translation = label.base
-    let count = 0
+    var translation = label.base
+    var count = 0
     const words = translation.split(/(%s)/g).map((word, i) => {
       if (word === '%s') {
         const chip = (
@@ -175,17 +175,18 @@ class ModalContent extends Component {
         )
         count++
         return chip
+      } else {
+        return <span key={i}>{word}</span>
       }
-      return <span key={i}>{word}</span>
     })
     return words
   }
 
   scriptTranslation = (label) => {
     const { translation } = this.state
-    let words = translation.join('')
-    label.templateStrings.forEach((templateString) => {
-      words = words.replace('%s', templateString)
+    var words = translation.join('')
+    label.templateStrings.forEach((string) => {
+      words = words.replace('%s', string)
     })
     return words
   }
@@ -241,7 +242,7 @@ class ModalContent extends Component {
             <legend>Immersive Information</legend>
             {/* need locale key */}
             <div className="alert alert-info">
-              <i>This will show for the site&apos;s &lsquo;Immersion&rsquo; experience.</i>
+              <i>This will show for the site's 'Immersion' experience.</i>
               {/* need locale key */}
             </div>
             <div className={error || hadError ? 'has-error' : ''}>

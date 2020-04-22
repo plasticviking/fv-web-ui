@@ -156,8 +156,11 @@ const mapStateToProps = (state /*, ownProps*/) => {
 
   return {
     properties,
-    intl: intlService,
+    intl: intlService
   }
 }
 
-export default connect(mapStateToProps, null)(LearningSidebar)
+export default connect(
+  mapStateToProps,
+  null
+)(LearningSidebar)

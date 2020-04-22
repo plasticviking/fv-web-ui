@@ -88,7 +88,10 @@ export class PageHome extends Component {
               </FVButton>
             </a>
             <FVButton variant="contained" onClick={() => this._onNavigateRequest('/')} style={{ textAlign: 'center' }}>
-              <FVLabel transKey="enter_firstvoices" defaultStr="Enter FirstVoices" />
+              <FVLabel
+                transKey="enter_firstvoices"
+                defaultStr="Enter FirstVoices"
+              />
             </FVButton>
             <p>
               <img
@@ -211,4 +214,7 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageHome)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageHome)

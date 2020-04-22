@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import FVLabel from 'views/components/FVLabel/index'
 import PromiseHelpers from 'common/PromiseHelpers'
 /**
@@ -115,7 +116,11 @@ export default class ColouringBook extends Component {
         <div className="row">
           <div className="col-xs-12">
             <h1>
-              <FVLabel transKey="colouring_book" defaultStr="Colouring Book" transform="words" />
+              <FVLabel
+                transKey="colouring_book"
+                defaultStr="Colouring Book"
+                transform="words"
+              />
             </h1>
             <div style={gameContainerStyles} ref={this.gameContainer} />
           </div>

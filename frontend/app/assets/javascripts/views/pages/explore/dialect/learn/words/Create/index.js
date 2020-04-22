@@ -287,7 +287,11 @@ export class PageDialectWordsCreate extends Component {
                   />
                   <div className="form-group">
                     <button type="submit" className="btn btn-primary">
-                      <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                      <FVLabel
+                        transKey="save"
+                        defaultStr="Save"
+                        transform="first"
+                      />
                     </button>
                   </div>
                 </form>

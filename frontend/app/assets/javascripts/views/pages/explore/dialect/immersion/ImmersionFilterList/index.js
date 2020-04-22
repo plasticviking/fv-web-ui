@@ -115,7 +115,7 @@ export class ImmersionFilterList extends Component {
   }
 
   _sortChildren(filter) {
-    let children = [...filter.children]
+    var children = [...filter.children]
     if (children.length > 0) {
       children.sort(this._sortByTitle)
       children = children.map((child) => {
@@ -138,7 +138,7 @@ export class ImmersionFilterList extends Component {
     _filters.sort(this._sortByTitle)
     const _filtersSorted = _filters.map((filter) => {
       // Sort children
-      let children = [...filter.children]
+      var children = [...filter.children]
       if (children.length > 0) {
         children.sort(this._sortByTitle)
         children = children.map((child) => {

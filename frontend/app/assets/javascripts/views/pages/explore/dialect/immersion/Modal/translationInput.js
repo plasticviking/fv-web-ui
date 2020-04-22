@@ -38,13 +38,17 @@ class TranslationInput extends Component {
     this.addListeners()
   }
 
+  componentDidUpdate(prevProps) {}
+
   componentWillUnmount() {
     this.removeListeners()
   }
 
+  handleChange = (name) => (event) => {}
+
   renderTranslation = () => {
     const { translation, templateStrings } = this.props
-    let count = 0
+    var count = 0
     const words = translation.map((word, i) => {
       const output = []
       if (word === '%s') {
@@ -61,7 +65,7 @@ class TranslationInput extends Component {
             className="translation-input"
             contentEditable="true"
             id={i.toString() + ' editable'}
-            suppressContentEditableWarning
+            suppressContentEditableWarning={true}
           >
             {word.toString()}
           </span>

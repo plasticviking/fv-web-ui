@@ -262,9 +262,7 @@ export class PageDialectStoriesAndSongsCreate extends Component {
           <h1>
             <FVLabel
               transKey="views.pages.explore.dialect.learn.songs_stories.add_new_x_book_to_x"
-              defaultStr={
-                'Add New ' + this.props.typeFilter + ' Book to ' + selectn('response.title', _computeDialect2)
-              }
+              defaultStr={'Add New ' + this.props.typeFilter + ' Book to ' + selectn('response.title', _computeDialect2)}
               transform="first"
               params={[this.props.typeFilter, selectn('response.title', _computeDialect2)]}
             />
@@ -282,7 +280,11 @@ export class PageDialectStoriesAndSongsCreate extends Component {
                 />
                 <div data-testid="PageDialectStoriesAndSongsCreate__btnGroup" className="form-group">
                   <button type="submit" className="RaisedButton RaisedButton--primary">
-                    <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                    <FVLabel
+                      transKey="save"
+                      defaultStr="Save"
+                      transform="first"
+                    />
                   </button>
                 </div>
               </form>
@@ -326,4 +328,7 @@ const mapDispatchToProps = {
   replaceWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageDialectStoriesAndSongsCreate)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageDialectStoriesAndSongsCreate)

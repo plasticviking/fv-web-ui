@@ -386,4 +386,7 @@ const mapDispatchToProps = {
   createPicture,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FormRelatedPicture)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FormRelatedPicture)

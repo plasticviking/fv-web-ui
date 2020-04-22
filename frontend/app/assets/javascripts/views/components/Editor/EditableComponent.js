@@ -22,6 +22,7 @@ import '!style-loader!css-loader!./EditableComponent.css'
 import FVLabel from '../FVLabel/index'
 import { connect } from 'react-redux'
 
+
 const RenderRegular = (currentValue, preview, previewType, returnWrapper = 'span') => {
   let output = []
   let values = []
@@ -161,7 +162,11 @@ class EditableComponentUnwrapped extends Component {
                 options={fieldFormOptions}
               />
               <button type="submit" className="EditableComponent__btnSave FlatButton FlatButton--primary">
-                <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                <FVLabel
+                  transKey="save"
+                  defaultStr="Save"
+                  transform="first"
+                />
               </button>
             </form>
           )
@@ -198,9 +203,7 @@ class EditableComponentUnwrapped extends Component {
           }}
         >
           <Edit className="FlatButton__icon" title={this.props.intl.trans('edit', 'Edit', 'first')} />
-          <span className="FlatButton__label">
-            <FVLabel transKey="edit" defaultStr="Edit" transform="first" />
-          </span>
+          <span className="FlatButton__label"><FVLabel transKey="edit" defaultStr="Edit" transform="first" /></span>
         </button>
       )
       toReturn = (
@@ -235,8 +238,8 @@ class EditableComponentUnwrapped extends Component {
       newDocument,
       null,
       "'" +
-        selectn('props.options.fields' + '.' + property + '.label', this['form_' + property]) +
-        "' updated successfully!"
+      selectn('props.options.fields' + '.' + property + '.label', this['form_' + property]) +
+      "' updated successfully!"
     )
 
     this.setState({
@@ -299,5 +302,6 @@ const mapStateToProps = (state /*, ownProps*/) => {
 }
 
 const EditableComponent = connect(mapStateToProps)(EditableComponentUnwrapped)
+
 
 export default EditableComponent

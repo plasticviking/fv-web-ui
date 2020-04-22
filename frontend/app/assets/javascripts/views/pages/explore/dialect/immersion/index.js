@@ -87,7 +87,7 @@ class PageDialectImmersionList extends PageDialectLearnBase {
   constructor(props, context) {
     super(props, context)
 
-    const selectedCategory = this.initialFilterInfo()
+    let selectedCategory = this.initialFilterInfo()
 
     const computeEntities = Immutable.fromJS([
       {
@@ -132,25 +132,25 @@ class PageDialectImmersionList extends PageDialectLearnBase {
   }
 
   listToTree(arr) {
-    const tree = []
-    const mappedArr = {}
-    let arrElem
-    let mappedElem
+    var tree = [],
+      mappedArr = {},
+      arrElem,
+      mappedElem
 
     // First map the nodes of the array to an object -> create a hash table.
-    for (let i = 0, len = arr.length; i < len; i++) {
+    for (var i = 0, len = arr.length; i < len; i++) {
       arrElem = arr[i]
       mappedArr[arrElem.id] = arrElem
-      mappedArr[arrElem.id].children = []
+      mappedArr[arrElem.id]['children'] = []
     }
 
-    for (const id in mappedArr) {
+    for (var id in mappedArr) {
       if (mappedArr.hasOwnProperty(id)) {
         mappedElem = mappedArr[id]
         // If the element is not at the root level, add it to its parent array of children.
         if (mappedElem.parent !== '') {
-          if (mappedArr[mappedElem.parent]) {
-            mappedArr[mappedElem.parent].children.push(mappedElem)
+          if (mappedArr[mappedElem['parent']]) {
+            mappedArr[mappedElem['parent']]['children'].push(mappedElem)
           } else {
             // console.log(mappedElem, ' is wrong parent')
           }

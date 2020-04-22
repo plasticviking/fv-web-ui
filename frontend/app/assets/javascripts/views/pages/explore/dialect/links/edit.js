@@ -243,4 +243,7 @@ const mapDispatchToProps = {
   updateLink,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Edit)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Edit)

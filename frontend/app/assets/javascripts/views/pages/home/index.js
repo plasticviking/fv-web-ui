@@ -60,6 +60,7 @@ export class PageHome extends Component {
     queryPage: func.isRequired,
   }
 
+
   constructor(props, context) {
     super(props, context)
 
@@ -189,7 +190,11 @@ export class PageHome extends Component {
           )}
           style={{ marginRight: '10px', height: '50px' }}
         >
-          <FVLabel transKey="get_started!" defaultStr="Get Started!" transform="words" />!
+          <FVLabel
+            transKey="get_started!"
+            defaultStr="Get Started!"
+            transform="words"
+          />!
         </FVButton>
       )
     }
@@ -228,7 +233,7 @@ export class PageHome extends Component {
               return (
                 <div key={i} className={classNames('col-xs-12')}>
                   <div className="body">
-                    <h2 style={{ fontWeight: 500 }}>{this.props.intl.searchAndReplace(selectn('title', block))}</h2>
+                    <h2 style={{ fontWeight: 500 }}>{intl.searchAndReplace(selectn('title', block))}</h2>
                     <p dangerouslySetInnerHTML={{ __html: selectn('text', block) }} />
                   </div>
                 </div>
@@ -336,7 +341,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeUserStartpage,
     properties,
     windowPath: _windowPath,
-    intl: intlService,
+    intl: intlService
   }
 }
 

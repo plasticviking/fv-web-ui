@@ -71,7 +71,7 @@ class SearchFields extends React.Component {
       <div className="SearchDialectForm">
         <div className="SearchDialectFormPrimary">
           <input
-            className={'SearchDialectFormPrimaryInput'}
+            className={`SearchDialectFormPrimaryInput`}
             type="text"
             onChange={this.handleChange('inputValue')}
             onKeyPress={this.checkKey}

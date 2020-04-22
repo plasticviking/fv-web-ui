@@ -197,9 +197,13 @@ class Page extends Component {
                   return (
                     <span key={i}>
                       <strong>
-                        <FVLabel transKey="literal_translation" defaultStr="Literal Translation" transform="first" />
-                      </strong>
-                      : <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(translation.translation) }} />
+                        <FVLabel
+                          transKey="literal_translation"
+                          defaultStr="Literal Translation"
+                          transform="first"
+                        />
+                      </strong>:{' '}
+                      <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(translation.translation) }} />
                     </span>
                   )
                 }
@@ -212,7 +216,11 @@ class Page extends Component {
           <div className={classNames('col-xs-12', 'text-right')}>
             {this.props.editAction ? (
               <FVButton variant="contained" onClick={this.props.editAction.bind(this, this.props.entry)}>
-                <FVLabel transKey="edit" defaultStr="Edit" transform="first" />
+                <FVLabel
+                  transKey="edit"
+                  defaultStr="Edit"
+                  transform="first"
+                />
               </FVButton>
             ) : (
               ''

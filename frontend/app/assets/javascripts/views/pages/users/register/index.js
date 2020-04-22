@@ -240,7 +240,11 @@ export class Register extends Component {
       <PromiseWrapper renderOnError computeEntities={computeEntities}>
         <h1>
           {selectn('response.title', computeDialect2)}
-          <FVLabel transKey="register" defaultStr="Register" transform="first" />
+          <FVLabel
+            transKey="register"
+            defaultStr="Register"
+            transform="first"
+          />
         </h1>
         <div className="row" style={{ marginTop: '15px' }}>
           <div className={classNames('col-xs-12', 'col-md-8')}>
@@ -277,7 +281,11 @@ export class Register extends Component {
                   onClick={this._onRequestSaveForm.bind(this, this.props.computeLogin)}
                   color="primary"
                 >
-                  <FVLabel transKey="register" defaultStr="Register" transform="first" />
+                  <FVLabel
+                    transKey="register"
+                    defaultStr="Register"
+                    transform="first"
+                  />
                 </FVButton>
               </div>
             </form>
@@ -305,7 +313,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     computeUserSelfregister,
     splitWindowPath,
     windowPath: _windowPath,
-    intl: intlService,
+    intl: intlService
   }
 }
 

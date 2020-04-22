@@ -15,9 +15,11 @@ limitations under the License.
 */
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Immutable, { List, Map } from 'immutable'
 import selectn from 'selectn'
 import classNames from 'classnames'
 
+import ConfGlobal from 'conf/local.js'
 import FVLabel from '../FVLabel/index'
 import { connect } from 'react-redux'
 
@@ -65,7 +67,9 @@ class IntroCardView extends Component {
             fontWeight: 500,
           }}
         >
-          <FVLabel />
+          <FVLabel
+
+          />
           {this.props.intl.searchAndReplace(selectn('title', this.props.block))}
         </h2>
         <p
@@ -83,7 +87,12 @@ class IntroCardView extends Component {
             fontSize: '0.9em',
           }}
         >
-          <FVLabel transKey="read_more" defaultStr="READ MORE" transform="upper" append=" +" />
+          <FVLabel
+            transKey="read_more"
+            defaultStr="READ MORE"
+            transform="upper"
+            append=" +"
+          />
         </div>
       </div>
     )
@@ -100,3 +109,4 @@ const mapStateToProps = (state) => {
 }
 
 export default connect(mapStateToProps)(IntroCardView)
+

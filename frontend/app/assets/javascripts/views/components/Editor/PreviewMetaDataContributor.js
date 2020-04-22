@@ -70,8 +70,11 @@ export default class PreviewMetaDataContributor extends Component {
     } else if (contributor && contributor.isError) {
       body = (
         <li className="PreviewMetaDataContributor__entry PreviewMetaDataContributor__entry--error">
-          <FVLabel transKey="error" defaultStr="Error" transform="first" />: {`${selectn('message', contributor)}`}
-        </li>
+          <FVLabel
+            transKey="error"
+            defaultStr="Error"
+            transform="first"
+          />: {`${selectn('message', contributor)}`}</li>
       )
     }
 

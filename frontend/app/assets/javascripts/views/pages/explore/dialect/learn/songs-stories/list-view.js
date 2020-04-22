@@ -74,7 +74,11 @@ class _Introduction extends Component {
         <div className="IntroductionTranslations">
           <div>
             <h1 className="IntroductionTitle">
-              <FVLabel transKey="introduction" defaultStr="Introduction" transform="first" />
+              <FVLabel
+                transKey="introduction"
+                defaultStr="Introduction"
+                transform="first"
+              />
               {this.props.audio}
             </h1>
           </div>
@@ -140,7 +144,7 @@ class _SongsStoriesCardView extends Component {
     siteTheme: PropTypes.any, // TODO: set correct type
   }
   static defaultProps = {
-    action: () => {},
+    action: () => { },
     style: {},
     siteTheme: 'explore',
   }
@@ -303,4 +307,7 @@ class _SongsStoriesCardView extends Component {
 
 const SongsStoriesCardView = connect(mapStateToProps)(_SongsStoriesCardView)
 
-export { Introduction, SongsStoriesCardView }
+export {
+  Introduction,
+  SongsStoriesCardView,
+}

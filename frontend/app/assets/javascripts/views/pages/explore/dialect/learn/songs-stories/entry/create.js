@@ -81,7 +81,7 @@ export class PageDialectStoriesAndSongsBookEntryCreate extends Component {
     ;['_onNavigateRequest', '_onRequestSaveForm'].forEach((method) => (this[method] = this[method].bind(this)))
   }
 
-  fetchData = async (newProps) => {
+  fetchData = async(newProps) => {
     const parentBookPath = newProps.routeParams.parentBookName
 
     await newProps.fetchDialect2(newProps.routeParams.dialect_path)
@@ -282,7 +282,11 @@ export class PageDialectStoriesAndSongsBookEntryCreate extends Component {
                 />
                 <div className="form-group" data-testid="PageDialectStoriesAndSongsBookEntryCreate__btnGroup">
                   <button type="submit" className="RaisedButton RaisedButton--primary">
-                    <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                    <FVLabel
+                      transKey="save"
+                      defaultStr="Save"
+                      transform="first"
+                    />
                   </button>
                 </div>
               </form>
@@ -291,7 +295,11 @@ export class PageDialectStoriesAndSongsBookEntryCreate extends Component {
             <div className={classNames('col-xs-4', 'col-md-2')}>
               <Paper style={{ padding: '15px', margin: '20px 0' }}>
                 <div className="subheader">
-                  <FVLabel transKey="metadata" defaultStr="Metadata" transform="first" />
+                  <FVLabel
+                    transKey="metadata"
+                    defaultStr="Metadata"
+                    transform="first"
+                  />
                 </div>
               </Paper>
             </div>
@@ -330,4 +338,7 @@ const mapDispatchToProps = {
   replaceWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageDialectStoriesAndSongsBookEntryCreate)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageDialectStoriesAndSongsBookEntryCreate)

@@ -197,7 +197,11 @@ export class PageDialectLinksCreate extends Component {
               />
               <div className="form-group">
                 <button type="button" onClick={this._onRequestSaveForm} className="btn btn-primary">
-                  <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                  <FVLabel
+                    transKey="save"
+                    defaultStr="Save"
+                    transform="first"
+                  />
                 </button>
               </div>
             </form>

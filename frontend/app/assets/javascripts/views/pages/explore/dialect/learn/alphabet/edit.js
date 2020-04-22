@@ -157,7 +157,7 @@ export class PageDialectAlphabetCharacterEdit extends Component {
     )
   }
 
-  fetchData = async () => {
+  fetchData = async() => {
     await this.props.fetchDialect2(this.props.routeParams.dialect_path)
     const _computeDialect2 = ProviderHelpers.getEntry(this.props.computeDialect2, this.props.routeParams.dialect_path)
     if (_computeDialect2.isError) {
@@ -217,4 +217,7 @@ const mapDispatchToProps = {
   updateCharacter,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PageDialectAlphabetCharacterEdit)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(PageDialectAlphabetCharacterEdit)

@@ -64,13 +64,8 @@ function renderInput(locals) {
         <BrowseComponent
           type={locals.type}
           label={
-            locals.labelBrowseComponent || (
-              <FVLabel
-                transKey="views.components.editor.browse_existing"
-                defaultStr="Browse Existing"
-                transform="words"
-              />
-            )
+            locals.labelBrowseComponent ||
+            <FVLabel transKey="views.components.editor.browse_existing" defaultStr="Browse Existing" transform="words" />
           }
           onComplete={onComplete}
           dialect={locals.context}

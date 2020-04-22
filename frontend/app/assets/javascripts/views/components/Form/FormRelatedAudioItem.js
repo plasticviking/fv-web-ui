@@ -405,4 +405,7 @@ const mapDispatchToProps = {
   createAudio,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(FormRelatedAudioItem)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(FormRelatedAudioItem)

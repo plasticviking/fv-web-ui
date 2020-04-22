@@ -216,4 +216,7 @@ const mapDispatchToProps = {
   fetchWords,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Jigsaw)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Jigsaw)

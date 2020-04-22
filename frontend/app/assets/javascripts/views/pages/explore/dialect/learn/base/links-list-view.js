@@ -240,7 +240,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     properties,
     splitWindowPath,
     windowPath: _windowPath,
-    intl: intlService,
+    intl: intlService
   }
 }
 

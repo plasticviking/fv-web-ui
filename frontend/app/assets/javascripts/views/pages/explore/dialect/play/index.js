@@ -59,7 +59,11 @@ export class Play extends Component {
         <div className="row">
           <div className="col-xs-12">
             <h1 className={classNames({ hidden: isKidsTheme })}>
-              <FVLabel transKey="games" defaultStr="Games" transform="first" />
+              <FVLabel
+                transKey="games"
+                defaultStr="Games"
+                transform="first"
+              />
             </h1>
             <div className="flex-container">
               <div className="grid">
@@ -128,4 +132,7 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Play)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Play)

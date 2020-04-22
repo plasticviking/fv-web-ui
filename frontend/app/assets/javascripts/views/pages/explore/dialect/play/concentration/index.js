@@ -188,4 +188,7 @@ const mapDispatchToProps = {
   fetchWords,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Concentration)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Concentration)

@@ -20,7 +20,11 @@ export class Redirector extends Component {
   render() {
     return (
       <div style={{ backgroundColor: '#fff', height: '100vh' }}>
-        <FVLabel transKey="redirecting" defaultStr="Redirecting" transform="first" />
+        <FVLabel
+          transKey="redirecting"
+          defaultStr="Redirecting"
+          transform="first"
+        />
         ...
       </div>
     )

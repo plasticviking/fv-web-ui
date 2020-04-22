@@ -22,9 +22,11 @@ const HelperModeToggle = ({
   editingLabel,
   labelIds,
   computeDirectory,
+  fetchDirectory,
   intl,
   locale,
   routeParams,
+  setEditingLabel,
 }) => {
   const [isNew, setIsNew] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
@@ -53,7 +55,7 @@ const HelperModeToggle = ({
           })
         : null
       const templateStrings = mappedLabel ? mappedLabel.template_strings.split(',') : []
-      const _label = {
+      const label = {
         labelKey: editingLabel,
         type: mappedLabel ? mappedLabel.type : 'phrase',
         templateStrings,
@@ -66,14 +68,14 @@ const HelperModeToggle = ({
       }
       if (uid) {
         DocumentOperations.getDocument(uid, 'FVLabel').then((data) => {
-          _label.relatedAudio = selectn('properties.fv:related_audio[0]', data)
-          _label.translation = selectn('properties.dc:title', data)
-          _label.state = selectn('state', data)
-          setLabel(_label)
+          label.relatedAudio = selectn('properties.fv:related_audio[0]', data)
+          label.translation = selectn('properties.dc:title', data)
+          label.state = selectn('state', data)
+          setLabel(label)
           setIsOpen(true)
         })
       } else {
-        setLabel(_label)
+        setLabel(label)
         setIsOpen(true)
       }
     } else {

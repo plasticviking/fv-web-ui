@@ -245,4 +245,7 @@ const mapDispatchToProps = {
   updateContributor,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditContributors)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(EditContributors)

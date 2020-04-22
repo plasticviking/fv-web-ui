@@ -57,7 +57,11 @@ function renderInput(locals) {
         onClick={_onRequestEdit}
       >
         <SwapHorizIcon style={{ verticalAlign: 'middle' }} className="material-icons" />
-        <FVLabel transKey="replace" defaultStr="Replace" transform="first" />
+        <FVLabel
+          transKey="replace"
+          defaultStr="Replace"
+          transform="first"
+        />
       </FVButton>
     </div>
   )
@@ -67,27 +71,25 @@ function renderInput(locals) {
       <div>
         <AddMediaComponent
           type={locals.type}
-          label={
-            locals.labelAddMediaComponent || (
-              <FVLabel transKey="views.components.editor.upload_new" defaultStr="Upload New" />
-            )
-          }
+          label={locals.labelAddMediaComponent || <FVLabel transKey="views.components.editor.upload_new" defaultStr="Upload New" />}
           onComplete={onComplete}
           dialect={locals.context}
         />
         <SelectMediaComponent
           type={locals.type}
           label={
-            locals.labelSelectMediaComponent || (
-              <FVLabel transKey="views.components.editor.browse_existing" defaultStr="Browse Existing" />
-            )
+            locals.labelSelectMediaComponent || <FVLabel transKey="views.components.editor.browse_existing" defaultStr="Browse Existing" />
           }
           onComplete={onComplete}
           dialect={locals.context}
         />
         {selectn('context.initialValues.' + locals.attrs.name, locals) ? (
           <FVButton variant="flat" onClick={onCancel}>
-            <FVLabel transKey="cancel" defaultStr="Cancel" transform="first" />
+            <FVLabel
+              transKey="cancel"
+              defaultStr="Cancel"
+              transform="first"
+            />
           </FVButton>
         ) : (
           ''

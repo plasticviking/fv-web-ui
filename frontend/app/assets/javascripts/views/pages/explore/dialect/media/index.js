@@ -118,7 +118,11 @@ export class DialectMedia extends Component {
       <PromiseWrapper hideFetch computeEntities={computeEntities}>
         <h1>
           {selectn('response.contextParameters.ancestry.dialect.dc:title', computePortal)}{' '}
-          <FVLabel transKey="media" defaultStr="Media" transform="first" />
+          <FVLabel
+            transKey="media"
+            defaultStr="Media"
+            transform="first"
+          />
         </h1>
 
         <hr />

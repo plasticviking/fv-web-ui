@@ -8,7 +8,7 @@ import LastPageIcon from '@material-ui/icons/LastPage'
 import { withStyles } from '@material-ui/core/styles'
 import FVLabel from 'views/components/FVLabel/index'
 
-const styles = () => ({
+const styles = (theme) => ({
   select: {
     paddingRight: '24px',
   },
@@ -63,7 +63,7 @@ class TablePaginationActions extends React.Component {
               name: 'page',
               id: 'page',
             }}
-            disableUnderline
+            disableUnderline={true}
           >
             {pageNumbers.map((m, i) => {
               return (

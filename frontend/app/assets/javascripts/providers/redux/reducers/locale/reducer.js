@@ -139,6 +139,7 @@ export const localeReducer = (state = initialState, action) => {
         editingLabel: action.payload,
       }
     case ADD_NEW_LABEL:
+
       return {
         ...state,
         localeLists: action.payload.locales,
@@ -154,3 +155,4 @@ export const localeReducer = (state = initialState, action) => {
       return state
   }
 }
+

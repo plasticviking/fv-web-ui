@@ -32,6 +32,7 @@ export default class FlashcardList extends Component {
     flashcardTitle: '',
   }
 
+
   constructor(props, context) {
     super(props, context)
     ;['_generateFlashcards'].forEach((method) => (this[method] = this[method].bind(this)))
@@ -50,7 +51,12 @@ export default class FlashcardList extends Component {
     if (selectn('length', items) === 0) {
       return (
         <div style={{ margin: '20px 0' }}>
-          <FVLabel transKey="no_results_found" defaultStr="No Results Found" transform="first" append="." />
+          <FVLabel
+            transKey="no_results_found"
+            defaultStr="No Results Found"
+            transform="first"
+            append="."
+          />
         </div>
       )
     }

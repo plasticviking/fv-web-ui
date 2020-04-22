@@ -58,7 +58,7 @@ function getSorting(order, orderBy) {
   return order === 'desc' ? (a, b) => desc(a, b, orderBy) : (a, b) => -desc(a, b, orderBy)
 }
 
-const styles = () => ({
+const styles = (theme) => ({
   icon: {
     color: '#b40000',
   },
@@ -98,7 +98,7 @@ class ImmersionTable extends Component {
 
   componentDidMount() {}
 
-  componentDidUpdate() {}
+  componentDidUpdate(prevProps) {}
 
   _getURLPageProps() {
     const pageProps = { pageNumber: 1, pageSize: 10 }
@@ -145,8 +145,8 @@ class ImmersionTable extends Component {
 
   renderTranslation = (label, type = 'base') => {
     if (label.type === 'phrase') return label[type]
-    const translation = label[type]
-    let count = 0
+    var translation = label[type]
+    var count = 0
     const words = translation.split(/(%s)/g).map((word, i) => {
       if (word === '%s') {
         const chip = (
@@ -156,8 +156,9 @@ class ImmersionTable extends Component {
         )
         count++
         return chip
+      } else {
+        return <span key={i}>{word}</span>
       }
-      return <span key={i}>{word}</span>
     })
     return words
   }

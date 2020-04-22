@@ -142,7 +142,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
   return {
     computeDialectStats,
     windowPath: _windowPath,
-    intl: intlService,
+    intl: intlService
   }
 }
 

@@ -91,7 +91,8 @@ class BrowsingCardView extends Component {
             <div className="CardViewCopy">
               <div className="CardViewTitles">
                 <Typography className="CardViewTitle" variant="headline" component="h2">
-                  <span>{this.props.intl.searchAndReplace(this.props.item.title)}</span>
+                  <span>
+                    {this.props.intl.searchAndReplace(this.props.item.title)}</span>
                 </Typography>
                 <Typography className="CardViewSubtitle" variant="subheading" component="h3">
                   {this.props.intl.searchAndReplace(selectn('properties.dc:description', this.props.item))}

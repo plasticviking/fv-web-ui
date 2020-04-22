@@ -1,5 +1,9 @@
 import { combineReducers } from 'redux'
-import { DIRECTORY_FETCH_START, DIRECTORY_FETCH_SUCCESS, DIRECTORY_FETCH_ERROR } from './actionTypes'
+import {
+  DIRECTORY_FETCH_START,
+  DIRECTORY_FETCH_SUCCESS,
+  DIRECTORY_FETCH_ERROR,
+} from './actionTypes'
 
 const initialState = { isFetching: false, directory: null, directoryEntries: {}, success: false }
 

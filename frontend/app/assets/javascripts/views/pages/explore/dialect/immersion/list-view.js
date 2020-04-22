@@ -142,7 +142,7 @@ class ImmersionListView extends Component {
       return
     }
     const mappedLabels = allLabels.map((v) => {
-      const strings = v.template_strings.split(',').map((s) => '%' + s)
+      const strings = v.template_strings.split(',').map((s) => '%s')
       const templateStrings = v.template_strings.split(',')
       const label = {
         labelKey: v.id,

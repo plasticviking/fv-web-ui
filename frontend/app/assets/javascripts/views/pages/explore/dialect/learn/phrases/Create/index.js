@@ -281,7 +281,9 @@ export class PhrasesCreate extends Component {
             <FVLabel
               transKey=""
               defaultStr={'Add New Phrase to ' + selectn('response.title', computeDialect2)}
-              params={[selectn('response.title', computeDialect2)]}
+              params={[
+                selectn('response.title', computeDialect2),
+              ]}
             />
           </h1>
 
@@ -297,7 +299,11 @@ export class PhrasesCreate extends Component {
                 />
                 <div className="form-group">
                   <button type="submit" className="btn btn-primary">
-                    <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                    <FVLabel
+                      transKey="save"
+                      defaultStr="Save"
+                      transform="first"
+                    />
                   </button>
                 </div>
               </form>

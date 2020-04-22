@@ -39,6 +39,7 @@ import FVLabel from '../../components/FVLabel/index'
  */
 const { array, func, object, string } = PropTypes
 class Profile extends Component {
+
   static propTypes = {
     routeParams: object.isRequired,
     updateUser: func.isRequired,
@@ -195,7 +196,11 @@ class Profile extends Component {
               />
               <div className="form-group">
                 <button type="submit" className="btn btn-primary">
-                  <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                  <FVLabel
+                    transKey="save"
+                    defaultStr="Save"
+                    transform="first"
+                  />
                 </button>
               </div>
             </form>
@@ -222,7 +227,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
     properties,
     splitWindowPath,
     windowPath: _windowPath,
-    intl: intlService,
+    intl: intlService
   }
 }
 
@@ -233,4 +238,7 @@ const mapDispatchToProps = {
   replaceWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profile)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Profile)

@@ -25,7 +25,12 @@ export const SearchDocumentTypesTemplate = (locals) => {
                   return (
                     <Tooltip
                       key={`Tooltip__${j}`}
-                      title={<FVLabel transKey="remove_item" defaultStr="Remote Item" transform="words" />}
+                      title={
+                        <FVLabel
+                          transKey="remove_item"
+                          defaultStr="Remote Item"
+                          transform="words"
+                        />}
                     >
                       <IconButton key={`IconButton__${j}`} onClick={button.click}>
                         <Clear />

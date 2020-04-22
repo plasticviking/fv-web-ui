@@ -51,7 +51,12 @@ export default class GeneralList extends Component {
     if (selectn('length', items) == 0) {
       return (
         <div style={{ margin: '20px 0' }}>
-          <FVLabel transKey="no_results_found" defaultStr="No Results Found" transform="first" append="." />
+          <FVLabel
+            transKey="no_results_found"
+            defaultStr="No Results Found"
+            transform="first"
+            append="."
+          />
         </div>
       )
     }

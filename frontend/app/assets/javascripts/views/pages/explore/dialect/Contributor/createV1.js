@@ -200,7 +200,11 @@ export class PageDialectContributorsCreate extends Component {
               />
               <div className="form-group" style={{ marginTop: '20px' }}>
                 <FVButton variant="contained" color="primary" onClick={this._onRequestSaveForm}>
-                  <FVLabel transKey="save" defaultStr="Save" transform="first" />
+                  <FVLabel
+                    transKey="save"
+                    defaultStr="Save"
+                    transform="first"
+                  />
                 </FVButton>
               </div>
             </form>

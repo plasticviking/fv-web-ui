@@ -156,7 +156,11 @@ export class MetadataPanel extends Component {
                 color: themePalette.secondary.contrastText,
               }}
             >
-              <FVLabel transKey="metadata" defaultStr="METADATA" transform="upper" />
+              <FVLabel
+                transKey="metadata"
+                defaultStr="METADATA"
+                transform="upper"
+              />
               <IconButton
                 onClick={() => {
                   this.setState({

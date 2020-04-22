@@ -26,7 +26,7 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
     }
     static defaultProps = {
       disablePageSize: false,
-      fetcher: () => {},
+      fetcher: () => { },
       fetcherParams: {},
       metadata: {
         resultsCount: 0,
@@ -180,7 +180,11 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
               borderLeft: '1px solid #e0e0e0',
             }}
           >
-            <FVLabel transKey="results" defaultStr="Results" transform="first" />
+            <FVLabel
+              transKey="results"
+              defaultStr="Results"
+              transform="first"
+            />
           </label>
           <span style={{ verticalAlign: '4px' }}>{selectn('resultsCount', this.props.metadata)}</span>
         </div>

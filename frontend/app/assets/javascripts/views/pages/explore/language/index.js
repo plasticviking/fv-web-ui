@@ -125,7 +125,11 @@ export class Explore extends Component {
           <div className="col-xs-12">
             <h1>
               {selectn('response.properties.dc:title', computeLanguage)} &raquo;{' '}
-              <FVLabel transKey="dialects" defaultStr="Dialects" transform="words" />
+              <FVLabel
+                transKey="dialects"
+                defaultStr="Dialects"
+                transform="words"
+              />
             </h1>
             <FilteredPortalList {...portalListProps} />
           </div>
@@ -160,4 +164,7 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Explore)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Explore)
