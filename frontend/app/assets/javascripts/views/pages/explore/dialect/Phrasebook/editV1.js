@@ -242,4 +242,7 @@ const mapDispatchToProps = {
   updateCategory,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Edit)
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Edit)

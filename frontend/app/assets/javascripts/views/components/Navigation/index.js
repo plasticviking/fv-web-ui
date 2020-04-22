@@ -67,7 +67,7 @@ import FVLabel from '../FVLabel/index'
 
 import '!style-loader!css-loader!./styles.css'
 
-const { array, func, object, string, bool } = PropTypes
+const { array, func, object, string, bool, number } = PropTypes
 
 export class Navigation extends Component {
   static defaultProps = {
