@@ -217,6 +217,7 @@ export const Categories = (props) => {
       </FVButton>
       <Suspense fallback={<div>Loading...</div>}>
         <DictionaryListWithPagination
+          hasViewModeButtons={false}
           // Listview: Batch
           batchTitleSelect="Deselect all"
           batchTitleDeselect="Select all"
