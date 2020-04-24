@@ -55,6 +55,20 @@ const performBatchDelete = () => {
   cy.get('.DictionaryList__data > .Confirmation > .Confirmation__initiate > .Confirmation__btnInitiate').click()
   cy.wait(2000)
 
+  const categoryForDialectFilterListTest = 'TestDialectCategory'
+
+  // We want to ensure that the TestDialectCategory is not deleted from the list as this is used for later testing.
+  cy.get('body').then(($body) => {
+    if ($body.text().includes(categoryForDialectFilterListTest)) {
+      cy.getByText(categoryForDialectFilterListTest)
+        .parent()
+        .parent()
+        .find('.Checkbox input')
+        .click()
+      cy.wait(1000)
+    }
+  })
+
   // Perform batch delete
   cy.get(
     '.DictionaryList__data > .Confirmation > .Confirmation__confirmOrDeny > .Confirmation__confirmOrDenyInner > .Confirmation__btnConfirm > .Confirmation__btnConfirmText'
@@ -151,8 +165,8 @@ describe('CategoryCreate.js > Category', () => {
       userName: 'TESTLANGUAGEEIGHT_RECORDER',
     })
 
-    // Create 10 Categories
-    createCategories(0, 10)
+    // Create 5 Categories
+    createCategories(0, 5)
     cy.getByText(copy.create.success.browseView).click()
     cy.wait(2000)
 
