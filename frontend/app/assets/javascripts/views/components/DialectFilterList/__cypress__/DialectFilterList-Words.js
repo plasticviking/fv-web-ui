@@ -1,7 +1,7 @@
 describe('DialectFilterList-Words.js > DialectFilterList', () => {
   it('Select category with enough results for pagination, confirm has data, navigate to next page, confirm has data', () => {
     cy.visit('/explore/FV/sections/Data/Test/Test/TestLanguageSix/learn/words')
-    cy.wait(500)
+    cy.wait(1750)
     const category = 'TestCategory'
     cy.DialectFilterList({
       category,
@@ -16,7 +16,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       userName: 'TESTLANGUAGESIX_ADMIN',
     })
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageSix/learn/words')
-    cy.wait(500)
+    cy.wait(1750)
     const category = 'TestCategory'
     cy.DialectFilterList({
       category,
@@ -27,7 +27,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
     cy.getByText('Create new word', {
       exact: false,
     }).click()
-    cy.wait(500)
+    cy.wait(1750)
     cy.getByText('Add New Word to', {
       exact: false,
     }).should('exist')
@@ -39,7 +39,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       userName: 'TESTLANGUAGESIX_ADMIN',
     })
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageSix/learn/words')
-    cy.wait(1000)
+    cy.wait(1750)
     const category = 'TestCategory'
     cy.DialectFilterList({
       category,
@@ -51,7 +51,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       clearFilterText: 'stop browsing by',
     })
     cy.get('.DictionaryList__data--title .DictionaryList__colSort').click()
-    cy.wait(500)
+    cy.wait(1750)
     cy.getByTestId('DialectFilterList').within(() => {
       cy.getByText(category).should('not.have.class', 'DialectFilterListLink--active')
     })
@@ -62,7 +62,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       userName: 'TESTLANGUAGESIX_ADMIN',
     })
     cy.visit('/explore/FV/sections/Data/Test/Test/TestLanguageSix/learn/words')
-    cy.wait(1000)
+    cy.wait(1750)
     const category = 'TestCategory'
     cy.DialectFilterList({
       category,
@@ -76,7 +76,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
         cy.getByText('Dog').should('exist')
       })
     cy.get('.DictionaryList__data--title .DictionaryList__colSort').click()
-    cy.wait(500)
+    cy.wait(1750)
     cy.queryAllByTestId('DictionaryList__row')
       .eq(0)
       .within(() => {
@@ -87,7 +87,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
   // Repeat Tests on a dialect that uses its own categories (Test Language)
   it('Filter by category, then click to second page of results', () => {
     cy.visit('/explore/FV/sections/Data/Test/Test/TestLanguageEight/learn/words')
-    cy.wait(500)
+    cy.wait(1750)
     const category = 'TestDialectCategory'
     cy.DialectFilterList({
       category,
@@ -102,7 +102,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       userName: 'TESTLANGUAGEEIGHT_ADMIN',
     })
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/learn/words')
-    cy.wait(500)
+    cy.wait(1750)
     const category = 'TestDialectCategory'
     cy.DialectFilterList({
       category,
@@ -113,7 +113,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
     cy.getByText('Create new word', {
       exact: false,
     }).click()
-    cy.wait(500)
+    cy.wait(1750)
     cy.getByText('Add New Word to', {
       exact: false,
     }).should('exist')
@@ -125,7 +125,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       userName: 'TESTLANGUAGEEIGHT_ADMIN',
     })
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageEight/learn/words')
-    cy.wait(1000)
+    cy.wait(1750)
     const category = 'TestDialectCategory'
     cy.DialectFilterList({
       category,
@@ -137,7 +137,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       clearFilterText: 'stop browsing by',
     })
     cy.get('.DictionaryList__data--title .DictionaryList__colSort').click()
-    cy.wait(500)
+    cy.wait(1750)
     cy.getByTestId('DialectFilterList').within(() => {
       cy.getByText(category).should('not.have.class', 'DialectFilterListLink--active')
     })
@@ -148,7 +148,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
       userName: 'TESTLANGUAGEEIGHT_ADMIN',
     })
     cy.visit('/explore/FV/sections/Data/Test/Test/TestLanguageEight/learn/words')
-    cy.wait(1000)
+    cy.wait(1750)
     const category = 'TestDialectCategory'
     cy.DialectFilterList({
       category,
@@ -162,7 +162,7 @@ describe('DialectFilterList-Words.js > DialectFilterList', () => {
         cy.getByText('Dog').should('exist')
       })
     cy.get('.DictionaryList__data--title .DictionaryList__colSort').click()
-    cy.wait(500)
+    cy.wait(1750)
     cy.queryAllByTestId('DictionaryList__row')
       .eq(0)
       .within(() => {

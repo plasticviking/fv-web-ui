@@ -248,15 +248,24 @@ if [[ "$response" -ne 200 ]]; then
   echo
 fi
 # Publish the shared categories directory
-echo "Publishing TestLanguageSix shared categories directory"
+echo "Publishing Shared Categories Directory for LanguageSix"
 response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.PublishToSections' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"target":"/FV/sections/SharedData","override":"true"},"input":"/FV/Workspaces/SharedData/Shared Categories","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
 if [[ "$response" -ne 200 ]]; then
-    echo -e 'TestLanguageSix shared categories directory publish failed: Error ' $response ' \n'; exit 1
-    echo
+  echo -e 'TestLanguageSix category publish failed: Error ' $response ' \n'
+  exit 1
+  echo
 fi
-# Publish the category
-echo "Publishing TestLanguageSix category"
-response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.PublishToSections' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"target":"/FV/sections/SharedData/Shared Categories/","override":"true"},"input":"/FV/Workspaces/SharedData/Shared Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+# Publish the category using PublishToSections
+echo "Publishing a shared category for TestLanguageSix - PublishToSections"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/Document.PublishToSections' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{"target":"/FV/sections/SharedData/Shared Categories","override":"true"},"input":"/FV/Workspaces/SharedData/Shared Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 200 ]]; then
+  echo -e 'TestLanguageSix category publish failed: Error ' $response ' \n'
+  exit 1
+  echo
+fi
+# Publish the category using FVPublish
+echo "Publishing a shared category for TestLanguageSix category - FVPublish"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST ${TARGET}'/nuxeo/site/automation/FVPublish' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{},"input":"/FV/sections/SharedData/Shared Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
 if [[ "$response" -ne 200 ]]; then
   echo -e 'TestLanguageSix category publish failed: Error ' $response ' \n'
   exit 1
