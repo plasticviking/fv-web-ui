@@ -3,6 +3,7 @@ package ca.firstvoices.testUtil;
 import static org.junit.Assert.assertNotNull;
 
 import ca.firstvoices.runner.FirstVoicesDataFeature;
+import ca.firstvoices.services.AddConfusablesService;
 import ca.firstvoices.services.AssignAncestorsService;
 import ca.firstvoices.services.CleanupCharactersService;
 import ca.firstvoices.services.SanitizeDocumentService;
@@ -50,7 +51,10 @@ public abstract class AbstractFirstVoicesDataTest {
     @Inject
     protected CleanupCharactersService cleanupCharactersService;
 
-  @Before
+    @Inject
+    protected AddConfusablesService addConfusablesService;
+
+    @Before
     public void setUp() throws Exception {
         assertNotNull("Should have a valid session", session);
         createSetup(session);
