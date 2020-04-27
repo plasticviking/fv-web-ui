@@ -516,9 +516,7 @@ const options = {
       'fv-word:acknowledgement': {
         label: intl.trans('acknowledgement', 'Acknowledgement', 'first'),
         help: <i>{intl.trans('models.acknowledgement', 'Acknowledgement or Data Usage', 'first')}.</i>,
-        item: {
-          factory: VirtualKeyboardFactory,
-        },
+        factory: VirtualKeyboardFactory,
       },
       'fv:source': {
         label: intl.trans('source', 'Source', 'first'),
