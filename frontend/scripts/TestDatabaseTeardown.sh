@@ -137,11 +137,19 @@ if [[ "$?" -ne 0 ]]; then
 fi
 
 echo
-# Delete shared category
-echo "Deleting TestLanguageSix category"
+# Delete workspaces shared category
+echo "Deleting TestLanguageSix workspaces category"
 response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST 'http://127.0.0.1:8080/nuxeo/site/automation/Document.Delete' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{},"input":"/FV/Workspaces/SharedData/Shared Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
 if [[ "$response" -ne 204 ]]; then
-    echo -e 'TestLanguageSix category removal failed: Error ' $response ' \n'; exit 1
+    echo -e 'TestLanguageSix workspaces category removal failed: Error ' $response ' \n'; exit 1
+    echo
+fi
+echo
+# Delete sections shared category
+echo "Deleting TestLanguageSix sections category"
+response=$(curl -o /dev/null -s -w "%{response_code}\n" -X POST 'http://127.0.0.1:8080/nuxeo/site/automation/Document.Delete' -H 'Nuxeo-Transaction-Timeout: 3' -H 'X-NXproperties: *' -H 'X-NXRepository: default' -H 'X-NXVoidOperation: false' -H 'content-type: application/json' -d '{"params":{},"input":"/FV/sections/SharedData/Shared Categories/TestCategory","context":{}}' -u $CYPRESS_FV_USERNAME:$CYPRESS_FV_PASSWORD)
+if [[ "$response" -ne 204 ]]; then
+    echo -e 'TestLanguageSix sections category removal failed: Error ' $response ' \n'; exit 1
     echo
 fi
 

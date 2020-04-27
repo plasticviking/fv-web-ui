@@ -95,12 +95,14 @@ describe('LangAdminViewEdit-Word.js > LangAdminViewEdit-Word', () => {
       */
     cy.visit('/explore/FV/Workspaces/Data/Test/Test/TestLanguageTwo/learn/words')
     cy.wait(3500)
-    cy.getByTestId('DictionaryList__row').within(() => {
-      cy.getByText('TestWordForPermissions').should('exist')
-      cy.getByText('TestTranslation').should('exist')
-      cy.getByText('Noun').should('exist')
-      cy.getByText('New').should('exist')
-    })
+    cy.queryByText('TestWordForPermissions')
+      .parent()
+      .parent()
+      .within(() => {
+        cy.getByText('TestTranslation').should('exist')
+        cy.getByText('Noun').should('exist')
+        cy.getByText('New').should('exist')
+      })
     cy.logout()
     /*
             Login as Language Member and check that the word is not visible when not enabled.
@@ -129,12 +131,14 @@ describe('LangAdminViewEdit-Word.js > LangAdminViewEdit-Word', () => {
       cy.getByText('Words', { exact: true }).click()
     })
     cy.wait(3500)
-    cy.getByTestId('DictionaryList__row').within(() => {
-      cy.getByText('New').should('exist')
-      cy.getByText('TestTranslation').should('exist')
-      cy.queryByText('TestWordForPermissions').should('exist')
-      cy.getByText('TestWordForPermissions').click()
-    })
+    cy.queryByText('TestWordForPermissions')
+      .parent()
+      .parent()
+      .within(() => {
+        cy.getByText('New').should('exist')
+        cy.getByText('TestTranslation').should('exist')
+        cy.getByText('TestWordForPermissions').click()
+      })
 
     /*
             Check for edit word button and then enable the word.
@@ -164,11 +168,13 @@ describe('LangAdminViewEdit-Word.js > LangAdminViewEdit-Word', () => {
       cy.getByText('Words', { exact: true }).click()
     })
     cy.wait(3500)
-    cy.getByTestId('DictionaryList__row').within(() => {
-      cy.queryByText('TestWordForPermissions').should('exist')
-      cy.queryByText('TestTranslation').should('exist')
-      cy.queryByText('Enabled').should('exist')
-    })
+    cy.queryByText('TestWordForPermissions')
+      .parent()
+      .parent()
+      .within(() => {
+        cy.queryByText('TestTranslation').should('exist')
+        cy.queryByText('Enabled').should('exist')
+      })
     cy.logout()
 
     /*
