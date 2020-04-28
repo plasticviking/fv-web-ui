@@ -7,13 +7,7 @@ import { connect } from 'react-redux'
 import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 
 const { string, object, func } = PropTypes
-
-const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
-}
-
-export class CategoryStateSuccessCreate extends React.Component {
+export class PhrasebookStateSuccessCreate extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -22,7 +16,7 @@ export class CategoryStateSuccessCreate extends React.Component {
     handleClick: func,
   }
   static defaultProps = {
-    className: 'FormCategory',
+    className: 'FormRecorder',
     formData: {
       'dc:title': '-',
       'dc:description': '-',
@@ -37,34 +31,34 @@ export class CategoryStateSuccessCreate extends React.Component {
     const name = formData['dc:title']
     const description = formData['dc:description']
     // const photo = formData['fvcontributor:profile_picture'] ? formData['fvcontributor:profile_picture'][0] : {}
-    const categoryDetailUrl = `/${siteTheme}${dialect_path}/${categoryType.label.singular}/${itemUid}`
-    const categoryEditUrl = `/${siteTheme}${dialect_path}/edit/${categoryType.label.singular}/${itemUid}`
-    const categoryBrowseUrl = `/${siteTheme}${dialect_path}/${categoryType.label.plural}/10/1`
+    const phrasebookDetailUrl = `/${siteTheme}${dialect_path}/phrasebook/${itemUid}`
+    const phrasebookEditUrl = `/${siteTheme}${dialect_path}/edit/phrasebook/${itemUid}`
+    const phrasebookBrowseUrl = `/${siteTheme}${dialect_path}/phrasebooks/10/1`
     return (
-      <div className={`${className} Category Category--successCreate`}>
-        <h1 className="Category__heading">{copy.create.success.title}</h1>
+      <div className={`${className} Phrasebook Phrasebook--successCreate`}>
+        <h1 className="Phrasebook__heading">{copy.create.success.title}</h1>
 
         <p>{copy.create.success.thanks}</p>
 
-        <div className="Category__successContent">
-          <div className="Category__successReview">
+        <div className="Phrasebook__successContent">
+          <div className="Phrasebook__successReview">
             <dl className="">
               <dt>
                 <a
-                  href={categoryDetailUrl}
+                  href={phrasebookDetailUrl}
                   onClick={(e) => {
                     e.preventDefault()
-                    NavigationHelpers.navigate(categoryDetailUrl, this.props.pushWindowPath, false)
+                    NavigationHelpers.navigate(phrasebookDetailUrl, this.props.pushWindowPath, false)
                   }}
                 >
                   {name}
                 </a>{' '}
                 -{' '}
                 <a
-                  href={categoryEditUrl}
+                  href={phrasebookEditUrl}
                   onClick={(e) => {
                     e.preventDefault()
-                    NavigationHelpers.navigate(categoryEditUrl, this.props.pushWindowPath, false)
+                    NavigationHelpers.navigate(phrasebookEditUrl, this.props.pushWindowPath, false)
                   }}
                 >
                   {copy.create.success.editView}
@@ -75,8 +69,8 @@ export class CategoryStateSuccessCreate extends React.Component {
               </dd>
             </dl>
           </div>
-          <div className="Category__successMore">
-            <ul className="Category__successLinks">
+          <div className="Phrasebook__successMore">
+            <ul className="Phrasebook__successLinks">
               {/* CREATE ANOTHER ------------- */}
               <li>
                 <a
@@ -92,7 +86,7 @@ export class CategoryStateSuccessCreate extends React.Component {
 
               {/* BROWSE ------------- */}
               <li>
-                <Link href={categoryBrowseUrl}>{copy.create.success.browseView}</Link>
+                <Link href={phrasebookBrowseUrl}>{copy.create.success.browseView}</Link>
               </li>
             </ul>
           </div>
@@ -118,4 +112,4 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryStateSuccessCreate)
+export default connect(mapStateToProps, mapDispatchToProps)(PhrasebookStateSuccessCreate)

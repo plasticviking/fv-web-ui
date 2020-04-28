@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { pushWindowPath } from 'providers/redux/reducers/windowPath'
 
 const { string, object, func } = PropTypes
-export class CategoryStateSuccessDelete extends React.Component {
+export class PhrasebookStateSuccessDelete extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -19,7 +19,7 @@ export class CategoryStateSuccessDelete extends React.Component {
     pushWindowPath: func.isRequired,
   }
   static defaultProps = {
-    className: 'FormCategory',
+    className: 'FormRecorder',
     copy: {
       edit: {},
     },
@@ -28,8 +28,8 @@ export class CategoryStateSuccessDelete extends React.Component {
     const { className, copy, createUrl } = this.props
     const _createUrl = createUrl || '#'
     return (
-      <div className={`${className} Category Category--successDelete`}>
-        <h1 className="Category__heading">{copy.edit.successDelete.title}</h1>
+      <div className={`${className} Phrasebook Phrasebook--successDelete`}>
+        <h1 className="Phrasebook__heading">{copy.edit.successDelete.title}</h1>
 
         {/* CREATE ANOTHER ------------- */}
         <p>
@@ -53,4 +53,4 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(null, mapDispatchToProps)(CategoryStateSuccessDelete)
+export default connect(null, mapDispatchToProps)(PhrasebookStateSuccessDelete)

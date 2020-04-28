@@ -7,9 +7,9 @@ import Text from 'views/components/Form/Common/Text'
 import Textarea from 'views/components/Form/Common/Textarea'
 import StringHelpers from 'common/StringHelpers'
 import { getError, getErrorFeedback } from 'common/FormHelpers'
-import CategoryDelete from 'views/components/Confirmation'
+import PhrasebookDelete from 'views/components/Confirmation'
 const { string, element, array, bool, func, object } = PropTypes
-export class CategoryStateCreate extends React.Component {
+export class PhrasebookStateCreate extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -74,7 +74,7 @@ export class CategoryStateCreate extends React.Component {
     const _copy = isEdit ? copy.edit : copy.create
     return (
       <form
-        className={`${className} Category Category--create`}
+        className={`${className} Phrasebook Phrasebook--create`}
         ref={setFormRef}
         onSubmit={(e) => {
           e.preventDefault()
@@ -83,9 +83,9 @@ export class CategoryStateCreate extends React.Component {
       >
         {breadcrumb}
 
-        <div className="Category__btnHeader">
+        <div className="Phrasebook__btnHeader">
           <button
-            className="_btn _btn--secondary Category__btnBack"
+            className="_btn _btn--secondary Phrasebook__btnBack"
             type="button"
             onClick={() => {
               window.history.back()
@@ -95,9 +95,9 @@ export class CategoryStateCreate extends React.Component {
           </button>
           {/* BTN: Delete contributor ------------- */}
           {isEdit && !isTrashed ? (
-            <CategoryDelete
+            <PhrasebookDelete
               confirmationAction={this.props.deleteItem}
-              className="Category__delete"
+              className="Phrasebook__delete"
               reverse
               copyIsConfirmOrDenyTitle={_copy.isConfirmOrDenyTitle}
               copyBtnInitiate={_copy.btnInitiate}
@@ -109,7 +109,7 @@ export class CategoryStateCreate extends React.Component {
 
         {isTrashed ? <div className="alert alert-danger">{_copy.isTrashed}</div> : null}
 
-        <h1 className="Category__heading">{_copy.title}</h1>
+        <h1 className="Phrasebook__heading">{_copy.title}</h1>
 
         <p>{_copy.requiredNotice}</p>
 
@@ -138,7 +138,7 @@ export class CategoryStateCreate extends React.Component {
 
         {getErrorFeedback({ errors })}
 
-        <div className="Category__btn-container">
+        <div className="Phrasebook__btn-container">
           {/* BTN: Create ------------- */}
           {/* <button className="_btn _btn--primary" disabled={isBusy || isTrashed} type="submit">
             {_copy.submit}
@@ -163,4 +163,4 @@ export class CategoryStateCreate extends React.Component {
   }
 }
 
-export default CategoryStateCreate
+export default PhrasebookStateCreate

@@ -15,11 +15,11 @@ import StateLoading from 'views/components/Loading'
 import StateErrorBoundary from 'views/components/ErrorBoundary'
 import StateDetail from './states/detail'
 
-import '!style-loader!css-loader!./styles.css'
+import '!style-loader!css-loader!./Phrasebook.css'
 
 const { element, func, number, object, string } = PropTypes
 
-export class CategoryDetail extends React.Component {
+export class PhrasebookDetail extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -40,7 +40,7 @@ export class CategoryDetail extends React.Component {
     fetchCategories: func.isRequired,
   }
   static defaultProps = {
-    className: 'Category',
+    className: 'Phrasebook',
   }
 
   state = {
@@ -49,7 +49,7 @@ export class CategoryDetail extends React.Component {
   async componentDidMount() {
     const copy = this.props.copy
       ? this.props.copy
-      : await import(/* webpackChunkName: "CategoryDetailInternationalization" */ './internationalization').then(
+      : await import(/* webpackChunkName: "PhrasebookDetailInternationalization" */ './internationalization').then(
           (_copy) => {
             return _copy.default
           }
@@ -161,4 +161,4 @@ const mapDispatchToProps = {
   fetchCategories,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryDetail)
+export default connect(mapStateToProps, mapDispatchToProps)(PhrasebookDetail)

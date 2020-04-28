@@ -43,16 +43,11 @@ import {
   DEFAULT_SORT_TYPE,
 } from 'common/Constants'
 
-import '!style-loader!css-loader!./styles.css'
+import '!style-loader!css-loader!./Phrasebook.css'
 
 const { array, element, func, number, object, string } = PropTypes
 
-const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
-}
-
-export class CategoryEdit extends React.Component {
+export class PhrasebookEdit extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -86,7 +81,7 @@ export class CategoryEdit extends React.Component {
     updateCategory: func.isRequired,
   }
   static defaultProps = {
-    className: 'FormCategory',
+    className: 'FormPhrasebook',
     groupName: '',
     breadcrumb: null,
     DEFAULT_PAGE,
@@ -116,13 +111,15 @@ export class CategoryEdit extends React.Component {
   async componentDidMount() {
     const copy = this.props.copy
       ? this.props.copy
-      : await import(/* webpackChunkName: "CategoryInternationalization" */ './internationalization').then((_copy) => {
-          return _copy.default
-        })
+      : await import(/* webpackChunkName: "PhrasebookInternationalization" */ './internationalization').then(
+          (_copy) => {
+            return _copy.default
+          }
+        )
 
     const validator = this.props.validator
       ? this.props.validator
-      : await import(/* webpackChunkName: "CategoryValidator" */ './validator').then((_validator) => {
+      : await import(/* webpackChunkName: "PhrasebookValidator" */ './validator').then((_validator) => {
           return _validator.default
         })
     await this._getData({ copy, validator })
@@ -265,7 +262,7 @@ export class CategoryEdit extends React.Component {
     const { createUrl, className, routeParams } = this.props
     const { formData } = this.state
     const { siteTheme, dialect_path } = routeParams
-    const _createUrl = createUrl || `/${siteTheme}${dialect_path}/create/${categoryType.label.singular}`
+    const _createUrl = createUrl || `/${siteTheme}${dialect_path}/create/phrasebook`
     return (
       <StateSuccessDelete createUrl={_createUrl} className={className} copy={this.state.copy} formData={formData} />
     )
@@ -386,4 +383,4 @@ const mapDispatchToProps = {
   updateCategory,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryEdit)
+export default connect(mapStateToProps, mapDispatchToProps)(PhrasebookEdit)

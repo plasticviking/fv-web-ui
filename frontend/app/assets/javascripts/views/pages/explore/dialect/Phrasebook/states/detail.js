@@ -1,18 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import FVButton from 'views/components/FVButton'
-import NavigationHelpers from 'common/NavigationHelpers'
 
-// REDUX
-import { connect } from 'react-redux'
-import { pushWindowPath } from 'providers/redux/reducers/windowPath'
-
-const { bool, string, element, object, func } = PropTypes
-const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
-}
-export class CategoryStateDetail extends React.Component {
+const { bool, string, element, object } = PropTypes
+export class PhrasebookStateDetail extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -20,10 +10,6 @@ export class CategoryStateDetail extends React.Component {
     isTrashed: bool,
     valueName: string,
     valueDescription: string,
-    // REDUX: reducers/state
-    routeParams: object.isRequired,
-    // REDUX: actions/dispatch/func
-    pushWindowPath: func.isRequired,
   }
   static defaultProps = {
     className: '',
@@ -36,59 +22,32 @@ export class CategoryStateDetail extends React.Component {
     },
   }
   render() {
-    const { className, copy, isTrashed, valueName, valueDescription, breadcrumb, routeParams } = this.props
-    const { siteTheme, dialect_path, itemId } = routeParams
+    const { className, copy, isTrashed, valueName, valueDescription, breadcrumb } = this.props
     const _copy = copy.detail
     const itemDeleted = isTrashed ? <div className="alert alert-danger">{_copy.isTrashed}</div> : null
-    const categoryEditUrl = `/${siteTheme}${dialect_path}/edit/${categoryType.label.singular}/${itemId || ''}`
     return (
-      <div className={`${className} Category Category--detail`}>
-        <div className="Category__content">
-          <div className="Category__main">
-            <div className="Category__mainInner">
+      <div className={`${className} Phrasebook Phrasebook--detail`}>
+        <div className="Phrasebook__content">
+          <div className="Phrasebook__main">
+            <div className="Phrasebook__mainInner">
               {itemDeleted}
               <header>
                 {breadcrumb}
-                <h1 className="Category__heading">{_copy.title}</h1>
+                <h1 className="Phrasebook__heading">{_copy.title}</h1>
               </header>
               {/* Name ------------- */}
               <h2 className="visually-hidden">{_copy.name}</h2>
-              <p className="Category__name">{valueName}</p>
+              <p className="Phrasebook__name">{valueName}</p>
 
               {/* Description ------------- */}
               <h2 className="visually-hidden">{_copy.biography}</h2>
-              <div className="Category__description" dangerouslySetInnerHTML={{ __html: valueDescription }} />
+              <div className="Phrasebook__description" dangerouslySetInnerHTML={{ __html: valueDescription }} />
             </div>
           </div>
         </div>
-        <FVButton
-          href={categoryEditUrl}
-          onClick={(e) => {
-            e.preventDefault()
-            NavigationHelpers.navigate(categoryEditUrl, this.props.pushWindowPath, false)
-          }}
-        >
-          {copy.create.success.editView}
-        </FVButton>
       </div>
     )
   }
 }
 
-// REDUX: reducers/state
-const mapStateToProps = (state /*, ownProps*/) => {
-  const { navigation } = state
-
-  const { route } = navigation
-
-  return {
-    routeParams: route.routeParams,
-  }
-}
-
-// REDUX: actions/dispatch/func
-const mapDispatchToProps = {
-  pushWindowPath,
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryStateDetail)
+export default PhrasebookStateDetail

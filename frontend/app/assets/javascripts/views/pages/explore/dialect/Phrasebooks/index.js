@@ -37,17 +37,13 @@ import '!style-loader!css-loader!./styles.css'
 
 const DictionaryList = React.lazy(() => import('views/components/Browsing/DictionaryList'))
 
-const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
-}
 // Phrasebooks
 // ----------------------------------------
 export const Phrasebooks = (props) => {
   const { computeCategories, routeParams, search } = props
   const { dialect_path, pageSize, page, siteTheme } = routeParams
   const { sortOrder, sortBy } = search
-  const dataPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
+  const dataPath = `${routeParams.dialect_path}/Phrase Books/`
 
   // HOOKS
   const [deletedUids, setDeletedUids] = useState([])
@@ -97,14 +93,14 @@ export const Phrasebooks = (props) => {
         title: copy.title.th,
         columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.cellRenderTypography,
         render: (v, data) => {
-          const categoryDetailUrl = `/${siteTheme}${dialect_path}/${categoryType.label.singular}/${data.uid || ''}`
+          const phrasebookDetailUrl = `/${siteTheme}${dialect_path}/phrasebook/${data.uid || ''}`
           return (
             <a
               className="DictionaryList__link"
-              href={categoryDetailUrl}
+              href={phrasebookDetailUrl}
               onClick={(e) => {
                 e.preventDefault()
-                NavigationHelpers.navigate(categoryDetailUrl, props.pushWindowPath, false)
+                NavigationHelpers.navigate(phrasebookDetailUrl, props.pushWindowPath, false)
               }}
             >
               {v}
@@ -128,11 +124,11 @@ export const Phrasebooks = (props) => {
         columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.cellRender,
         render: (v, data) => {
           const uid = data.uid
-          const url = `/${siteTheme}${dialect_path}/edit/${categoryType.label.singular}/${uid}`
+          const url = `/${siteTheme}${dialect_path}/edit/phrasebook/${uid}`
 
           return (
-            <ul className="Categories__actions">
-              <li className="Categories__actionContainer Categories__actionDelete">
+            <ul className="Phrasebooks__actions">
+              <li className="Phrasebooks__actionContainer Phrasebooks__actionDelete">
                 <ConfirmationDelete
                   reverse
                   compact
@@ -146,7 +142,7 @@ export const Phrasebooks = (props) => {
                   }}
                 />
               </li>
-              <li className="Categories__actionContainer">
+              <li className="Phrasebooks__actionContainer">
                 <a
                   href={url}
                   onClick={(e) => {
@@ -175,15 +171,11 @@ export const Phrasebooks = (props) => {
         color="primary"
         onClick={(e) => {
           e.preventDefault()
-          NavigationHelpers.navigate(
-            `/${siteTheme}${dialect_path}/create/${categoryType.label.singular}`,
-            props.pushWindowPath,
-            false
-          )
+          NavigationHelpers.navigate(`/${siteTheme}${dialect_path}/create/phrasebook`, props.pushWindowPath, false)
         }}
         variant="contained"
       >
-        Create a new {categoryType.title.singular}
+        Create a new phrase book
       </FVButton>
       <Suspense fallback={<div>Loading...</div>}>
         <DictionaryListWithPagination
@@ -221,7 +213,7 @@ export const Phrasebooks = (props) => {
           // Pagination
           fetcher={(fetcherParams) => {
             setPaginationRequest(
-              `/${siteTheme}${dialect_path}/${categoryType.label.plural}/${fetcherParams.pageSize}/${fetcherParams.currentPageIndex}${window.location.search}`
+              `/${siteTheme}${dialect_path}/phrasebooks/${fetcherParams.pageSize}/${fetcherParams.currentPageIndex}${window.location.search}`
             )
           }}
           fetcherParams={{ currentPageIndex: page, pageSize: pageSize }}

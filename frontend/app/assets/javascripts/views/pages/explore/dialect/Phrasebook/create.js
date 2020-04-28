@@ -34,17 +34,12 @@ import {
   DEFAULT_SORT_TYPE,
 } from 'common/Constants'
 
-import '!style-loader!css-loader!./styles.css'
+import '!style-loader!css-loader!./Phrasebook.css'
 
 const { array, element, func, number, object, string } = PropTypes
 
-const categoryType = {
-  title: { plural: 'Phrase Books', singular: 'Phrase Book' },
-  label: { plural: 'phrasebooks', singular: 'phrasebook' },
-}
-
 let categoriesPath = undefined
-export class Category extends React.Component {
+export class Phrasebook extends React.Component {
   static propTypes = {
     className: string,
     copy: object,
@@ -71,7 +66,7 @@ export class Category extends React.Component {
     pushWindowPath: func.isRequired,
   }
   static defaultProps = {
-    className: 'FormCategory',
+    className: 'FormPhrasebook',
     groupName: '',
     breadcrumb: null,
     DEFAULT_PAGE,
@@ -104,11 +99,13 @@ export class Category extends React.Component {
 
     const copy = this.props.copy
       ? this.props.copy
-      : await import(/* webpackChunkName: "CategoryInternationalization" */ './internationalization').then((_copy) => {
-          return _copy.default
-        })
+      : await import(/* webpackChunkName: "PhrasebookInternationalization" */ './internationalization').then(
+          (_copy) => {
+            return _copy.default
+          }
+        )
 
-    categoriesPath = `${routeParams.dialect_path}/${categoryType.title.plural}/`
+    categoriesPath = `${routeParams.dialect_path}/Phrase Books/`
 
     // Get data for computeDialect
     await this.props.fetchDialect('/' + this.props.routeParams.dialect_path)
@@ -138,7 +135,7 @@ export class Category extends React.Component {
 
     const validator = this.props.validator
       ? this.props.validator
-      : await import(/* webpackChunkName: "CategoryValidator" */ './validator').then((_validator) => {
+      : await import(/* webpackChunkName: "PhrasebookValidator" */ './validator').then((_validator) => {
           return _validator.default
         })
 
@@ -252,7 +249,7 @@ export class Category extends React.Component {
     const name = formData['dc:title']
 
     const results = await this.props.createCategory(
-      `${this.props.routeParams.dialect_path}/${categoryType.title.plural}`, // parentDoc:
+      `${this.props.routeParams.dialect_path}/Phrase Books`, // parentDoc:
       {
         // docParams:
         type: 'FVCategory',
@@ -347,4 +344,4 @@ const mapDispatchToProps = {
   pushWindowPath,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Category)
+export default connect(mapStateToProps, mapDispatchToProps)(Phrasebook)
