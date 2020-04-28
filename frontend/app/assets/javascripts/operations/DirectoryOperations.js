@@ -392,7 +392,7 @@ export default class DirectoryOperations {
       : `ecm:path STARTSWITH '${StringHelpers.clean(path)}'`;
 
     const _queryAppend = queryAppend
-    
+
     const nxqlQueryParams = Object.assign(
       _params,
       {
