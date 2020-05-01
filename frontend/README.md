@@ -5,7 +5,9 @@
 There are several version dependency requirements to properly build and run the project:
 
 - NodeJS v10.19.0 ([node version manager recommended](https://github.com/nvm-sh/nvm))
-- NPM v6.x.x ([node version manager recommended](https://github.com/nvm-sh/nvm))
+- NPM v6.13.4 ([node version manager recommended](https://github.com/nvm-sh/nvm))
+
+If you are using NVM, NPM will be tied to the NodeJS version you install.
 
 Instructions to install specific project dependencies and running the application are described in the _Setting Up and Running_ section.
 
