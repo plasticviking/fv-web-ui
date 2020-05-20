@@ -1,0 +1,14 @@
+<component name="ca.firstvoices.cognito">
+
+    <require>org.nuxeo.ecm.platform.ui.web.auth.WebEngineConfig</require>
+    <require>org.nuxeo.ecm.platform.ui.web.auth.defaultConfig</require>
+    <require>ca.firstvoices.studio.extensions</require>
+    <require>ca.firstvoices.cognito.configuration</require>
+
+
+    <extension point="userManager" target="org.nuxeo.ecm.platform.usermanager.UserService">
+        <userManager class="ca.firstvoices.cognito.CognitoAuthenticationProvider">
+        </userManager>
+    </extension>
+
+</component>
