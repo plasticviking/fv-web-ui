@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
-Bundle-SymbolicName: FirstVoicesCognitoAuth.tests
-Bundle-Name: FirstVoicesCognitoAuth.tests
+Bundle-SymbolicName: FirstVoicesCognitoAuth.test
+Bundle-Name: FirstVoicesCognitoAuth.test
 
