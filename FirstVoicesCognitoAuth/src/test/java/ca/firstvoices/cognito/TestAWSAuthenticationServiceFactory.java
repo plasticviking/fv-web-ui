@@ -2,13 +2,12 @@ package ca.firstvoices.cognito;
 
 
 import ca.firstvoices.cognito.exceptions.MiscellaneousFailureException;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
-
-import java.util.Arrays;
-import java.util.List;
 
 
 /**

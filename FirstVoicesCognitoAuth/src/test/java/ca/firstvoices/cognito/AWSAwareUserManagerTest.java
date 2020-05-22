@@ -1,5 +1,7 @@
 package ca.firstvoices.cognito;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import com.google.inject.Inject;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,9 +15,6 @@ import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Features;
 import org.nuxeo.runtime.test.runner.FeaturesRunner;
 import org.nuxeo.runtime.test.runner.RuntimeFeature;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 
 @RunWith(FeaturesRunner.class)

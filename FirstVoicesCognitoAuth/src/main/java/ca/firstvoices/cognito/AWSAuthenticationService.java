@@ -28,8 +28,8 @@ public interface AWSAuthenticationService {
    * cause an automatic migration if the Cognito user pool is configured appropriately.
    *
    * @return false when the username exists in Cognito and the password does not match,
-   * false when the username does not exist in Cognito and migration is disabled,
-   * true otherwise
+   *         false when the username does not exist in Cognito and migration is disabled
+   *         true otherwise
    *
    * @throws MiscellaneousFailureException if a communication failure occurred or the migration
    *                                       script threw an Exception (possible when attempting to

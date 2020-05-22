@@ -7,8 +7,8 @@ public class AWSAwareUserManagerConfigurationService {
 
   private AWSAwareUserManagerConfigurationDescriptor config;
 
-  public AWSAwareUserManagerConfigurationService(AWSAwareUserManagerConfigurationDescriptor config) {
-    this.config = config;
+  public AWSAwareUserManagerConfigurationService(AWSAwareUserManagerConfigurationDescriptor conf) {
+    this.config = conf;
   }
 
   public AWSAwareUserManagerConfigurationDescriptor getConfig() {
