@@ -4,6 +4,9 @@ package ca.firstvoices.cognito;
 import ca.firstvoices.cognito.exceptions.MiscellaneousFailureException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.directory.DirectoryException;
+import org.nuxeo.ecm.directory.Session;
 import org.nuxeo.ecm.platform.usermanager.UserManagerImpl;
 import org.nuxeo.runtime.api.Framework;
 
@@ -90,4 +93,29 @@ public class AWSAwareUserManager extends UserManagerImpl {
 
   }
 
+  /**
+   * update the user's Cognito password in response to a reset password action
+   */
+  @Override
+  public void updateUser(DocumentModel userModel, DocumentModel context) {
+    // we must always update the local directory too, to satisfy checks in FVUserRegistration
+    super.updateUser(userModel, context);
+
+    if (!this.awsAuthenticationEnabled || !this.awsConnectionSucceeded) {
+      return;
+    }
+
+    try (Session userDir = this.dirService.open(this.userDirectoryName, context)) {
+
+      String schema = this.dirService.getDirectorySchema(this.userDirectoryName);
+      String username = (String) userModel.getProperty(schema, userDir.getIdField());
+      String password = (String) userModel.getProperty(schema, userDir.getPasswordField());
+      try {
+        getAWSAuthenticationService().updatePassword(username, password);
+      } catch (MiscellaneousFailureException e) {
+        // We don't handle this -- it will have been logged by the authentication service
+      }
+
+    }
+  }
 }

@@ -1,10 +1,13 @@
 package ca.firstvoices.cognito;
 
 import ca.firstvoices.cognito.exceptions.MiscellaneousFailureException;
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
+import com.amazonaws.services.cognitoidp.model.AdminSetUserPasswordRequest;
+import com.amazonaws.services.cognitoidp.model.AdminSetUserPasswordResult;
 import com.amazonaws.services.cognitoidp.model.AuthFlowType;
 import com.amazonaws.services.cognitoidp.model.DescribeUserPoolRequest;
 import com.amazonaws.services.cognitoidp.model.InitiateAuthRequest;
@@ -107,4 +110,22 @@ public class AWSAuthenticationServiceImpl implements AWSAuthenticationService {
     }
   }
 
+  @Override
+  public void updatePassword(String username, String password)
+      throws MiscellaneousFailureException {
+    AdminSetUserPasswordRequest passwordRequest = new AdminSetUserPasswordRequest()
+        .withUserPoolId(userPool)
+        .withPermanent(true)
+        .withUsername(username)
+        .withPassword(password);
+
+    try {
+      this.identityProvider.adminSetUserPassword(passwordRequest);
+    } catch (AmazonServiceException e) {
+      LOG.error("Caught an unexpected exception while updating password", e);
+      throw new MiscellaneousFailureException(e);
+    }
+
+
+  }
 }

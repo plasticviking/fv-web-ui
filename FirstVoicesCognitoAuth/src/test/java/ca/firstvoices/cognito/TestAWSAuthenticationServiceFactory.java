@@ -84,5 +84,10 @@ public class TestAWSAuthenticationServiceFactory extends DefaultComponent {
         throws MiscellaneousFailureException {
       return this.userExists(username);
     }
+
+    @Override
+    public void updatePassword(String username, String password) throws MiscellaneousFailureException {
+
+    }
   }
 }
