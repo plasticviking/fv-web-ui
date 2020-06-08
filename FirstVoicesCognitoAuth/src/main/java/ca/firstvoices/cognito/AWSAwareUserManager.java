@@ -2,6 +2,11 @@ package ca.firstvoices.cognito;
 
 
 import ca.firstvoices.cognito.exceptions.MiscellaneousFailureException;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.stream.Collectors;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -23,6 +28,8 @@ public class AWSAwareUserManager extends UserManagerImpl {
 
   private boolean awsConnectionSucceeded = false;
   private boolean awsAuthenticationEnabled;
+  private Set<String> blacklistUsers = new HashSet<>();
+
 
   private AWSAuthenticationService getAWSAuthenticationService() {
     if (this.aws != null) {
@@ -44,8 +51,16 @@ public class AWSAwareUserManager extends UserManagerImpl {
     this.awsAuthenticationEnabled = getAWSAwareUserManagerConfigurationService()
         .getConfig().authenticateWithCognito;
 
+    String rawBlackList = getAWSAwareUserManagerConfigurationService()
+        .getConfig()
+        .blacklistUsers;
+    if (rawBlackList != null) {
+      blacklistUsers.addAll(Arrays.asList(rawBlackList.split("\\s*,\\s*")));
+    }
+
     LOG.error("Startup. AWS Authentication is "
         + (this.awsAuthenticationEnabled ? "enabled" : "disabled")
+        + "\nblacklisting users: " + String.join(", ", blacklistUsers)
     );
 
     if (this.awsAuthenticationEnabled) {
@@ -76,13 +91,35 @@ public class AWSAwareUserManager extends UserManagerImpl {
       return super.checkUsernamePassword(username, password);
     }
 
+    if (this.blacklistUsers.contains(username)) {
+      LOG.info("skipping Cognito check for blacklisted user: " + username);
+      return super.checkUsernamePassword(username, password);
+    }
+
     try {
       if (getAWSAuthenticationService().authenticate(username, password)) {
         /* AWS Authentication succeeded, but we only consider this a success if the local user
         actually exists */
         return this.getPrincipal(username) != null;
       } else {
-        // The user entered an incorrect password
+        // The user failed to authenticate
+
+        if (getAWSAuthenticationService().userExists(username)) {
+          // the user exists in AWS, so they must have forgotten the password
+          return false;
+        }
+
+        // the user does not exist yet in Cognito. Do they exist locally with this password?
+        if (super.checkUsernamePassword(username, password)) {
+          // yes, so migrate them
+          getAWSAuthenticationService().migrateUser(
+              username,
+              password,
+              this.getPrincipal(username).getEmail()
+          );
+          return true;
+        }
+
         return false;
       }
     } catch (MiscellaneousFailureException e) {
@@ -111,6 +148,10 @@ public class AWSAwareUserManager extends UserManagerImpl {
       String username = (String) userModel.getProperty(schema, userDir.getIdField());
       String password = (String) userModel.getProperty(schema, userDir.getPasswordField());
       try {
+        if (this.blacklistUsers.contains(username)) {
+          LOG.info("skipping Cognito update for blacklisted user: " + username);
+          return;
+        }
         getAWSAuthenticationService().updatePassword(username, password);
       } catch (MiscellaneousFailureException e) {
         // We don't handle this -- it will have been logged by the authentication service
@@ -118,4 +159,5 @@ public class AWSAwareUserManager extends UserManagerImpl {
 
     }
   }
+
 }
