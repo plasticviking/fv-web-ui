@@ -29,7 +29,6 @@ import ca.firstvoices.services.CleanupCharactersService;
 import ca.firstvoices.services.SanitizeDocumentService;
 import javax.inject.Inject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.core.api.CoreSession;
