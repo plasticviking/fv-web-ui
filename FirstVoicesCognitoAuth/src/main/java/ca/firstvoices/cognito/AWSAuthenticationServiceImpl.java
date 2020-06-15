@@ -9,7 +9,6 @@ import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 import com.amazonaws.services.cognitoidp.model.AdminCreateUserRequest;
 import com.amazonaws.services.cognitoidp.model.AdminSetUserPasswordRequest;
-import com.amazonaws.services.cognitoidp.model.AdminSetUserPasswordResult;
 import com.amazonaws.services.cognitoidp.model.AttributeType;
 import com.amazonaws.services.cognitoidp.model.AuthFlowType;
 import com.amazonaws.services.cognitoidp.model.DescribeUserPoolRequest;
@@ -24,7 +23,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Pattern;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import org.apache.commons.logging.Log;
@@ -161,13 +159,16 @@ public class AWSAuthenticationServiceImpl implements AWSAuthenticationService {
 
 
     if (!validateEmailAddress(email)) {
-      throw new InvalidMigrationException("Username " + username + " has no valid email address"
-          + " (have " + email + ") and will not be migrated");
+      throw new InvalidMigrationException(
+          String.format("Username %s has no valid email address (have %s) "
+              + "and will not be migrated", username, email)
+      );
     }
 
     if (!validateEmailAddress(username)) {
-      throw new InvalidMigrationException("Username " + username + " is not an email and will"
-          + " not be migrated");
+      throw new InvalidMigrationException(
+          String.format("Username %s is not an email and will not be migrated", username)
+      );
     }
 
     if (this.passwordValidator == null) {
@@ -175,8 +176,10 @@ public class AWSAuthenticationServiceImpl implements AWSAuthenticationService {
     }
 
     if (!this.passwordValidator.validatePassword(password)) {
-      throw new InvalidMigrationException("Username " + username + " password does not meet "
-          + "complexity requirements for migration");
+      throw new InvalidMigrationException(
+          String.format("Username %s has password failing complexity requirements."
+              + " Will not migrate.", username)
+      );
     }
 
     AdminCreateUserRequest request = new AdminCreateUserRequest();
