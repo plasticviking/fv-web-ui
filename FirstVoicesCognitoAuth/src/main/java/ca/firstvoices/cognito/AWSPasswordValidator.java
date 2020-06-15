@@ -36,33 +36,27 @@ public class AWSPasswordValidator {
     }
 
     //validate lowercase
-    if (ppt.isRequireLowercase() && password.codePoints()
+    if (ppt.isRequireLowercase().booleanValue() && password.codePoints()
         .mapToObj(ch -> String.valueOf(((char) ch)))
         .noneMatch(LOWERCASE::contains)) {
       return false;
     }
 
     //validate uppercase
-    if (ppt.isRequireUppercase() && password.codePoints()
+    if (ppt.isRequireUppercase().booleanValue() && password.codePoints()
         .mapToObj(ch -> String.valueOf(((char) ch))).noneMatch(UPPERCASE::contains)) {
       return false;
     }
 
     //validate numbers
-    if (ppt.isRequireNumbers() && password.codePoints().mapToObj(ch -> String.valueOf(((char) ch)))
-        .noneMatch(NUMBERS::contains)) {
+    if (ppt.isRequireNumbers().booleanValue() && password.codePoints()
+        .mapToObj(ch -> String.valueOf(((char) ch))).noneMatch(NUMBERS::contains)) {
       return false;
     }
 
     //validate symbols
-    if (ppt.isRequireSymbols()) {
-      if (password.codePoints().mapToObj(ch -> String.valueOf(((char) ch)))
-          .noneMatch(SYMBOLS::contains)) {
-        return false;
-      }
-    }
-
-    return true;
+    return !ppt.isRequireSymbols().booleanValue() || password.codePoints()
+        .mapToObj(ch -> String.valueOf(((char) ch))).anyMatch(SYMBOLS::contains);
   }
 
 }
