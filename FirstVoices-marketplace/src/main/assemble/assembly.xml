@@ -2,68 +2,177 @@
          default="build"
          xmlns:nx="urn:nuxeo-build"
          xmlns:artifact="urn:nuxeo-artifact">
-  <taskdef resource="org/nuxeo/build/antlib.xml" uri="urn:nuxeo-build" />
-  <taskdef resource="org/nuxeo/build/artifact/antlib.xml" uri="urn:nuxeo-artifact" />
-  <taskdef resource="net/sf/antcontrib/antlib.xml" />
+    <taskdef resource="org/nuxeo/build/antlib.xml" uri="urn:nuxeo-build"/>
+    <taskdef resource="org/nuxeo/build/artifact/antlib.xml" uri="urn:nuxeo-artifact"/>
+    <taskdef resource="net/sf/antcontrib/antlib.xml"/>
 
-  <target name="build" description="Build First Voices Package">
-    <property name="outdir" value="${maven.project.build.directory}" />
-    <tstamp />
-    <delete failonerror="false" dir="${outdir}/marketplace" />
-    <mkdir dir="${outdir}/marketplace" />
-    <copy todir="${outdir}/marketplace">
-      <fileset dir="src/main/resources" />
-      <filterset>
-        <filter token="VERSION" value="${maven.project.version}" />
-        <filter token="DISTRIB_VERSION" value="${nuxeo.distribution.version}" />
-      </filterset>
-    </copy>
+    <target name="build" description="Build First Voices Package">
+        <property name="outdir" value="${maven.project.build.directory}"/>
+        <tstamp/>
+        <delete failonerror="false" dir="${outdir}/marketplace"/>
+        <mkdir dir="${outdir}/marketplace"/>
+        <copy todir="${outdir}/marketplace">
+            <fileset dir="src/main/resources"/>
+            <filterset>
+                <filter token="VERSION" value="${maven.project.version}"/>
+                <filter token="DISTRIB_VERSION" value="${nuxeo.distribution.version}"/>
+            </filterset>
+        </copy>
 
-    <copy todir="${outdir}/marketplace/install/bundles">
-      <artifact:set excludeRoots="true">
-        <includes>
-          <artifact groupId="ca.firstvoices*" scope="" type="!pom" />
-        </includes>
-      </artifact:set>
-    </copy>
+        <copy todir="${outdir}/marketplace/install/bundles">
+            <artifact:set excludeRoots="true">
+                <includes>
+                    <artifact groupId="ca.firstvoices*" scope="" type="!pom"/>
+                </includes>
+            </artifact:set>
+        </copy>
 
-    <!-- Third-party libraries -->
-    <!-- See here for more details: https://github.com/nuxeo/ant-assembly-maven-plugin-->
-    <copy todir="${outdir}/marketplace/install/lib" overwrite="true">
+        <!-- Third-party libraries -->
+        <!-- See here for more details: https://github.com/nuxeo/ant-assembly-maven-plugin-->
+        <copy todir="${outdir}/marketplace/install/lib" overwrite="true">
 
-      <artifact:file artifactId="aws-java-sdk-cognitoidp"/>
-      <artifact:dependencies artifactId="aws-java-sdk-cognitoidp">
-        <excludes>
-          <artifact scope="test"/>
-          <artifact scope="provided"/>
-        </excludes>
-      </artifact:dependencies>
+            <artifact:file artifactId="aws-java-sdk-cognitoidp"/>
+            <artifact:dependencies artifactId="aws-java-sdk-cognitoidp">
+                <excludes>
+                    <artifact scope="test"/>
+                    <artifact scope="provided"/>
+                </excludes>
+            </artifact:dependencies>
 
-      <artifact:file artifactId="aws-java-sdk-core"/>
-      <artifact:dependencies artifactId="aws-java-sdk-core">
-        <excludes>
-          <artifact scope="test"/>
-          <artifact scope="provided"/>
-        </excludes>
-      </artifact:dependencies>
+            <artifact:file artifactId="aws-java-sdk-core"/>
+            <artifact:dependencies artifactId="aws-java-sdk-core">
+                <excludes>
+                    <artifact scope="test"/>
+                    <artifact scope="provided"/>
+                </excludes>
+            </artifact:dependencies>
 
-      <!-- Include javers-core and related dependencies as JARs to be deployed -->
-      <artifact:file artifactId="javers-core"/>
-      <artifact:dependencies artifactId="javers-core">
-        <excludes>
-          <artifact scope="test"/>
-          <artifact scope="provided"/>
-        </excludes>
-      </artifact:dependencies>
+<!--            <artifact:file artifactId="jersey-server"/>-->
+<!--            <artifact:file artifactId="jersey-common"/>-->
+<!--            <artifact:file artifactId="jersey-media-jaxb"/>-->
+<!--            <artifact:file artifactId="osgi-resource-locator"/>-->
 
-    </copy>
+<!--            <artifact:file artifactId="hk2-api"/>-->
+<!--            <artifact:file artifactId="hk2-utils"/>-->
+<!--            <artifact:file artifactId="hk2-locator"/>-->
+<!--            <artifact:file artifactId="jersey-guava"/>-->
 
-    <zip destfile="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip"
-         basedir="${outdir}/marketplace" />
-    <artifact:attach file="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip" type="zip" />
 
-    <copy file="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip" tofile="${outdir}/${maven.project.artifactId}-latest.zip"/>
+            <!--            <artifact:file artifactId="swagger-core"/>-->
+            <!--            <artifact:dependencies artifactId="swagger-core">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
 
-  </target>
+            <!--            <artifact:file artifactId="jersey-media-json-jackson"/>-->
+            <!--            <artifact:dependencies artifactId="jersey-media-json-jackson">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+<!--            <artifact:file artifactId="jersey-container-servlet"/>-->
+<!--            <artifact:dependencies artifactId="jersey-container-servlet"/>-->
+<!--                        <artifact:file artifactId="jersey-hk2"/>-->
+<!--                        <artifact:dependencies artifactId="jersey-hk2">-->
+<!--                            <excludes>-->
+<!--                                <artifact scope="test"/>-->
+<!--                                <artifact scope="provided"/>-->
+<!--                            </excludes>-->
+<!--                        </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="groovy-all"/>-->
+            <!--            <artifact:dependencies artifactId="groovy-all">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="jwks-rsa"/>-->
+            <!--            <artifact:dependencies artifactId="jwks-rsa">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+            <!--                  <artifact:file artifactId="java-jwt"/>
+          <artifact:dependencies artifactId="java-jwt">
+            <excludes>
+              <artifact scope="test"/>
+              <artifact scope="provided"/>
+            </excludes>
+          </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="jjwt-impl"/>-->
+            <!--            <artifact:dependencies artifactId="jjwt-impl">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="jjwt-jackson"/>-->
+            <!--            <artifact:dependencies artifactId="jjwt-jackson">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="jjwt-api"/>-->
+            <!--            <artifact:dependencies artifactId="jjwt-api">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="lettuce-core"/>-->
+            <!--            <artifact:dependencies artifactId="lettuce-core">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+<!--                        <artifact:file artifactId="javax.ws.rs-api"/>-->
+<!--                        <artifact:dependencies artifactId="javax.ws.rs-api">-->
+<!--                            <excludes>-->
+<!--                                <artifact scope="test"/>-->
+<!--                                <artifact scope="provided"/>-->
+<!--                            </excludes>-->
+<!--                        </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="activation"/>-->
+            <!--            <artifact:dependencies artifactId="activation">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+
+            <!--            <artifact:file artifactId="swagger-jaxrs2-servlet-initializer"/>-->
+            <!--            <artifact:dependencies artifactId="swagger-jaxrs2-servlet-initializer">-->
+            <!--                <excludes>-->
+            <!--                    <artifact scope="test"/>-->
+            <!--                    <artifact scope="provided"/>-->
+            <!--                </excludes>-->
+            <!--            </artifact:dependencies>-->
+
+
+            <!-- Include javers-core and related dependencies as JARs to be deployed -->
+            <artifact:file artifactId="javers-core"/>
+            <artifact:dependencies artifactId="javers-core">
+                <excludes>
+                    <artifact scope="test"/>
+                    <artifact scope="provided"/>
+                </excludes>
+            </artifact:dependencies>
+
+        </copy>
+
+        <zip destfile="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip"
+             basedir="${outdir}/marketplace"/>
+        <artifact:attach file="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip" type="zip"/>
+
+        <copy file="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip"
+              tofile="${outdir}/${maven.project.artifactId}-latest.zip"/>
+
+    </target>
 
 </project>

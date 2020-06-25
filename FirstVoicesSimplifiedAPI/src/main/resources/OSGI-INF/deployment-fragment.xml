@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<fragment version="1">
+
+    <!-- API Servlet mapping -->
+    <extension target="web#SERVLET">
+        <servlet>
+            <servlet-name>simpleapi-servlet</servlet-name>
+            <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
+            <init-param>
+                <param-name>javax.ws.rs.Application</param-name>
+                <param-value>firstvoices.api.JerseyApplication</param-value>
+            </init-param>
+        </servlet>
+        <servlet-mapping>
+            <servlet-name>simpleapi-servlet</servlet-name>
+            <url-pattern>/simple/*</url-pattern>
+        </servlet-mapping>
+    </extension>
+
+</fragment>
