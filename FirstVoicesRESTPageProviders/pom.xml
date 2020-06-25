@@ -22,6 +22,13 @@
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core</artifactId>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.nuxeo.ecm.platform/nuxeo-rest-api-server -->
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-rest-api-server</artifactId>
+      <version>10.10</version>
+    </dependency>
+
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-api</artifactId>

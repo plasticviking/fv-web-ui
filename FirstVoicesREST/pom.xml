@@ -107,12 +107,6 @@
       <artifactId>nuxeo-webengine-invite</artifactId>
     </dependency>
     <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.0.1</version>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-usermanager-core</artifactId>
     </dependency>
@@ -150,6 +144,21 @@
      <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-user-registration-web</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ca.firstvoices</groupId>
+      <artifactId>FirstVoicesRESTPageProviders</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ca.firstvoices</groupId>
+      <artifactId>FirstVoicesData</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ca.firstvoices</groupId>
+      <artifactId>FirstVoicesSecurity</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
