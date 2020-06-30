@@ -14,7 +14,6 @@
             <sort column="dc:title" ascending="true"/>
             <pageSize>50</pageSize>
         </coreQueryPageProvider>
-
         <coreQueryPageProvider name="CATEGORIES_LIST_PUBLIC_ONLY_PP">
             <pattern>
                 SELECT * FROM FVCategory where ecm:isTrashed = 0 and ecm:isVersion = 0 and
@@ -23,7 +22,6 @@
             <sort column="dc:title" ascending="true"/>
             <pageSize>50</pageSize>
         </coreQueryPageProvider>
-
         <coreQueryPageProvider name="CATEGORY_CHILDREN_PP">
             <pattern>
                 SELECT * FROM Document where ecm:isTrashed = 0 and ecm:isVersion = 0 and

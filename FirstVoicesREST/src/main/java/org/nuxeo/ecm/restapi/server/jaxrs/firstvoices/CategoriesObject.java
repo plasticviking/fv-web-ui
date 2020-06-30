@@ -37,7 +37,6 @@ public class CategoriesObject extends DefaultObject {
         CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY,
         (Serializable) getContext().getCoreSession()
     );
-
     PageProvider<DocumentModel> pageProvider = (PageProvider<DocumentModel>) pageProviderService
         .getPageProvider(ppName, null, null, null, props, params);
 
