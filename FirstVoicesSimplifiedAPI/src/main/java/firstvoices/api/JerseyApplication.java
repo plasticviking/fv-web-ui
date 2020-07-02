@@ -1,7 +1,6 @@
 package firstvoices.api;
 
 import firstvoices.api.endpoints.UserEndpoint;
-import firstvoices.api.exceptions.ExceptionMappers;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -13,12 +12,14 @@ import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import javax.ws.rs.ApplicationPath;
+import javax.ws.rs.core.Application;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.glassfish.jersey.jackson.JacksonFeature;
-import org.glassfish.jersey.server.ResourceConfig;
-import org.glassfish.jersey.server.ServerProperties;
 
 @ApplicationPath("/")
 @OpenAPIDefinition(
@@ -54,11 +55,25 @@ import org.glassfish.jersey.server.ServerProperties;
         )
     )
 )
-public class JerseyApplication extends ResourceConfig {
+public class JerseyApplication extends Application {
 
   //  private static final Log log = LogFactory.getLog(JerseyApplication.class);
   private static Log LOG = LogFactory.getLog(JerseyApplication.class);
 
+  @Override
+  public Set<Object> getSingletons() {
+    Set<Object> singletons = new HashSet<>();
+    UserEndpoint userEndpoint = new UserEndpoint();
+    singletons.add(userEndpoint);
+    return singletons;
+  }
+
+
+//  @Override
+//  public Map<String, Object> getProperties() {
+//    Map<String, Object> props = new HashMap<>();
+//    return props;
+//  }
 
   // run the application in a servlet container for local testing
 
@@ -66,29 +81,29 @@ public class JerseyApplication extends ResourceConfig {
 
   public JerseyApplication() {
 
-    LOG.error("jersey application in startup");
-
-//    log.error("startup started");
-
-//    Injector injector = Guice.createInjector(new FirstVoicesModule());
-
-    register(CORSFilter.class);
-    register(JacksonFeature.class);
-    register(ExceptionMappers.class);
-    register(ObjectMapperConfiguration.class);
-//    registerInstances(injector.getInstance(JWTFilter.class)); // or LocalAuthFilter to skip auth
-//    registerInstances(injector.getInstance(LocalAuthFilter.class));
-
-    property(ServerProperties.TRACING, "ALL");
-    property(ServerProperties.TRACING_THRESHOLD, "VERBOSE");
-//    property(ServerProperties.WADL_FEATURE_DISABLE, true);
-
-//    registerInstances(injector.getInstance(ArchiveEndpoint.class));
-//    registerInstances(injector.getInstance(SharedEndpoint.class));
-//    registerInstances(injector.getInstance(UserEndpoint.class));
-//    registerInstances(injector.getInstance(VocabularyEndpoint.class));
-
-    register(UserEndpoint.class);
+//    LOG.error("jersey application in startup");
+//
+////    log.error("startup started");
+//
+////    Injector injector = Guice.createInjector(new FirstVoicesModule());
+//
+//    register(CORSFilter.class);
+//    register(JacksonFeature.class);
+//    register(ExceptionMappers.class);
+//    register(ObjectMapperConfiguration.class);
+////    registerInstances(injector.getInstance(JWTFilter.class)); // or LocalAuthFilter to skip auth
+////    registerInstances(injector.getInstance(LocalAuthFilter.class));
+//
+//    property(ServerProperties.TRACING, "ALL");
+//    property(ServerProperties.TRACING_THRESHOLD, "VERBOSE");
+////    property(ServerProperties.WADL_FEATURE_DISABLE, true);
+//
+////    registerInstances(injector.getInstance(ArchiveEndpoint.class));
+////    registerInstances(injector.getInstance(SharedEndpoint.class));
+////    registerInstances(injector.getInstance(UserEndpoint.class));
+////    registerInstances(injector.getInstance(VocabularyEndpoint.class));
+//
+//    register(UserEndpoint.class);
 
 //    log.error("startup done");
     System.out.println("JA Startup Complete");

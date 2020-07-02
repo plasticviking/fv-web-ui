@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import firstvoices.api.model.QueryBean;
 import firstvoices.api.representations.*;
 import firstvoices.api.representations.containers.Metadata;
-import firstvoices.aws.JWTAuth;
 import firstvoices.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -83,7 +82,6 @@ public class SharedEndpoint {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/links")
-  @JWTAuth(requiredScopes = {"communities:public"})
   @Operation(
       description = "Get list of all shared links",
       operationId = "LIST SHARED LINKS",
@@ -109,7 +107,6 @@ public class SharedEndpoint {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/media")
-  @JWTAuth(requiredScopes = {"communities:public"})
   @Operation(
       description = "Get list of all shared media",
       operationId = "LIST SHARED MEDIA",
@@ -135,7 +132,6 @@ public class SharedEndpoint {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/media/{mediaID}")
-  @JWTAuth(requiredScopes = {"communities:public"})
   @Operation(
       description = "Get shared media details",
       operationId = "GET SHARED MEDIA",

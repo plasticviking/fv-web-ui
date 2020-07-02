@@ -1,20 +1,16 @@
 package firstvoices.api.endpoints;
 
-import firstvoices.api.model.QueryBean;
 import firstvoices.api.representations.User;
-import firstvoices.aws.JWTAuth;
-import firstvoices.aws.UserContextStore;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import javax.inject.Inject;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.apache.commons.logging.Log;
@@ -30,12 +26,12 @@ public class UserEndpoint {
 
   private static Log LOG = LogFactory.getLog(UserEndpoint.class);
 
-  private UserContextStore userContextStore;
-
-  @Inject
-  public UserEndpoint(UserContextStore userContextStore) {
-    this.userContextStore = userContextStore;
-  }
+//  private UserContextStore userContextStore;
+//
+//  @Inject
+//  public UserEndpoint(UserContextStore userContextStore) {
+//    this.userContextStore = userContextStore;
+//  }
 
   @GET
   @Path("/current")
@@ -58,11 +54,16 @@ public class UserEndpoint {
       ,
       tags = {"Access", "User"}
   )
-  @JWTAuth(requiredScopes = {"fvapi/communities:public"})
-  public Response getCurrentUser(@BeanParam QueryBean query) {
+//  public Response getCurrentUser(@BeanParam QueryBean query) {
+  public Response getCurrentUser(@QueryParam(value = "username") String username) {
     LOG.error("user endpoint response");
 
-    return Response.ok("we amde it").build();
+    User rep = new User();
+    rep.setDisplayName("Test User");
+    rep.setId("foo");
+    rep.setUsername(username);
+
+    return Response.ok(rep).build();
 //
 //    User u = this.userContextStore.getCurrentUser();
 //    return Response.ok(u).build();

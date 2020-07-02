@@ -47,15 +47,23 @@
                 </excludes>
             </artifact:dependencies>
 
-<!--            <artifact:file artifactId="jersey-server"/>-->
-<!--            <artifact:file artifactId="jersey-common"/>-->
-<!--            <artifact:file artifactId="jersey-media-jaxb"/>-->
-<!--            <artifact:file artifactId="osgi-resource-locator"/>-->
+            <artifact:file artifactId="jersey-json"/>
+            <artifact:dependencies artifactId="jersey-json">
+                <excludes>
+                    <artifact scope="test"/>
+                    <artifact scope="provided"/>
+                </excludes>
+            </artifact:dependencies>
 
-<!--            <artifact:file artifactId="hk2-api"/>-->
-<!--            <artifact:file artifactId="hk2-utils"/>-->
-<!--            <artifact:file artifactId="hk2-locator"/>-->
-<!--            <artifact:file artifactId="jersey-guava"/>-->
+            <!--            <artifact:file artifactId="jersey-server"/>-->
+            <!--            <artifact:file artifactId="jersey-common"/>-->
+            <!--            <artifact:file artifactId="jersey-media-jaxb"/>-->
+            <!--            <artifact:file artifactId="osgi-resource-locator"/>-->
+
+            <!--            <artifact:file artifactId="hk2-api"/>-->
+            <!--            <artifact:file artifactId="hk2-utils"/>-->
+            <!--            <artifact:file artifactId="hk2-locator"/>-->
+            <!--            <artifact:file artifactId="jersey-guava"/>-->
 
 
             <!--            <artifact:file artifactId="swagger-core"/>-->
@@ -73,15 +81,15 @@
             <!--                    <artifact scope="provided"/>-->
             <!--                </excludes>-->
             <!--            </artifact:dependencies>-->
-<!--            <artifact:file artifactId="jersey-container-servlet"/>-->
-<!--            <artifact:dependencies artifactId="jersey-container-servlet"/>-->
-<!--                        <artifact:file artifactId="jersey-hk2"/>-->
-<!--                        <artifact:dependencies artifactId="jersey-hk2">-->
-<!--                            <excludes>-->
-<!--                                <artifact scope="test"/>-->
-<!--                                <artifact scope="provided"/>-->
-<!--                            </excludes>-->
-<!--                        </artifact:dependencies>-->
+            <!--            <artifact:file artifactId="jersey-container-servlet"/>-->
+            <!--            <artifact:dependencies artifactId="jersey-container-servlet"/>-->
+            <!--                        <artifact:file artifactId="jersey-hk2"/>-->
+            <!--                        <artifact:dependencies artifactId="jersey-hk2">-->
+            <!--                            <excludes>-->
+            <!--                                <artifact scope="test"/>-->
+            <!--                                <artifact scope="provided"/>-->
+            <!--                            </excludes>-->
+            <!--                        </artifact:dependencies>-->
             <!--            <artifact:file artifactId="groovy-all"/>-->
             <!--            <artifact:dependencies artifactId="groovy-all">-->
             <!--                <excludes>-->
@@ -131,13 +139,13 @@
             <!--                    <artifact scope="provided"/>-->
             <!--                </excludes>-->
             <!--            </artifact:dependencies>-->
-<!--                        <artifact:file artifactId="javax.ws.rs-api"/>-->
-<!--                        <artifact:dependencies artifactId="javax.ws.rs-api">-->
-<!--                            <excludes>-->
-<!--                                <artifact scope="test"/>-->
-<!--                                <artifact scope="provided"/>-->
-<!--                            </excludes>-->
-<!--                        </artifact:dependencies>-->
+            <!--                        <artifact:file artifactId="javax.ws.rs-api"/>-->
+            <!--                        <artifact:dependencies artifactId="javax.ws.rs-api">-->
+            <!--                            <excludes>-->
+            <!--                                <artifact scope="test"/>-->
+            <!--                                <artifact scope="provided"/>-->
+            <!--                            </excludes>-->
+            <!--                        </artifact:dependencies>-->
             <!--            <artifact:file artifactId="activation"/>-->
             <!--            <artifact:dependencies artifactId="activation">-->
             <!--                <excludes>-->

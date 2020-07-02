@@ -10,9 +10,7 @@ import firstvoices.api.representations.Phrase;
 import firstvoices.api.representations.Song;
 import firstvoices.api.representations.Story;
 import firstvoices.api.representations.Word;
-import firstvoices.aws.JWTAuth;
 import firstvoices.services.FirstVoicesService;
-import firstvoices.services.NuxeoFirstVoicesServiceImplementation;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -142,7 +140,6 @@ public class ArchiveEndpoint {
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   @Path("/{archiveID}/phrases")
-  @JWTAuth(requiredScopes = {"communities:public"})
   @Operation(
       description = "Get list of all phrases in an archive",
       operationId = "LIST PHRASES",

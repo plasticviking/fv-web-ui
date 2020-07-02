@@ -4,7 +4,6 @@ import com.google.inject.Inject;
 import firstvoices.api.model.QueryBean;
 import firstvoices.api.representations.*;
 import firstvoices.api.representations.containers.Metadata;
-import firstvoices.aws.JWTAuth;
 import firstvoices.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
