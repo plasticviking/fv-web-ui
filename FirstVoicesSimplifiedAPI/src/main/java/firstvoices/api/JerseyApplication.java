@@ -1,6 +1,8 @@
 package firstvoices.api;
 
+import firstvoices.api.endpoints.ArchiveEndpoint;
 import firstvoices.api.endpoints.UserEndpoint;
+import firstvoices.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -20,6 +22,7 @@ import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.nuxeo.runtime.api.Framework;
 
 @ApplicationPath("/")
 @OpenAPIDefinition(
@@ -65,6 +68,9 @@ public class JerseyApplication extends Application {
     Set<Object> singletons = new HashSet<>();
     UserEndpoint userEndpoint = new UserEndpoint();
     singletons.add(userEndpoint);
+    FirstVoicesService firstVoicesService = Framework.getService(FirstVoicesService.class);
+    ArchiveEndpoint archiveEndpoint = new ArchiveEndpoint(firstVoicesService);
+    singletons.add(archiveEndpoint);
     return singletons;
   }
 

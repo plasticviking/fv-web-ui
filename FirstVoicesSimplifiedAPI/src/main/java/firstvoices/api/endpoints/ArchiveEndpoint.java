@@ -12,11 +12,14 @@ import firstvoices.api.representations.Story;
 import firstvoices.api.representations.Word;
 import firstvoices.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -101,8 +104,26 @@ public class ArchiveEndpoint {
       },
       tags = {"Archive"}
   )
-  public Response getArchives(@BeanParam QueryBean query) {
-    return Response.ok(service.getArchives(query)).build();
+  public Response getArchives(
+      @Parameter(
+          description = "The maximum number of results to return",
+          schema = @Schema(
+              allowableValues = {"10", "25", "50", "100"}
+          )
+      )
+      @DefaultValue("25")
+      @QueryParam("pageSize")
+          long pageSize,
+
+      @Parameter(
+          description = "An optional parameter with the zero-based index of the page to retrieve",
+          example = "0"
+      )
+      @QueryParam("index")
+      @DefaultValue("0")
+          long index
+  ) {
+    return Response.ok(service.getArchives(new QueryBean(pageSize, index))).build();
   }
 
   @GET

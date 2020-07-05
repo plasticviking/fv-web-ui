@@ -13,6 +13,9 @@ import firstvoices.api.representations.Word;
 import firstvoices.api.representations.containers.Metadata;
 import firstvoices.api.representations.containers.SearchResult;
 import java.util.List;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.QueryParam;
+
 
 public interface FirstVoicesService {
 
@@ -38,7 +41,7 @@ public interface FirstVoicesService {
 
   Metadata<Asset> getSharedMediaDetail(String id);
 
-  Metadata<List<SearchResult>> doSearch(String q, QueryBean queryParameters);
+  Metadata<List<SearchResult<?>>> doSearch(String q, QueryBean queryParameters);
 
   Metadata<Story> getStoryDetail(String id);
 

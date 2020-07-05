@@ -71,7 +71,7 @@ public abstract class AbstractFirstVoicesService implements FirstVoicesService {
   }
 
   @Override
-  public Metadata<List<SearchResult>> doSearch(String q, QueryBean queryParameters) {
+  public Metadata<List<SearchResult<?>>> doSearch(String q, QueryBean queryParameters) {
     throw new UnsupportedOperationException();
   }
 

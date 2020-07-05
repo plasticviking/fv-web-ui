@@ -6,6 +6,14 @@ import javax.ws.rs.DefaultValue;
 import javax.ws.rs.QueryParam;
 
 public class QueryBean {
+  public QueryBean() {
+  }
+
+  public QueryBean(long pageSize, long index) {
+    this.pageSize = pageSize;
+    this.index = index;
+  }
+
   @Parameter(
       description = "The maximum number of results to return",
       schema = @Schema(

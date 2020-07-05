@@ -21,4 +21,21 @@
         </servlet-mapping>
     </extension>
 
+
+    <require>org.nuxeo.ecm.platform.web.common</require>
+    <install>
+
+        <unzip from="${bundle.fileName}" to="/nuxeo.war" prefix="web">
+            <include>web/redoc-static.html</include>
+        </unzip>
+    </install>
+
+
+<!--    <extension target="pages#PAGES">-->
+
+<!--        <page view-id="/nxstartup.xhtml"-->
+<!--              action="#{startupHelper.initDomainAndFindStartupPage('Domain', 'view')}"/>-->
+
+<!--    </extension>-->
+
 </fragment>

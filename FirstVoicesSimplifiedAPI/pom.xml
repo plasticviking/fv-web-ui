@@ -23,19 +23,19 @@
         <!-- copied -->
 
         <!-- https://mvnrepository.com/artifact/org.codehaus.groovy/groovy-all -->
-<!--        <dependency>-->
-<!--            <groupId>org.codehaus.groovy</groupId>-->
-<!--            <artifactId>groovy-all</artifactId>-->
-<!--            <version>2.5.12</version>-->
-<!--            <type>pom</type>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.codehaus.groovy</groupId>-->
+        <!--            <artifactId>groovy-all</artifactId>-->
+        <!--            <version>2.5.12</version>-->
+        <!--            <type>pom</type>-->
+        <!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-jaxrs2-servlet-initializer -->
-<!--        <dependency>-->
-<!--            <groupId>io.swagger.core.v3</groupId>-->
-<!--            <artifactId>swagger-jaxrs2-servlet-initializer</artifactId>-->
-<!--            <version>2.1.2</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>io.swagger.core.v3</groupId>-->
+        <!--            <artifactId>swagger-jaxrs2-servlet-initializer</artifactId>-->
+        <!--            <version>2.1.2</version>-->
+        <!--        </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-annotations -->
         <dependency>
@@ -56,40 +56,40 @@
             <version>2.1.2</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server -->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.core</groupId>-->
-<!--            <artifactId>jersey-server</artifactId>-->
-<!--            <version>2.25.1</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.media</groupId>-->
-<!--            <artifactId>jersey-media-json-jackson</artifactId>-->
-<!--            <version>2.25.1</version>-->
-<!--        </dependency>-->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.containers</groupId>-->
-<!--            <artifactId>jersey-container-servlet</artifactId>-->
-<!--            <version>2.25.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.glassfish.jersey.core</groupId>-->
+        <!--            <artifactId>jersey-server</artifactId>-->
+        <!--            <version>2.25.1</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.glassfish.jersey.media</groupId>-->
+        <!--            <artifactId>jersey-media-json-jackson</artifactId>-->
+        <!--            <version>2.25.1</version>-->
+        <!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.glassfish.jersey.containers</groupId>-->
+        <!--            <artifactId>jersey-container-servlet</artifactId>-->
+        <!--            <version>2.25.1</version>-->
+        <!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.inject/jersey-hk2 -->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.inject</groupId>-->
-<!--            <artifactId>jersey-hk2</artifactId>-->
-<!--            <version>2.25.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.glassfish.jersey.inject</groupId>-->
+        <!--            <artifactId>jersey-hk2</artifactId>-->
+        <!--            <version>2.25.1</version>-->
+        <!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.glassfish.hk2/hk2-locator -->
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.hk2</groupId>-->
-<!--            <artifactId>hk2-locator</artifactId>-->
-<!--            <version>2.6.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.glassfish.hk2</groupId>-->
+        <!--            <artifactId>hk2-locator</artifactId>-->
+        <!--            <version>2.6.1</version>-->
+        <!--        </dependency>-->
 
-<!--        <dependency>-->
-<!--            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>-->
-<!--            <artifactId>jersey-guava</artifactId>-->
-<!--            <version>2.25.1</version>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>-->
+        <!--            <artifactId>jersey-guava</artifactId>-->
+        <!--            <version>2.25.1</version>-->
+        <!--            <scope>runtime</scope>-->
+        <!--        </dependency>-->
 
 
         <dependency>
@@ -162,11 +162,11 @@
             <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/javax.activation/activation -->
-<!--        <dependency>-->
-<!--            <groupId>javax.activation</groupId>-->
-<!--            <artifactId>activation</artifactId>-->
-<!--            <version>1.1.1</version>-->
-<!--        </dependency>-->
+        <!--        <dependency>-->
+        <!--            <groupId>javax.activation</groupId>-->
+        <!--            <artifactId>activation</artifactId>-->
+        <!--            <version>1.1.1</version>-->
+        <!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/javax.xml.bind/jaxb-api -->
         <!--        <dependency>-->
         <!--            <groupId>javax.xml.bind</groupId>-->
@@ -372,73 +372,81 @@
                 <version>3.8.1</version>
             </plugin>
             <plugin>
-                <groupId>com.github.kongchen</groupId>
+                <groupId>io.swagger.core.v3</groupId>
                 <artifactId>swagger-maven-plugin</artifactId>
-                <version>3.1.5</version>
+                <version>2.1.1</version>
                 <configuration>
-                    <apiSources>
-                        <apiSource>
-                            <info>
-                                <title>Swagger Maven Plugin Sample</title>
-                                <version>v1</version>
-                                <!-- use markdown here because I'm using markdown for output,
-                                if you need to use html or other markup language, you need to use your target language,
-                                 and note escape your description for xml -->
-                                <description>
-                                    This is a sample.
-                                </description>
-                                <termsOfService>
-                                    http://www.github.com/kongchen/swagger-maven-plugin
-                                </termsOfService>
-                                <contact>
-                                    <email>kongchen@gmail.com</email>
-                                    <name>Kong Chen</name>
-                                    <url>http://kongch.com</url>
-                                </contact>
-                                <license>
-                                    <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
-                                    <name>Apache 2.0</name>
-                                </license>
-                            </info>
-                                                        <locations>
-                                                            <location>firstvoices.api.endpoints.ArchiveEndpoint;>firstvoices.api.endpoints.UserEndpoint;firstvoices.api.endpoints.SharedEndpoint</location>
-                            <!--                                <location>firstvoices.api.endpoints.ArchiveEndpoint</location>-->
-                            <!--                                <location>firstvoices.api.endpoints.AuthorizationEndpoint</location>-->
-                            <!--                                <location>firstvoices.api.endpoints.SearchEndpoint</location>-->
-                            <!--                                <location>firstvoices.api.endpoints.ArchiveEndpoint</location>-->
-                            <!--                                <location>firstvoices.api.endpoints.SharedEndpoint</location>-->
-                            <!--                                <location>firstvoices.api.endpoints.UserEndpoint</location>-->
-                                                        </locations>
-                            <swaggerDirectory>${project.build.directory}/swagger-ui</swaggerDirectory>
-                            <outputFormats>json</outputFormats>
-                            <outputPath>${project.build.directory}/generated/document.html</outputPath>
-<!--                            <enabledObjectMapperFeatures>-->
-<!--                                <feature>com.fasterxml.jackson.databind.SerializationFeature.WRITE_ENUMS_USING_TO_STRING</feature>-->
-<!--                                <feature>com.fasterxml.jackson.core.JsonParser$Feature.ALLOW_NUMERIC_LEADING_ZEROS</feature>-->
-<!--                            </enabledObjectMapperFeatures>-->
-<!--                            <disabledObjectMapperFeatures>-->
-<!--                                <feature>com.fasterxml.jackson.databind.SerializationFeature.FAIL_ON_EMPTY_BEANS</feature>-->
-<!--                            </disabledObjectMapperFeatures>-->
-                            <schemes>
-                                <scheme>http</scheme>
-                                <scheme>https</scheme>
-                            </schemes>
-                            <host>www.example.com:8080</host>
-                            <basePath>/api</basePath>
-                        </apiSource>
-
-                    </apiSources>
-
+                    <outputFileName>openapi</outputFileName>
+                    <outputPath>${project.build.directory}/openapi</outputPath>
+                    <outputFormat>JSON</outputFormat>
+                    <resourcePackages>
+                        <package>firstvoices.api</package>
+                    </resourcePackages>
+                    <prettyPrint>TRUE</prettyPrint>
                 </configuration>
                 <executions>
                     <execution>
                         <phase>compile</phase>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>resolve</goal>
                         </goals>
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>com.github.eirslett</groupId>
+                <artifactId>frontend-maven-plugin</artifactId>
+                <version>1.10.0</version>
+                <extensions>true</extensions>
+                <executions>
+                    <execution>
+                        <id>install node and npm</id>
+                        <goals>
+                            <goal>install-node-and-npm</goal>
+                        </goals>
+                        <configuration>
+                            <nodeVersion>v12.18.2</nodeVersion>
+                            <npmVersion>6.14.5</npmVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>build redoc</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>run compile</arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>prepare-package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${basedir}/target/classes/web</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${basedir}</directory>
+                                    <includes>
+                                        <include>redoc-static.html</include>
+                                        <include>${basedir}/target/openapi/openapi.json</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 </project>
