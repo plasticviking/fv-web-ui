@@ -56,8 +56,6 @@ public class UserEndpoint {
   )
 //  public Response getCurrentUser(@BeanParam QueryBean query) {
   public Response getCurrentUser(@QueryParam(value = "username") String username) {
-    LOG.error("user endpoint response");
-
     User rep = new User();
     rep.setDisplayName("Test User");
     rep.setId("foo");

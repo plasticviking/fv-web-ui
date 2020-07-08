@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component name="ca.firstvoices.pageproviders.simplifiedapi">
+
+    <require>org.nuxeo.runtime.started</require>
+
+    <extension target="org.nuxeo.ecm.platform.query.api.PageProviderService"
+               point="providers">
+
+        <coreQueryPageProvider name="LIST_ARCHIVES_PP">
+            <pattern>
+                SELECT * FROM FVDialect, FVLanguage, FVLanguageFamily where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:path STARTSWITH '/FV/sections/Data'
+            </pattern>
+            <sort column="dc:title" ascending="true"/>
+            <pageSize>50</pageSize>
+        </coreQueryPageProvider>
+
+    </extension>
+</component>

@@ -60,8 +60,7 @@ import org.nuxeo.runtime.api.Framework;
 )
 public class JerseyApplication extends Application {
 
-  //  private static final Log log = LogFactory.getLog(JerseyApplication.class);
-  private static Log LOG = LogFactory.getLog(JerseyApplication.class);
+  private static final Log LOG = LogFactory.getLog(JerseyApplication.class);
 
   @Override
   public Set<Object> getSingletons() {
@@ -74,45 +73,9 @@ public class JerseyApplication extends Application {
     return singletons;
   }
 
-
-//  @Override
-//  public Map<String, Object> getProperties() {
-//    Map<String, Object> props = new HashMap<>();
-//    return props;
-//  }
-
-  // run the application in a servlet container for local testing
-
-//  private static final Logger log = LoggerFactory.getLogger(JerseyApplication.class);
-
   public JerseyApplication() {
-
-//    LOG.error("jersey application in startup");
-//
-////    log.error("startup started");
-//
-////    Injector injector = Guice.createInjector(new FirstVoicesModule());
-//
-//    register(CORSFilter.class);
-//    register(JacksonFeature.class);
-//    register(ExceptionMappers.class);
-//    register(ObjectMapperConfiguration.class);
-////    registerInstances(injector.getInstance(JWTFilter.class)); // or LocalAuthFilter to skip auth
-////    registerInstances(injector.getInstance(LocalAuthFilter.class));
-//
-//    property(ServerProperties.TRACING, "ALL");
-//    property(ServerProperties.TRACING_THRESHOLD, "VERBOSE");
-////    property(ServerProperties.WADL_FEATURE_DISABLE, true);
-//
-////    registerInstances(injector.getInstance(ArchiveEndpoint.class));
-////    registerInstances(injector.getInstance(SharedEndpoint.class));
-////    registerInstances(injector.getInstance(UserEndpoint.class));
-////    registerInstances(injector.getInstance(VocabularyEndpoint.class));
-//
-//    register(UserEndpoint.class);
-
-//    log.error("startup done");
-    System.out.println("JA Startup Complete");
+    System.out.println("jersey application deployment complete");
+    LOG.info("JA Startup Complete");
   }
 
 }

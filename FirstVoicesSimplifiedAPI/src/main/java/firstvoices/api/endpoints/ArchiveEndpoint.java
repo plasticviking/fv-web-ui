@@ -1,7 +1,6 @@
 package firstvoices.api.endpoints;
 
 import com.google.inject.Inject;
-import firstvoices.api.representations.containers.Metadata;
 import firstvoices.api.model.QueryBean;
 import firstvoices.api.representations.ArchiveDetailPrivate;
 import firstvoices.api.representations.ArchiveDetailPublic;
@@ -10,6 +9,7 @@ import firstvoices.api.representations.Phrase;
 import firstvoices.api.representations.Song;
 import firstvoices.api.representations.Story;
 import firstvoices.api.representations.Word;
+import firstvoices.api.representations.containers.Metadata;
 import firstvoices.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -18,19 +18,18 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import javax.ws.rs.DefaultValue;
-import javax.ws.rs.QueryParam;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.util.List;
 import javax.ws.rs.BeanParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @Path("/v1/archives")

@@ -6,7 +6,7 @@
   <appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
     <errorHandler class="org.apache.log4j.helpers.OnlyOnceErrorHandler" />
     <param name="Target" value="System.out" />
-    <param name="Threshold" value="WARN" />
+    <param name="Threshold" value="INFO" />
 
     <layout class="org.apache.log4j.PatternLayout">
       <param name="ConversionPattern" value="%t %d{HH:mm:ss,SSS} %-5p [%C{1}] %m%n" />
@@ -24,7 +24,7 @@
 
 
   <root>
-    <priority value="TRACE" />
+    <priority value="INFO" />
     <appender-ref ref="CONSOLE" />
     <appender-ref ref="FILE" />
   </root>
