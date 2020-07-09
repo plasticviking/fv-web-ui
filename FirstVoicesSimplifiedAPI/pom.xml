@@ -370,6 +370,11 @@
         </dependency>
         <dependency>
             <groupId>ca.firstvoices</groupId>
+            <artifactId>FirstVoicesTestUtilities</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>ca.firstvoices</groupId>
             <artifactId>FirstVoicesOperations</artifactId>
             <scope>test</scope>
         </dependency>
@@ -474,12 +479,23 @@
                 <executions>
                     <execution>
                         <id>install node and npm</id>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>install-node-and-npm</goal>
                         </goals>
                         <configuration>
                             <nodeVersion>v12.18.2</nodeVersion>
                             <npmVersion>6.14.5</npmVersion>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>npm install</id>
+                        <goals>
+                            <goal>npm</goal>
+                        </goals>
+                        <phase>generate-resources</phase>
+                        <configuration>
+                            <arguments>install</arguments>
                         </configuration>
                     </execution>
                     <execution>

@@ -1,0 +1,3 @@
+<component name="ca.firstvoices.testutilities">
+    <implementation class="ca.firstvoices.testutils.TestDataCreator"/>
+</component>

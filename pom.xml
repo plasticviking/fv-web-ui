@@ -39,6 +39,7 @@
     <module>migration-contributions</module>
     <module>FirstVoicesData</module>
     <module>FirstVoicesOperations</module>
+    <module>FirstVoicesTestUtilities</module>
   </modules>
 
   <dependencyManagement>
@@ -81,6 +82,11 @@
       <dependency>
         <groupId>ca.firstvoices</groupId>
         <artifactId>FVUserRegistration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ca.firstvoices</groupId>
+        <artifactId>FirstVoicesTestUtilities</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
