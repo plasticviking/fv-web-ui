@@ -9,6 +9,6 @@ trait HasID {
 		readOnly = true,
 		nullable = false
 	)
-	@NuxeoMapping("id")
+	@NuxeoMapping(sourceField = "id")
 	String id
 }

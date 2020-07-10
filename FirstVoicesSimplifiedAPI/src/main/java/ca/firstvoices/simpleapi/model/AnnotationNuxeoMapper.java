@@ -14,6 +14,22 @@ public class AnnotationNuxeoMapper {
 
   public static <T> T mapFrom(Class<T> clazz, DocumentModel dm) {
 
+    NuxeoMapping ax = clazz.getAnnotation(NuxeoMapping.class);
+    if (ax != null) {
+      try {
+        NuxeoMapper<T> nuxeoMapper = (NuxeoMapper<T>) ax.mapperClass().getConstructor().newInstance();
+        return nuxeoMapper.mapFrom(dm);
+      } catch (InstantiationException e) {
+        e.printStackTrace();
+      } catch (IllegalAccessException e) {
+        e.printStackTrace();
+      } catch (InvocationTargetException e) {
+        e.printStackTrace();
+      } catch (NoSuchMethodException e) {
+        e.printStackTrace();
+      }
+    }
+
     Field[] declaredFields = clazz.getDeclaredFields();
     String fields = Arrays.asList(declaredFields).stream().map(Field::getName).collect(Collectors.joining("\n"));
 
@@ -23,7 +39,7 @@ public class AnnotationNuxeoMapper {
 
       Arrays.asList(declaredFields).stream().filter(df -> Optional.ofNullable(df.getAnnotation(NuxeoMapping.class)).isPresent())
           .forEach(df -> {
-            String source = df.getAnnotation(NuxeoMapping.class).value();
+            String source = df.getAnnotation(NuxeoMapping.class).sourceField();
 
             try {
               Object property = PropertyUtils.getProperty(dm, source);

@@ -12,7 +12,7 @@ public class MapperRegistryImpl implements MapperRegistry {
   private Map<Class, Class<? extends ResultMapper>> map = new HashMap<>();
 
   public MapperRegistryImpl() {
-    map.put(ArchiveOverview.class, ArchiveOverviewMapper.class);
+//    map.put(ArchiveOverview.class, ArchiveOverviewMapper.class);
   }
 
   @Override

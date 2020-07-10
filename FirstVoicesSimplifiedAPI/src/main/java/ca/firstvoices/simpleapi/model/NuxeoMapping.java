@@ -15,6 +15,6 @@ import java.lang.annotation.Target;
  * When used on a field, specifies which Nuxeo DocumentModel field maps to this field.
  */
 public @interface NuxeoMapping {
-  String value();
+  String sourceField() default "";
   Class<? extends NuxeoMapper<?>> mapperClass();
 }

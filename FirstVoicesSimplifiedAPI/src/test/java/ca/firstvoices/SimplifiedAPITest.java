@@ -115,7 +115,7 @@ public class SimplifiedAPITest extends TestDataTest {
         categoryID);
 
     validateRESTResponse(url, (node, response) -> {
-      assertEquals("Unexpected status code", 200, response.getStatusLine().getStatusCode());
+      assertEquals("Unexpected status code", 503, response.getStatusLine().getStatusCode());
     });
   }
 
