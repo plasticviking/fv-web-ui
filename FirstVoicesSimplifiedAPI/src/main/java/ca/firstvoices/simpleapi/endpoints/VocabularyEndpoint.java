@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.endpoints;
 
+import ca.firstvoices.simpleapi.exceptions.NotImplementedException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.Vocabulary;
 import ca.firstvoices.simpleapi.representations.VocabularyEntry;
@@ -7,18 +8,23 @@ import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.ws.rs.*;
+import java.util.List;
+import javax.ws.rs.DefaultValue;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Path("/v1/vocabularies")
 @SecurityRequirements(
@@ -65,8 +71,25 @@ public class VocabularyEndpoint {
       },
       tags = {"Vocabulary"}
   )
-  public Response getVocabularies(@BeanParam QueryBean query) {
-    return Response.ok(service.getVocabularies(query)).build();
+  public Response getVocabularies(
+      @Parameter(
+          description = "The maximum number of results to return",
+          schema = @Schema(
+              allowableValues = {"10", "25", "50", "100"}
+          )
+      )
+      @DefaultValue("25")
+      @QueryParam("pageSize")
+          long pageSize,
+
+      @Parameter(
+          description = "An optional parameter with the zero-based index of the page to retrieve",
+          example = "0"
+      )
+      @QueryParam("index")
+      @DefaultValue("0")
+          long index) {
+    return Response.ok(service.getVocabularies(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -90,10 +113,26 @@ public class VocabularyEndpoint {
       tags = {"Vocabulary"}
   )
   public Response getWords(@PathParam("vocabularyID") String vocabularyID,
-                           @BeanParam QueryBean query
+                           @Parameter(
+                               description = "The maximum number of results to return",
+                               schema = @Schema(
+                                   allowableValues = {"10", "25", "50", "100"}
+                               )
+                           )
+                           @DefaultValue("25")
+                           @QueryParam("pageSize")
+                               long pageSize,
+
+                           @Parameter(
+                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               example = "0"
+                           )
+                           @QueryParam("index")
+                           @DefaultValue("0")
+                               long index
 
   ) {
-    return Response.ok().build();
+    throw new NotImplementedException();
   }
 
 }

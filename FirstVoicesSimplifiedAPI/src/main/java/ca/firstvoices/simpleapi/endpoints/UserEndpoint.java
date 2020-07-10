@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.endpoints;
 
+import ca.firstvoices.simpleapi.exceptions.NotImplementedException;
 import ca.firstvoices.simpleapi.representations.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -54,17 +55,9 @@ public class UserEndpoint {
       ,
       tags = {"Access", "User"}
   )
-//  public Response getCurrentUser(@BeanParam QueryBean query) {
-  public Response getCurrentUser(@QueryParam(value = "username") String username) {
-    User rep = new User();
-    rep.setDisplayName("Test User");
-    rep.setId("foo");
-    rep.setUsername(username);
 
-    return Response.ok(rep).build();
-//
-//    User u = this.userContextStore.getCurrentUser();
-//    return Response.ok(u).build();
+  public Response getCurrentUser(@QueryParam(value = "username") String username) {
+    throw new NotImplementedException();
   }
 
 }

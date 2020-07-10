@@ -1,6 +1,7 @@
 package ca.firstvoices.simpleapi.services;
 
 
+import ca.firstvoices.simpleapi.exceptions.NotFoundException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPublic;
 import ca.firstvoices.simpleapi.representations.ArchiveOverview;
@@ -22,7 +23,7 @@ public interface FirstVoicesService {
 
   Metadata<ArchiveDetailPublic> getArchiveDetail(String archiveID);
 
-  Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters);
+  Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters) throws NotFoundException;
 
   Metadata<List<Phrase>> getPhrasesInArchive(String archiveID, QueryBean queryParameters);
 

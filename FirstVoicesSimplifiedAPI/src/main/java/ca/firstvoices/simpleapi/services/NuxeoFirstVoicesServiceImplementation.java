@@ -1,7 +1,11 @@
 package ca.firstvoices.simpleapi.services;
 
+import ca.firstvoices.simpleapi.exceptions.NotFoundException;
+import ca.firstvoices.simpleapi.model.AnnotationNuxeoMapper;
 import ca.firstvoices.simpleapi.model.QueryBean;
+import ca.firstvoices.simpleapi.representations.ArchiveDetailPublic;
 import ca.firstvoices.simpleapi.representations.ArchiveOverview;
+import ca.firstvoices.simpleapi.representations.Word;
 import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -60,11 +64,11 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
       pageProvider.setCurrentPage(queryParams.index);
 
       List<DocumentModel> results = pageProvider.getCurrentPage();
-      ResultMapper<V> mapper = mapperRegistry.mapper(resultClass);
+//      ResultMapper<V> mapper = mapperRegistry.mapper(resultClass);
       md.setCount(pageProvider.getResultsCount());
       md.setDetailType("archive");
       md.setStatus(pageProvider.hasError() ? "error" : "success");
-      md.setDetail(results.stream().map(dm -> mapper.map(dm)).collect(Collectors.toList()));
+      md.setDetail(results.stream().map(dm -> AnnotationNuxeoMapper.mapFrom(resultClass, dm)).collect(Collectors.toList()));
 
       TransactionHelper.commitOrRollbackTransaction();
 
@@ -115,4 +119,10 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
     return buildListResponse(ArchiveOverview.class, "LIST_ARCHIVES_PP", queryParams);
   }
 
+  @Override
+  public Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters) throws NotFoundException {
+    throw new NotFoundException();
+//    return buildListResponse()
+//    return super.getWordsInArchive(archiveID, queryParameters);
+  }
 }

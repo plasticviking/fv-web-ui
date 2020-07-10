@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.endpoints;
 
+import ca.firstvoices.simpleapi.exceptions.NotImplementedException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -27,7 +28,7 @@ public class AuthorizationEndpoint {
       tags = {"Access"}
   )
   public Response getAvailableScopes() {
-    return Response.ok().build();
+    throw new NotImplementedException();
   }
 
 
@@ -39,7 +40,8 @@ public class AuthorizationEndpoint {
       tags = {"Access"}
   )
   public Response getCurrentTokens() {
-    return Response.ok().build();
+    throw new NotImplementedException();
+
   }
 
 
@@ -51,7 +53,7 @@ public class AuthorizationEndpoint {
       tags = {"Integration"}
   )
   public Response getTokens() {
-    return Response.ok().build();
+    throw new NotImplementedException();
   }
 
   @Path("/tokens")
@@ -63,7 +65,8 @@ public class AuthorizationEndpoint {
 
   )
   public Response createToken() {
-    return Response.ok().build();
+    throw new NotImplementedException();
+
   }
 
   @Path("/pendingRequests")
@@ -74,7 +77,8 @@ public class AuthorizationEndpoint {
       tags = {"Integration"}
   )
   public Response pendingRequests(@QueryParam("scopes") String scope) {
-    return Response.ok().build();
+    throw new NotImplementedException();
+
   }
 
   @Path("/tokens/{tokenID}/requestScopeAccess")
@@ -86,7 +90,8 @@ public class AuthorizationEndpoint {
   )
   public Response requestAccess(@PathParam("tokenID") String tokenID
   ) {
-    return Response.ok().build();
+    throw new NotImplementedException();
+
   }
 
   @Path("/tokens/{tokenID}/grantScopeAccess")
@@ -97,7 +102,8 @@ public class AuthorizationEndpoint {
       tags = {"Integration"}
   )
   public Response grantScopeAccess(@PathParam("tokenID") String tokenID) {
-    return Response.ok().build();
+    throw new NotImplementedException();
+
   }
 
   @Path("/tokens/{tokenID}/revokeScopeAccess")
@@ -108,7 +114,8 @@ public class AuthorizationEndpoint {
       tags = {"Integration"}
   )
   public Response revokeScopeAccess(@PathParam("tokenID") String tokenID) {
-    return Response.ok().build();
+        throw new NotImplementedException();
+
   }
 
   @Path("/tokens/{tokenID}")
@@ -119,7 +126,8 @@ public class AuthorizationEndpoint {
       tags = {"Integration", "Access"}
   )
   public Response deleteToken(@PathParam("tokenID") String tokenID) {
-    return Response.ok().build();
+    throw new NotImplementedException();
+
   }
 
 }

@@ -1,4 +1,4 @@
 package ca.firstvoices.simpleapi.exceptions;
 
-public class AdministrativelyDisabledException {
+public class AdministrativelyDisabledException extends RuntimeException {
 }

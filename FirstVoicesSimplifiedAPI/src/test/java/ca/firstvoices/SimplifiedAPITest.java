@@ -2,6 +2,7 @@ package ca.firstvoices;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import ca.firstvoices.simpleapi.AdministrativelyDisabledFilterFactory;
 import ca.firstvoices.simpleapi.JerseyApplication;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
@@ -63,7 +64,6 @@ public class SimplifiedAPITest extends TestDataTest {
 
   private String categoryID;
 
-
   private static int findFreePort() {
     try (ServerSocket socket = new ServerSocket(0)) {
       socket.setReuseAddress(true);
@@ -77,18 +77,12 @@ public class SimplifiedAPITest extends TestDataTest {
   private static int port = -1;
   private static HttpServer server;
 
-  @Before
-  public void setUp() throws InterruptedException {
-//    if (!initialized) {
-//      dataCreator.createDialectTree(session);
-//
-//      this.initialized = true;
-//    }
-  }
-
   @BeforeClass
   public static void setupServer() throws IOException {
     ResourceConfig rc = new ApplicationAdapter(new JerseyApplication());
+    rc.getResourceFilterFactories().add(new AdministrativelyDisabledFilterFactory());
+    rc.getFeatures().put("com.sun.jersey.api.json.POJOMappingFeature", true);
+
     port = findFreePort();
 
     String url = "http://localhost:" + port + "/";
@@ -139,6 +133,19 @@ public class SimplifiedAPITest extends TestDataTest {
   }
 
   @Test
+  public void testGetArchiveWords() throws IOException {
+    final String url = String.format("http://localhost:%s/v1/archives/asdf/words",
+        port,
+        categoryID);
+
+    validateRESTResponse(url, (node, response) -> {
+      assertEquals("Unexpected status code", 404, response.getStatusLine().getStatusCode());
+      System.out.println(node.asText());
+    });
+  }
+
+
+  @Test
   @Ignore
   public void testGetArchive() throws IOException {
     final String url = String.format("http://localhost:%s/v1/archives/asdf",
@@ -156,6 +163,7 @@ public class SimplifiedAPITest extends TestDataTest {
 
     HttpClient client = new HttpAutomationClient(url).http();
     HttpGet request = new HttpGet(url);
+    request.setHeader("Accept", "application/json");
     String auth = Base64.getEncoder()
         .encodeToString("Administrator:Administrator".getBytes(Charset.defaultCharset()));
     request.setHeader("Authorization", "Basic " + auth);

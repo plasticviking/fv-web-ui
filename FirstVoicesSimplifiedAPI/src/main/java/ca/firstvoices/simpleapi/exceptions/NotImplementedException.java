@@ -1,4 +1,4 @@
 package ca.firstvoices.simpleapi.exceptions;
 
-public class NotImplementedException {
+public class NotImplementedException extends RuntimeException {
 }

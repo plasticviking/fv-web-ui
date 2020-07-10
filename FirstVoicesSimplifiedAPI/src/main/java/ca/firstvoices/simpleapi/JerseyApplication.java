@@ -3,6 +3,9 @@ package ca.firstvoices.simpleapi;
 
 import ca.firstvoices.simpleapi.endpoints.ArchiveEndpoint;
 import ca.firstvoices.simpleapi.endpoints.UserEndpoint;
+import ca.firstvoices.simpleapi.exceptions.mappers.AdministrativelyDisabledExceptionMapper;
+import ca.firstvoices.simpleapi.exceptions.mappers.NotFoundExceptionMapper;
+import ca.firstvoices.simpleapi.exceptions.mappers.NotImplementedExceptionMapper;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
@@ -15,9 +18,7 @@ import io.swagger.v3.oas.annotations.security.OAuthScope;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
@@ -71,8 +72,31 @@ public class JerseyApplication extends Application {
     FirstVoicesService firstVoicesService = Framework.getService(FirstVoicesService.class);
     ArchiveEndpoint archiveEndpoint = new ArchiveEndpoint(firstVoicesService);
     singletons.add(archiveEndpoint);
+
+    singletons.add(new AdministrativelyDisabledExceptionMapper());
+    singletons.add(new NotFoundExceptionMapper());
+    singletons.add(new NotImplementedExceptionMapper());
+
+//    singletons.add(new JSONMarshallingProvider());
+//
+//    singletons.add(new CORSFilter());
+//    singletons.add(new AdministrativelyDisabledFilterFactory());
+//
+
     return singletons;
   }
+//
+//  @Override
+//  public Set<Class<?>> getClasses() {
+//    Set<Class<?>> classes = new HashSet<>();
+////    classes.add(AdministrativelyDisabledExceptionMapper.class);
+//    classes.add(NotFoundExceptionMapper.class);
+//    classes.add(NotImplementedExceptionMapper.class);
+//
+////    classes.add(CORSFilter.class);
+////    classes.add(AdministrativelyDisabledFilter.class);
+//    return classes;
+//  }
 
   public JerseyApplication() {
     System.out.println("jersey application deployment complete");

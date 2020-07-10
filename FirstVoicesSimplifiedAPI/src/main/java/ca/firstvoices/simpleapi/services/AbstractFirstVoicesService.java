@@ -1,6 +1,7 @@
 package ca.firstvoices.simpleapi.services;
 
 
+import ca.firstvoices.simpleapi.exceptions.NotFoundException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPublic;
 import ca.firstvoices.simpleapi.representations.ArchiveOverview;
@@ -27,7 +28,7 @@ public abstract class AbstractFirstVoicesService implements FirstVoicesService {
   }
 
   @Override
-  public Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters) {
+  public Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters) throws NotFoundException {
     throw new UnsupportedOperationException();
   }
 

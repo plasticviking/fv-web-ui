@@ -1,5 +1,7 @@
 package ca.firstvoices.simpleapi.endpoints;
 
+import ca.firstvoices.simpleapi.AdministrativelyDisabled;
+import ca.firstvoices.simpleapi.exceptions.NotFoundException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPrivate;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPublic;
@@ -19,7 +21,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
-import javax.ws.rs.BeanParam;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -38,6 +39,7 @@ import org.slf4j.LoggerFactory;
         @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
     }
 )
+//@AdministrativelyDisabled("test-disabled")
 public class ArchiveEndpoint {
 
 
@@ -150,10 +152,26 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getWords(@PathParam("archiveID") String archive,
-                           @BeanParam QueryBean query
+                           @Parameter(
+                               description = "The maximum number of results to return",
+                               schema = @Schema(
+                                   allowableValues = {"10", "25", "50", "100"}
+                               )
+                           )
+                           @DefaultValue("25")
+                           @QueryParam("pageSize")
+                               long pageSize,
 
-  ) {
-    return Response.ok(service.getWordsInArchive(archive, query)).build();
+                           @Parameter(
+                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               example = "0"
+                           )
+                           @QueryParam("index")
+                           @DefaultValue("0")
+                               long index
+
+  ) throws NotFoundException {
+    return Response.ok(service.getWordsInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
 
@@ -183,9 +201,25 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getPhrases(@PathParam("archiveID") String archive,
-                             @BeanParam QueryBean query
+                             @Parameter(
+                                 description = "The maximum number of results to return",
+                                 schema = @Schema(
+                                     allowableValues = {"10", "25", "50", "100"}
+                                 )
+                             )
+                             @DefaultValue("25")
+                             @QueryParam("pageSize")
+                                 long pageSize,
+
+                             @Parameter(
+                                 description = "An optional parameter with the zero-based index of the page to retrieve",
+                                 example = "0"
+                             )
+                             @QueryParam("index")
+                             @DefaultValue("0")
+                                 long index
   ) {
-    return Response.ok(service.getPhrasesInArchive(archive, query)).build();
+    return Response.ok(service.getPhrasesInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -215,9 +249,25 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getSongs(@PathParam("archiveID") String archive,
-                           @BeanParam QueryBean query
+                           @Parameter(
+                               description = "The maximum number of results to return",
+                               schema = @Schema(
+                                   allowableValues = {"10", "25", "50", "100"}
+                               )
+                           )
+                           @DefaultValue("25")
+                           @QueryParam("pageSize")
+                               long pageSize,
+
+                           @Parameter(
+                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               example = "0"
+                           )
+                           @QueryParam("index")
+                           @DefaultValue("0")
+                               long index
   ) {
-    return Response.ok(service.getSongsInArchive(archive, query)).build();
+    return Response.ok(service.getSongsInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -248,9 +298,25 @@ public class ArchiveEndpoint {
   )
   public Response getStories(
       @PathParam("archiveID") String archive,
-      @BeanParam QueryBean query
+      @Parameter(
+          description = "The maximum number of results to return",
+          schema = @Schema(
+              allowableValues = {"10", "25", "50", "100"}
+          )
+      )
+      @DefaultValue("25")
+      @QueryParam("pageSize")
+          long pageSize,
+
+      @Parameter(
+          description = "An optional parameter with the zero-based index of the page to retrieve",
+          example = "0"
+      )
+      @QueryParam("index")
+      @DefaultValue("0")
+          long index
   ) {
-    return Response.ok(service.getStoriesInArchive(archive, query)).build();
+    return Response.ok(service.getStoriesInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
 

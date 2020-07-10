@@ -1,8 +1,7 @@
 package ca.firstvoices.simpleapi.representations.traits
 
+import ca.firstvoices.simpleapi.model.NuxeoMapping
 import io.swagger.v3.oas.annotations.media.Schema
-
-import java.time.LocalDateTime
 
 trait HasID {
 	@Schema(
@@ -10,5 +9,6 @@ trait HasID {
 		readOnly = true,
 		nullable = false
 	)
+	@NuxeoMapping("id")
 	String id
 }

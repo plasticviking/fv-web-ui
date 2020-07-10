@@ -1,4 +1,4 @@
 package ca.firstvoices.simpleapi.exceptions;
 
-public class NotFoundException {
+public class NotFoundException extends RuntimeException {
 }

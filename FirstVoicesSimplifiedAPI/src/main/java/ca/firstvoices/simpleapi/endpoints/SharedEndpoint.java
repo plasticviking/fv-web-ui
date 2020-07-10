@@ -7,17 +7,19 @@ import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
-import javax.ws.rs.BeanParam;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.slf4j.Logger;
@@ -79,8 +81,24 @@ public class SharedEndpoint {
       },
       tags = {"Shared"}
   )
-  public Response getCategories(@BeanParam QueryBean query) {
-    return Response.ok(service.getSharedCategories(query)).build();
+  public Response getCategories(@Parameter(
+      description = "The maximum number of results to return",
+      schema = @Schema(
+          allowableValues = {"10", "25", "50", "100"}
+      )
+  )
+                                @DefaultValue("25")
+                                @QueryParam("pageSize")
+                                    long pageSize,
+
+                                @Parameter(
+                                    description = "An optional parameter with the zero-based index of the page to retrieve",
+                                    example = "0"
+                                )
+                                @QueryParam("index")
+                                @DefaultValue("0")
+                                    long index) {
+    return Response.ok(service.getSharedCategories(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -103,9 +121,25 @@ public class SharedEndpoint {
       },
       tags = {"Shared"}
   )
-  public Response getLinks(@BeanParam QueryBean query
+  public Response getLinks(@Parameter(
+      description = "The maximum number of results to return",
+      schema = @Schema(
+          allowableValues = {"10", "25", "50", "100"}
+      )
+  )
+                           @DefaultValue("25")
+                           @QueryParam("pageSize")
+                               long pageSize,
+
+                           @Parameter(
+                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               example = "0"
+                           )
+                           @QueryParam("index")
+                           @DefaultValue("0")
+                               long index
   ) {
-    return Response.ok(service.getSharedLinks(query)).build();
+    return Response.ok(service.getSharedLinks(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -128,9 +162,25 @@ public class SharedEndpoint {
       },
       tags = {"Shared"}
   )
-  public Response getMedia(@BeanParam QueryBean query
+  public Response getMedia(@Parameter(
+      description = "The maximum number of results to return",
+      schema = @Schema(
+          allowableValues = {"10", "25", "50", "100"}
+      )
+  )
+                           @DefaultValue("25")
+                           @QueryParam("pageSize")
+                               long pageSize,
+
+                           @Parameter(
+                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               example = "0"
+                           )
+                           @QueryParam("index")
+                           @DefaultValue("0")
+                               long index
   ) {
-    return Response.ok(service.getSharedMedia(query)).build();
+    return Response.ok(service.getSharedMedia(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -159,7 +209,23 @@ public class SharedEndpoint {
   )
   public Response getSharedMediaDetail(
       @PathParam("mediaID") String mediaID,
-      @BeanParam QueryBean query
+      @Parameter(
+          description = "The maximum number of results to return",
+          schema = @Schema(
+              allowableValues = {"10", "25", "50", "100"}
+          )
+      )
+      @DefaultValue("25")
+      @QueryParam("pageSize")
+          long pageSize,
+
+      @Parameter(
+          description = "An optional parameter with the zero-based index of the page to retrieve",
+          example = "0"
+      )
+      @QueryParam("index")
+      @DefaultValue("0")
+          long index
   ) {
     return Response.ok(service.getSharedMediaDetail(mediaID)).build();
   }
