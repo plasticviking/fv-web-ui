@@ -23,23 +23,19 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
 })
 @PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})
 public abstract class TestDataTest {
+
   @Inject
   private TestDataCreator dataCreator;
 
   @Inject
   private CoreSession session;
 
-  private boolean initialized = false;
-
   @Before
   public void initData() {
-//    if (!initialized) {
-
     Class<? extends TestDataTest> clz = this.getClass();
 
     if (clz.isAnnotationPresent(TestDataConfiguration.class)) {
       TestDataConfiguration config = clz.getAnnotation(TestDataConfiguration.class);
-      System.out.println("Wants dialect tree? " + (config.createDialectTree() ? "Yes" : "No"));
       try {
         dataCreator.createDialectTree(this.session);
       } catch (InterruptedException e) {
@@ -49,9 +45,5 @@ public abstract class TestDataTest {
       System.out.println("No config present");
     }
   }
-
-//    initialized = true;
-//  }
-
 
 }

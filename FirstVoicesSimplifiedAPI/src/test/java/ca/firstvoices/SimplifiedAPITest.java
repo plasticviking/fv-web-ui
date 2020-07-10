@@ -2,6 +2,9 @@ package ca.firstvoices;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import ca.firstvoices.simpleapi.JerseyApplication;
+import ca.firstvoices.simpleapi.model.QueryBean;
+import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import ca.firstvoices.testutils.TestDataConfiguration;
 import ca.firstvoices.testutils.TestDataCreator;
 import ca.firstvoices.testutils.TestDataTest;
@@ -10,9 +13,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
 import com.sun.jersey.api.core.ApplicationAdapter;
 import com.sun.jersey.api.core.ResourceConfig;
-import firstvoices.api.JerseyApplication;
-import firstvoices.api.model.QueryBean;
-import firstvoices.services.FirstVoicesService;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.nio.charset.Charset;
@@ -134,7 +134,7 @@ public class SimplifiedAPITest extends TestDataTest {
     validateRESTResponse(url, (node, response) -> {
       assertEquals("Unexpected status code", 200, response.getStatusLine().getStatusCode());
       System.out.println(node.asText());
-      assertTrue("Records are returned", node.get("entries").size() > 0);
+      assertTrue("Records are returned", node.get("detail").size() > 0);
     });
   }
 

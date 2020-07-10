@@ -1,0 +1,7 @@
+<component name="ca.firstvoices.simpleapi.mapper">
+    <implementation class="ca.firstvoices.simpleapi.services.MapperRegistryImpl"/>
+
+    <service>
+        <provide interface="ca.firstvoices.simpleapi.services.MapperRegistry"/>
+    </service>
+</component>

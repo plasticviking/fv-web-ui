@@ -458,7 +458,7 @@
                     <outputPath>${project.build.directory}/openapi</outputPath>
                     <outputFormat>JSON</outputFormat>
                     <resourcePackages>
-                        <package>firstvoices.api</package>
+                        <package>ca.firstvoices.simpleapi</package>
                     </resourcePackages>
                     <prettyPrint>TRUE</prettyPrint>
                 </configuration>
