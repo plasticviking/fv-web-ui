@@ -475,6 +475,8 @@ const routes = [
     path: ['tasks'],
     title: intl.translate({ key: 'tasks', default: 'Tasks', case: 'first' }),
     page: <Pages.PageTasks />,
+    disableWorkspaceSectionNav: true,
+    breadcrumbs: false,
   },
   {
     path: ['tasks', 'users', new paramMatch('dialect', ANYTHING_BUT_SLASH)],
@@ -2576,6 +2578,25 @@ const routes = [
   addPagination(DIALECT_IMMERSION_WORDS),
   addImmersionCategory(DIALECT_IMMERSION_WORDS),
   addPagination(addImmersionCategory(DIALECT_IMMERSION_WORDS)),
+  // DASHBOARDS
+  // ==========================================================
+  {
+    id: 'dashboard',
+    path: ['dashboard'],
+    title: intl.translate({ key: 'dashboard', default: 'Dashboard', case: 'first' }),
+    page: <Pages.Dashboard.Container />,
+    breadcrumbs: false,
+    disableWorkspaceSectionNav: true,
+  },
+  {
+    id: 'dashboard',
+    path: ['dashboard', 'tasks'],
+    title: intl.translate({ key: 'dashboard', default: 'Dashboard', case: 'first' }),
+    page: <Pages.DashboardDetail.Container />,
+    breadcrumbs: false,
+  },
+  // Mentor-Apprentice Photo Project
+  // ==========================================================
   {
     path: ['photo-project'],
     title: 'Mentor-Apprentice Photo Project',

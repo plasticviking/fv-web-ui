@@ -30,7 +30,7 @@ import selectn from 'selectn'
 
 import ProviderHelpers from 'common/ProviderHelpers'
 
-class CategoriesDataLayer extends Component {
+class CategoriesData extends Component {
   constructor(props) {
     super(props)
 
@@ -49,7 +49,11 @@ class CategoriesDataLayer extends Component {
 
     // Fetch dialect specific categories
     if (selectn('action', categories) !== 'FV_CATEGORIES_QUERY_START') {
-      ProviderHelpers.fetchIfMissing(this.catPath, this.props.fetchCategories, this.props.computeCategories)
+      if (this.props.fetchLatest) {
+        this.props.fetchCategories(this.catPath)
+      } else {
+        ProviderHelpers.fetchIfMissing(this.catPath, this.props.fetchCategories, this.props.computeCategories)
+      }
     }
     if (selectn('action', sharedCategories) !== 'FV_CATEGORIES_SHARED_QUERY_START') {
       ProviderHelpers.fetchIfMissing(
@@ -120,7 +124,7 @@ class CategoriesDataLayer extends Component {
 
 // PROPTYPES
 const { array, func, object, string, bool } = PropTypes
-CategoriesDataLayer.propTypes = {
+CategoriesData.propTypes = {
   routeParams: object.isRequired,
   fetchPhraseBooks: bool,
   // REDUX: reducers/state
@@ -135,6 +139,7 @@ CategoriesDataLayer.propTypes = {
   windowPath: string.isRequired,
   // REDUX: actions/dispatch/func
   fetchCategories: func.isRequired,
+  fetchLatest: bool,
   fetchSharedCategories: func.isRequired,
   fetchDocument: func.isRequired,
   fetchPortal: func.isRequired,
@@ -197,4 +202,4 @@ const mapDispatchToProps = {
   setListViewMode,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoriesDataLayer)
+export default connect(mapStateToProps, mapDispatchToProps)(CategoriesData)
