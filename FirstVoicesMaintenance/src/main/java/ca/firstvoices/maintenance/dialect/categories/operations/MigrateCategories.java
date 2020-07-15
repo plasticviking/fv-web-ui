@@ -49,7 +49,7 @@ public class MigrateCategories {
   protected CoreSession session;
   @Context
   protected WorkManager workManager;
-  @Param(name = "phase", values = {"init", "work"})
+  @Param(name = "phase", values = {"init", "work", "syncwork"})
   protected String phase = "init";
   @Param(name = "batchSize")
   protected int batchSize = 1000;
