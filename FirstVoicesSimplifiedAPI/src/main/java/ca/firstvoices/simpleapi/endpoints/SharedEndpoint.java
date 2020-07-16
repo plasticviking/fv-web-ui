@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.endpoints;
 
+import ca.firstvoices.simpleapi.AdministrativelyDisabled;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.Asset;
 import ca.firstvoices.simpleapi.representations.Link;
@@ -14,6 +15,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,8 +24,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.nuxeo.runtime.api.Framework;
+
 
 @Path("/v1/shared")
 @SecurityRequirements(
@@ -31,6 +33,7 @@ import org.slf4j.LoggerFactory;
         @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
     }
 )
+@AdministrativelyDisabled("shared")
 public class SharedEndpoint {
 
   private static class CategoryListResponse extends Metadata<List<String>> {
@@ -52,15 +55,15 @@ public class SharedEndpoint {
   }
 
 
-  private static final Logger log = LoggerFactory.getLogger(SharedEndpoint.class);
+  private static final Logger log = Logger.getLogger(SharedEndpoint.class.getCanonicalName());
 
 
-  @Inject
-  public SharedEndpoint(FirstVoicesService service) {
-    this.service = service;
-  }
 
   private final FirstVoicesService service;
+
+  public SharedEndpoint() {
+    this.service = Framework.getService(FirstVoicesService.class);
+  }
 
   @GET
   @Path("/categories")

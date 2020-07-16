@@ -1,8 +1,8 @@
-package ca.firstvoices.testutils;
+package ca.firstvoices.testUtil;
 
+import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
 import javax.inject.Inject;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Deploys;
@@ -17,12 +17,12 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
     @Deploy("org.nuxeo.ecm.platform.types.core"),
     @Deploy("org.nuxeo.ecm.platform.webapp.types"),
     @Deploy("org.nuxeo.ecm.platform.publisher.core"),
-    @Deploy("FirstVoicesTestUtilities"),
+    @Deploy("FirstVoicesCoreTests"),
     @Deploy("FirstVoicesData:OSGI-INF/ca.firstvoices.listeners.xml"),
     @Deploy("FirstVoicesData:OSGI-INF/ca.firstvoices.operations.xml")
 })
 @PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})
-public abstract class TestDataTest {
+public abstract class AbstractTestDataCreatorTest {
 
   @Inject
   private TestDataCreator dataCreator;
@@ -32,17 +32,17 @@ public abstract class TestDataTest {
 
   @Before
   public void initData() {
-    Class<? extends TestDataTest> clz = this.getClass();
+    Class<? extends AbstractTestDataCreatorTest> clz = this.getClass();
 
     if (clz.isAnnotationPresent(TestDataConfiguration.class)) {
       TestDataConfiguration config = clz.getAnnotation(TestDataConfiguration.class);
-      try {
-        dataCreator.createDialectTree(this.session);
-      } catch (InterruptedException e) {
-        e.printStackTrace();
+      if (config.createDialectTree()) {
+        try {
+          dataCreator.createDialectTree(this.session);
+        } catch (InterruptedException e) {
+          throw new RuntimeException(e);
+        }
       }
-    } else {
-      System.out.println("No config present");
     }
   }
 

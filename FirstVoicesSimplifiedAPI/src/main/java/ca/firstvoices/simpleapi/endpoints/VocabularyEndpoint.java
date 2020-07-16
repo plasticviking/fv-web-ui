@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.endpoints;
 
+import ca.firstvoices.simpleapi.AdministrativelyDisabled;
 import ca.firstvoices.simpleapi.exceptions.NotImplementedException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.Vocabulary;
@@ -15,6 +16,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
+import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -23,8 +25,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.nuxeo.runtime.api.Framework;
 
 @Path("/v1/vocabularies")
 @SecurityRequirements(
@@ -32,16 +33,16 @@ import org.slf4j.LoggerFactory;
         @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
     }
 )
+@AdministrativelyDisabled("vocabulary")
 public class VocabularyEndpoint {
 
-  private static final Logger log = LoggerFactory.getLogger(VocabularyEndpoint.class);
-
-  @Inject
-  public VocabularyEndpoint(FirstVoicesService service) {
-    this.service = service;
-  }
+  private static final java.util.logging.Logger log = Logger.getLogger(VocabularyEndpoint.class.getCanonicalName());
 
   private final FirstVoicesService service;
+
+  public VocabularyEndpoint() {
+    this.service = Framework.getService(FirstVoicesService.class);
+  }
 
   private static class VocabularyListResponse extends Metadata<List<Vocabulary>> {
   }

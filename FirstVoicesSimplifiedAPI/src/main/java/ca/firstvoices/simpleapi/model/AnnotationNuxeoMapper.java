@@ -19,13 +19,7 @@ public class AnnotationNuxeoMapper {
       try {
         NuxeoMapper<T> nuxeoMapper = (NuxeoMapper<T>) ax.mapperClass().getConstructor().newInstance();
         return nuxeoMapper.mapFrom(dm);
-      } catch (InstantiationException e) {
-        e.printStackTrace();
-      } catch (IllegalAccessException e) {
-        e.printStackTrace();
-      } catch (InvocationTargetException e) {
-        e.printStackTrace();
-      } catch (NoSuchMethodException e) {
+      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
         e.printStackTrace();
       }
     }
@@ -36,7 +30,6 @@ public class AnnotationNuxeoMapper {
     try {
       T origin = clazz.getConstructor().newInstance();
 
-
       Arrays.asList(declaredFields).stream().filter(df -> Optional.ofNullable(df.getAnnotation(NuxeoMapping.class)).isPresent())
           .forEach(df -> {
             String source = df.getAnnotation(NuxeoMapping.class).sourceField();
@@ -44,30 +37,15 @@ public class AnnotationNuxeoMapper {
             try {
               Object property = PropertyUtils.getProperty(dm, source);
               FieldUtils.writeField(df, origin, property, true);
-//              df.trySetAccessible();
-//              BeanUtils.des
-//              df.set(origin, property);
-//              df.get
 
-//              PropertyUtils.setProperty(origin, df.toGenericString(), property);
-            } catch (IllegalAccessException e) {
-              e.printStackTrace();
-            } catch (InvocationTargetException e) {
-              e.printStackTrace();
-            } catch (NoSuchMethodException e) {
+            } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
               e.printStackTrace();
             }
           });
 
       return origin;
 
-    } catch (InstantiationException e) {
-      e.printStackTrace();
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
-    } catch (NoSuchMethodException e) {
+    } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
       e.printStackTrace();
     }
     return null;

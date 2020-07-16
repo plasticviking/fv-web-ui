@@ -1,4 +1,4 @@
-package ca.firstvoices.testutils;
+package ca.firstvoices.testUtil;
 
 import ca.firstvoices.publisher.services.FirstVoicesPublisherService;
 import java.util.concurrent.TimeUnit;
@@ -11,8 +11,10 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.transaction.TransactionHelper;
 
 /**
+ * @author Rob J
+ *
  * The intent of this class is to move creation of test data for all modules to
- * a common location to reduce duplication
+ * a common location to reduce duplication.
  */
 @Singleton
 public class TestDataCreator {

@@ -1,4 +1,4 @@
-package ca.firstvoices.testutils;
+package ca.firstvoices.simpleapi.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -6,7 +6,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.TYPE)
-public @interface TestDataConfiguration {
-  boolean createDialectTree() default false;
+@Target({ElementType.METHOD, ElementType.TYPE})
+public @interface JWTAuth {
+  String[] requiredScopes() default {};
 }

@@ -1,8 +1,0 @@
-Manifest-Version: 1.0
-Bundle-SymbolicName: FirstVoicesTestUtilities.tests
-Bundle-Version: 1.0.qualifier
-Bundle-Name: FirstVoicesTestUtilities.tests
-Bundle-ClassPath: .
-Bundle-ManifestVersion: 2
-Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Bundle-Vendor: Nuxeo

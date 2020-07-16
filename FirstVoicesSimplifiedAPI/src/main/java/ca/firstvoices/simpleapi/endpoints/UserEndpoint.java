@@ -1,21 +1,23 @@
 package ca.firstvoices.simpleapi.endpoints;
 
-import ca.firstvoices.simpleapi.exceptions.NotImplementedException;
+import ca.firstvoices.simpleapi.AdministrativelyDisabled;
 import ca.firstvoices.simpleapi.representations.User;
+import ca.firstvoices.simpleapi.security.JWTAuth;
+import ca.firstvoices.simpleapi.security.UserContextStore;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import java.util.logging.Logger;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.nuxeo.runtime.api.Framework;
 
 @Path("/v1/users")
 @SecurityRequirements(
@@ -23,16 +25,17 @@ import org.apache.commons.logging.LogFactory;
         @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
     }
 )
+@JWTAuth //requiredScopes omitted -- only requires a successful decode/key verification
+@AdministrativelyDisabled("user")
 public class UserEndpoint {
 
-  private static Log LOG = LogFactory.getLog(UserEndpoint.class);
+  private static final Logger log = Logger.getLogger(UserEndpoint.class.getCanonicalName());
 
-//  private UserContextStore userContextStore;
-//
-//  @Inject
-//  public UserEndpoint(UserContextStore userContextStore) {
-//    this.userContextStore = userContextStore;
-//  }
+  private UserContextStore userContextStore;
+
+  public UserEndpoint() {
+    this.userContextStore = Framework.getService(UserContextStore.class);
+  }
 
   @GET
   @Path("/current")
@@ -55,9 +58,8 @@ public class UserEndpoint {
       ,
       tags = {"Access", "User"}
   )
-
   public Response getCurrentUser(@QueryParam(value = "username") String username) {
-    throw new NotImplementedException();
+    return Response.ok(this.userContextStore.getCurrentUser()).build();
   }
 
 }

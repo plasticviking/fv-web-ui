@@ -2,11 +2,17 @@ package ca.firstvoices.simpleapi;
 
 
 import ca.firstvoices.simpleapi.endpoints.ArchiveEndpoint;
+import ca.firstvoices.simpleapi.endpoints.AuthorizationEndpoint;
+import ca.firstvoices.simpleapi.endpoints.SearchEndpoint;
+import ca.firstvoices.simpleapi.endpoints.SharedEndpoint;
 import ca.firstvoices.simpleapi.endpoints.UserEndpoint;
+import ca.firstvoices.simpleapi.endpoints.VocabularyEndpoint;
 import ca.firstvoices.simpleapi.exceptions.mappers.AdministrativelyDisabledExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.NotFoundExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.NotImplementedExceptionMapper;
+import ca.firstvoices.simpleapi.exceptions.mappers.UnauthorizedAccessExceptionMapper;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
+import com.sun.jersey.api.core.ResourceConfig;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -19,11 +25,11 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nuxeo.runtime.api.Framework;
 
 @ApplicationPath("/")
@@ -62,45 +68,31 @@ import org.nuxeo.runtime.api.Framework;
 )
 public class JerseyApplication extends Application {
 
-  private static final Log LOG = LogFactory.getLog(JerseyApplication.class);
+  private static final Logger log = Logger.getLogger(JerseyApplication.class.getCanonicalName());
 
   @Override
   public Set<Object> getSingletons() {
     Set<Object> singletons = new HashSet<>();
-    UserEndpoint userEndpoint = new UserEndpoint();
-    singletons.add(userEndpoint);
-    FirstVoicesService firstVoicesService = Framework.getService(FirstVoicesService.class);
-    ArchiveEndpoint archiveEndpoint = new ArchiveEndpoint(firstVoicesService);
-    singletons.add(archiveEndpoint);
+
+    singletons.add(new ArchiveEndpoint());
+    singletons.add(new AuthorizationEndpoint());
+    singletons.add(new SearchEndpoint());
+    singletons.add(new SharedEndpoint());
+    singletons.add(new UserEndpoint());
+    singletons.add(new VocabularyEndpoint());
 
     singletons.add(new AdministrativelyDisabledExceptionMapper());
     singletons.add(new NotFoundExceptionMapper());
     singletons.add(new NotImplementedExceptionMapper());
-
-//    singletons.add(new JSONMarshallingProvider());
-//
-//    singletons.add(new CORSFilter());
-//    singletons.add(new AdministrativelyDisabledFilterFactory());
-//
+    singletons.add(new UnauthorizedAccessExceptionMapper());
 
     return singletons;
   }
-//
-//  @Override
-//  public Set<Class<?>> getClasses() {
-//    Set<Class<?>> classes = new HashSet<>();
-////    classes.add(AdministrativelyDisabledExceptionMapper.class);
-//    classes.add(NotFoundExceptionMapper.class);
-//    classes.add(NotImplementedExceptionMapper.class);
-//
-////    classes.add(CORSFilter.class);
-////    classes.add(AdministrativelyDisabledFilter.class);
-//    return classes;
-//  }
+
 
   public JerseyApplication() {
-    System.out.println("jersey application deployment complete");
-    LOG.info("JA Startup Complete");
+    log.info("Startup Complete");
   }
+
 
 }

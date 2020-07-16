@@ -40,7 +40,6 @@
     <module>migration-contributions</module>
     <module>FirstVoicesData</module>
     <module>FirstVoicesOperations</module>
-    <module>FirstVoicesTestUtilities</module>
   </modules>
 
   <dependencyManagement>
@@ -89,10 +88,11 @@
         <groupId>ca.firstvoices</groupId>
         <artifactId>FirstVoicesCoreTests</artifactId>
         <version>${project.version}</version>
+        <type>test-jar</type>
       </dependency>
       <dependency>
         <groupId>ca.firstvoices</groupId>
-        <artifactId>FirstVoicesTestUtilities</artifactId>
+        <artifactId>FirstVoicesCoreTests</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

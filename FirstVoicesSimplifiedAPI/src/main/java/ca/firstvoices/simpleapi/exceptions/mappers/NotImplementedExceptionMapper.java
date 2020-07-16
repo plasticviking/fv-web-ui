@@ -10,6 +10,8 @@ import javax.ws.rs.ext.Provider;
 public class NotImplementedExceptionMapper implements ExceptionMapper<NotImplementedException> {
   @Override
   public Response toResponse(NotImplementedException e) {
-    return Response.status(Response.Status.SERVICE_UNAVAILABLE).entity(new ErrorResponseEntity("This service not yet implemented")).build();
+    return Response.status(Response.Status.SERVICE_UNAVAILABLE)
+        .entity(new ErrorResponseEntity("This service not yet implemented"))
+        .build();
   }
 }

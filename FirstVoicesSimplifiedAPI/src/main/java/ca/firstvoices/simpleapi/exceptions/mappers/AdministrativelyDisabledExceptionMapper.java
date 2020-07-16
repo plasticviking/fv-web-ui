@@ -6,7 +6,8 @@ import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class AdministrativelyDisabledExceptionMapper implements ExceptionMapper<AdministrativelyDisabledException> {
+public class AdministrativelyDisabledExceptionMapper
+    implements ExceptionMapper<AdministrativelyDisabledException> {
 
   @Override
   public Response toResponse(AdministrativelyDisabledException e) {
