@@ -34,7 +34,7 @@ import org.nuxeo.runtime.api.Framework;
     }
 )
 @AdministrativelyDisabled("shared")
-public class SharedEndpoint {
+public class SharedEndpoint extends AbstractServiceEndpoint {
 
   private static class CategoryListResponse extends Metadata<List<String>> {
   }
@@ -54,16 +54,7 @@ public class SharedEndpoint {
   private static class MediaReponse extends Metadata<Asset> {
   }
 
-
   private static final Logger log = Logger.getLogger(SharedEndpoint.class.getCanonicalName());
-
-
-
-  private final FirstVoicesService service;
-
-  public SharedEndpoint() {
-    this.service = Framework.getService(FirstVoicesService.class);
-  }
 
   @GET
   @Path("/categories")
@@ -101,7 +92,7 @@ public class SharedEndpoint {
                                 @QueryParam("index")
                                 @DefaultValue("0")
                                     long index) {
-    return Response.ok(service.getSharedCategories(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSharedCategories(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -142,7 +133,7 @@ public class SharedEndpoint {
                            @DefaultValue("0")
                                long index
   ) {
-    return Response.ok(service.getSharedLinks(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSharedLinks(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -183,7 +174,7 @@ public class SharedEndpoint {
                            @DefaultValue("0")
                                long index
   ) {
-    return Response.ok(service.getSharedMedia(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSharedMedia(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -230,6 +221,6 @@ public class SharedEndpoint {
       @DefaultValue("0")
           long index
   ) {
-    return Response.ok(service.getSharedMediaDetail(mediaID)).build();
+    return Response.ok(getFirstVoicesService().getSharedMediaDetail(mediaID)).build();
   }
 }

@@ -39,8 +39,7 @@ import org.nuxeo.runtime.api.Framework;
     }
 )
 @AdministrativelyDisabled("archive")
-public class ArchiveEndpoint {
-
+public class ArchiveEndpoint extends AbstractServiceEndpoint{
 
   private static class WordOverviewResponse extends Metadata<List<Word>> {
   }
@@ -76,14 +75,6 @@ public class ArchiveEndpoint {
   }
 
   private static final Logger log = Logger.getLogger(ArchiveEndpoint.class.getCanonicalName());
-
-
-  private final FirstVoicesService service;
-
-  public ArchiveEndpoint() {
-    this.service = Framework.getService(FirstVoicesService.class);
-  }
-
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -122,7 +113,7 @@ public class ArchiveEndpoint {
       @DefaultValue("0")
           long index
   ) {
-    return Response.ok(service.getArchives(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getArchives(new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -169,7 +160,7 @@ public class ArchiveEndpoint {
                                long index
 
   ) throws NotFoundException {
-    return Response.ok(service.getWordsInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getWordsInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
 
@@ -217,7 +208,7 @@ public class ArchiveEndpoint {
                              @DefaultValue("0")
                                  long index
   ) {
-    return Response.ok(service.getPhrasesInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getPhrasesInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -265,7 +256,7 @@ public class ArchiveEndpoint {
                            @DefaultValue("0")
                                long index
   ) {
-    return Response.ok(service.getSongsInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSongsInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
   @GET
@@ -314,7 +305,7 @@ public class ArchiveEndpoint {
       @DefaultValue("0")
           long index
   ) {
-    return Response.ok(service.getStoriesInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getStoriesInArchive(archive, new QueryBean(pageSize, index))).build();
   }
 
 
@@ -349,7 +340,7 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getLanguage(@PathParam("archiveID") String archive) {
-    return Response.ok(service.getArchiveDetail(archive)).build();
+    return Response.ok(getFirstVoicesService().getArchiveDetail(archive)).build();
   }
 
 
@@ -379,7 +370,7 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getWord(@PathParam("archiveID") String archiveId, @PathParam("wordID") String wordId) {
-    return Response.ok(service.getWordDetail(wordId)).build();
+    return Response.ok(getFirstVoicesService().getWordDetail(wordId)).build();
   }
 
   @GET
@@ -408,7 +399,7 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getPhrase(@PathParam("archiveID") String archiveId, @PathParam("phraseID") String phraseID) {
-    return Response.ok(service.getPhraseDetail(phraseID)).build();
+    return Response.ok(getFirstVoicesService().getPhraseDetail(phraseID)).build();
   }
 
   @GET
@@ -437,7 +428,7 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getSong(@PathParam("archiveID") String archiveId, @PathParam("songID") String songID) {
-    return Response.ok(service.getWordDetail(songID)).build();
+    return Response.ok(getFirstVoicesService().getWordDetail(songID)).build();
   }
 
   @GET
@@ -466,6 +457,6 @@ public class ArchiveEndpoint {
       tags = {"Archive"}
   )
   public Response getStory(@PathParam("archiveID") String archiveId, @PathParam("storyID") String storyID) {
-    return Response.ok(service.getStoryDetail(storyID)).build();
+    return Response.ok(getFirstVoicesService().getStoryDetail(storyID)).build();
   }
 }

@@ -23,7 +23,7 @@ import org.nuxeo.runtime.api.Framework;
     }
 )
 @AdministrativelyDisabled("authorization")
-public class AuthorizationEndpoint {
+public class AuthorizationEndpoint extends AbstractServiceEndpoint {
   private static final Logger log = Logger.getLogger(AuthorizationEndpoint.class.getCanonicalName());
 
   private final FirstVoicesService service;

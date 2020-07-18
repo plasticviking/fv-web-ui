@@ -35,7 +35,7 @@ import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.transaction.TransactionHelper;
 
 @Singleton
-public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesService {
+public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService {
 
   private static final Log LOG = LogFactory.getLog(NuxeoFirstVoicesServiceImplementation.class);
 
@@ -59,7 +59,7 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
       PageProviderService pageProviderService = Framework.getService(PageProviderService.class);
 
       PageProvider<DocumentModel> pageProvider = (PageProvider<DocumentModel>) pageProviderService
-          .getPageProvider(ppName, null, null, null, props);
+          .getPageProvider(ppName, null, null, null, props, params);
 
       pageProvider.setPageSize(queryParams.pageSize);
       pageProvider.setCurrentPage(queryParams.index);
@@ -80,6 +80,8 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
   private <V> Metadata<V> buildSingleResponse(
       Class<V> resultClass,
       String ppName,
+      String detailType,
+      boolean throwOnNotFound,
       Object... params) {
     Metadata<V> md = new Metadata<>();
 
@@ -100,11 +102,26 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
       PageProviderService pageProviderService = Framework.getService(PageProviderService.class);
 
       PageProvider<DocumentModel> pageProvider = (PageProvider<DocumentModel>) pageProviderService
-          .getPageProvider(ppName, null, null, null, props);
+          .getPageProvider(ppName, null, null, null, props, params);
 
-      pageProvider.setPageSize(pageProvider.getResultsCount());
+      System.out.println("Found " + pageProvider.getResultsCount() + " results for id " + params[0].toString());
+
+//      pageProvider.setPageSize(pageProvider.getResultsCount());
+      pageProvider.setPageSize(pageProvider.getMaxPageSize());
 
       List<DocumentModel> results = pageProvider.getCurrentPage();
+
+      if (results.size() == 0) {
+        throw new NotFoundException();
+      }
+      md.setCount(pageProvider.getResultsCount());
+      md.setDetailType(detailType);
+      md.setStatus(pageProvider.hasError() ? "error" : "success");
+
+      results.stream().findFirst().ifPresent(dm -> {
+        md.setDetail(AnnotationNuxeoMapper.mapFrom(resultClass, dm));
+      });
+
       TransactionHelper.commitOrRollbackTransaction();
 
       return md;
@@ -119,7 +136,7 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
 
   @Override
   public Metadata<ArchiveDetailPublic> getArchiveDetail(String archiveID) {
-    return buildSingleResponse(ArchiveDetailPublic.class, "GET_ARCHIVE_PP", "archive", archiveID);
+    return buildSingleResponse(ArchiveDetailPublic.class, "GET_ARCHIVE_PP", "archive", true, archiveID);
   }
 
   @Override
@@ -165,7 +182,7 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
 
   @Override
   public Metadata<Asset> getSharedMediaDetail(String id) {
-    return buildSingleResponse(Asset.class, "GET_SHARED_ASSET_PP", "asset", id);
+    return buildSingleResponse(Asset.class, "GET_SHARED_ASSET_PP", "asset", true, id);
   }
 
   @Override
@@ -175,24 +192,22 @@ public class NuxeoFirstVoicesServiceImplementation extends AbstractFirstVoicesSe
 
   @Override
   public Metadata<Story> getStoryDetail(String id) {
-    return buildSingleResponse(Story.class, "GET_STORY_PP", "story", id);
+    return buildSingleResponse(Story.class, "GET_STORY_PP", "story", true, id);
   }
 
   @Override
   public Metadata<Song> getSongDetail(String id) {
-    return buildSingleResponse(Song.class, "GET_SONG_PP", "song", id);
+    return buildSingleResponse(Song.class, "GET_SONG_PP", "song", true, id);
   }
 
   @Override
   public Metadata<Phrase> getPhraseDetail(String id) {
-    return buildSingleResponse(Phrase.class, "GET_PHRASE_PP", "phrase", id);
+    return buildSingleResponse(Phrase.class, "GET_PHRASE_PP", "phrase", true, id);
   }
 
   @Override
   public Metadata<Word> getWordDetail(String id) {
-    return buildSingleResponse(Word.class, "GET_WORD_PP", "word", id);
-
+    return buildSingleResponse(Word.class, "GET_WORD_PP", "word", true, id);
   }
-
 
 }

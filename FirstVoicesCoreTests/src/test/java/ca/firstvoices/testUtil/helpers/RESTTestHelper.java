@@ -1,13 +1,13 @@
 package ca.firstvoices.testUtil.helpers;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.Optional;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -21,11 +21,12 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
-/** @author Rob J
- *
+/**
+ * @author Rob J
+ * <p>
  * Fluent API. Intended to make testing of REST services less verbose.
  * See examples in FirstVoicesSimplifiedAPI tests
-**/
+ **/
 public class RESTTestHelper {
   private static Logger log = Logger.getLogger(RESTTestHelper.class.getCanonicalName());
 
@@ -45,28 +46,24 @@ public class RESTTestHelper {
   public static class Builder {
     private final String url;
     private Verb verb = Verb.GET;
-    private int expectedStatusCode = 200;
+    private Optional<Integer> expectedStatusCode = Optional.of(200);
     private String accept = "application/json";
     private String authHeader = null;
 
-    private RESTResponseValidator validator = (node, response) -> {
-      log.info("Default validator implementation is checking for %s response");
-      int httpStatusCode = response.getStatusLine().getStatusCode();
-      assertEquals("Status should equal expected code", httpStatusCode, expectedStatusCode);
-    };
+    private Optional<RESTResponseValidator> validator = Optional.empty();
 
     public Builder withVerb(Verb verb) {
       this.verb = verb;
       return this;
     }
 
-    public Builder withExpectedStatusCode(int expectedStatusCode) {
-      this.expectedStatusCode = expectedStatusCode;
+    public Builder withExpectedStatusCode(Integer expectedStatusCode) {
+      this.expectedStatusCode = Optional.ofNullable(expectedStatusCode);
       return this;
     }
 
     public Builder withValidator(RESTResponseValidator validator) {
-      this.validator = validator;
+      this.validator = Optional.ofNullable(validator);
       return this;
     }
 
@@ -136,8 +133,8 @@ public class RESTTestHelper {
         log.info("response body:\n" + body);
         JsonNode node = mapper.readTree(body);
 
-
-        validator.validateResponse(node, response);
+        expectedStatusCode.ifPresent(ecs -> assertEquals(ecs.intValue(), response.getStatusLine().getStatusCode()));
+        validator.ifPresent(v -> v.validateResponse(node, response));
 
       } catch (IOException e) {
         throw new RuntimeException(e);

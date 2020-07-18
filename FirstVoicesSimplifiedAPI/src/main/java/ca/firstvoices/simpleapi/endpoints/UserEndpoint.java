@@ -27,16 +27,9 @@ import org.nuxeo.runtime.api.Framework;
 )
 @JWTAuth //requiredScopes omitted -- only requires a successful decode/key verification
 @AdministrativelyDisabled("user")
-public class UserEndpoint {
+public class UserEndpoint extends AbstractServiceEndpoint {
 
   private static final Logger log = Logger.getLogger(UserEndpoint.class.getCanonicalName());
-
-  private UserContextStore userContextStore;
-
-  public UserEndpoint() {
-    this.userContextStore = Framework.getService(UserContextStore.class);
-  }
-
   @GET
   @Path("/current")
   @Produces(MediaType.APPLICATION_JSON)
@@ -59,7 +52,7 @@ public class UserEndpoint {
       tags = {"Access", "User"}
   )
   public Response getCurrentUser(@QueryParam(value = "username") String username) {
-    return Response.ok(this.userContextStore.getCurrentUser()).build();
+    return Response.ok(getUserContextStore().getCurrentUser()).build();
   }
 
 }

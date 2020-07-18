@@ -3,6 +3,7 @@ package ca.firstvoices.testUtil;
 import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
 import javax.inject.Inject;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.runtime.test.runner.Deploy;
 import org.nuxeo.runtime.test.runner.Deploys;
@@ -25,7 +26,7 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
 public abstract class AbstractTestDataCreatorTest {
 
   @Inject
-  private TestDataCreator dataCreator;
+  protected TestDataCreator dataCreator;
 
   @Inject
   private CoreSession session;

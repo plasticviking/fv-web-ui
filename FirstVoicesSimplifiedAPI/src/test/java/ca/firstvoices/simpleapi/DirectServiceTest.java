@@ -23,9 +23,9 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
 @TestDataConfiguration(createDialectTree = true)
 @Deploy("FirstVoicesSimplifiedAPI")
-public class DirectServiceCreatorTestAbstract extends AbstractTestDataCreatorTest {
+public class DirectServiceTest extends AbstractTestDataCreatorTest {
 
-  private static final Logger log = Logger.getLogger(DirectServiceCreatorTestAbstract.class.getCanonicalName());
+  private static final Logger log = Logger.getLogger(DirectServiceTest.class.getCanonicalName());
 
   @Inject
   protected FirstVoicesService fvs;

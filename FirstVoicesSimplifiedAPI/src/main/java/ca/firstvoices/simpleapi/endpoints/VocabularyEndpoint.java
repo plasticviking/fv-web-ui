@@ -6,8 +6,6 @@ import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.Vocabulary;
 import ca.firstvoices.simpleapi.representations.VocabularyEntry;
 import ca.firstvoices.simpleapi.representations.containers.Metadata;
-import ca.firstvoices.simpleapi.services.FirstVoicesService;
-import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -25,7 +23,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.nuxeo.runtime.api.Framework;
 
 @Path("/v1/vocabularies")
 @SecurityRequirements(
@@ -34,15 +31,9 @@ import org.nuxeo.runtime.api.Framework;
     }
 )
 @AdministrativelyDisabled("vocabulary")
-public class VocabularyEndpoint {
+public class VocabularyEndpoint extends AbstractServiceEndpoint {
 
-  private static final java.util.logging.Logger log = Logger.getLogger(VocabularyEndpoint.class.getCanonicalName());
-
-  private final FirstVoicesService service;
-
-  public VocabularyEndpoint() {
-    this.service = Framework.getService(FirstVoicesService.class);
-  }
+  private static final Logger log = Logger.getLogger(VocabularyEndpoint.class.getCanonicalName());
 
   private static class VocabularyListResponse extends Metadata<List<Vocabulary>> {
   }
@@ -90,7 +81,7 @@ public class VocabularyEndpoint {
       @QueryParam("index")
       @DefaultValue("0")
           long index) {
-    return Response.ok(service.getVocabularies(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getVocabularies(new QueryBean(pageSize, index))).build();
   }
 
   @GET

@@ -1,8 +1,5 @@
 <component name="ca.firstvoices.simpleapi.service">
 
-    <require>ca.firstvoices.simpleapi.mapper</require>
-
-
     <implementation class="ca.firstvoices.simpleapi.services.NuxeoFirstVoicesServiceImplementation"/>
 
     <service>

@@ -32,15 +32,7 @@ import org.nuxeo.runtime.api.Framework;
     }
 )
 @AdministrativelyDisabled("search")
-public class SearchEndpoint {
-
-
-
-  private final FirstVoicesService service;
-
-  public SearchEndpoint() {
-    this.service = Framework.getService(FirstVoicesService.class);
-  }
+public class SearchEndpoint extends AbstractServiceEndpoint {
 
   private static final Logger log = Logger.getLogger(SearchEndpoint.class.getCanonicalName());
 
@@ -83,7 +75,7 @@ public class SearchEndpoint {
                            @QueryParam("index")
                            @DefaultValue("0")
                                long index) {
-    return Response.ok(service.doSearch(q, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().doSearch(q, new QueryBean(pageSize, index))).build();
   }
 
 }
