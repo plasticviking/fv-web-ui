@@ -11,8 +11,6 @@ import ca.firstvoices.simpleapi.exceptions.mappers.AdministrativelyDisabledExcep
 import ca.firstvoices.simpleapi.exceptions.mappers.NotFoundExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.NotImplementedExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.UnauthorizedAccessExceptionMapper;
-import ca.firstvoices.simpleapi.services.FirstVoicesService;
-import com.sun.jersey.api.core.ResourceConfig;
 import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.info.Contact;
@@ -25,12 +23,10 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.servers.Server;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
-import org.nuxeo.runtime.api.Framework;
 
 @ApplicationPath("/")
 @OpenAPIDefinition(
@@ -70,6 +66,7 @@ public class JerseyApplication extends Application {
 
   private static final Logger log = Logger.getLogger(JerseyApplication.class.getCanonicalName());
 
+
   @Override
   public Set<Object> getSingletons() {
     Set<Object> singletons = new HashSet<>();
@@ -91,7 +88,7 @@ public class JerseyApplication extends Application {
 
 
   public JerseyApplication() {
-    log.info("Startup Complete");
+    log.severe("startup complete");
   }
 
 

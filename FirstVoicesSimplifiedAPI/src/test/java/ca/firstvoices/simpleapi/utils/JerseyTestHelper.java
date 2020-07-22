@@ -1,7 +1,6 @@
 package ca.firstvoices.simpleapi.utils;
 
 import ca.firstvoices.simpleapi.JerseyApplication;
-import com.sun.jersey.api.container.grizzly2.GrizzlyServerFactory;
 import com.sun.jersey.api.core.ApplicationAdapter;
 import com.sun.jersey.api.core.ResourceConfig;
 import java.io.IOException;
@@ -40,7 +39,7 @@ public class JerseyTestHelper {
 
     String url = "http://localhost:" + port + "/";
 
-    server = GrizzlyServerFactory.createHttpServer(url, rc);
+//    server = GrizzlyServerFactory.createHttpServer(url, rc);
     server.start();
   }
 

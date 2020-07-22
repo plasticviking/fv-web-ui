@@ -11,7 +11,6 @@ import ca.firstvoices.simpleapi.representations.Song;
 import ca.firstvoices.simpleapi.representations.Story;
 import ca.firstvoices.simpleapi.representations.Word;
 import ca.firstvoices.simpleapi.representations.containers.Metadata;
-import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -29,7 +28,6 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.nuxeo.runtime.api.Framework;
 
 
 @Path("/v1/archives")
@@ -39,7 +37,7 @@ import org.nuxeo.runtime.api.Framework;
     }
 )
 @AdministrativelyDisabled("archive")
-public class ArchiveEndpoint extends AbstractServiceEndpoint{
+public class ArchiveEndpoint extends AbstractServiceEndpoint {
 
   private static class WordOverviewResponse extends Metadata<List<Word>> {
   }

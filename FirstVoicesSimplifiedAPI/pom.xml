@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
@@ -42,31 +43,34 @@
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-annotations</artifactId>
       <version>2.1.2</version>
+      <scope>compile</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-jaxrs2 -->
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-jaxrs2</artifactId>
       <version>2.1.2</version>
-    </dependency>
-    <dependency>
-      <groupId>io.swagger.core.v3</groupId>
-      <artifactId>swagger-jaxrs2</artifactId>
-      <version>2.1.2</version>
+      <scope>compile</scope>
     </dependency>
     <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-core -->
     <dependency>
       <groupId>io.swagger.core.v3</groupId>
       <artifactId>swagger-core</artifactId>
       <version>2.1.2</version>
+      <scope>compile</scope>
     </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.ow2.asm</groupId>-->
+    <!--      <artifactId>asm</artifactId>-->
+    <!--      <version>7.3</version>-->
+    <!--    </dependency>-->
 
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>jsr311-api</artifactId>
-      <version>1.1.1</version>
-      <scope>provided</scope>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>javax.ws.rs</groupId>-->
+    <!--      <artifactId>jsr311-api</artifactId>-->
+    <!--      <version>1.1.1</version>-->
+    <!--      <scope>provided</scope>-->
+    <!--    </dependency>-->
 
 
     <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.core/jersey-server -->
@@ -75,28 +79,33 @@
     <!--            <artifactId>jersey-server</artifactId>-->
     <!--            <version>2.25.1</version>-->
     <!--        </dependency>-->
-    <!--        <dependency>-->
-    <!--            <groupId>org.glassfish.jersey.media</groupId>-->
-    <!--            <artifactId>jersey-media-json-jackson</artifactId>-->
-    <!--            <version>2.25.1</version>-->
-    <!--        </dependency>-->
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-json-jackson</artifactId>
+      <version>2.25.1</version>
+    </dependency>
     <!--        <dependency>-->
     <!--            <groupId>org.glassfish.jersey.containers</groupId>-->
     <!--            <artifactId>jersey-container-servlet</artifactId>-->
     <!--            <version>2.25.1</version>-->
     <!--        </dependency>-->
     <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.inject/jersey-hk2 -->
-    <!--        <dependency>-->
-    <!--            <groupId>org.glassfish.jersey.inject</groupId>-->
-    <!--            <artifactId>jersey-hk2</artifactId>-->
-    <!--            <version>2.25.1</version>-->
-    <!--        </dependency>-->
-    <!-- https://mvnrepository.com/artifact/org.glassfish.hk2/hk2-locator -->
-    <!--        <dependency>-->
-    <!--            <groupId>org.glassfish.hk2</groupId>-->
-    <!--            <artifactId>hk2-locator</artifactId>-->
-    <!--            <version>2.6.1</version>-->
-    <!--        </dependency>-->
+    <dependency>
+      <groupId>org.glassfish.jersey.inject</groupId>
+      <artifactId>jersey-hk2</artifactId>
+      <version>2.31</version>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>org.glassfish.jersey.ext</groupId>-->
+<!--      <artifactId>jersey-entity-filtering</artifactId>-->
+<!--      <version>2.3.1</version>-->
+<!--    </dependency>-->
+
+    <dependency>
+      <groupId>org.glassfish.hk2</groupId>
+      <artifactId>hk2-locator</artifactId>
+      <version>2.6.1</version>
+    </dependency>
 
     <!--        <dependency>-->
     <!--            <groupId>org.glassfish.jersey.bundles.repackaged</groupId>-->
@@ -149,29 +158,71 @@
       <version>0.11.2</version>
     </dependency>
     <!-- https://mvnrepository.com/artifact/com.sun.jersey/jersey-server -->
+    <!--    <dependency>-->
+    <!--      <groupId>com.sun.jersey</groupId>-->
+    <!--      <artifactId>jersey-server</artifactId>-->
+    <!--      <version>1.19.4</version>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>com.sun.jersey</groupId>-->
+    <!--      <artifactId>jersey-servlet</artifactId>-->
+    <!--      <version>1.19.4</version>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>com.sun.jersey</groupId>-->
+    <!--      <artifactId>jersey-core</artifactId>-->
+    <!--      <version>1.19.4</version>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>com.sun.jersey</groupId>-->
+    <!--      <artifactId>jersey-json</artifactId>-->
+    <!--      <version>1.19.4</version>-->
+    <!--    </dependency>-->
     <dependency>
-      <groupId>com.sun.jersey</groupId>
+      <groupId>com.fasterxml.jackson.jaxrs</groupId>
+      <artifactId>jackson-jaxrs-json-provider</artifactId>
+      <version>2.11.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
-      <version>1.19.4</version>
+      <version>2.25.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-common</artifactId>
+      <version>2.25.1</version>
     </dependency>
 
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-json</artifactId>
-      <version>1.19.4</version>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>2.25.1</version>
     </dependency>
-    <!--        <dependency>-->
-    <!--            <groupId>com.fasterxml.jackson.jaxrs</groupId>-->
-    <!--            <artifactId>jackson-jaxrs-json-provider</artifactId>-->
-    <!--            <version>2.11.1</version>-->
-    <!--        </dependency>-->
+
 
     <dependency>
-      <groupId>com.sun.jersey</groupId>
-      <artifactId>jersey-grizzly2</artifactId>
-      <version>1.19.4</version>
+      <groupId>org.glassfish.grizzly</groupId>
+      <artifactId>grizzly-http-server</artifactId>
+      <version>2.4.4</version>
       <scope>test</scope>
     </dependency>
+
+    <!--    <dependency>-->
+    <!--      <groupId>org.glassfish.grizzly</groupId>-->
+    <!--      <artifactId>grizzly-framework</artifactId>-->
+    <!--      <version>2.4.4</version>-->
+    <!--      <scope>test</scope>-->
+    <!--    </dependency>-->
+
+
+    <!--    <dependency>-->
+    <!--      <groupId>com.sun.jersey</groupId>-->
+    <!--      <artifactId>jersey-grizzly2</artifactId>-->
+    <!--      <version>1.19.4</version>-->
+    <!--      <scope>test</scope>-->
+    <!--    </dependency>-->
 
 
     <!--        <dependency>-->
@@ -187,11 +238,11 @@
     <!--            <scope>test</scope>-->
     <!--        </dependency>-->
 
-    <dependency>
-      <groupId>io.lettuce</groupId>
-      <artifactId>lettuce-core</artifactId>
-      <version>5.1.3.RELEASE</version>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.lettuce</groupId>-->
+    <!--      <artifactId>lettuce-core</artifactId>-->
+    <!--      <version>5.1.3.RELEASE</version>-->
+    <!--    </dependency>-->
 
     <!-- https://mvnrepository.com/artifact/javax.ws.rs/jsr311-api -->
     <!--        <dependency>-->
@@ -204,15 +255,9 @@
     <dependency>
       <groupId>javax.ws.rs</groupId>
       <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.1</version>
-      <scope>compile
-      </scope> <!-- actually only needed by swagger documentation generation (which doesn't explicitly support jaxrs1) -->
-    </dependency>
-    <dependency>
-
-      <groupId>org.nuxeo.client</groupId>
-      <artifactId>nuxeo-java-client</artifactId>
-      <version>3.2.0</version>
+      <version>2.0</version>
+      <!--      <scope>compile-->
+      <!--      </scope> &lt;!&ndash; actually only needed by swagger documentation generation (which doesn't explicitly support jaxrs1) &ndash;&gt;-->
     </dependency>
 
     <dependency>
@@ -234,6 +279,7 @@
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>
       <artifactId>nuxeo-runtime</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
@@ -258,31 +304,35 @@
     <dependency>
       <groupId>org.nuxeo.ecm.core</groupId>
       <artifactId>nuxeo-core-event</artifactId>
+      <scope>test</scope>
+
     </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-content-template-manager</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-platform-content-template-manager</artifactId>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-publisher-api</artifactId>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>
       <artifactId>nuxeo-automation-core</artifactId>
+      <scope>test</scope>
     </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.automation</groupId>
-      <artifactId>nuxeo-automation-client</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-user-registration-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.automation</groupId>
-      <artifactId>nuxeo-automation-io</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.automation</groupId>-->
+    <!--      <artifactId>nuxeo-automation-client</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-platform-user-registration-core</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.automation</groupId>-->
+    <!--      <artifactId>nuxeo-automation-io</artifactId>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>commons-logging</groupId>
       <artifactId>commons-logging</artifactId>
@@ -295,10 +345,10 @@
       <groupId>org.jboss.seam</groupId>
       <artifactId>jboss-seam</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-usermanager-api</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-platform-usermanager-api</artifactId>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-webapp-base</artifactId>
@@ -307,44 +357,50 @@
       <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-webapp-core</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-mapper-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-web-common</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-invite</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.webengine</groupId>
-      <artifactId>nuxeo-webengine-invite</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.codehaus.jackson</groupId>-->
+    <!--      <artifactId>jackson-mapper-asl</artifactId>-->
+    <!--      <version>1.9.2</version>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.codehaus.jackson</groupId>-->
+    <!--      <artifactId>jackson-core-asl</artifactId>-->
+    <!--      <version>1.9.2</version>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-platform-web-common</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-invite</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.webengine</groupId>-->
+    <!--      <artifactId>nuxeo-webengine-invite</artifactId>-->
+    <!--    </dependency>-->
     <!--        <dependency>-->
     <!--            <groupId>javax.servlet</groupId>-->
     <!--            <artifactId>javax.servlet-api</artifactId>-->
     <!--            <version>3.0.1</version>-->
     <!--            <scope>provided</scope>-->
     <!--        </dependency>-->
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-usermanager-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.codehaus.jackson</groupId>
-      <artifactId>jackson-core-asl</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-usermapper</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.nuxeo.ecm.platform</groupId>
-      <artifactId>nuxeo-platform-audit-core</artifactId>
-    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-platform-usermanager-core</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.codehaus.jackson</groupId>-->
+    <!--      <artifactId>jackson-core-asl</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-usermapper</artifactId>-->
+    <!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.nuxeo.ecm.platform</groupId>-->
+    <!--      <artifactId>nuxeo-platform-audit-core</artifactId>-->
+    <!--    </dependency>-->
     <dependency>
       <groupId>org.apache.tomcat</groupId>
       <artifactId>tomcat-catalina</artifactId>
@@ -353,6 +409,10 @@
       <groupId>org.nuxeo.runtime</groupId>
       <artifactId>nuxeo-runtime-test</artifactId>
       <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.runtime</groupId>
+      <artifactId>nuxeo-runtime</artifactId>
     </dependency>
     <dependency>
       <groupId>org.nuxeo.runtime</groupId>
@@ -418,8 +478,7 @@
       <groupId>com.sun.xml.bind</groupId>
       <artifactId>jaxb-impl</artifactId>
       <version>2.2.11</version>
-      <scope>test</scope>
-
+      <!--      <scope>test</scope>-->
     </dependency>
 
     <dependency>
@@ -561,7 +620,82 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.2.3</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <artifactSet>
+                <includes>
+                  <include>com.auth0:jwks-rsa</include>
+                  <!--                  <include>*:jjwt-api</include>-->
+                  <!--                  <include>*:jjwt-impl</include>-->
+                  <include>*:asm</include>
+                  <include>io.jsonwebtoken:*</include>
+                  <include>com.fasterxml.jackson.jaxrs:*</include>
+                  <include>com.fasterxml.jackson.core:*</include>
+                  <include>com.fasterxml.jackson.module:*</include>
+                  <!--                  <include>org.codehaus.jackson:*</include>-->
+                  <include>org.glassfish.jersey.core:*</include>
+                  <include>org.glassfish.jersey.media:*</include>
+                  <include>javax.ws.rs:*</include>
+                  <include>org.glassfish.jersey.containers:*</include>
+                  <include>org.glassfish.jersey.inject:*</include>
+                  <include>org.glassfish.jersey.ext:*</include>
+                  <include>*:jersey-guava</include>>
 
+                  <include>org.glassfish.hk2:*</include>
+                  <!--                  <include>*:jersey-server</include>-->
+
+                  <!--                  <include>com.sun.jersey:*</include>-->
+                  <!--                  <include>javax.ws.rs:jsr311-api</include>-->
+                  <!--                  <include>*:jersey-servlet</include>-->
+                  <!--                  <include>*:jersey-json</include>-->
+                  <include>*:jaxb-impl</include>
+                  <!--                  <include>*:jaxb-runtime</include>-->
+                </includes>
+              </artifactSet>
+              <relocations>
+                <relocation>
+                  <pattern>javax.ws.rs</pattern>
+                  <shadedPattern>shaded.javax.ws.rs</shadedPattern>
+                </relocation>
+                <relocation>
+                  <pattern>org.glassfish</pattern>
+                  <shadedPattern>shaded.org.glassfish</shadedPattern>
+                  <excludes>
+                    <exclude>org.glassfish.jersey.servlet.ServletContainer</exclude>
+                  </excludes>
+                </relocation>
+                <relocation>
+                  <pattern>jersey.repackaged</pattern>
+                  <shadedPattern>shaded.jersey.repackaged</shadedPattern>
+                </relocation>
+                <!--                <relocation>-->
+                <!--                  <pattern>org.codehaus.jackson</pattern>-->
+                <!--                  <shadedPattern>org.shaded.jackson</shadedPattern>-->
+                <!--                </relocation>-->
+                <!--                <relocation>-->
+                <!--                  <pattern>com.sun.jersey</pattern>-->
+                <!--                  <shadedPattern>org.shaded.jersey</shadedPattern>-->
+                <!--                  <excludes>-->
+                <!--                    <exclude>com.sun.jersey.core.impl.provider.*</exclude>-->
+                <!--                  </excludes>-->
+                <!--                </relocation>-->
+              </relocations>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
+              </transformers>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 </project>
