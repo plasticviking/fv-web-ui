@@ -40,7 +40,7 @@ public class JWTTest extends AbstractTestDataCreatorTest {
   public static void setup() throws Exception {
     jersey.start(
         rc -> {
-          rc.getResourceFilterFactories().add(new JWTFilterFactory());
+//          rc.getResourceFilterFactories().add(new JWTFilterFactory());
         }
     );
   }

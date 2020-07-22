@@ -40,7 +40,8 @@ public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
   @BeforeClass
   public static void setup() throws Exception {
     jersey.start(rc -> {
-      rc.getResourceFilterFactories().add(new AdministrativelyDisabledFilterFactory());
+
+//      rc.getResourceFilterFactories().add(new AdministrativelyDisabledFilterFactory());
     });
   }
 

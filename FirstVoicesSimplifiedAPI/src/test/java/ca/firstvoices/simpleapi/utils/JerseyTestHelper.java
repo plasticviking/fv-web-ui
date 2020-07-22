@@ -1,11 +1,12 @@
 package ca.firstvoices.simpleapi.utils;
 
 import ca.firstvoices.simpleapi.JerseyApplication;
-import com.sun.jersey.api.core.ApplicationAdapter;
-import com.sun.jersey.api.core.ResourceConfig;
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.URI;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 
 public class JerseyTestHelper {
   private static JerseyTestHelper instance = null;
@@ -31,15 +32,17 @@ public class JerseyTestHelper {
   }
 
   public void start() throws Exception {
-    ResourceConfig rc = new ApplicationAdapter(new JerseyApplication());
-    rc.getFeatures().put("com.sun.jersey.api.json.POJOMappingFeature", true);
+    ResourceConfig rc = ResourceConfig.forApplication(new JerseyApplication());
+
     customizer.customizeResourceConfig(rc);
 
     port = findFreePort();
 
-    String url = "http://localhost:" + port + "/";
+    URI uri = new URI("http://localhost:" + port + "/");
 
-//    server = GrizzlyServerFactory.createHttpServer(url, rc);
+
+    this.server = GrizzlyHttpServerFactory.createHttpServer(uri, rc);
+
     server.start();
   }
 

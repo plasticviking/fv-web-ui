@@ -95,11 +95,11 @@
       <artifactId>jersey-hk2</artifactId>
       <version>2.31</version>
     </dependency>
-<!--    <dependency>-->
-<!--      <groupId>org.glassfish.jersey.ext</groupId>-->
-<!--      <artifactId>jersey-entity-filtering</artifactId>-->
-<!--      <version>2.3.1</version>-->
-<!--    </dependency>-->
+    <!--    <dependency>-->
+    <!--      <groupId>org.glassfish.jersey.ext</groupId>-->
+    <!--      <artifactId>jersey-entity-filtering</artifactId>-->
+    <!--      <version>2.3.1</version>-->
+    <!--    </dependency>-->
 
     <dependency>
       <groupId>org.glassfish.hk2</groupId>
@@ -208,6 +208,13 @@
       <version>2.4.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-grizzly2-servlet</artifactId>
+      <version>2.25.1</version>
+      <scope>test</scope>
+    </dependency>
+
 
     <!--    <dependency>-->
     <!--      <groupId>org.glassfish.grizzly</groupId>-->
@@ -666,10 +673,10 @@
                   <pattern>javax.ws.rs</pattern>
                   <shadedPattern>shaded.javax.ws.rs</shadedPattern>
                 </relocation>
-<!--                <relocation>-->
-<!--                  <pattern>org.glassfish</pattern>-->
-<!--                  <shadedPattern>shaded.org.glassfish</shadedPattern>-->
-<!--                </relocation>-->
+                <!--                <relocation>-->
+                <!--                  <pattern>org.glassfish</pattern>-->
+                <!--                  <shadedPattern>shaded.org.glassfish</shadedPattern>-->
+                <!--                </relocation>-->
                 <relocation>
                   <pattern>jersey.repackaged</pattern>
                   <shadedPattern>shaded.jersey.repackaged</shadedPattern>

@@ -1,11 +1,9 @@
 package ca.firstvoices.simpleapi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
-import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
 import ca.firstvoices.testUtil.AbstractTestDataCreatorTest;
+import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.junit.Test;
