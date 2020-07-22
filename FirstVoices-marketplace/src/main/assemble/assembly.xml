@@ -64,19 +64,6 @@
                 </excludes>
             </artifact:dependencies>
 
-<!--            <artifact:file artifactId="jwks-rsa"/>-->
-<!--            <artifact:file artifactId="jjwt-api"/>-->
-<!--            <artifact:file artifactId="jjwt-impl"/>-->
-<!--            <artifact:file artifactId="jjwt-jackson"/>-->
-<!--            <artifact:dependencies artifactId="jjwt-jackson">-->
-<!--                <excludes>-->
-<!--                    <artifact scope="test"/>-->
-<!--                    <artifact scope="provided"/>-->
-<!--                </excludes>-->
-<!--            </artifact:dependencies>-->
-
-<!--            <artifact:file artifactId="jackson-core-asl"/>-->
-<!--            <artifact:file artifactId="jackson-mapper-asl"/>-->
         </copy>
 
         <zip destfile="${outdir}/${maven.project.artifactId}-${maven.project.version}.zip"

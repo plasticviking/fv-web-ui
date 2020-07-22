@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 
-@ApplicationPath("/")
+@ApplicationPath("/*")
 @OpenAPIDefinition(
     info = @Info(
         title = "First Voices API",
@@ -82,6 +82,8 @@ public class JerseyApplication extends Application {
     singletons.add(new NotFoundExceptionMapper());
     singletons.add(new NotImplementedExceptionMapper());
     singletons.add(new UnauthorizedAccessExceptionMapper());
+
+    System.out.println("singletons initialized");
 
     return singletons;
   }

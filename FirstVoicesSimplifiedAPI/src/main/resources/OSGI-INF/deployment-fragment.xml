@@ -1,50 +1,25 @@
 <?xml version="1.0"?>
 <fragment version="1">
 
-    <!-- API Servlet mapping -->
-    <extension target="web#SERVLET">
-        <servlet>
-            <servlet-name>simpleapi-servlet</servlet-name>
-<!--            <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>-->
-<!--            <servlet-class>org.shaded.jersey.spi.container.servlet.ServletContainer</servlet-class>-->
-            <servlet-class>org.glassfish.jersey.servlet.ServletContainer</servlet-class>
-            <init-param>
-                <param-name>javax.ws.rs.Application</param-name>
-                <param-value>ca.firstvoices.simpleapi.JerseyApplication</param-value>
-            </init-param>
-<!--            <init-param>-->
-<!--                <param-name>jersey.config.disableAutoDiscovery</param-name>-->
-<!--                <param-value>true</param-value>-->
-<!--            </init-param>-->
-<!--            <init-param>-->
-<!--                <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>-->
-<!--                <param-value>true</param-value>-->
-<!--            </init-param>-->
-        </servlet>
-        <servlet-mapping>
-            <servlet-name>simpleapi-servlet</servlet-name>
-            <url-pattern>/simple/*</url-pattern>
-        </servlet-mapping>
-    </extension>
+  <!-- API Servlet mapping -->
+  <extension target="web#SERVLET">
+    <servlet>
+      <servlet-name>simpleapi-servlet</servlet-name>
+      <servlet-class>ca.firstvoices.simpleapi.SimpleAPIServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>simpleapi-servlet</servlet-name>
+      <url-pattern>/simple/*</url-pattern>
+    </servlet-mapping>
+  </extension>
 
-    <extension target="web#SERVLET">
-        <servlet>
-            <servlet-name>simpleapi-servlet2</servlet-name>
-            <servlet-class>ca.firstvoices.simpleapi.TrivialServlet</servlet-class>
-        </servlet>
-        <servlet-mapping>
-            <servlet-name>simpleapi-servlet2</servlet-name>
-            <url-pattern>/trivial/*</url-pattern>
-        </servlet-mapping>
-    </extension>
+  <require>org.nuxeo.ecm.platform.web.common</require>
+  <install>
 
-    <require>org.nuxeo.ecm.platform.web.common</require>
-    <install>
-
-        <unzip from="${bundle.fileName}" to="/nuxeo.war" prefix="web">
-            <include>web/redoc-static.html</include>
-        </unzip>
-    </install>
+    <unzip from="${bundle.fileName}" to="/nuxeo.war" prefix="web">
+      <include>web/redoc-static.html</include>
+    </unzip>
+  </install>
 
 
 </fragment>

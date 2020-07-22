@@ -169,13 +169,6 @@
                   <shadedPattern>shaded.javax.ws.rs</shadedPattern>
                 </relocation>
                 <relocation>
-                  <pattern>org.glassfish</pattern>
-                  <shadedPattern>shaded.org.glassfish</shadedPattern>
-                  <excludes>
-                    <exclude>org.glassfish.jersey.servlet.ServletContainer</exclude>
-                  </excludes>
-                </relocation>
-                <relocation>
                   <pattern>jersey.repackaged</pattern>
                   <shadedPattern>shaded.jersey.repackaged</shadedPattern>
                 </relocation>
