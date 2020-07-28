@@ -1,16 +1,22 @@
 package ca.firstvoices.testUtil;
 
 import ca.firstvoices.publisher.services.FirstVoicesPublisherService;
+import ca.firstvoices.testUtil.helpers.TestDataYAMLBean;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.work.api.WorkManager;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.runtime.transaction.TransactionHelper;
@@ -89,6 +95,26 @@ public class TestDataCreator {
     Framework.getService(WorkManager.class).awaitCompletion(10L, TimeUnit.SECONDS);
   }
 
+  public void parseYamlDirectives(CoreSession session, List<TestDataYAMLBean> inputs) {
+    if (TransactionHelper.isNoTransaction()) {
+      TransactionHelper.startTransaction();
+    }
+
+
+    System.out.println("dumping mapped");
+    List<TestDataYAMLBean> mapped = inputs.stream().flatMap(FunctionalFlattener::flattener).peek(System.out::println).collect(Collectors.toList());
+
+    mapped.stream().forEach(input -> {
+      DocumentModel document = session.createDocument(session.createDocumentModel(input.getPath(), input.getName(), input.getType()));
+      if (input.isPublish()) {
+        DocumentModel parent = session.getDocument(new PathRef(input.getPublishPath()));
+        publisherService.publishDocument(session, document, parent);
+      }
+      session.save();
+    });
+    TransactionHelper.commitOrRollbackTransaction();
+  }
+
   private final Set<String> publishedDialects = new HashSet<>();
   private final Set<String> publishedCategories = new HashSet<>();
 
@@ -99,4 +125,19 @@ public class TestDataCreator {
   public Set<String> getPublishedDialects() {
     return Collections.unmodifiableSet(publishedDialects);
   }
+
+  static class FunctionalFlattener {
+    public static Stream<TestDataYAMLBean> flattener(TestDataYAMLBean i) {
+      return Stream.concat(Stream.of(i), i.getChildren().stream().map(c -> {
+        c.setPath(i.getPath() + (i.getPath().endsWith("/") ? "" : "/") + i.getName());
+        if (i.getPublishPath() != null) {
+          c.setPublishPath(i.getPublishPath() + (i.getPublishPath().endsWith("/") ? "" : "/") + i.getName());
+          c.setPublish(i.isPublish());
+        }
+        return c;
+      }).flatMap(FunctionalFlattener::flattener));
+    }
+  }
 }
+
+

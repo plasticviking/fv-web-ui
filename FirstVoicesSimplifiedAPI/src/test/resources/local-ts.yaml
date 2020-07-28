@@ -1,0 +1,7 @@
+type: FVSection
+path: /
+name: Data
+publish: true
+properties:
+  - category: NC
+  - description: The root domain

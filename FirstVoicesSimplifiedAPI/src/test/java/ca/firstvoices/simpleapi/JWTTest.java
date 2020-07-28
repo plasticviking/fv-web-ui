@@ -1,7 +1,7 @@
 package ca.firstvoices.simpleapi;
 
 import ca.firstvoices.simpleapi.mocks.MockSigningKeyResolver;
-import ca.firstvoices.simpleapi.security.JWTFilterFactory;
+import ca.firstvoices.simpleapi.security.JWTFilter;
 import ca.firstvoices.simpleapi.utils.JerseyTestHelper;
 import ca.firstvoices.testUtil.helpers.RESTTestHelper;
 import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
@@ -41,6 +41,7 @@ public class JWTTest extends AbstractTestDataCreatorTest {
     jersey.start(
         rc -> {
 //          rc.getResourceFilterFactories().add(new JWTFilterFactory());
+          rc.register(JWTFilter.class);
         }
     );
   }

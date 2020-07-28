@@ -1,8 +1,6 @@
 package ca.firstvoices.simpleapi.security;
 
 import ca.firstvoices.simpleapi.exceptions.UnauthorizedAccessException;
-import com.sun.jersey.spi.container.ContainerRequest;
-import com.sun.jersey.spi.container.ContainerRequestFilter;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtParser;
@@ -15,38 +13,51 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.container.ContainerRequestFilter;
+import javax.ws.rs.container.ResourceInfo;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
+import javax.ws.rs.ext.Provider;
 import org.nuxeo.runtime.api.Framework;
 
-
+@Provider
 public class JWTFilter implements ContainerRequestFilter {
 
   private static final Logger log = Logger.getLogger(JWTFilter.class.getCanonicalName());
 
   private final UserContextStore userContextStore;
 
-  private final Set<String> requiredScopes = new HashSet<>();
-
   private final SigningKeyResolver keyResolver;
 
-  public JWTFilter(String... requiredScopes) {
+  @Context
+  private ResourceInfo resourceInfo;
 
+  public JWTFilter() {
     this.userContextStore = Framework.getService(UserContextStore.class);
     this.keyResolver = Framework.getService(SigningKeyResolver.class);
-    this.requiredScopes.addAll(Arrays.asList(requiredScopes));
   }
 
   @Override
-  public ContainerRequest filter(ContainerRequest containerRequest) {
+  public void filter(ContainerRequestContext requestContext) {
 
-    log.fine("Key resolver implementation class: " + this.keyResolver.getClass().getName());
+    final Set<String> requiredScopes = new HashSet<>();
+
+    Optional<JWTAuth> resourceAnnotation = Optional.ofNullable(
+        resourceInfo.getResourceClass().getAnnotation(JWTAuth.class)
+    );
+    Optional<JWTAuth> methodAnnotation = Optional.ofNullable(
+        resourceInfo.getResourceMethod().getAnnotation(JWTAuth.class)
+    );
+
+    resourceAnnotation.ifPresent(a -> requiredScopes.addAll(Arrays.asList(a.requiredScopes())));
+    methodAnnotation.ifPresent(a -> requiredScopes.addAll(Arrays.asList(a.requiredScopes())));
 
     log.fine("request should have all of these scopes: "
-        + String.join(", ", this.requiredScopes));
+        + String.join(", ", requiredScopes));
 
     try {
-
-      String auth = containerRequest.getHeaderValue(HttpHeaders.AUTHORIZATION);
+      String auth = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
       String token = auth.substring("Bearer".length()).trim();
 
       final JwtParser parser = Jwts.parserBuilder()
@@ -77,8 +88,6 @@ public class JWTFilter implements ContainerRequestFilter {
       log.warning("token decode failed. access denied.\n" + e);
       throw new UnauthorizedAccessException();
     }
-
-    return containerRequest;
   }
 
 }

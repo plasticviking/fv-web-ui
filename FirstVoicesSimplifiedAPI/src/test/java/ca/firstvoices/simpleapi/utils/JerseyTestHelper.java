@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.utils;
 
+import ca.firstvoices.simpleapi.CORSFilter;
 import ca.firstvoices.simpleapi.JerseyApplication;
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -35,11 +36,11 @@ public class JerseyTestHelper {
     ResourceConfig rc = ResourceConfig.forApplication(new JerseyApplication());
 
     customizer.customizeResourceConfig(rc);
+    rc.register(CORSFilter.class);
 
     port = findFreePort();
 
     URI uri = new URI("http://localhost:" + port + "/");
-
 
     this.server = GrizzlyHttpServerFactory.createHttpServer(uri, rc);
 

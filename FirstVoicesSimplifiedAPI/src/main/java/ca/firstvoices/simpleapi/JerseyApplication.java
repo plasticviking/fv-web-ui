@@ -7,7 +7,6 @@ import ca.firstvoices.simpleapi.endpoints.SearchEndpoint;
 import ca.firstvoices.simpleapi.endpoints.SharedEndpoint;
 import ca.firstvoices.simpleapi.endpoints.UserEndpoint;
 import ca.firstvoices.simpleapi.endpoints.VocabularyEndpoint;
-import ca.firstvoices.simpleapi.exceptions.mappers.AdministrativelyDisabledExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.NotFoundExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.NotImplementedExceptionMapper;
 import ca.firstvoices.simpleapi.exceptions.mappers.UnauthorizedAccessExceptionMapper;
@@ -78,7 +77,6 @@ public class JerseyApplication extends Application {
     singletons.add(new UserEndpoint());
     singletons.add(new VocabularyEndpoint());
 
-    singletons.add(new AdministrativelyDisabledExceptionMapper());
     singletons.add(new NotFoundExceptionMapper());
     singletons.add(new NotImplementedExceptionMapper());
     singletons.add(new UnauthorizedAccessExceptionMapper());

@@ -29,7 +29,7 @@ import org.nuxeo.runtime.transaction.TransactionHelper;
 @RunWith(FeaturesRunner.class)
 @Features({PlatformFeature.class})
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
-@TestDataConfiguration(createDialectTree = true)
+@TestDataConfiguration(createDialectTree = true, classPathYAML = {"test-structure.yaml"})
 @Deploy("FirstVoicesSimplifiedAPI")
 public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
 
