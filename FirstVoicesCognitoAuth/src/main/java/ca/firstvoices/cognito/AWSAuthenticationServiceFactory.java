@@ -40,12 +40,12 @@ public class AWSAuthenticationServiceFactory extends DefaultComponent {
           this.config.region,
           this.config.clientID
       );
-//      try {
-//        this.authenticationService.testConnection();
-//      } catch (MiscellaneousFailureException e) {
-//        LOG.warn("An exception occurred while testing the connection. AWS Cognito authentication"
-//            + " will not work", e);
-//      }
+      try {
+        this.authenticationService.testConnection();
+      } catch (MiscellaneousFailureException e) {
+        LOG.warn("An exception occurred while testing the connection. AWS Cognito authentication"
+            + " will not work", e);
+      }
     }
 
     super.registerContribution(contribution, xp, component);
