@@ -18,7 +18,9 @@ import org.nuxeo.runtime.api.Framework;
 @Provider
 @AdministrativelyDisabled
 public class AdministrativelyDisabledFilter implements ContainerRequestFilter {
-  private static final Logger log = Logger.getLogger(AdministrativelyDisabledFilter.class.getCanonicalName());
+  private static final Logger log = Logger.getLogger(
+      AdministrativelyDisabledFilter.class.getCanonicalName()
+  );
 
   private final Set<String> disabledEndpoints = new HashSet<>();
 

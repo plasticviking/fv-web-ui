@@ -54,9 +54,12 @@ import javax.ws.rs.core.Application;
     flows = @OAuthFlows(
         implicit = @OAuthFlow(authorizationUrl = "http://localhost:8888/auth",
             scopes = {
-                @OAuthScope(name = "archives:public", description = "read public archive data"),
-                @OAuthScope(name = "archives:recorder", description = "view unpublished content and submit new content"),
-                @OAuthScope(name = "archives:admin", description = "administer archives and publish new content")
+                @OAuthScope(name = "archives:public",
+                    description = "read public archive data"),
+                @OAuthScope(name = "archives:recorder",
+                    description = "view unpublished content and submit new content"),
+                @OAuthScope(name = "archives:admin",
+                    description = "administer archives and publish new content")
             }
         )
     )

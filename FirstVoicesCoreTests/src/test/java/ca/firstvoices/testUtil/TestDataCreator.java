@@ -15,14 +15,6 @@ import org.nuxeo.ecm.core.api.PathRef;
 import org.nuxeo.ecm.core.api.PropertyException;
 import org.nuxeo.runtime.transaction.TransactionHelper;
 
-/**
- * @author Rob J
- * <p>
- * The intent of this class is to move creation of test data for all modules to
- * a common location to reduce duplication.
- * <p>
- * Loads test data from YAML files on the classpath
- */
 @Singleton
 public class TestDataCreator {
 

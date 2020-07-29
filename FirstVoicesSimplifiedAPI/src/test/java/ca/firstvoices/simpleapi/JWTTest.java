@@ -3,9 +3,9 @@ package ca.firstvoices.simpleapi;
 import ca.firstvoices.simpleapi.mocks.MockSigningKeyResolver;
 import ca.firstvoices.simpleapi.security.JWTFilter;
 import ca.firstvoices.simpleapi.utils.JerseyTestHelper;
-import ca.firstvoices.testUtil.helpers.RESTTestHelper;
-import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
 import ca.firstvoices.testUtil.AbstractTestDataCreatorTest;
+import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
+import ca.firstvoices.testUtil.helpers.RESTTestHelper;
 import java.io.IOException;
 import java.util.logging.Logger;
 import javax.inject.Inject;
@@ -40,7 +40,6 @@ public class JWTTest extends AbstractTestDataCreatorTest {
   public static void setup() throws Exception {
     jersey.start(
         rc -> {
-//          rc.getResourceFilterFactories().add(new JWTFilterFactory());
           rc.register(JWTFilter.class);
         }
     );

@@ -36,7 +36,6 @@ public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
   @BeforeClass
   public static void setup() throws Exception {
     jersey.start(rc -> {
-//      rc.getResourceFilterFactories().add(new AdministrativelyDisabledFilterFactory());
     });
   }
 
@@ -72,7 +71,9 @@ public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
 
   @Test
   public void testGetArchiveOK() {
-    final String url = jersey.getUrl("/v1/archives/" + this.dataCreator.getReference("testArchive"));
+    final String url = jersey.getUrl(
+        "/v1/archives/" + this.dataCreator.getReference("testArchive")
+    );
 
     RESTTestHelper.builder(url).withAdministratorBasicAuth().execute(
         (node, response) -> {
@@ -94,7 +95,9 @@ public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
 
   @Test
   public void testGetArchiveWords() {
-    final String url = jersey.getUrl("/v1/archives/" + this.dataCreator.getReference("testArchive") + "/words");
+    final String url = jersey.getUrl(
+        "/v1/archives/" + this.dataCreator.getReference("testArchive") + "/words"
+    );
 
     RESTTestHelper.builder(url).withAdministratorBasicAuth().execute(
         (node, response) -> {
@@ -110,7 +113,9 @@ public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
 
   @Test
   public void testGetArchivePhrases() {
-    final String url = jersey.getUrl("/v1/archives/" + this.dataCreator.getReference("testArchive") + "/phrases");
+    final String url = jersey.getUrl(
+        "/v1/archives/" + this.dataCreator.getReference("testArchive") + "/phrases"
+    );
 
     RESTTestHelper.builder(url).withAdministratorBasicAuth().execute(
         (node, response) -> {
@@ -126,7 +131,9 @@ public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
 
   @Test
   public void testGetArchiveSongs() {
-    final String url = jersey.getUrl("/v1/archives/" + this.dataCreator.getReference("testArchive") + "/songs");
+    final String url = jersey.getUrl(
+        "/v1/archives/" + this.dataCreator.getReference("testArchive") + "/songs"
+    );
 
     RESTTestHelper.builder(url).withAdministratorBasicAuth().execute(
         (node, response) -> {

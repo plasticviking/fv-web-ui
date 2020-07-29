@@ -16,7 +16,8 @@ public class SimpleAPINuxeoConfigurationFactory extends DefaultComponent {
 
     if (SimpleAPINuxeoConfiguration.class.isAssignableFrom(adapter)) {
       if (this.config == null) {
-        LOG.warn("SimpleAPINuxeoConfigurationDescriptor instance requested but we are not configured");
+        LOG.warn("SimpleAPINuxeoConfigurationDescriptor instance requested but"
+            + " we are not configured");
       }
       return (T) this.config;
     }

@@ -150,7 +150,8 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
                                long pageSize,
 
                            @Parameter(
-                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               description = "An optional parameter with the zero-based index "
+                                   + "of the page to retrieve",
                                example = "0"
                            )
                            @QueryParam("index")
@@ -158,7 +159,9 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
                                long index
 
   ) throws NotFoundException {
-    return Response.ok(getFirstVoicesService().getWordsInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getWordsInArchive(
+        archive, new QueryBean(pageSize, index))
+    ).build();
   }
 
 
@@ -199,14 +202,17 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
                                  long pageSize,
 
                              @Parameter(
-                                 description = "An optional parameter with the zero-based index of the page to retrieve",
+                                 description = "An optional parameter with the zero-based index"
+                                     + " of the page to retrieve",
                                  example = "0"
                              )
                              @QueryParam("index")
                              @DefaultValue("0")
                                  long index
   ) {
-    return Response.ok(getFirstVoicesService().getPhrasesInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getPhrasesInArchive(
+        archive, new QueryBean(pageSize, index))
+    ).build();
   }
 
   @GET
@@ -247,14 +253,17 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
                                long pageSize,
 
                            @Parameter(
-                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               description = "An optional parameter with the zero-based index"
+                                   + " of the page to retrieve",
                                example = "0"
                            )
                            @QueryParam("index")
                            @DefaultValue("0")
                                long index
   ) {
-    return Response.ok(getFirstVoicesService().getSongsInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSongsInArchive(
+        archive, new QueryBean(pageSize, index))
+    ).build();
   }
 
   @GET
@@ -303,7 +312,9 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
       @DefaultValue("0")
           long index
   ) {
-    return Response.ok(getFirstVoicesService().getStoriesInArchive(archive, new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getStoriesInArchive(
+        archive, new QueryBean(pageSize, index))
+    ).build();
   }
 
 
@@ -367,7 +378,10 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
       },
       tags = {"Archive"}
   )
-  public Response getWord(@PathParam("archiveID") String archiveId, @PathParam("wordID") String wordId) {
+  public Response getWord(
+      @PathParam("archiveID") String archiveId,
+      @PathParam("wordID") String wordId
+  ) {
     return Response.ok(getFirstVoicesService().getWordDetail(wordId)).build();
   }
 
@@ -396,7 +410,10 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
       },
       tags = {"Archive"}
   )
-  public Response getPhrase(@PathParam("archiveID") String archiveId, @PathParam("phraseID") String phraseID) {
+  public Response getPhrase(
+      @PathParam("archiveID") String archiveId,
+      @PathParam("phraseID") String phraseID
+  ) {
     return Response.ok(getFirstVoicesService().getPhraseDetail(phraseID)).build();
   }
 
@@ -425,7 +442,8 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
       },
       tags = {"Archive"}
   )
-  public Response getSong(@PathParam("archiveID") String archiveId, @PathParam("songID") String songID) {
+  public Response getSong(@PathParam("archiveID") String archiveId,
+                          @PathParam("songID") String songID) {
     return Response.ok(getFirstVoicesService().getWordDetail(songID)).build();
   }
 
@@ -454,7 +472,8 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
       },
       tags = {"Archive"}
   )
-  public Response getStory(@PathParam("archiveID") String archiveId, @PathParam("storyID") String storyID) {
+  public Response getStory(@PathParam("archiveID") String archiveId,
+                           @PathParam("storyID") String storyID) {
     return Response.ok(getFirstVoicesService().getStoryDetail(storyID)).build();
   }
 }

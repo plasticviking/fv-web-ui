@@ -21,12 +21,6 @@ import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
 import org.nuxeo.ecm.automation.client.jaxrs.impl.HttpAutomationClient;
 
-/**
- * @author Rob J
- * <p>
- * Fluent API. Intended to make testing of REST services less verbose.
- * See examples in FirstVoicesSimplifiedAPI tests
- **/
 public class RESTTestHelper {
   private static Logger log = Logger.getLogger(RESTTestHelper.class.getCanonicalName());
 

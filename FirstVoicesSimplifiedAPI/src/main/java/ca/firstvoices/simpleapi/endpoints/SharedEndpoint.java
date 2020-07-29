@@ -86,13 +86,16 @@ public class SharedEndpoint extends AbstractServiceEndpoint {
                                     long pageSize,
 
                                 @Parameter(
-                                    description = "An optional parameter with the zero-based index of the page to retrieve",
+                                    description = "An optional parameter with the zero-based index"
+                                        + " of the page to retrieve",
                                     example = "0"
                                 )
                                 @QueryParam("index")
                                 @DefaultValue("0")
                                     long index) {
-    return Response.ok(getFirstVoicesService().getSharedCategories(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSharedCategories(
+        new QueryBean(pageSize, index))
+    ).build();
   }
 
   @GET
@@ -126,14 +129,17 @@ public class SharedEndpoint extends AbstractServiceEndpoint {
                                long pageSize,
 
                            @Parameter(
-                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               description = "An optional parameter with the zero-based index"
+                                   + " of the page to retrieve",
                                example = "0"
                            )
                            @QueryParam("index")
                            @DefaultValue("0")
                                long index
   ) {
-    return Response.ok(getFirstVoicesService().getSharedLinks(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSharedLinks(
+        new QueryBean(pageSize, index))
+    ).build();
   }
 
   @GET
@@ -167,14 +173,17 @@ public class SharedEndpoint extends AbstractServiceEndpoint {
                                long pageSize,
 
                            @Parameter(
-                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               description = "An optional parameter with the zero-based index"
+                                   + " of the page to retrieve",
                                example = "0"
                            )
                            @QueryParam("index")
                            @DefaultValue("0")
                                long index
   ) {
-    return Response.ok(getFirstVoicesService().getSharedMedia(new QueryBean(pageSize, index))).build();
+    return Response.ok(getFirstVoicesService().getSharedMedia(
+        new QueryBean(pageSize, index))
+    ).build();
   }
 
   @GET
@@ -214,7 +223,8 @@ public class SharedEndpoint extends AbstractServiceEndpoint {
           long pageSize,
 
       @Parameter(
-          description = "An optional parameter with the zero-based index of the page to retrieve",
+          description = "An optional parameter with the zero-based index"
+              + " of the page to retrieve",
           example = "0"
       )
       @QueryParam("index")

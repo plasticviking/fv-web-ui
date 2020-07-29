@@ -30,6 +30,7 @@ import org.nuxeo.runtime.api.Framework;
 public class UserEndpoint extends AbstractServiceEndpoint {
 
   private static final Logger log = Logger.getLogger(UserEndpoint.class.getCanonicalName());
+
   @GET
   @Path("/current")
   @Produces(MediaType.APPLICATION_JSON)

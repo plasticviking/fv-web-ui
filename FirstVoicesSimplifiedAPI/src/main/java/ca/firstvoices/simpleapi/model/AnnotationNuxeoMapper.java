@@ -16,20 +16,29 @@ import org.nuxeo.ecm.core.api.PropertyException;
 
 public class AnnotationNuxeoMapper {
 
-  private static final Logger log = Logger.getLogger(AnnotationNuxeoMapper.class.getCanonicalName());
+  private static final Logger log = Logger.getLogger(
+      AnnotationNuxeoMapper.class.getCanonicalName()
+  );
 
   public static <T> T mapFrom(Class<T> clazz, DocumentModel dm) {
     return mapFrom(clazz, dm, null);
   }
 
-  public static <T> T mapFrom(Class<T> clazz, DocumentModel dm, @Nullable Map<String, List<DocumentModel>> extraQueryResults) {
+  public static <T> T mapFrom(Class<T> clazz,
+                              DocumentModel dm,
+                              @Nullable Map<String, List<DocumentModel>> extraQueryResults
+  ) {
 
     NuxeoMapping ax = clazz.getAnnotation(NuxeoMapping.class);
     if (ax != null) {
       try {
-        NuxeoMapper<T> nuxeoMapper = (NuxeoMapper<T>) ax.mapperClass().getConstructor().newInstance();
+        NuxeoMapper<T> nuxeoMapper;
+        nuxeoMapper = (NuxeoMapper<T>) ax.mapperClass().getConstructor().newInstance();
         return nuxeoMapper.mapFrom(dm);
-      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+      } catch (InstantiationException
+          | IllegalAccessException
+          | InvocationTargetException
+          | NoSuchMethodException e) {
         e.printStackTrace();
       }
     }
@@ -40,7 +49,8 @@ public class AnnotationNuxeoMapper {
       T origin = clazz.getConstructor().newInstance();
 
       Arrays.asList(declaredFields).stream().filter(df ->
-          (df.getAnnotation(NuxeoMapping.class) != null) || (df.getAnnotation(NuxeoSubqueryMapping.class) != null)
+          (df.getAnnotation(NuxeoMapping.class) != null)
+              || (df.getAnnotation(NuxeoSubqueryMapping.class) != null)
       ).forEach(df -> {
         NuxeoMapping mapping = df.getAnnotation(NuxeoMapping.class);
         NuxeoSubqueryMapping subQueryMapping = df.getAnnotation(NuxeoSubqueryMapping.class);
@@ -59,7 +69,10 @@ public class AnnotationNuxeoMapper {
               try {
                 Object value = PropertyUtils.getProperty(dm, source);
                 FieldUtils.writeField(df, origin, value, true);
-              } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
+              } catch (NoSuchMethodException
+                  | InvocationTargetException
+                  | IllegalAccessException e
+              ) {
                 log.warning("Could not map property " + source + ", exception: " + e.toString());
               }
             }
@@ -76,17 +89,24 @@ public class AnnotationNuxeoMapper {
             FieldUtils.writeField(
                 df,
                 origin,
-                sqResults.stream().map(sqdm -> mapFrom(subQueryMapping.mapAs(), sqdm)).collect(Collectors.toSet()),
+                sqResults.stream().map(
+                    sqdm -> mapFrom(subQueryMapping.mapAs(), sqdm)
+                ).collect(Collectors.toSet()),
                 true
             );
           } catch (IllegalAccessException e) {
-            log.warning("Could not map property " + subQueryMapping.subqueryName() + ", exception: " + e.toString());
+            log.warning("Could not map property "
+                + subQueryMapping.subqueryName()
+                + ", exception: " + e.toString()
+            );
           }
         }
       });
       return origin;
-    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-        NoSuchMethodException e) {
+    } catch (InstantiationException
+        | IllegalAccessException
+        | InvocationTargetException
+        | NoSuchMethodException e) {
       e.printStackTrace();
     }
     return null;

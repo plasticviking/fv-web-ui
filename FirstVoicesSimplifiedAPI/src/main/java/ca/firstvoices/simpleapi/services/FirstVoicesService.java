@@ -23,7 +23,8 @@ public interface FirstVoicesService {
 
   Metadata<ArchiveDetailPublic> getArchiveDetail(String archiveID);
 
-  Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters) throws NotFoundException;
+  Metadata<List<Word>> getWordsInArchive(String archiveID, QueryBean queryParameters)
+      throws NotFoundException;
 
   Metadata<List<Phrase>> getPhrasesInArchive(String archiveID, QueryBean queryParameters);
 
@@ -47,7 +48,6 @@ public interface FirstVoicesService {
 
   Metadata<Song> getSongDetail(String id);
 
-  //@todo
   Metadata<Phrase> getPhraseDetail(String id);
 
   Metadata<Word> getWordDetail(String id);

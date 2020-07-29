@@ -131,7 +131,8 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
 
 
       extraQueries.forEach((name, pp) -> {
-            PageProvider<DocumentModel> subQueryPP = (PageProvider<DocumentModel>) pageProviderService
+            PageProvider<DocumentModel> subQueryPP;
+            subQueryPP = (PageProvider<DocumentModel>) pageProviderService
                 .getPageProvider(pp, null, null, null, props, params);
             subQueryPP.setPageSize(pageProvider.getMaxPageSize());
             List<DocumentModel> subQueryResults = subQueryPP.getCurrentPage();

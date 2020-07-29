@@ -69,7 +69,8 @@ public class SearchEndpoint extends AbstractServiceEndpoint {
                                long pageSize,
 
                            @Parameter(
-                               description = "An optional parameter with the zero-based index of the page to retrieve",
+                               description = "An optional parameter with the zero-based index "
+                                   + "of the page to retrieve",
                                example = "0"
                            )
                            @QueryParam("index")
