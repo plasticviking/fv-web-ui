@@ -1,14 +1,14 @@
 package ca.firstvoices.simpleapi.representations
 
 import ca.firstvoices.simpleapi.model.NuxeoMapping
+import ca.firstvoices.simpleapi.model.NuxeoSubqueryMapping
 import ca.firstvoices.simpleapi.representations.traits.HasID
 import ca.firstvoices.simpleapi.representations.traits.SwaggerFix
 import ca.firstvoices.simpleapi.representations.traits.Titled
-import ca.firstvoices.simpleapi.services.ArchiveOverviewMapper
 import io.swagger.v3.oas.annotations.media.Schema
 
-@NuxeoMapping(mapperClass = ArchiveOverviewMapper.class)
 class ArchiveOverview implements Serializable, SwaggerFix, Titled, HasID {
+  @NuxeoMapping(sourceField = "type", accessMethod = NuxeoMapping.PropertyAccessMethod.DIRECT)
   String type
 }
 
@@ -19,12 +19,14 @@ trait ArchiveDetailCommon implements Serializable, Titled, HasID {
       description = 'The geographic region for this archive',
       example = "British Columbia"
   )
+  @NuxeoMapping(sourceField = "region")
   String region
 
   @Schema(
       description = 'Country or Nation',
       example = 'Canada'
   )
+  @NuxeoMapping(sourceField = "country")
   String country
 
   @Schema(
@@ -32,6 +34,7 @@ trait ArchiveDetailCommon implements Serializable, Titled, HasID {
       example = '大家好',
       nullable = true
   )
+  @NuxeoMapping(sourceField = "greeting")
   String greetingPhrase
 }
 
@@ -42,6 +45,7 @@ class ArchiveDetailPublic implements Serializable, SwaggerFix, ArchiveDetailComm
   @Schema(
       description = 'The set of web links within this archive'
   )
+  @NuxeoSubqueryMapping(subqueryName = "links", mapAs = Link.class)
   Set<Link> links = new HashSet<>()
 
   @Schema(

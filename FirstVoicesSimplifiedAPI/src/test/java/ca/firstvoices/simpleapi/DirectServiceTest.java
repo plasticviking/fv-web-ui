@@ -1,9 +1,13 @@
 package ca.firstvoices.simpleapi;
 
+import static org.junit.Assert.assertTrue;
 import ca.firstvoices.simpleapi.model.QueryBean;
+import ca.firstvoices.simpleapi.representations.ArchiveOverview;
+import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import ca.firstvoices.testUtil.AbstractTestDataCreatorTest;
 import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
+import java.util.List;
 import java.util.logging.Logger;
 import javax.inject.Inject;
 import org.junit.Test;
@@ -19,7 +23,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 @RunWith(FeaturesRunner.class)
 @Features({PlatformFeature.class})
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
-@TestDataConfiguration(createDialectTree = true)
+@TestDataConfiguration(yaml = {"test-data/basic-structure.yaml", "test-data/test-language.yaml"})
 @Deploy("FirstVoicesSimplifiedAPI")
 public class DirectServiceTest extends AbstractTestDataCreatorTest {
 
@@ -33,7 +37,8 @@ public class DirectServiceTest extends AbstractTestDataCreatorTest {
     QueryBean qb = new QueryBean();
     qb.index = 0;
     qb.pageSize = 30;
-    fvs.getArchives(qb);
+    Metadata<List<ArchiveOverview>> archives = fvs.getArchives(qb);
+    assertTrue("nonzero returned archive count", archives.getCount() > 1);
   }
 
 }

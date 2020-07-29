@@ -2,7 +2,6 @@ package ca.firstvoices.testUtil;
 
 import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
 import ca.firstvoices.testUtil.helpers.TestDataYAMLBean;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -28,10 +27,14 @@ import org.yaml.snakeyaml.constructor.Constructor;
     @Deploy("org.nuxeo.ecm.platform.types.core"),
     @Deploy("org.nuxeo.ecm.platform.webapp.types"),
     @Deploy("org.nuxeo.ecm.platform.publisher.core"),
+    @Deploy("org.nuxeo.ecm.platform.video.core"),
+    @Deploy("org.nuxeo.ecm.platform.picture.core"),
     @Deploy("FirstVoicesCoreTests"),
     @Deploy("FirstVoicesData:OSGI-INF/ca.firstvoices.listeners.xml"),
     @Deploy("FirstVoicesData:OSGI-INF/ca.firstvoices.operations.xml")
 })
+
+
 @PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})
 public abstract class AbstractTestDataCreatorTest {
 
@@ -43,36 +46,30 @@ public abstract class AbstractTestDataCreatorTest {
 
   @Before
   public void initData() throws IOException {
+    this.dataCreator.reset();
+
     Class<? extends AbstractTestDataCreatorTest> clz = this.getClass();
 
     if (clz.isAnnotationPresent(TestDataConfiguration.class)) {
       TestDataConfiguration config = clz.getAnnotation(TestDataConfiguration.class);
-      if (config.createDialectTree()) {
-        try {
-          dataCreator.createDialectTree(this.session);
-        } catch (InterruptedException e) {
-          throw new RuntimeException(e);
-        }
-      }
-      for (int i = 0; i < config.classPathYAML().length; i++) {
-        String res = config.classPathYAML()[i];
 
-        Optional<URL> resource = Optional.ofNullable(this.getClass().getClassLoader().getResource(res));
+      for (int i = 0; i < config.yaml().length; i++) {
+        String res = config.yaml()[i];
+
+        Optional<URL> resource = Optional.ofNullable(
+            this.getClass().getClassLoader().getResource(res)
+        );
 
         resource.ifPresent(r -> {
               try {
-                System.out.println("resource url: " + r + " for input " + res);
                 InputStream is = r.openStream();
-                System.out.println("" + is.available() + " bytes available");
-
-
                 Constructor cons = new Constructor(TestDataYAMLBean.class);
                 TypeDescription td = new TypeDescription(TestDataYAMLBean.class);
                 td.putMapPropertyType("properties", String.class, String.class);
                 cons.addTypeDescription(td);
                 Yaml yaml = new Yaml(cons);
 
-                Iterable all = yaml.loadAll(is);
+                Iterable<Object> all = yaml.loadAll(is);
                 List<TestDataYAMLBean> toCreate = new ArrayList<>();
                 all.forEach(o -> {
                   toCreate.add((TestDataYAMLBean) o);
@@ -89,7 +86,6 @@ public abstract class AbstractTestDataCreatorTest {
 
     }
 
-//    throw new RuntimeException("barf");
   }
 
 }

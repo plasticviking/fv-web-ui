@@ -1,5 +1,6 @@
 package ca.firstvoices.simpleapi.representations
 
+import ca.firstvoices.simpleapi.model.NuxeoMapping
 import ca.firstvoices.simpleapi.representations.traits.Contributors
 import ca.firstvoices.simpleapi.representations.traits.HasID
 import ca.firstvoices.simpleapi.representations.traits.LexicalEntity
@@ -11,10 +12,10 @@ import io.swagger.v3.oas.annotations.media.Schema
 
 class Word implements Serializable, SwaggerFix, Titled, Timestamps, HasID, LexicalEntity, Translatable, Contributors {
 
-	@Schema(
-//		allowableValues = ["{'name':Noun", "Verb", "..."]
-		description='The word\'s part of speech (Noun, verb, etc.)'
-	)
-	VocabularyEntry partOfSpeech
+  @Schema(
+      description = 'The word\'s part of speech (Noun, verb, etc.)'
+  )
+  @NuxeoMapping(sourceField = "part_of_speech")
+  VocabularyEntry partOfSpeech
 }
 

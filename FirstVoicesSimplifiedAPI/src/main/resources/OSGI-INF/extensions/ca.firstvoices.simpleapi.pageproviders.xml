@@ -25,6 +25,10 @@
       <pattern>SELECT * FROM FVWord where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:ancestorId = ?</pattern>
       <pageSize>50</pageSize>
     </coreQueryPageProvider>
+    <coreQueryPageProvider name="LINKS_IN_ARCHIVE_PP">
+      <pattern>SELECT * FROM FVLink where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:ancestorId = ?</pattern>
+      <pageSize>50</pageSize>
+    </coreQueryPageProvider>
     <coreQueryPageProvider name="PHRASES_IN_ARCHIVE_PP">
       <pattern>SELECT * FROM FVPhrase where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:ancestorId = ?</pattern>
       <pageSize>50</pageSize>
@@ -38,7 +42,7 @@
       <pageSize>50</pageSize>
     </coreQueryPageProvider>
     <coreQueryPageProvider name="LIST_SHARED_CATEGORIES_PP">
-      <pattern>SELECT * FROM Documents where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:path STARTSWITH
+      <pattern>SELECT * FROM Document where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:path STARTSWITH
         '/FV/sections/SharedData/Shared Categories'
       </pattern>
       <pageSize>50</pageSize>
@@ -50,13 +54,13 @@
       <pageSize>50</pageSize>
     </coreQueryPageProvider>
     <coreQueryPageProvider name="LIST_SHARED_ASSETS_PP">
-      <pattern>SELECT * FROM FVAudio,FVPhoto,FVVideo where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:path
+      <pattern>SELECT * FROM FVAudio,FVPicture,FVVideo where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:path
         STARTSWITH '/FV/sections/SharedData/Shared Resources/'
       </pattern>
       <pageSize>50</pageSize>
     </coreQueryPageProvider>
     <coreQueryPageProvider name="GET_SHARED_ASSET_PP">
-      <pattern>SELECT * FROM FVAudio,FVPhoto,FVVideo where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:uuid = ?
+      <pattern>SELECT * FROM FVAudio,FVPicture,FVVideo where ecm:isTrashed = 0 and ecm:isVersion = 0 and ecm:uuid = ?
       </pattern>
       <pageSize>50</pageSize>
     </coreQueryPageProvider>

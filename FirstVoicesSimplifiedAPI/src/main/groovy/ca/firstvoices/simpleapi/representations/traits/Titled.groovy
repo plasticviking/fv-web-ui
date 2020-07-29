@@ -9,7 +9,7 @@ trait Titled {
       example = "Sencoten",
       nullable = false
   )
-  @NuxeoMapping(sourceField = "title")
+  @NuxeoMapping(sourceField = "title", accessMethod = NuxeoMapping.PropertyAccessMethod.DIRECT)
   String title
 
 }

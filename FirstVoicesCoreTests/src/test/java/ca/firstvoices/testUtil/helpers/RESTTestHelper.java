@@ -125,28 +125,27 @@ public class RESTTestHelper {
       }
 
       try {
+        log.warning(this.verb.name() + " request for " + this.url);
         HttpResponse response = client.execute(request);
+        int actualStatusCode = response.getStatusLine().getStatusCode();
         String body = IOUtils.toString(
             response.getEntity().getContent(),
             StandardCharsets.UTF_8.name()
         );
-        log.info("response body:\n" + body);
+        log.warning("response code " + actualStatusCode + "\nbody:\n" + body + "\n---");
         JsonNode node = mapper.readTree(body);
 
-        expectedStatusCode.ifPresent(ecs -> assertEquals(ecs.intValue(), response.getStatusLine().getStatusCode()));
+        expectedStatusCode.ifPresent(ecs -> assertEquals(ecs.intValue(), actualStatusCode));
         validator.ifPresent(v -> v.validateResponse(node, response));
 
       } catch (IOException e) {
         throw new RuntimeException(e);
       }
-
     }
-
   }
 
   public static Builder builder(String url) {
     return new Builder(url);
   }
-
 
 }

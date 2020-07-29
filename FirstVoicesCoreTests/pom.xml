@@ -64,6 +64,16 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <artifactId>nuxeo-platform-video-api</artifactId>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>nuxeo-platform-imaging-api</artifactId>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <artifactId>nuxeo-core-convert-plugins</artifactId>
       <groupId>org.nuxeo.ecm.core</groupId>
       <scope>test</scope>

@@ -24,7 +24,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 @RunWith(FeaturesRunner.class)
 @Features({PlatformFeature.class})
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
-@TestDataConfiguration(createDialectTree = true)
+@TestDataConfiguration()
 @Deploy("FirstVoicesSimplifiedAPI")
 @Deploy("FirstVoicesSimplifiedAPI.test")
 public class JWTTest extends AbstractTestDataCreatorTest {

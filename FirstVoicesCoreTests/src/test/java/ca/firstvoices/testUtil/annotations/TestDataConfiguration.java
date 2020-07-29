@@ -8,7 +8,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface TestDataConfiguration {
-  boolean createDialectTree() default false;
-
-  String[] classPathYAML() default {};
+  String[] yaml() default {};
 }

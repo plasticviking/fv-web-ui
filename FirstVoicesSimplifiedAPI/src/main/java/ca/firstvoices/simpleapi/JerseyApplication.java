@@ -81,14 +81,12 @@ public class JerseyApplication extends Application {
     singletons.add(new NotImplementedExceptionMapper());
     singletons.add(new UnauthorizedAccessExceptionMapper());
 
-    System.out.println("singletons initialized");
-
     return singletons;
   }
 
 
   public JerseyApplication() {
-    log.severe("startup complete");
+    log.info("startup complete");
   }
 
 
