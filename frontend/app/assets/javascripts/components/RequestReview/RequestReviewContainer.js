@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // FPCC
-import VisibilityMinimalPresentation from 'components/VisibilityMinimal/VisibilityMinimalPresentation'
-import VisibilityMinimalData from 'components/VisibilityMinimal/VisibilityMinimalData'
+import RequestReviewPresentation from 'components/RequestReview/RequestReviewPresentation'
+import RequestReviewData from 'components/RequestReview/RequestReviewData'
 
 /**
- * @summary VisibilityMinimalContainer
+ * @summary RequestReviewContainer
  * @version 1.0.1
  * @component
  *
@@ -17,54 +17,61 @@ import VisibilityMinimalData from 'components/VisibilityMinimal/VisibilityMinima
  *
  * @returns {node} jsx markup
  */
-function VisibilityMinimalContainer({ docId, docState, computeEntities }) {
+function RequestReviewContainer({ docId, docState, docType, computeEntities }) {
   return (
-    <VisibilityMinimalData docId={docId} docState={docState}>
+    <RequestReviewData docId={docId} docState={docState} docType={docType}>
       {({
-        workspaces,
         dialectName,
-        dialogContent,
-        docVisibility,
-        handleVisibilityChange,
+        docTypeName,
         handleDialogCancel,
         handleDialogOk,
+        handleRequestReview,
         handleSnackbarClose,
+        handleVisibilityChange,
+        hasRelatedTasks,
+        hideButton,
         snackbarOpen,
         isDialogOpen,
+        requestVisibilityType,
         writePrivileges,
+        workspaces,
       }) => {
-        return workspaces ? (
+        return workspaces && !hideButton ? (
           <div>
-            <VisibilityMinimalPresentation
+            <RequestReviewPresentation
               computeEntities={computeEntities}
               dialectName={dialectName}
-              dialogContent={dialogContent}
-              docVisibility={docVisibility}
-              handleVisibilityChange={handleVisibilityChange}
+              docTypeName={docTypeName}
               handleDialogCancel={handleDialogCancel}
               handleDialogOk={handleDialogOk}
+              handleRequestReview={handleRequestReview}
               handleSnackbarClose={handleSnackbarClose}
-              snackbarOpen={snackbarOpen}
+              handleVisibilityChange={handleVisibilityChange}
+              hasRelatedTasks={hasRelatedTasks}
               isDialogOpen={isDialogOpen}
+              requestVisibilityType={requestVisibilityType}
+              snackbarOpen={snackbarOpen}
               writePrivileges={writePrivileges}
             />
           </div>
         ) : null
       }}
-    </VisibilityMinimalData>
+    </RequestReviewData>
   )
 }
 // PROPTYPES
 const { string, object } = PropTypes
-VisibilityMinimalContainer.propTypes = {
+RequestReviewContainer.propTypes = {
   docId: string,
   docState: string,
+  docType: string,
   computeEntities: object,
 }
 
-VisibilityMinimalContainer.defaultProps = {
+RequestReviewContainer.defaultProps = {
   docId: '',
   docState: '',
+  docType: '',
 }
 
-export default VisibilityMinimalContainer
+export default RequestReviewContainer
