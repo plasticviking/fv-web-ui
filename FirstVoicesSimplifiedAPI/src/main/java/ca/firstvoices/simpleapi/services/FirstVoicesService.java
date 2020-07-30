@@ -1,7 +1,6 @@
 package ca.firstvoices.simpleapi.services;
 
 
-import ca.firstvoices.simpleapi.exceptions.NotFoundException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPublic;
 import ca.firstvoices.simpleapi.representations.ArchiveOverview;
@@ -14,6 +13,7 @@ import ca.firstvoices.simpleapi.representations.Vocabulary;
 import ca.firstvoices.simpleapi.representations.Word;
 import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import ca.firstvoices.simpleapi.representations.containers.SearchResult;
+import ca.firstvoices.simpleapi.representations.traits.HasID;
 import java.util.List;
 
 
@@ -41,7 +41,7 @@ public interface FirstVoicesService {
 
   Metadata<Asset> getSharedMediaDetail(String id);
 
-  Metadata<List<SearchResult<?>>> doSearch(String q, QueryBean queryParameters);
+  Metadata<List<SearchResult<HasID>>> doSearch(String q, QueryBean queryParameters);
 
   Metadata<Story> getStoryDetail(String id);
 

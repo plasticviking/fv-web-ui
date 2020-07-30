@@ -29,7 +29,7 @@ public class SimpleAPINuxeoConfigurationFactory extends DefaultComponent {
   public void registerContribution(Object contribution, String xp, ComponentInstance component) {
 
     if ("configuration".equals(xp)) {
-      log.info("Configuration loaded: " + contribution.toString());
+      log.info(() -> "Configuration loaded: " + contribution.toString());
       this.config = (SimpleAPINuxeoConfiguration) contribution;
     }
 

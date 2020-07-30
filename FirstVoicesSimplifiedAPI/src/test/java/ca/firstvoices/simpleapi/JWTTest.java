@@ -27,6 +27,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 @TestDataConfiguration()
 @Deploy("FirstVoicesSimplifiedAPI")
 @Deploy("FirstVoicesSimplifiedAPI.test")
+@SuppressWarnings("java:S2699") // Sonarqube does not inspect nested calls intelligently
 public class JWTTest extends AbstractTestDataCreatorTest {
 
   private static final Logger log = Logger.getLogger(JWTTest.class.getCanonicalName());

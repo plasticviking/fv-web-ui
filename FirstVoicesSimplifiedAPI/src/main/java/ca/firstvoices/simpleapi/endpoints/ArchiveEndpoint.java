@@ -1,7 +1,6 @@
 package ca.firstvoices.simpleapi.endpoints;
 
 import ca.firstvoices.simpleapi.AdministrativelyDisabled;
-import ca.firstvoices.simpleapi.exceptions.NotFoundException;
 import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPrivate;
 import ca.firstvoices.simpleapi.representations.ArchiveDetailPublic;

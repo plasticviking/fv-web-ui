@@ -27,6 +27,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
 @TestDataConfiguration(yaml = {"test-data/basic-structure.yaml", "test-data/test-language.yaml"})
 @Deploy("FirstVoicesSimplifiedAPI")
+@SuppressWarnings("java:S2699") // Sonarqube does not inspect nested calls intelligently
 public class SimplifiedAPITest extends AbstractTestDataCreatorTest {
 
   private static final Logger log = Logger.getLogger(SimplifiedAPITest.class.getCanonicalName());

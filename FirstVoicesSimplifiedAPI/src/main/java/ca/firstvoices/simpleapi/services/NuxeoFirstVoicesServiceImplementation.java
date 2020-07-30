@@ -15,7 +15,9 @@ import ca.firstvoices.simpleapi.representations.Vocabulary;
 import ca.firstvoices.simpleapi.representations.Word;
 import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import ca.firstvoices.simpleapi.representations.containers.SearchResult;
+import ca.firstvoices.simpleapi.representations.traits.HasID;
 import com.google.inject.Singleton;
+import com.lowagie.text.Meta;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,120 +43,112 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
       NuxeoFirstVoicesServiceImplementation.class.getCanonicalName()
   );
 
-  private <V> Metadata<List<V>> buildListResponse(
-      Class<V> resultClass,
-      String ppName,
-      String detailType,
-      QueryBean queryParams,
-      Object... params) {
-    Metadata<List<V>> md = new Metadata<>();
+  private static class ResponseHelper<X> {
+    private Metadata<X> singleResponse;
+    private Metadata<List<X>> listResponse;
 
-    try {
-      Framework.login();
-    } catch (LoginException e) {
-      log.severe("Caught an exception logging in" + e);
-    }
-    TransactionHelper.startTransaction();
-
-    try (CloseableCoreSession session = CoreInstance.openCoreSession(null)) {
-
-      Map<String, Serializable> props = new HashMap<>();
-      props.put(
-          CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY,
-          (Serializable) session
-      );
-      PageProviderService pageProviderService = Framework.getService(PageProviderService.class);
-
-      PageProvider<DocumentModel> pageProvider = (PageProvider<DocumentModel>) pageProviderService
-          .getPageProvider(ppName, null, null, null, props, params);
-
-      pageProvider.setPageSize(queryParams.pageSize);
-      pageProvider.setCurrentPage(queryParams.index);
-
-
-      List<DocumentModel> results = pageProvider.getCurrentPage();
-      md.setCount(pageProvider.getResultsCount());
-      md.setDetailType(detailType);
-      md.setStatus(pageProvider.hasError() ? "error" : "success");
-      md.setDetail(results.stream().map(
-          dm -> AnnotationNuxeoMapper.mapFrom(resultClass, dm)).collect(Collectors.toList())
-      );
-
-      TransactionHelper.commitOrRollbackTransaction();
-
-      return md;
-    }
-  }
-
-  private <V> Metadata<V> buildSingleResponse(
-      Class<V> resultClass,
-      String ppName,
-      String detailType,
-      boolean throwOnNotFound,
-      Map<String, String> extraQueries,
-      Object... params) {
-    Metadata<V> md = new Metadata<>();
-
-    try {
-      Framework.login();
-    } catch (LoginException e) {
-      log.severe("Caught an exception logging in" + e);
-    }
-    TransactionHelper.startTransaction();
-
-    try (CloseableCoreSession session = CoreInstance.openCoreSession(null)) {
-
-      Map<String, Serializable> props = new HashMap<>();
-      props.put(
-          CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY,
-          (Serializable) session
-      );
-      PageProviderService pageProviderService = Framework.getService(PageProviderService.class);
-
-      PageProvider<DocumentModel> pageProvider = (PageProvider<DocumentModel>) pageProviderService
-          .getPageProvider(ppName, null, null, null, props, params);
-
-      pageProvider.setPageSize(pageProvider.getMaxPageSize());
-      List<DocumentModel> results = pageProvider.getCurrentPage();
-
-      if (results.isEmpty() && throwOnNotFound) {
-        throw new NotFoundException();
+    public ResponseHelper(
+        Class<X> resultClass,
+        String ppName,
+        String detailType,
+        QueryBean queryParams,
+        Map<String, String> extraQueries,
+        boolean isList,
+        Object... params
+    ) {
+      try {
+        Framework.login();
+      } catch (LoginException e) {
+        log.severe("Caught an exception logging in" + e);
       }
+      TransactionHelper.startTransaction();
 
-      md.setCount(pageProvider.getResultsCount());
-      md.setDetailType(detailType);
-      md.setStatus(pageProvider.hasError() ? "error" : "success");
+      try (CloseableCoreSession session = CoreInstance.openCoreSession(null)) {
 
-      Map<String, List<DocumentModel>> extraQueryResults = new HashMap<>();
+        Map<String, Serializable> props = new HashMap<>();
+        props.put(
+            CoreQueryDocumentPageProvider.CORE_SESSION_PROPERTY,
+            (Serializable) session
+        );
+        PageProviderService pageProviderService = Framework.getService(PageProviderService.class);
+
+        PageProvider<DocumentModel> pageProvider = (PageProvider<DocumentModel>) pageProviderService
+            .getPageProvider(ppName, null, null, null, props, params);
+
+        if (isList) {
+          pageProvider.setPageSize(queryParams.pageSize);
+          pageProvider.setCurrentPage(queryParams.index);
+        } else {
+          pageProvider.setPageSize(PageProvider.DEFAULT_MAX_PAGE_SIZE);
+        }
+
+        List<DocumentModel> results = pageProvider.getCurrentPage();
 
 
-      extraQueries.forEach((name, pp) -> {
-            PageProvider<DocumentModel> subQueryPP;
-            subQueryPP = (PageProvider<DocumentModel>) pageProviderService
-                .getPageProvider(pp, null, null, null, props, params);
-            subQueryPP.setPageSize(pageProvider.getMaxPageSize());
-            List<DocumentModel> subQueryResults = subQueryPP.getCurrentPage();
-            extraQueryResults.put(name, new ArrayList<>(subQueryResults));
+        if (isList) {
+          Metadata<List<X>> md = new Metadata<>();
+          md.setCount(pageProvider.getResultsCount());
+          md.setDetailType(detailType);
+          md.setStatus(pageProvider.hasError() ? "error" : "success");
+          md.setDetail(results.stream().map(
+              dm -> AnnotationNuxeoMapper.mapFrom(resultClass, dm)).collect(Collectors.toList())
+          );
+          this.listResponse = md;
+        } else {
+          if (results.isEmpty()) {
+            throw new NotFoundException();
           }
-      );
+          Metadata<X> md = new Metadata<>();
+          md.setCount(pageProvider.getResultsCount());
+          md.setDetailType(detailType);
+          md.setStatus(pageProvider.hasError() ? "error" : "success");
 
-      results.stream().findFirst().ifPresent(dm ->
-          md.setDetail(AnnotationNuxeoMapper.mapFrom(resultClass, dm, extraQueryResults))
-      );
+          Map<String, List<DocumentModel>> extraQueryResults = new HashMap<>();
 
-      TransactionHelper.commitOrRollbackTransaction();
+          extraQueries.forEach((name, pp) -> {
+                PageProvider<DocumentModel> subQueryPP;
+                subQueryPP = (PageProvider<DocumentModel>) pageProviderService
+                    .getPageProvider(pp, null, null, null, props, params);
+                subQueryPP.setPageSize(pageProvider.getMaxPageSize());
+                List<DocumentModel> subQueryResults = subQueryPP.getCurrentPage();
+                extraQueryResults.put(name, new ArrayList<>(subQueryResults));
+              }
+          );
 
-      return md;
+          results.stream().findFirst().ifPresent(dm ->
+              md.setDetail(AnnotationNuxeoMapper.mapFrom(resultClass, dm, extraQueryResults))
+          );
+
+          this.singleResponse = md;
+        }
+
+        TransactionHelper.commitOrRollbackTransaction();
+      }
     }
-  }
 
+    public Metadata<List<X>> list() {
+      return this.listResponse;
+
+    }
+
+    public Metadata<X> single() {
+      return this.singleResponse;
+    }
+
+  }
 
   @Override
   public Metadata<List<ArchiveOverview>> getArchives(QueryBean queryParameters) {
-    return buildListResponse(ArchiveOverview.class,
+
+    return new ResponseHelper<>(
+        ArchiveOverview.class,
         "LIST_ARCHIVES_PP",
         "archive",
-        queryParameters);
+        queryParameters,
+        Collections.emptyMap(),
+        true
+    ).list();
+
   }
 
   @Override
@@ -162,12 +156,15 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
     Map<String, String> extraQueries = new HashMap<>();
     extraQueries.put("links", "LINKS_IN_ARCHIVE_PP");
 
-    return buildSingleResponse(ArchiveDetailPublic.class,
+    return new ResponseHelper<>(
+        ArchiveDetailPublic.class,
         "GET_ARCHIVE_PP",
         "archive",
-        true,
+        null,
         extraQueries,
-        archiveID);
+        false,
+        archiveID
+    ).single();
   }
 
   @Override
@@ -175,126 +172,149 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
       String archiveID,
       QueryBean queryParameters
   ) {
-    return buildListResponse(Word.class,
+    return new ResponseHelper<>(Word.class,
         "WORDS_IN_ARCHIVE_PP",
         "word",
         queryParameters,
-        archiveID);
+        Collections.emptyMap(),
+        true,
+        archiveID
+    ).list();
   }
 
   @Override
   public Metadata<List<Phrase>> getPhrasesInArchive(String archiveID, QueryBean queryParameters) {
-    return buildListResponse(Phrase.class,
+    return new ResponseHelper<>(Phrase.class,
         "PHRASES_IN_ARCHIVE_PP",
         "phrase",
         queryParameters,
-        archiveID);
+        Collections.emptyMap(),
+        true,
+        archiveID).list();
   }
 
   @Override
   public Metadata<List<Story>> getStoriesInArchive(String archiveID, QueryBean queryParameters) {
-    return buildListResponse(Story.class,
+    return new ResponseHelper<>(Story.class,
         "STORIES_IN_ARCHIVE_PP",
         "story",
         queryParameters,
-        archiveID);
+        Collections.emptyMap(),
+        true,
+        archiveID).list();
 
   }
 
   @Override
   public Metadata<List<Song>> getSongsInArchive(String archiveID, QueryBean queryParameters) {
-    return buildListResponse(Song.class,
+    return new ResponseHelper<>(Song.class,
         "SONGS_IN_ARCHIVE_PP",
         "song",
         queryParameters,
-        archiveID);
+        Collections.emptyMap(),
+        true,
+        archiveID).list();
   }
 
   @Override
   public Metadata<List<Vocabulary>> getVocabularies(QueryBean queryParameters) {
-    return buildListResponse(Vocabulary.class,
+    return new ResponseHelper<>(Vocabulary.class,
         "LIST_VOCABULARIES_PP",
         "vocabulary",
-        queryParameters);
+        queryParameters,
+        Collections.emptyMap(),
+        true).list();
   }
 
 
   @Override
   public Metadata<List<String>> getSharedCategories(QueryBean queryParameters) {
-    return buildListResponse(String.class,
+    return new ResponseHelper<>(String.class,
         "LIST_SHARED_CATEGORIES_PP",
         "string",
-        queryParameters);
+        queryParameters,
+        Collections.emptyMap(),
+        true).list();
   }
 
   @Override
   public Metadata<List<Link>> getSharedLinks(QueryBean queryParameters) {
-    return buildListResponse(Link.class,
+    return new ResponseHelper<>(Link.class,
         "LIST_SHARED_LINKS_PP",
         "link",
-        queryParameters);
+        queryParameters,
+        Collections.emptyMap(),
+        true).list();
   }
 
   @Override
   public Metadata<List<Asset>> getSharedMedia(QueryBean queryParameters) {
-    return buildListResponse(Asset.class,
+    return new ResponseHelper<>(Asset.class,
         "LIST_SHARED_ASSETS_PP",
         "asset",
-        queryParameters);
+        queryParameters,
+        Collections.emptyMap(),
+        true).list();
   }
 
   @Override
   public Metadata<Asset> getSharedMediaDetail(String id) {
-    return buildSingleResponse(Asset.class,
+    return new ResponseHelper<>(Asset.class,
         "GET_SHARED_ASSET_PP",
         "asset",
-        true,
+        null,
         Collections.emptyMap(),
-        id);
+        false,
+        id).single();
   }
 
   @Override
-  public Metadata<List<SearchResult<?>>> doSearch(String q, QueryBean queryParameters) {
+  public Metadata<List<SearchResult<HasID>>> doSearch(String q, QueryBean queryParameters) {
     throw new NotImplementedException();
   }
 
   @Override
   public Metadata<Story> getStoryDetail(String id) {
-    return buildSingleResponse(Story.class,
-        "GET_STORY_PP", "story",
-        true,
+    return new ResponseHelper<>(Story.class,
+        "GET_STORY_PP",
+        "story",
+        null,
         Collections.emptyMap(),
-        id);
+        false,
+        id).single();
   }
 
   @Override
   public Metadata<Song> getSongDetail(String id) {
-    return buildSingleResponse(Song.class,
+    return new ResponseHelper<>(Song.class,
         "GET_SONG_PP",
         "song",
-        true,
+        null,
         Collections.emptyMap(),
-        id);
+        false,
+        id).single();
   }
 
   @Override
   public Metadata<Phrase> getPhraseDetail(String id) {
-    return buildSingleResponse(Phrase.class,
+    return new ResponseHelper<>(Phrase.class,
         "GET_PHRASE_PP",
         "phrase",
-        true,
+        null,
         Collections.emptyMap(),
-        id);
+        false,
+        id).single();
   }
 
   @Override
   public Metadata<Word> getWordDetail(String id) {
-    return buildSingleResponse(Word.class,
+    return new ResponseHelper<>(Word.class,
         "GET_WORD_PP",
         "word",
-        true,
+        null,
         Collections.emptyMap(),
-        id);
+        false,
+        id).single();
   }
 
 }
