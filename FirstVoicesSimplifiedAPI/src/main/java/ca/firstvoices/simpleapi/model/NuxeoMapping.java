@@ -17,7 +17,8 @@ import java.lang.annotation.Target;
 public @interface NuxeoMapping {
   String sourceField() default "";
 
-  Class<NuxeoMapper<?>> mapperClass();
+  @SuppressWarnings("java:S1452") // Sonarqube suppress: this value must be generic to be useful
+  Class<? extends NuxeoMapper<?>> mapperClass();
 
   PropertyAccessMethod accessMethod() default PropertyAccessMethod.NUXEO;
 

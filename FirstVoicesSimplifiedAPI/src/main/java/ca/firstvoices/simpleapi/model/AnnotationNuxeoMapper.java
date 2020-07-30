@@ -47,72 +47,71 @@ public class AnnotationNuxeoMapper {
     }
 
     Field[] declaredFields = clazz.getDeclaredFields();
-
+    final T origin;
     try {
-      T origin = clazz.getConstructor().newInstance();
-
-      Arrays.asList(declaredFields).stream().filter(df ->
-          (df.getAnnotation(NuxeoMapping.class) != null)
-              || (df.getAnnotation(NuxeoSubqueryMapping.class) != null)
-      ).forEach(df -> {
-        NuxeoMapping mapping = df.getAnnotation(NuxeoMapping.class);
-        NuxeoSubqueryMapping subQueryMapping = df.getAnnotation(NuxeoSubqueryMapping.class);
-
-        if (mapping != null) {
-          String source = mapping.sourceField();
-          try {
-            if (mapping.accessMethod() == NuxeoMapping.PropertyAccessMethod.NUXEO) {
-              try {
-                Serializable value = dm.getPropertyValue(source);
-                FieldUtils.writeField(df, origin, value, true);
-              } catch (PropertyException e) {
-                log.warning("Could not map property " + source + ", exception: " + e.toString());
-              }
-            } else if (mapping.accessMethod() == NuxeoMapping.PropertyAccessMethod.DIRECT) {
-              try {
-                Object value = PropertyUtils.getProperty(dm, source);
-                FieldUtils.writeField(df, origin, value, true);
-              } catch (NoSuchMethodException
-                  | InvocationTargetException
-                  | IllegalAccessException e
-              ) {
-                log.warning("Could not map property " + source + ", exception: " + e.toString());
-              }
-            }
-          } catch (IllegalAccessException e) {
-            log.severe("error mapping property field " + source + ":\n" + e.toString());
-          }
-        }
-        if (subQueryMapping != null) {
-
-          String subQuery = subQueryMapping.subqueryName();
-          List<DocumentModel> sqResults = extraQueryResults.get(subQuery);
-          log.warning("Trying to map a subquery (with " + sqResults.size() + " results)");
-          try {
-            FieldUtils.writeField(
-                df,
-                origin,
-                sqResults.stream().map(
-                    sqdm -> mapFrom(subQueryMapping.mapAs(), sqdm)
-                ).collect(Collectors.toSet()),
-                true
-            );
-          } catch (IllegalAccessException e) {
-            log.warning("Could not map property "
-                + subQueryMapping.subqueryName()
-                + ", exception: " + e.toString()
-            );
-          }
-        }
-      });
-      return origin;
+      origin = clazz.getConstructor().newInstance();
     } catch (InstantiationException
         | IllegalAccessException
         | InvocationTargetException
         | NoSuchMethodException e) {
       log.severe(e::toString);
+      return null;
     }
-    return null;
+
+    Arrays.asList(declaredFields).stream().filter(df ->
+        (df.getAnnotation(NuxeoMapping.class) != null)
+            || (df.getAnnotation(NuxeoSubqueryMapping.class) != null)
+    ).forEach(df -> {
+      NuxeoMapping mapping = df.getAnnotation(NuxeoMapping.class);
+      NuxeoSubqueryMapping subQueryMapping = df.getAnnotation(NuxeoSubqueryMapping.class);
+
+      if (mapping != null) {
+        String source = mapping.sourceField();
+
+        if (mapping.accessMethod() == NuxeoMapping.PropertyAccessMethod.NUXEO) {
+          try {
+            Serializable value = dm.getPropertyValue(source);
+            FieldUtils.writeField(df, origin, value, true);
+          } catch (PropertyException | IllegalAccessException e) {
+            log.warning("Could not map property " + source + ", exception: " + e.toString());
+          }
+        } else if (mapping.accessMethod() == NuxeoMapping.PropertyAccessMethod.DIRECT) {
+          try {
+            Object value = PropertyUtils.getProperty(dm, source);
+            FieldUtils.writeField(df, origin, value, true);
+          } catch (NoSuchMethodException
+              | InvocationTargetException
+              | IllegalAccessException e
+          ) {
+            log.warning("Could not map property " + source + ", exception: " + e.toString());
+          }
+        }
+
+      }
+      if (subQueryMapping != null) {
+
+        String subQuery = subQueryMapping.subqueryName();
+        List<DocumentModel> sqResults = extraQueryResults.get(subQuery);
+        log.warning("Trying to map a subquery (with " + sqResults.size() + " results)");
+        try {
+          FieldUtils.writeField(
+              df,
+              origin,
+              sqResults.stream().map(
+                  sqdm -> mapFrom(subQueryMapping.mapAs(), sqdm)
+              ).collect(Collectors.toSet()),
+              true
+          );
+        } catch (IllegalAccessException e) {
+          log.warning("Could not map property "
+              + subQueryMapping.subqueryName()
+              + ", exception: " + e.toString()
+          );
+        }
+      }
+    });
+    return origin;
+
   }
 
 }

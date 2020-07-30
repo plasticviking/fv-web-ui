@@ -17,7 +17,6 @@ import ca.firstvoices.simpleapi.representations.containers.Metadata;
 import ca.firstvoices.simpleapi.representations.containers.SearchResult;
 import ca.firstvoices.simpleapi.representations.traits.HasID;
 import com.google.inject.Singleton;
-import com.lowagie.text.Meta;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
