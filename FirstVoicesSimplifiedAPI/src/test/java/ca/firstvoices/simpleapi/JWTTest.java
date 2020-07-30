@@ -56,6 +56,7 @@ public class JWTTest extends AbstractTestDataCreatorTest {
     RESTTestHelper
         .builder(url)
         .withBearerAuth(this.keyResolver.generateJWT())
+        .withExpectedStatusCode(200)
         .execute();
   }
 

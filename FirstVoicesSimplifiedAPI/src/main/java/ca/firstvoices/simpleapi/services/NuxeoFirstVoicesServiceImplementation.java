@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import java.util.stream.Collectors;
-import javax.security.auth.login.LoginContext;
 import javax.security.auth.login.LoginException;
 import org.nuxeo.ecm.core.api.CloseableCoreSession;
 import org.nuxeo.ecm.core.api.CoreInstance;
@@ -51,7 +50,7 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
     Metadata<List<V>> md = new Metadata<>();
 
     try {
-      LoginContext login = Framework.login();
+      Framework.login();
     } catch (LoginException e) {
       log.severe("Caught an exception logging in" + e);
     }
@@ -87,7 +86,6 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
     }
   }
 
-
   private <V> Metadata<V> buildSingleResponse(
       Class<V> resultClass,
       String ppName,
@@ -98,7 +96,7 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
     Metadata<V> md = new Metadata<>();
 
     try {
-      LoginContext login = Framework.login();
+      Framework.login();
     } catch (LoginException e) {
       log.severe("Caught an exception logging in" + e);
     }
@@ -119,7 +117,7 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
       pageProvider.setPageSize(pageProvider.getMaxPageSize());
       List<DocumentModel> results = pageProvider.getCurrentPage();
 
-      if (results.size() == 0 && throwOnNotFound) {
+      if (results.isEmpty() && throwOnNotFound) {
         throw new NotFoundException();
       }
 
@@ -140,9 +138,9 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
           }
       );
 
-      results.stream().findFirst().ifPresent(dm -> {
-        md.setDetail(AnnotationNuxeoMapper.mapFrom(resultClass, dm, extraQueryResults));
-      });
+      results.stream().findFirst().ifPresent(dm ->
+          md.setDetail(AnnotationNuxeoMapper.mapFrom(resultClass, dm, extraQueryResults))
+      );
 
       TransactionHelper.commitOrRollbackTransaction();
 
@@ -176,7 +174,7 @@ public class NuxeoFirstVoicesServiceImplementation implements FirstVoicesService
   public Metadata<List<Word>> getWordsInArchive(
       String archiveID,
       QueryBean queryParameters
-  ) throws NotFoundException {
+  ) {
     return buildListResponse(Word.class,
         "WORDS_IN_ARCHIVE_PP",
         "word",

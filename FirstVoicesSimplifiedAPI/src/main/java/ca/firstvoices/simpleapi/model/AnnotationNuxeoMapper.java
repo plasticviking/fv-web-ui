@@ -16,6 +16,9 @@ import org.nuxeo.ecm.core.api.PropertyException;
 
 public class AnnotationNuxeoMapper {
 
+  private AnnotationNuxeoMapper() {
+  }
+
   private static final Logger log = Logger.getLogger(
       AnnotationNuxeoMapper.class.getCanonicalName()
   );
@@ -39,7 +42,7 @@ public class AnnotationNuxeoMapper {
           | IllegalAccessException
           | InvocationTargetException
           | NoSuchMethodException e) {
-        e.printStackTrace();
+        log.severe(e::toString);
       }
     }
 
@@ -107,7 +110,7 @@ public class AnnotationNuxeoMapper {
         | IllegalAccessException
         | InvocationTargetException
         | NoSuchMethodException e) {
-      e.printStackTrace();
+      log.severe(e::toString);
     }
     return null;
   }

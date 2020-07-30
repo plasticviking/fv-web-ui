@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
-import java.util.logging.Logger;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
 import javax.ws.rs.container.ResourceInfo;
@@ -18,9 +17,6 @@ import org.nuxeo.runtime.api.Framework;
 @Provider
 @AdministrativelyDisabled
 public class AdministrativelyDisabledFilter implements ContainerRequestFilter {
-  private static final Logger log = Logger.getLogger(
-      AdministrativelyDisabledFilter.class.getCanonicalName()
-  );
 
   private final Set<String> disabledEndpoints = new HashSet<>();
 

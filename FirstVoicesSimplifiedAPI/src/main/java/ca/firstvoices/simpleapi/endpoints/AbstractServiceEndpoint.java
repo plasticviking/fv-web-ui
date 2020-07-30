@@ -11,7 +11,7 @@ public abstract class AbstractServiceEndpoint {
     if (firstVoicesService == null) {
       firstVoicesService = Framework.getService(FirstVoicesService.class);
       if (firstVoicesService == null) {
-        throw new RuntimeException("Failed in inject FirstVoicesService!");
+        throw new IllegalStateException("Failed to inject FirstVoicesService!");
       }
     }
     return firstVoicesService;
@@ -23,7 +23,7 @@ public abstract class AbstractServiceEndpoint {
     if (userContextStore == null) {
       userContextStore = Framework.getService(UserContextStore.class);
       if (userContextStore == null) {
-        throw new RuntimeException("Failed in inject UserContextStore!");
+        throw new IllegalStateException("Failed to inject UserContextStore!");
       }
     }
     return userContextStore;

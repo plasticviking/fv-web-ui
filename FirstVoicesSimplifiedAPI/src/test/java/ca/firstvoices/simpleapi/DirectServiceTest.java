@@ -25,7 +25,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
 @RepositoryConfig(init = DefaultRepositoryInit.class, cleanup = Granularity.CLASS)
 @TestDataConfiguration(yaml = {"test-data/basic-structure.yaml", "test-data/test-language.yaml"})
 @Deploy("FirstVoicesSimplifiedAPI")
-public class DirectServiceTest extends AbstractTestDataCreatorTest {
+public class  DirectServiceTest extends AbstractTestDataCreatorTest {
 
   private static final Logger log = Logger.getLogger(DirectServiceTest.class.getCanonicalName());
 

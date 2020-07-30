@@ -1,12 +1,13 @@
 package ca.firstvoices.simpleapi.nuxeo;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import java.util.logging.Logger;
 import org.nuxeo.runtime.model.ComponentInstance;
 import org.nuxeo.runtime.model.DefaultComponent;
 
 public class SimpleAPINuxeoConfigurationFactory extends DefaultComponent {
-  private static Log LOG = LogFactory.getLog(SimpleAPINuxeoConfigurationFactory.class);
+  private static Logger log = Logger.getLogger(
+      SimpleAPINuxeoConfigurationFactory.class.getCanonicalName()
+  );
 
 
   private SimpleAPINuxeoConfiguration config;
@@ -16,7 +17,7 @@ public class SimpleAPINuxeoConfigurationFactory extends DefaultComponent {
 
     if (SimpleAPINuxeoConfiguration.class.isAssignableFrom(adapter)) {
       if (this.config == null) {
-        LOG.warn("SimpleAPINuxeoConfigurationDescriptor instance requested but"
+        log.warning("SimpleAPINuxeoConfigurationDescriptor instance requested but"
             + " we are not configured");
       }
       return (T) this.config;
@@ -28,7 +29,7 @@ public class SimpleAPINuxeoConfigurationFactory extends DefaultComponent {
   public void registerContribution(Object contribution, String xp, ComponentInstance component) {
 
     if ("configuration".equals(xp)) {
-      LOG.info("Configuration loaded: " + contribution.toString());
+      log.info("Configuration loaded: " + contribution.toString());
       this.config = (SimpleAPINuxeoConfiguration) contribution;
     }
 

@@ -2,11 +2,8 @@ package ca.firstvoices.simpleapi.endpoints;
 
 import ca.firstvoices.simpleapi.AdministrativelyDisabled;
 import ca.firstvoices.simpleapi.exceptions.NotImplementedException;
-import ca.firstvoices.simpleapi.services.FirstVoicesService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-import java.util.logging.Logger;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -14,26 +11,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
-import org.nuxeo.runtime.api.Framework;
 
 @Path("/authorizations")
-@SecurityRequirements(
-    {
-        @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
-    }
-)
+@SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
 @AdministrativelyDisabled("authorization")
 public class AuthorizationEndpoint extends AbstractServiceEndpoint {
-  private static final Logger log = Logger.getLogger(
-      AuthorizationEndpoint.class.getCanonicalName()
-  );
-
-  private final FirstVoicesService service;
-
-  public AuthorizationEndpoint() {
-    this.service = Framework.getService(FirstVoicesService.class);
-  }
-
 
   @Path("/scopes")
   @GET
@@ -58,7 +40,6 @@ public class AuthorizationEndpoint extends AbstractServiceEndpoint {
     throw new NotImplementedException();
 
   }
-
 
   @Path("/tokens/all")
   @GET
@@ -144,7 +125,6 @@ public class AuthorizationEndpoint extends AbstractServiceEndpoint {
     throw new NotImplementedException();
 
   }
-
 
 
 }

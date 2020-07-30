@@ -53,7 +53,7 @@ public class JWTFilter implements ContainerRequestFilter {
     resourceAnnotation.ifPresent(a -> requiredScopes.addAll(Arrays.asList(a.requiredScopes())));
     methodAnnotation.ifPresent(a -> requiredScopes.addAll(Arrays.asList(a.requiredScopes())));
 
-    log.fine("request should have all of these scopes: "
+    log.fine(() -> "request should have all of these scopes: "
         + String.join(", ", requiredScopes));
 
     try {
@@ -68,10 +68,10 @@ public class JWTFilter implements ContainerRequestFilter {
       Jws<Claims> jws = parser.parseClaimsJws(token);
 
       // check the scopes, if present
-      log.info(jws.getBody().toString());
+      log.fine(() -> jws.getBody().toString());
       Optional<String> scope = Optional.ofNullable(jws.getBody().get("scope", String.class));
       List<String> jwtScopes = scope
-          .map(s -> Arrays.asList(s.split("\\s+"))).orElse(new LinkedList<String>());
+          .map(s -> Arrays.asList(s.split("\\s+"))).orElse(new LinkedList<>());
 
       if (!jwtScopes.containsAll(requiredScopes)) {
         log.warning("JWT does not contain all required scopes for this call");

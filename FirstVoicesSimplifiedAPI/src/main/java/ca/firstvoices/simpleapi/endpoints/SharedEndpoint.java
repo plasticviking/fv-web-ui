@@ -5,17 +5,13 @@ import ca.firstvoices.simpleapi.model.QueryBean;
 import ca.firstvoices.simpleapi.representations.Asset;
 import ca.firstvoices.simpleapi.representations.Link;
 import ca.firstvoices.simpleapi.representations.containers.Metadata;
-import ca.firstvoices.simpleapi.services.FirstVoicesService;
-import com.google.inject.Inject;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -24,28 +20,17 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import org.nuxeo.runtime.api.Framework;
 
 
 @Path("/v1/shared")
-@SecurityRequirements(
-    {
-        @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
-    }
-)
+@SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
 @AdministrativelyDisabled("shared")
 public class SharedEndpoint extends AbstractServiceEndpoint {
 
   private static class CategoryListResponse extends Metadata<List<String>> {
   }
 
-  private static class CategoryResponse extends Metadata<String> {
-  }
-
   private static class LinkListResponse extends Metadata<List<Link>> {
-  }
-
-  private static class LinkResponse extends Metadata<Link> {
   }
 
   private static class MediaListResponse extends Metadata<List<Asset>> {
@@ -53,8 +38,6 @@ public class SharedEndpoint extends AbstractServiceEndpoint {
 
   private static class MediaReponse extends Metadata<Asset> {
   }
-
-  private static final Logger log = Logger.getLogger(SharedEndpoint.class.getCanonicalName());
 
   @GET
   @Path("/categories")

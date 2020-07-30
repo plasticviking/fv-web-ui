@@ -17,9 +17,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -31,11 +29,7 @@ import javax.ws.rs.core.Response;
 
 
 @Path("/v1/archives")
-@SecurityRequirements(
-    {
-        @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
-    }
-)
+@SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
 @AdministrativelyDisabled("archive")
 public class ArchiveEndpoint extends AbstractServiceEndpoint {
 
@@ -71,8 +65,6 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
 
   private static class LanguageOverviewResponse extends Metadata<List<ArchiveOverview>> {
   }
-
-  private static final Logger log = Logger.getLogger(ArchiveEndpoint.class.getCanonicalName());
 
   @GET
   @Produces(MediaType.APPLICATION_JSON)
@@ -158,7 +150,7 @@ public class ArchiveEndpoint extends AbstractServiceEndpoint {
                            @DefaultValue("0")
                                long index
 
-  ) throws NotFoundException {
+  ) {
     return Response.ok(getFirstVoicesService().getWordsInArchive(
         archive, new QueryBean(pageSize, index))
     ).build();

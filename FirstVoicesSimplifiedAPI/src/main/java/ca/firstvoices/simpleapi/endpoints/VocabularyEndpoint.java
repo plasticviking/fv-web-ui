@@ -12,9 +12,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import java.util.List;
-import java.util.logging.Logger;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -25,15 +23,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/v1/vocabularies")
-@SecurityRequirements(
-    {
-        @SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
-    }
-)
+@SecurityRequirement(name = "oauth2", scopes = {"archives:public"})
 @AdministrativelyDisabled("vocabulary")
 public class VocabularyEndpoint extends AbstractServiceEndpoint {
-
-  private static final Logger log = Logger.getLogger(VocabularyEndpoint.class.getCanonicalName());
 
   private static class VocabularyListResponse extends Metadata<List<Vocabulary>> {
   }

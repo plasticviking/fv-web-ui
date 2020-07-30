@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 public @interface NuxeoMapping {
   String sourceField() default "";
 
-  Class<? extends NuxeoMapper<?>> mapperClass();
+  Class<NuxeoMapper<?>> mapperClass();
 
   PropertyAccessMethod accessMethod() default PropertyAccessMethod.NUXEO;
 

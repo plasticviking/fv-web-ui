@@ -6,4 +6,6 @@ public interface UserContextStore {
   User getCurrentUser();
 
   void setCurrentUser(User user);
+
+  void clear();
 }
