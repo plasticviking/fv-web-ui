@@ -75,27 +75,7 @@ public class AnnotationNuxeoMapper {
 
         if (mapping.accessMethod() == NuxeoMapping.PropertyAccessMethod.NUXEO) {
           try {
-            Serializable value = dm.getPropertyValue(source);
-
-            if (df.getType().isAssignableFrom(java.net.URL.class)) {
-              try {
-                value = new URL(value.toString());
-              } catch (MalformedURLException e) {
-                value = null;
-              }
-            }
-            if (df.getType().isAssignableFrom(VocabularyEntry.class)) {
-              value = new VocabularyEntry();
-              ((VocabularyEntry) value).setName(dm.getPropertyValue(source).toString());
-            }
-            if (df.getType().isAssignableFrom(Instant.class)) {
-              try {
-                value = ((Calendar) value).toInstant();
-              } catch (Exception e) {
-                value = null;
-              }
-            }
-
+            Serializable value = mapValue(df, dm.getPropertyValue(source));
             FieldUtils.writeField(df, origin, value, true);
           } catch (PropertyException | IllegalAccessException e) {
             log.warning("Could not map property " + source + ", exception: " + e.toString());
@@ -135,5 +115,30 @@ public class AnnotationNuxeoMapper {
       }
     });
     return origin;
+  }
+
+  private static Serializable mapValue(final Field df, final Serializable value) {
+
+    if (df.getType().isAssignableFrom(java.net.URL.class)) {
+      try {
+        return new URL(value.toString());
+      } catch (MalformedURLException e) {
+        return null;
+      }
+    }
+    if (df.getType().isAssignableFrom(VocabularyEntry.class)) {
+      VocabularyEntry ve = new VocabularyEntry();
+      ve.setName(value.toString());
+      return ve;
+    }
+    if (df.getType().isAssignableFrom(Instant.class)) {
+      try {
+        return ((Calendar) value).toInstant();
+      } catch (Exception e) {
+        return null;
+      }
+    }
+
+    return value;
   }
 }
