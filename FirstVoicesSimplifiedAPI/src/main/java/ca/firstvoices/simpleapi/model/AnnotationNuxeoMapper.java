@@ -1,9 +1,14 @@
 package ca.firstvoices.simpleapi.model;
 
+import ca.firstvoices.simpleapi.representations.VocabularyEntry;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.time.Instant;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -71,6 +76,26 @@ public class AnnotationNuxeoMapper {
         if (mapping.accessMethod() == NuxeoMapping.PropertyAccessMethod.NUXEO) {
           try {
             Serializable value = dm.getPropertyValue(source);
+
+            if (df.getType().isAssignableFrom(java.net.URL.class)) {
+              try {
+                value = new URL(value.toString());
+              } catch (MalformedURLException e) {
+                value = null;
+              }
+            }
+            if (df.getType().isAssignableFrom(VocabularyEntry.class)) {
+              value = new VocabularyEntry();
+              ((VocabularyEntry) value).setName(dm.getPropertyValue(source).toString());
+            }
+            if (df.getType().isAssignableFrom(Instant.class)) {
+              try {
+                value = ((Calendar) value).toInstant();
+              } catch (Exception e) {
+                value = null;
+              }
+            }
+
             FieldUtils.writeField(df, origin, value, true);
           } catch (PropertyException | IllegalAccessException e) {
             log.warning("Could not map property " + source + ", exception: " + e.toString());
@@ -86,7 +111,6 @@ public class AnnotationNuxeoMapper {
             log.warning("Could not map property " + source + ", exception: " + e.toString());
           }
         }
-
       }
       if (subQueryMapping != null) {
 
@@ -111,7 +135,5 @@ public class AnnotationNuxeoMapper {
       }
     });
     return origin;
-
   }
-
 }

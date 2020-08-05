@@ -13,8 +13,8 @@
     <extension target="ca.firstvoices.simpleapi.config" point="configuration">
 
         <configuration>
-            <jwksUrl>http://localhost.jwks</jwksUrl>
-            <disabledEndpoints>archives,authorization,search</disabledEndpoints>
+            <jwksUrl>${fv.simplifiedapi.jwksUrl}</jwksUrl>
+            <disabledEndpoints>${fv.simplifiedapi.disabledEndpoints}</disabledEndpoints>
         </configuration>
 
     </extension>
