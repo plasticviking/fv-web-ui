@@ -5,6 +5,7 @@ import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import IconButton from '@material-ui/core/IconButton'
 import CloseIcon from '@material-ui/icons/Close'
 
@@ -13,10 +14,10 @@ import FVButton from 'views/components/FVButton'
 import FVLabel from 'views/components/FVLabel'
 import FVSnackbar from 'views/components/FVSnackbar'
 import VisibilitySelect from 'components/VisibilitySelect'
-import { VisibilityMinimalStyles } from './VisibilityMinimalStyles'
+import { RequestReviewStyles } from './RequestReviewStyles'
 
 /**
- * @summary VisibilityMinimalPresentation
+ * @summary RequestReviewPresentation
  * @version 1.0.1
  * @component
  *
@@ -24,50 +25,40 @@ import { VisibilityMinimalStyles } from './VisibilityMinimalStyles'
  *
  * @returns {node} jsx markup
  */
-function VisibilityMinimalPresentation({
-  computeEntities,
+function RequestReviewPresentation({
   dialectName,
-  dialogContent,
-  docVisibility,
-  handleVisibilityChange,
+  docTypeName,
+  handleRequestReview,
+  hasRelatedTasks,
+  /* Props for Dialog */
+  isDialogOpen,
   handleDialogCancel,
   handleDialogOk,
-  isDialogOpen,
-  snackbarOpen,
+  requestVisibilityType,
+  /* Props for Snackbar */
   handleSnackbarClose,
-  writePrivileges,
+  snackbarOpen,
+  /* Props for VisibilitySelect */
+  handleVisibilityChange,
+  computeEntities,
 }) {
-  const classes = VisibilityMinimalStyles()
-  function generateVisibilityLabel(visibility) {
-    switch (visibility) {
-      case 'team':
-        return (
-          <>
-            {dialectName}&nbsp;
-            <FVLabel transKey="team_only" defaultStr="Team Only" transform="first" />
-          </>
-        )
-      case 'members':
-        return (
-          <>
-            {dialectName}&nbsp;
-            <FVLabel transKey="members" defaultStr="Members" transform="first" />
-          </>
-        )
-      case 'public':
-        return <FVLabel transKey="public" defaultStr="Public" transform="first" />
-      default:
-        return null
-    }
-  }
-
-  return writePrivileges ? (
-    <div className={classes.base}>
-      <VisibilitySelect.Container
-        docVisibility={docVisibility}
-        handleVisibilityChange={handleVisibilityChange}
-        computeEntities={computeEntities}
-      />
+  const classes = RequestReviewStyles()
+  const buttonLabel = hasRelatedTasks ? (
+    <FVLabel transKey="review_requested" defaultStr="Review requested" transform="first" />
+  ) : (
+    <FVLabel transKey="request_review" defaultStr="Request review" transform="first" />
+  )
+  return (
+    <>
+      <FVButton
+        className={classes.button}
+        onClick={handleRequestReview}
+        variant="contained"
+        color="primary"
+        disabled={hasRelatedTasks}
+      >
+        {buttonLabel}
+      </FVButton>
 
       <Dialog
         fullWidth
@@ -77,12 +68,16 @@ function VisibilityMinimalPresentation({
         aria-describedby="alert-dialog-description"
       >
         <DialogContent>
+          <DialogTitle>Is the {docTypeName} ready to be reviewed by the Language Administrator?</DialogTitle>
           <DialogContentText id="alert-dialog-description" className={classes.dialogDescription}>
-            Do you want to change who can see this to
+            If you would also like to request a change to the visibility of this {docTypeName}, select below.
           </DialogContentText>
-          <div className={classes.dialogContent}>
-            <strong>{generateVisibilityLabel(dialogContent)}</strong>?
-          </div>
+          <VisibilitySelect.Container
+            docVisibility={requestVisibilityType}
+            handleVisibilityChange={handleVisibilityChange}
+            computeEntities={computeEntities}
+            hideLabel
+          />
         </DialogContent>
         <DialogActions>
           <FVButton onClick={handleDialogCancel} variant="text" color="secondary">
@@ -98,7 +93,12 @@ function VisibilityMinimalPresentation({
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={handleSnackbarClose}
-        message={'Your entry can be seen by the ' + dialectName + ' ' + docVisibility}
+        message={
+          'Your request for review of this ' +
+          docTypeName +
+          'has been submitted to the Administrator for ' +
+          dialectName
+        }
         anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
         action={
           <IconButton size="small" aria-label="close" color="inherit" onClick={handleSnackbarClose}>
@@ -106,42 +106,40 @@ function VisibilityMinimalPresentation({
           </IconButton>
         }
       />
-    </div>
-  ) : (
-    <div className={classes.base}>
-      <div className={classes.label}>Who can see this word?&nbsp;&nbsp;</div>
-      <div className={classes.labelContents}>{generateVisibilityLabel(docVisibility)}</div>
-    </div>
+    </>
   )
 }
 
 // PROPTYPES
 const { string, object, func, bool } = PropTypes
-VisibilityMinimalPresentation.propTypes = {
+RequestReviewPresentation.propTypes = {
   computeEntities: object,
   dialectName: string,
-  dialogContent: string,
-  docVisibility: string,
-  handleVisibilityChange: func,
+  docTypeName: string,
   handleDialogCancel: func,
   handleDialogOk: func,
+  handleRequestReview: func,
+  handleVisibilityChange: func,
+  hasRelatedTasks: bool,
   isDialogOpen: bool,
   snackbarOpen: bool,
   handleSnackbarClose: func,
+  requestVisibilityType: string,
   writePrivileges: bool,
 }
 
-VisibilityMinimalPresentation.defaultProps = {
+RequestReviewPresentation.defaultProps = {
   dialectName: '',
-  dialogContent: '',
-  docVisibility: '',
-  handleVisibilityChange: () => {},
+  docTypeName: '',
   handleDialogCancel: () => {},
   handleDialogOk: () => {},
+  handleRequestReview: () => {},
+  handleVisibilityChange: () => {},
   isDialogOpen: false,
   snackbarOpen: false,
   handleSnackbarClose: () => {},
+  requestVisibilityType: '',
   writePrivileges: false,
 }
 
-export default VisibilityMinimalPresentation
+export default RequestReviewPresentation
