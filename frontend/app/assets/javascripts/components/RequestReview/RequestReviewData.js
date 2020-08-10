@@ -45,7 +45,7 @@ function RequestReviewData({ children, docId, docState, docType }) {
   const [snackbarOpen, setSnackbarOpen] = useState(false)
 
   useEffect(() => {
-    ProviderHelpers.fetchIfMissing(docId, fetchTasks, computeTasks)
+    fetchTasks(docId)
   }, [])
 
   // Compute related tasks
@@ -98,10 +98,7 @@ function RequestReviewData({ children, docId, docState, docType }) {
   const askToPublishAction = () => {
     createTask(
       docId,
-      {
-        id: 'FVPublishLanguageAsset',
-        start: 'true',
-      },
+      { id: 'FVPublishLanguageAsset', start: 'true' },
       null,
       intl.trans(
         'views.hoc.view.request_to_publish_x_successfully_submitted',
