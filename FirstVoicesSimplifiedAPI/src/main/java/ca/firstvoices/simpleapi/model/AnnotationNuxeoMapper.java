@@ -19,6 +19,13 @@ import org.apache.commons.lang.reflect.FieldUtils;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.PropertyException;
 
+/*
+ * The purpose of this class is to map Nuxeo query results (DocumentModel instances) to the groovy
+ * representations in the ca.firstvoices.simpleapi.representations package.
+ *
+ * The actual mapping is created through application of hte NuxeoMapping and NuxeoSubqueryMapping
+ * annotations
+ */
 public class AnnotationNuxeoMapper {
 
   private AnnotationNuxeoMapper() {
