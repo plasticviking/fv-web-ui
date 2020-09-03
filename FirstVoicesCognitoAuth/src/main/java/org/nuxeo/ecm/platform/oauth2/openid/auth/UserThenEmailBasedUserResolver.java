@@ -20,6 +20,10 @@
 
 package org.nuxeo.ecm.platform.oauth2.openid.auth;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -29,64 +33,81 @@ import org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProvider;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-
 public class UserThenEmailBasedUserResolver extends UserResolver {
 
-    private static final Log log = LogFactory.getLog(UserThenEmailBasedUserResolver.class);
+  private static final Log log = LogFactory.getLog(UserThenEmailBasedUserResolver.class);
 
-    public UserThenEmailBasedUserResolver(OpenIDConnectProvider provider) {
-        super(provider);
-    }
+  public UserThenEmailBasedUserResolver(OpenIDConnectProvider provider) {
+    super(provider);
+  }
 
-    @Override
-    public String findNuxeoUser(OpenIDUserInfo userInfo) {
+  @Override public String findNuxeoUser(OpenIDUserInfo userInfo) {
 
-        try {
-            UserManager userManager = Framework.getService(UserManager.class);
+    try {
+      UserManager userManager = Framework.getService(UserManager.class);
 
-            //try username first
+      //try username first
 
-            Map<String, Serializable> query = new HashMap<>();
-            query.put(userManager.getUserIdField(), ((CognitoUserInfo) userInfo).getUsername());
-            DocumentModelList users = Framework.doPrivileged(() -> userManager.searchUsers(query, null));
+      Map<String, Serializable> query = new HashMap<>();
+      query.put(userManager.getUserIdField(), ((CognitoUserInfo) userInfo).getUsername());
+      DocumentModelList users = Framework.doPrivileged(() -> userManager.searchUsers(query, null));
 
-            if (users.isEmpty()) {
-                //fallback to email
-                log.warn("No user found for id " + ((CognitoUserInfo) userInfo).getUsername() + ", falling back to email search");
-                Map<String, Serializable> query2 = new HashMap<>();
-                query2.put(userManager.getUserEmailField(), userInfo.getEmail());
-                users = Framework.doPrivileged(() -> userManager.searchUsers(query2, null));
+      if (users.isEmpty()) {
+        //fallback to email
+        log.warn("No user found for id " + ((CognitoUserInfo) userInfo).getUsername() + ", "
+            + "falling back to email search");
+        Map<String, Serializable> query2 = new HashMap<>();
+        query2.put(userManager.getUserEmailField(), userInfo.getEmail());
+        users = Framework.doPrivileged(() -> userManager.searchUsers(query2, null));
 
-                if (users.isEmpty()) {
-                    //沒有人
-                    return null;
-                }
-            }
+        if (users.isEmpty()) {
+          //沒有人
 
-            DocumentModel user = users.get(0);
-            return (String) user.getPropertyValue(userManager.getUserIdField());
+          //check the configuration. We could create a user now.
+          log.warn("About to create the user");
+          String username = ((CognitoUserInfo) userInfo).getUsername();
+          String email = userInfo.getEmail();
 
-        } catch (NuxeoException e) {
-            log.error("Error while search user in UserManager using email " + userInfo.getEmail(), e);
-            return null;
+          String name = userInfo.getName();
+          String nickname = userInfo.getNickname();
+          String zoneInfo = userInfo.getZoneInfo();
+
+          log.warn(
+              "params: " + username + ":" + email + ":" + name + ":" + nickname + ":" + zoneInfo);
+
+          DocumentModel nuxeoUser = this.createNuxeoUser(username);
+          ArrayList<String> groups = new ArrayList<>();
+          groups.add("administrators");
+          nuxeoUser.setProperty("user", "groups", groups);
+          nuxeoUser = updateUserInfo(nuxeoUser, userInfo);
+          //nuxeoUser.setPropertyValue(userManager.getUserEmailField(), email);
+          log.warn(nuxeoUser.toString());
+          //updateUserInfo(nuxeoUser)
+
+          return (String) nuxeoUser.getPropertyValue(userManager.getUserIdField());
         }
-    }
+      }
 
-    @Override
-    public DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
-        try {
-            UserManager userManager = Framework.getService(UserManager.class);
-            user.setPropertyValue(userManager.getUserEmailField(), userInfo.getEmail());
+      DocumentModel user = users.get(0);
+      return (String) user.getPropertyValue(userManager.getUserIdField());
 
-            Framework.doPrivileged(() -> userManager.updateUser(user));
-        } catch (NuxeoException e) {
-            log.error("Error while search user in UserManager using email " + userInfo.getEmail(), e);
-            return null;
-        }
-        return user;
+    } catch (NuxeoException e) {
+      log.error("Error while search user in UserManager using email " + userInfo.getEmail(), e);
+      return null;
     }
+  }
+
+  @Override public DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
+    try {
+      UserManager userManager = Framework.getService(UserManager.class);
+      user.setPropertyValue(userManager.getUserEmailField(), userInfo.getEmail());
+
+      Framework.doPrivileged(() -> userManager.updateUser(user));
+    } catch (NuxeoException e) {
+      log.error("Error while search user in UserManager using email " + userInfo.getEmail(), e);
+      return null;
+    }
+    return user;
+  }
 
 }

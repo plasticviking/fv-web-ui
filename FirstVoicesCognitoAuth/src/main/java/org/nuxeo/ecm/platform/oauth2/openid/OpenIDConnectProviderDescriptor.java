@@ -33,201 +33,192 @@ import org.nuxeo.runtime.model.Descriptor;
 
 @XObject("provider")
 public class OpenIDConnectProviderDescriptor implements Descriptor {
-    protected static final long serialVersionUID = 1L;
 
-    public static final String DEFAULT_ACCESS_TOKEN_KEY = "access_token";
+  public static final String DEFAULT_ACCESS_TOKEN_KEY = "access_token";
+  public static final Class<? extends UserResolver> DEFAULT_USER_RESOLVER_CLASS =
+      EmailBasedUserResolver.class;
+  public static final Class<? extends RedirectUriResolver> DEFAULT_REDIRECT_URI_RESOLVER_CLASS =
+      RedirectUriResolverHelper.class;
+  public static final Class<? extends OpenIDUserInfo> DEFAULT_USER_INFO_CLASS =
+      DefaultOpenIDUserInfo.class;
+  /**
+   * @since 11.1
+   */
+  public static final String URL_AUTHENTICATION_METHOD = "url";
+  /**
+   * @since 11.1
+   */
+  public static final String BEARER_AUTHENTICATION_METHOD = "bearer";
+  /**
+   * @since 11.1
+   */
+  public static final String DEFAULT_AUTHENTICATION_METHOD = URL_AUTHENTICATION_METHOD;
+  protected static final long serialVersionUID = 1L;
+  @XNode("@enabled") protected boolean enabled = true;
 
-    public static final Class<? extends UserResolver> DEFAULT_USER_RESOLVER_CLASS = EmailBasedUserResolver.class;
+  @XNode("name") protected String name;
 
-    public static final Class<? extends RedirectUriResolver> DEFAULT_REDIRECT_URI_RESOLVER_CLASS = RedirectUriResolverHelper.class;
+  @XNode("tokenServerURL") protected String tokenServerURL;
 
-    public static final Class<? extends OpenIDUserInfo> DEFAULT_USER_INFO_CLASS = DefaultOpenIDUserInfo.class;
+  @XNode("authorizationServerURL") protected String authorizationServerURL;
 
-    /**
-     * @since 11.1
-     */
-    public static final String URL_AUTHENTICATION_METHOD = "url";
+  @XNode("userInfoURL") protected String userInfoURL;
 
-    /**
-     * @since 11.1
-     */
-    public static final String BEARER_AUTHENTICATION_METHOD = "bearer";
+  @XNode("accessTokenKey") protected String accessTokenKey = DEFAULT_ACCESS_TOKEN_KEY;
 
-    /**
-     * @since 11.1
-     */
-    public static final String DEFAULT_AUTHENTICATION_METHOD = URL_AUTHENTICATION_METHOD;
+  @XNode("clientId") protected String clientId;
 
-    @XNode("@enabled")
-    protected boolean enabled = true;
+  @XNode("clientSecret") protected String clientSecret;
 
-    @XNode("name")
-    protected String name;
+  @XNodeList(value = "scope", type = String[].class, componentType = String.class)
+  protected String[] scopes;
 
-    @XNode("tokenServerURL")
-    protected String tokenServerURL;
+  @XNode("icon") protected String icon;
 
-    @XNode("authorizationServerURL")
-    protected String authorizationServerURL;
+  @XNode("label") protected String label;
 
-    @XNode("userInfoURL")
-    protected String userInfoURL;
+  @XNode("description") protected String description;
 
-    @XNode("accessTokenKey")
-    protected String accessTokenKey = DEFAULT_ACCESS_TOKEN_KEY;
+  @XNode("userResolverClass") protected Class<? extends UserResolver> userResolverClass;
 
-    @XNode("clientId")
-    protected String clientId;
+  @XNode("userMapperName") protected String userMapper;
 
-    @XNode("clientSecret")
-    protected String clientSecret;
+  @XNode("redirectUriResolver") protected Class<? extends RedirectUriResolver> redirectUriResolver =
+      DEFAULT_REDIRECT_URI_RESOLVER_CLASS;
 
-    @XNodeList(value = "scope", type = String[].class, componentType = String.class)
-    protected String[] scopes;
+  @XNode("userInfoClass") protected Class<? extends OpenIDUserInfo> userInfoClass =
+      DEFAULT_USER_INFO_CLASS;
 
-    @XNode("icon")
-    protected String icon;
+  /**
+   * @since 11.1
+   */
+  @XNode("authenticationMethod") protected String authenticationMethod =
+      DEFAULT_AUTHENTICATION_METHOD;
 
-    @XNode("label")
-    protected String label;
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
 
-    @XNode("description")
-    protected String description;
+  @Override
+  public String getId() {
+    return getName();
+  }
 
-    @XNode("userResolverClass")
-    protected Class<? extends UserResolver> userResolverClass;
+  public String getName() {
+    return name;
+  }
 
-    @XNode("userMapperName")
-    protected String userMapper;
+  public String getTokenServerURL() {
+    return tokenServerURL;
+  }
 
-    @XNode("redirectUriResolver")
-    protected Class<? extends RedirectUriResolver> redirectUriResolver = DEFAULT_REDIRECT_URI_RESOLVER_CLASS;
+  public String getAuthorizationServerURL() {
+    return authorizationServerURL;
+  }
 
-    @XNode("userInfoClass")
-    protected Class<? extends OpenIDUserInfo> userInfoClass = DEFAULT_USER_INFO_CLASS;
+  public String getClientId() {
+    return clientId;
+  }
 
-    /**
-     * @since 11.1
-     */
-    @XNode("authenticationMethod")
-    protected String authenticationMethod = DEFAULT_AUTHENTICATION_METHOD;
+  public String getClientSecret() {
+    return clientSecret;
+  }
 
-    public static long getSerialversionuid() {
-        return serialVersionUID;
+  public String[] getScopes() {
+    return scopes;
+  }
+
+  public String getUserInfoURL() {
+    return userInfoURL;
+  }
+
+  public String getAccessTokenKey() {
+    return accessTokenKey;
+  }
+
+  public String getIcon() {
+    return icon;
+  }
+
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  public String getLabel() {
+    return label;
+  }
+
+  public String getDescription() {
+    return description;
+  }
+
+  public String getUserMapper() {
+    return userMapper;
+  }
+
+  public Class<? extends UserResolver> getUserResolverClass() {
+    if (userResolverClass == null && userMapper == null) {
+      return DEFAULT_USER_RESOLVER_CLASS;
     }
-    
-    @Override
-    public String getId() {
-        return getName();
-    }
+    return userResolverClass;
+  }
 
-    public String getName() {
-        return name;
-    }
+  public Class<? extends RedirectUriResolver> getRedirectUriResolver() {
+    return redirectUriResolver;
+  }
 
-    public String getTokenServerURL() {
-        return tokenServerURL;
-    }
+  public Class<? extends OpenIDUserInfo> getUserInfoClass() {
+    return userInfoClass;
+  }
 
-    public String getAuthorizationServerURL() {
-        return authorizationServerURL;
-    }
+  /**
+   * @since 11.1
+   */
+  public String getAuthenticationMethod() {
+    return authenticationMethod;
+  }
 
-    public String getClientId() {
-        return clientId;
-    }
-
-    public String getClientSecret() {
-        return clientSecret;
-    }
-
-    public String[] getScopes() {
-        return scopes;
-    }
-
-    public String getUserInfoURL() {
-        return userInfoURL;
-    }
-
-    public String getAccessTokenKey() {
-        return accessTokenKey;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public void setEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getUserMapper() {
-        return userMapper;
-    }
-
-    public Class<? extends UserResolver> getUserResolverClass() {
-        if (userResolverClass == null && userMapper == null) {
-            return DEFAULT_USER_RESOLVER_CLASS;
-        }
-        return userResolverClass;
-    }
-
-    public Class<? extends RedirectUriResolver> getRedirectUriResolver() {
-        return redirectUriResolver;
-    }
-
-    public Class<? extends OpenIDUserInfo> getUserInfoClass() {
-        return userInfoClass;
-    }
-
-    /**
-     * @since 11.1
-     */
-    public String getAuthenticationMethod() {
-        return authenticationMethod;
-    }
-    
-    @Override
-    public Descriptor merge(Descriptor o) {
-        OpenIDConnectProviderDescriptor other = (OpenIDConnectProviderDescriptor) o;
-        OpenIDConnectProviderDescriptor merged = new OpenIDConnectProviderDescriptor();
-        merged.name = name;
-        merged.enabled = other.enabled;
-        merged.authorizationServerURL = StringUtils.isNotBlank(other.authorizationServerURL)
-                ? other.authorizationServerURL
-                : authorizationServerURL;
-        merged.clientId = StringUtils.isNotBlank(other.clientId) ? other.clientId : clientId;
-        merged.clientSecret = StringUtils.isNotBlank(other.clientSecret) ? other.clientSecret : clientSecret;
-        merged.icon = StringUtils.isNotBlank(other.icon) ? other.icon : icon;
-        merged.scopes = ArrayUtils.isNotEmpty(other.scopes) ? other.scopes : scopes;
-        merged.tokenServerURL = StringUtils.isNotBlank(other.tokenServerURL) ? other.tokenServerURL : tokenServerURL;
-        merged.userInfoURL = StringUtils.isNotBlank(other.userInfoURL) ? other.userInfoURL : userInfoURL;
-        merged.label = StringUtils.isNotBlank(other.label) ? other.label : label;
-        merged.description = StringUtils.isNotBlank(other.description) ? other.description : description;
-        merged.accessTokenKey = !other.accessTokenKey.equals(DEFAULT_ACCESS_TOKEN_KEY) ? other.accessTokenKey
-                : accessTokenKey;
-        merged.userInfoClass = other.userInfoClass != DEFAULT_USER_INFO_CLASS ? other.userInfoClass : userInfoClass;
-        merged.redirectUriResolver = other.redirectUriResolver != DEFAULT_REDIRECT_URI_RESOLVER_CLASS
-                ? other.redirectUriResolver
-                : redirectUriResolver;
-        Class<? extends UserResolver> otherUserResolverClass = other.getUserResolverClass();
-        merged.userResolverClass = otherUserResolverClass != DEFAULT_USER_RESOLVER_CLASS ? otherUserResolverClass : userResolverClass;
-        merged.userMapper = StringUtils.isNotBlank(other.userMapper) ? other.userMapper : userMapper;
-        merged.authenticationMethod = !other.authenticationMethod.equals(DEFAULT_AUTHENTICATION_METHOD)
-                ? other.authenticationMethod
-                : authenticationMethod;
-        return merged;
-    }
+  @Override
+  public Descriptor merge(Descriptor o) {
+    OpenIDConnectProviderDescriptor other = (OpenIDConnectProviderDescriptor) o;
+    OpenIDConnectProviderDescriptor merged = new OpenIDConnectProviderDescriptor();
+    merged.name = name;
+    merged.enabled = other.enabled;
+    merged.authorizationServerURL = StringUtils.isNotBlank(other.authorizationServerURL)
+        ? other.authorizationServerURL
+        : authorizationServerURL;
+    merged.clientId = StringUtils.isNotBlank(other.clientId) ? other.clientId : clientId;
+    merged.clientSecret =
+        StringUtils.isNotBlank(other.clientSecret) ? other.clientSecret : clientSecret;
+    merged.icon = StringUtils.isNotBlank(other.icon) ? other.icon : icon;
+    merged.scopes = ArrayUtils.isNotEmpty(other.scopes) ? other.scopes : scopes;
+    merged.tokenServerURL =
+        StringUtils.isNotBlank(other.tokenServerURL) ? other.tokenServerURL : tokenServerURL;
+    merged.userInfoURL =
+        StringUtils.isNotBlank(other.userInfoURL) ? other.userInfoURL : userInfoURL;
+    merged.label = StringUtils.isNotBlank(other.label) ? other.label : label;
+    merged.description =
+        StringUtils.isNotBlank(other.description) ? other.description : description;
+    merged.accessTokenKey = !other.accessTokenKey.equals(DEFAULT_ACCESS_TOKEN_KEY)
+        ? other.accessTokenKey
+        : accessTokenKey;
+    merged.userInfoClass =
+        other.userInfoClass != DEFAULT_USER_INFO_CLASS ? other.userInfoClass : userInfoClass;
+    merged.redirectUriResolver = other.redirectUriResolver != DEFAULT_REDIRECT_URI_RESOLVER_CLASS
+        ? other.redirectUriResolver
+        : redirectUriResolver;
+    Class<? extends UserResolver> otherUserResolverClass = other.getUserResolverClass();
+    merged.userResolverClass = otherUserResolverClass != DEFAULT_USER_RESOLVER_CLASS
+        ? otherUserResolverClass
+        : userResolverClass;
+    merged.userMapper = StringUtils.isNotBlank(other.userMapper) ? other.userMapper : userMapper;
+    merged.authenticationMethod = !other.authenticationMethod.equals(DEFAULT_AUTHENTICATION_METHOD)
+        ? other.authenticationMethod
+        : authenticationMethod;
+    return merged;
+  }
 }

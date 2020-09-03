@@ -16,6 +16,7 @@
  * Contributors:
  *     Nelson Silva
  */
+
 package org.nuxeo.ecm.platform.oauth2.openid;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,5 +27,6 @@ import javax.servlet.http.HttpServletRequest;
  * @since 5.7
  */
 public interface RedirectUriResolver {
-    String getRedirectUri(OpenIDConnectProvider openIDConnectProvider, HttpServletRequest request);
+
+  String getRedirectUri(OpenIDConnectProvider openIDConnectProvider, HttpServletRequest request);
 }

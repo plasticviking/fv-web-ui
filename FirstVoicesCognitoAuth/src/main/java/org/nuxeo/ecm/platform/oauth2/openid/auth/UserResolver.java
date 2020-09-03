@@ -17,10 +17,10 @@
  *     Nelson Silva <nelson.silva@inevo.pt> - initial API and implementation
  *     Nuxeo
  */
+
 package org.nuxeo.ecm.platform.oauth2.openid.auth;
 
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.text.CharacterPredicates;
@@ -33,66 +33,66 @@ import org.nuxeo.runtime.api.Framework;
 
 public abstract class UserResolver {
 
-    private static final Log log = LogFactory.getLog(UserResolver.class);
+  private static final Log log = LogFactory.getLog(UserResolver.class);
 
-    private static final RandomStringGenerator GENERATOR = new RandomStringGenerator.Builder().filteredBy(
-            CharacterPredicates.DIGITS).build();
+  private static final RandomStringGenerator GENERATOR =
+      new RandomStringGenerator.Builder().filteredBy(CharacterPredicates.DIGITS).build();
 
-    private OpenIDConnectProvider provider;
+  private OpenIDConnectProvider provider;
 
-    public UserResolver(OpenIDConnectProvider provider) {
-        this.provider = provider;
+  public UserResolver(OpenIDConnectProvider provider) {
+    this.provider = provider;
+  }
+
+  public OpenIDConnectProvider getProvider() {
+    return provider;
+  }
+
+  protected abstract String findNuxeoUser(OpenIDUserInfo userInfo);
+
+  protected DocumentModel createNuxeoUser(String nuxeoLogin) {
+    DocumentModel userDoc;
+    UserManager userManager = Framework.getService(UserManager.class);
+    DocumentModel user = userManager.getBareUserModel();
+    user.setPropertyValue(userManager.getUserIdField(), nuxeoLogin);
+    try {
+      userDoc = Framework.doPrivileged(() -> {
+        return userManager.createUser(user);
+      });
+    } catch (NuxeoException e) {
+      log.error("Error while creating user " + nuxeoLogin + "in UserManager", e);
+      return null;
     }
 
-    public OpenIDConnectProvider getProvider() {
-        return provider;
+    return userDoc;
+  }
+
+  protected abstract DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo);
+
+  public String findOrCreateNuxeoUser(OpenIDUserInfo userInfo) {
+    String user = findNuxeoUser(userInfo);
+    if (user == null) {
+      user = generateRandomUserId();
+      DocumentModel userDoc = createNuxeoUser(user);
+      updateUserInfo(userDoc, userInfo);
     }
+    return user;
+  }
 
-    protected abstract String findNuxeoUser(OpenIDUserInfo userInfo);
+  protected String generateRandomUserId() {
+    String userId = null;
 
-    protected DocumentModel createNuxeoUser(String nuxeoLogin) {
-        DocumentModel userDoc;
-        UserManager userManager = Framework.getService(UserManager.class);
-        DocumentModel user = userManager.getBareUserModel();
-        user.setPropertyValue(userManager.getUserIdField(), nuxeoLogin);
-        try {
-            userDoc = Framework.doPrivileged(() -> {
-                return userManager.createUser(user);
-            });
-        } catch (NuxeoException e) {
-            log.error("Error while creating user " + nuxeoLogin + "in UserManager", e);
-            return null;
-        }
+    try {
+      UserManager userManager = Framework.getService(UserManager.class);
+      List<String> userIds = userManager.getUserIds();
 
-        return userDoc;
+      while (userId == null || userIds.contains(userId)) {
+        userId = "user_" + GENERATOR.generate(4);
+      }
+    } catch (NuxeoException e) {
+      log.error("Error while generating random user id", e);
+      return null;
     }
-
-    protected abstract DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo);
-
-    public String findOrCreateNuxeoUser(OpenIDUserInfo userInfo) {
-        String user = findNuxeoUser(userInfo);
-        if (user == null) {
-            user = generateRandomUserId();
-            DocumentModel userDoc = createNuxeoUser(user);
-            updateUserInfo(userDoc, userInfo);
-        }
-        return user;
-    }
-
-    protected String generateRandomUserId() {
-        String userId = null;
-
-        try {
-            UserManager userManager = Framework.getService(UserManager.class);
-            List<String> userIds = userManager.getUserIds();
-
-            while (userId == null || userIds.contains(userId)) {
-                userId = "user_" + GENERATOR.generate(4);
-            }
-        } catch (NuxeoException e) {
-            log.error("Error while generating random user id", e);
-            return null;
-        }
-        return userId;
-    }
+    return userId;
+  }
 }

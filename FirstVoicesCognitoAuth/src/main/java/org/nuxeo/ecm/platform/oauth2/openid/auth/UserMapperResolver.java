@@ -35,32 +35,30 @@ import org.nuxeo.usermapper.service.UserMapperService;
  */
 public class UserMapperResolver extends UserResolver {
 
-    protected String mapperName;
+  protected String mapperName;
 
-    public UserMapperResolver(OpenIDConnectProvider provider, String mapperName) {
-        super(provider);
-        this.mapperName = mapperName;
-    }
+  public UserMapperResolver(OpenIDConnectProvider provider, String mapperName) {
+    super(provider);
+    this.mapperName = mapperName;
+  }
 
-    @Override
-    public String findOrCreateNuxeoUser(OpenIDUserInfo userInfo) {
-        UserMapper mapper = Framework.getService(UserMapperService.class).getMapper(mapperName);
-        NuxeoPrincipal principal = Framework.doPrivileged(() -> mapper.getOrCreateAndUpdateNuxeoPrincipal(userInfo));
-        if (principal != null) {
-            return principal.getName();
-        } else {
-            return null;
-        }
+  @Override public String findOrCreateNuxeoUser(OpenIDUserInfo userInfo) {
+    UserMapper mapper = Framework.getService(UserMapperService.class).getMapper(mapperName);
+    NuxeoPrincipal principal =
+        Framework.doPrivileged(() -> mapper.getOrCreateAndUpdateNuxeoPrincipal(userInfo));
+    if (principal != null) {
+      return principal.getName();
+    } else {
+      return null;
     }
+  }
 
-    @Override
-    protected String findNuxeoUser(OpenIDUserInfo userInfo) {
-        throw new UnsupportedOperationException();
-    }
+  @Override protected String findNuxeoUser(OpenIDUserInfo userInfo) {
+    throw new UnsupportedOperationException();
+  }
 
-    @Override
-    protected DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
-        throw new UnsupportedOperationException();
-    }
+  @Override protected DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
+    throw new UnsupportedOperationException();
+  }
 
 }

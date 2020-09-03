@@ -19,10 +19,14 @@
 
 package org.nuxeo.ecm.platform.oauth2.openid;
 
+import static org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProviderDescriptor.DEFAULT_ACCESS_TOKEN_KEY;
+import static org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProviderDescriptor.DEFAULT_AUTHENTICATION_METHOD;
+import static org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProviderDescriptor.DEFAULT_REDIRECT_URI_RESOLVER_CLASS;
+import static org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProviderDescriptor.DEFAULT_USER_INFO_CLASS;
+import static org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProviderDescriptor.DEFAULT_USER_RESOLVER_CLASS;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.nuxeo.runtime.model.ContributionFragmentRegistry;
 
 /**
@@ -31,108 +35,111 @@ import org.nuxeo.runtime.model.ContributionFragmentRegistry;
  * @deprecated since 11.1
  */
 @Deprecated
-public class OpenIDProviderFragmentRegistry extends ContributionFragmentRegistry<OpenIDConnectProviderDescriptor> {
+public class OpenIDProviderFragmentRegistry
+    extends ContributionFragmentRegistry<OpenIDConnectProviderDescriptor> {
 
-    protected final Map<String, OpenIDConnectProviderDescriptor> providers = new HashMap<>();
+  protected final Map<String, OpenIDConnectProviderDescriptor> providers = new HashMap<>();
 
-    @Override
-    public OpenIDConnectProviderDescriptor clone(OpenIDConnectProviderDescriptor source) {
+  @Override
+  public OpenIDConnectProviderDescriptor clone(OpenIDConnectProviderDescriptor source) {
 
-        OpenIDConnectProviderDescriptor copy = new OpenIDConnectProviderDescriptor();
+    OpenIDConnectProviderDescriptor copy = new OpenIDConnectProviderDescriptor();
 
-        copy.scopes = source.scopes;
-        copy.authorizationServerURL = source.authorizationServerURL;
-        copy.clientId = source.clientId;
-        copy.clientSecret = source.clientSecret;
-        copy.icon = source.icon;
-        copy.enabled = source.enabled;
-        copy.name = source.name;
-        copy.tokenServerURL = source.tokenServerURL;
-        copy.userInfoURL = source.userInfoURL;
-        copy.label = source.label;
-        copy.description = source.description;
-        copy.redirectUriResolver = source.redirectUriResolver;
-        copy.userResolverClass = source.userResolverClass;
-        copy.accessTokenKey = source.accessTokenKey;
-        copy.userInfoClass = source.userInfoClass;
-        copy.userMapper = source.userMapper;
-        copy.authenticationMethod = source.authenticationMethod;
-        return copy;
+    copy.scopes = source.scopes;
+    copy.authorizationServerURL = source.authorizationServerURL;
+    copy.clientId = source.clientId;
+    copy.clientSecret = source.clientSecret;
+    copy.icon = source.icon;
+    copy.enabled = source.enabled;
+    copy.name = source.name;
+    copy.tokenServerURL = source.tokenServerURL;
+    copy.userInfoURL = source.userInfoURL;
+    copy.label = source.label;
+    copy.description = source.description;
+    copy.redirectUriResolver = source.redirectUriResolver;
+    copy.userResolverClass = source.userResolverClass;
+    copy.accessTokenKey = source.accessTokenKey;
+    copy.userInfoClass = source.userInfoClass;
+    copy.userMapper = source.userMapper;
+    copy.authenticationMethod = source.authenticationMethod;
+    return copy;
+  }
+
+  @Override
+  public void contributionRemoved(String name, OpenIDConnectProviderDescriptor origContrib) {
+    providers.remove(name);
+  }
+
+  @Override
+  public void contributionUpdated(String name,
+                                  OpenIDConnectProviderDescriptor contrib,
+                                  OpenIDConnectProviderDescriptor newOrigContrib) {
+    if (contrib.isEnabled()) {
+      providers.put(name, contrib);
+    } else {
+      providers.remove(name);
+    }
+  }
+
+  @Override
+  public String getContributionId(OpenIDConnectProviderDescriptor contrib) {
+    return contrib.getName();
+  }
+
+  @Override
+  public void merge(OpenIDConnectProviderDescriptor src, OpenIDConnectProviderDescriptor dst) {
+
+    if (dst.authorizationServerURL == null || dst.authorizationServerURL.isEmpty()) {
+      dst.authorizationServerURL = src.authorizationServerURL;
+    }
+    if (dst.clientId == null || dst.clientId.isEmpty()) {
+      dst.clientId = src.clientId;
+    }
+    if (dst.clientSecret == null || dst.clientSecret.isEmpty()) {
+      dst.clientSecret = src.clientSecret;
+    }
+    if (dst.icon == null || dst.icon.isEmpty()) {
+      dst.icon = src.icon;
+    }
+    if (dst.scopes == null || dst.scopes.length == 0) {
+      dst.scopes = src.scopes;
+    }
+    if (dst.tokenServerURL == null || dst.tokenServerURL.isEmpty()) {
+      dst.tokenServerURL = src.tokenServerURL;
+    }
+    if (dst.userInfoURL == null || dst.userInfoURL.isEmpty()) {
+      dst.userInfoURL = src.userInfoURL;
+    }
+    if (dst.label == null || dst.label.isEmpty()) {
+      dst.label = src.label;
+    }
+    if (dst.description == null || dst.description.isEmpty()) {
+      dst.description = src.description;
+    }
+    if (!src.accessTokenKey.equals(DEFAULT_ACCESS_TOKEN_KEY)) {
+      dst.accessTokenKey = src.accessTokenKey;
+    }
+    if (src.userInfoClass != DEFAULT_USER_INFO_CLASS) {
+      dst.userInfoClass = src.userInfoClass;
+    }
+    if (src.redirectUriResolver != DEFAULT_REDIRECT_URI_RESOLVER_CLASS) {
+      dst.redirectUriResolver = src.redirectUriResolver;
+    }
+    if (src.getUserResolverClass() != DEFAULT_USER_RESOLVER_CLASS) {
+      dst.userResolverClass = src.userResolverClass;
+    }
+    if (src.userMapper != null && src.userMapper.length() > 0) {
+      dst.userMapper = src.userMapper;
     }
 
-    @Override
-    public void contributionRemoved(String name, OpenIDConnectProviderDescriptor origContrib) {
-        providers.remove(name);
+    if (!src.authenticationMethod.equals(DEFAULT_AUTHENTICATION_METHOD)) {
+      dst.authenticationMethod = src.authenticationMethod;
     }
 
-    @Override
-    public void contributionUpdated(String name, OpenIDConnectProviderDescriptor contrib,
-            OpenIDConnectProviderDescriptor newOrigContrib) {
-        if (contrib.isEnabled()) {
-            providers.put(name, contrib);
-        } else {
-            providers.remove(name);
-        }
-    }
+    dst.enabled = src.enabled;
+  }
 
-    @Override
-    public String getContributionId(OpenIDConnectProviderDescriptor contrib) {
-        return contrib.getName();
-    }
-
-    @Override
-    public void merge(OpenIDConnectProviderDescriptor src, OpenIDConnectProviderDescriptor dst) {
-
-        if (dst.authorizationServerURL == null || dst.authorizationServerURL.isEmpty()) {
-            dst.authorizationServerURL = src.authorizationServerURL;
-        }
-        if (dst.clientId == null || dst.clientId.isEmpty()) {
-            dst.clientId = src.clientId;
-        }
-        if (dst.clientSecret == null || dst.clientSecret.isEmpty()) {
-            dst.clientSecret = src.clientSecret;
-        }
-        if (dst.icon == null || dst.icon.isEmpty()) {
-            dst.icon = src.icon;
-        }
-        if (dst.scopes == null || dst.scopes.length == 0) {
-            dst.scopes = src.scopes;
-        }
-        if (dst.tokenServerURL == null || dst.tokenServerURL.isEmpty()) {
-            dst.tokenServerURL = src.tokenServerURL;
-        }
-        if (dst.userInfoURL == null || dst.userInfoURL.isEmpty()) {
-            dst.userInfoURL = src.userInfoURL;
-        }
-        if (dst.label == null || dst.label.isEmpty()) {
-            dst.label = src.label;
-        }
-        if (dst.description == null || dst.description.isEmpty()) {
-            dst.description = src.description;
-        }
-        if (!src.accessTokenKey.equals(OpenIDConnectProviderDescriptor.DEFAULT_ACCESS_TOKEN_KEY)) {
-            dst.accessTokenKey = src.accessTokenKey;
-        }
-        if (src.userInfoClass != OpenIDConnectProviderDescriptor.DEFAULT_USER_INFO_CLASS) {
-            dst.userInfoClass = src.userInfoClass;
-        }
-        if (src.redirectUriResolver != OpenIDConnectProviderDescriptor.DEFAULT_REDIRECT_URI_RESOLVER_CLASS) {
-            dst.redirectUriResolver = src.redirectUriResolver;
-        }
-        if (src.getUserResolverClass() != OpenIDConnectProviderDescriptor.DEFAULT_USER_RESOLVER_CLASS) {
-            dst.userResolverClass = src.userResolverClass;
-        }
-        if (src.userMapper != null && src.userMapper.length() > 0) {
-            dst.userMapper = src.userMapper;
-        }
-        if (!src.authenticationMethod.equals(OpenIDConnectProviderDescriptor.DEFAULT_AUTHENTICATION_METHOD)) {
-            dst.authenticationMethod = src.authenticationMethod;
-        }
-
-        dst.enabled = src.enabled;
-    }
-
-    public Collection<OpenIDConnectProviderDescriptor> getContribs() {
-        return providers.values();
-    }
+  public Collection<OpenIDConnectProviderDescriptor> getContribs() {
+    return providers.values();
+  }
 }

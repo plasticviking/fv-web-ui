@@ -21,27 +21,28 @@
 package org.nuxeo.ecm.platform.oauth2.openid;
 
 import java.util.Collection;
-
 import org.nuxeo.runtime.api.Framework;
 
 public class OpenIDConnectHelper {
 
-    public static Collection<OpenIDConnectProvider> getProviders() {
-        OpenIDConnectProviderRegistry registry = Framework.getService(OpenIDConnectProviderRegistry.class);
-        if (registry != null) {
-            return registry.getProviders();
-        }
-        return null;
-    }
+  private OpenIDConnectHelper() {
+  }
 
-    public static Collection<OpenIDConnectProvider> getEnabledProviders() {
-        OpenIDConnectProviderRegistry registry = Framework.getService(OpenIDConnectProviderRegistry.class);
-        if (registry != null) {
-            return registry.getEnabledProviders();
-        }
-        return null;
+  public static Collection<OpenIDConnectProvider> getProviders() {
+    OpenIDConnectProviderRegistry registry =
+        Framework.getService(OpenIDConnectProviderRegistry.class);
+    if (registry != null) {
+      return registry.getProviders();
     }
+    return null;
+  }
 
-    private OpenIDConnectHelper() {
+  public static Collection<OpenIDConnectProvider> getEnabledProviders() {
+    OpenIDConnectProviderRegistry registry =
+        Framework.getService(OpenIDConnectProviderRegistry.class);
+    if (registry != null) {
+      return registry.getEnabledProviders();
     }
+    return null;
+  }
 }

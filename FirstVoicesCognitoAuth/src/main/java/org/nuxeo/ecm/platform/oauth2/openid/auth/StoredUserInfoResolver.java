@@ -30,52 +30,50 @@ import org.nuxeo.runtime.api.Framework;
 
 public class StoredUserInfoResolver extends UserResolver {
 
-    private OpenIDUserInfoStore userInfoStore;
+  private OpenIDUserInfoStore userInfoStore;
 
-    private static final Log log = LogFactory.getLog(StoredUserInfoResolver.class);
+  private static final Log log = LogFactory.getLog(StoredUserInfoResolver.class);
 
-    public StoredUserInfoResolver(OpenIDConnectProvider provider) {
-        super(provider);
+  public StoredUserInfoResolver(OpenIDConnectProvider provider) {
+    super(provider);
+  }
+
+  public OpenIDUserInfoStore getUserInfoStore() {
+    if (userInfoStore == null) {
+      userInfoStore = new OpenIDUserInfoStoreImpl(getProvider().getName());
     }
+    return userInfoStore;
+  }
 
-    public OpenIDUserInfoStore getUserInfoStore() {
-        if (userInfoStore == null) {
-            userInfoStore = new OpenIDUserInfoStoreImpl(getProvider().getName());
-        }
-        return userInfoStore;
+  @Override public String findNuxeoUser(OpenIDUserInfo userInfo) {
+
+    // Check if the user exists
+    try {
+      UserManager userManager = Framework.getService(UserManager.class);
+
+      return Framework.doPrivileged(() -> {
+        String userLogin = getUserInfoStore().getNuxeoLogin(userInfo);
+        DocumentModel user = userManager.getUserModel(userLogin);
+
+        return user != null ? userLogin : null;
+      });
+    } catch (NuxeoException e) {
+      log.error("Error while search user in UserManager using email " + userInfo.getEmail(), e);
+      return null;
     }
+  }
 
-    @Override
-    public String findNuxeoUser(OpenIDUserInfo userInfo) {
-
-        // Check if the user exists
-        try {
-            UserManager userManager = Framework.getService(UserManager.class);
-
-            return Framework.doPrivileged(() -> {
-                String userLogin = getUserInfoStore().getNuxeoLogin(userInfo);
-                DocumentModel user = userManager.getUserModel(userLogin);
-
-                return user != null ? userLogin : null;
-            });
-        } catch (NuxeoException e) {
-            log.error("Error while search user in UserManager using email " + userInfo.getEmail(), e);
-            return null;
-        }
+  @Override public DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
+    try {
+      UserManager userManager = Framework.getService(UserManager.class);
+      String userId = (String) user.getPropertyValue(userManager.getUserIdField());
+      Framework.doPrivileged(() -> getUserInfoStore().storeUserInfo(userId, userInfo));
+    } catch (NuxeoException e) {
+      log.error("Error while updating user info for user " + userInfo.getEmail(), e);
+      return null;
     }
+    return user;
 
-    @Override
-    public DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
-        try {
-            UserManager userManager = Framework.getService(UserManager.class);
-            String userId = (String) user.getPropertyValue(userManager.getUserIdField());
-            Framework.doPrivileged(() -> getUserInfoStore().storeUserInfo(userId, userInfo));
-        } catch (NuxeoException e) {
-            log.error("Error while updating user info for user " + userInfo.getEmail(), e);
-            return null;
-        }
-        return user;
-
-    }
+  }
 
 }

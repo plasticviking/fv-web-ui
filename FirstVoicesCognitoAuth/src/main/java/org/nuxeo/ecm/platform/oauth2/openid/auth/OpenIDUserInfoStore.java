@@ -17,12 +17,13 @@
  *     Nelson Silva <nelson.silva@inevo.pt> - initial API and implementation
  *     Nuxeo
  */
+
 package org.nuxeo.ecm.platform.oauth2.openid.auth;
 
 public interface OpenIDUserInfoStore {
-    void storeUserInfo(String userId, OpenIDUserInfo userInfo);
+  void storeUserInfo(String userId, OpenIDUserInfo userInfo);
 
-    OpenIDUserInfo getUserInfo(String nuxeoLogin);
+  OpenIDUserInfo getUserInfo(String nuxeoLogin);
 
-    String getNuxeoLogin(OpenIDUserInfo userInfo);
+  String getNuxeoLogin(OpenIDUserInfo userInfo);
 }
