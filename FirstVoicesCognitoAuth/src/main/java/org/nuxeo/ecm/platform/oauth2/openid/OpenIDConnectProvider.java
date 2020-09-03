@@ -87,6 +87,8 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
    * @deprecated since 11.1, use {@link #OpenIDConnectProvider(OAuth2ServiceProvider, String,
    * String, Class, String, boolean, RedirectUriResolver, Class, String, String)}
    */
+  @Deprecated
+  @SuppressWarnings({"java:S1133", "java:S107"})  // Deprecation, ctor has too many args warning
   public OpenIDConnectProvider(OAuth2ServiceProvider oauth2Provider,
                                String accessTokenKey,
                                String userInfoURL,
@@ -108,6 +110,7 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
         OpenIDConnectProviderDescriptor.DEFAULT_AUTHENTICATION_METHOD);
   }
 
+  @SuppressWarnings("java:S107") // ctor has too many args warning
   public OpenIDConnectProvider(OAuth2ServiceProvider oauth2Provider,
                                String accessTokenKey,
                                String userInfoURL,

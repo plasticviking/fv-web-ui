@@ -34,6 +34,8 @@ import org.nuxeo.runtime.model.ContributionFragmentRegistry;
  * @since 5.7
  * @deprecated since 11.1
  */
+@Deprecated
+@SuppressWarnings("java:S1133") //Yes, I know it's deprecated. No, that's not really a problem.
 public class OpenIDProviderFragmentRegistry
     extends ContributionFragmentRegistry<OpenIDConnectProviderDescriptor> {
 
