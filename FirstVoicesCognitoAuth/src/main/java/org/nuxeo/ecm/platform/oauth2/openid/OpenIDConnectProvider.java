@@ -43,11 +43,11 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.nuxeo.ecm.platform.oauth2.openid.auth.EmailBasedUserResolver;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.OpenIDConnectAuthenticator;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.OpenIDUserInfo;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.UserMapperResolver;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.UserResolver;
+import org.nuxeo.ecm.platform.oauth2.openid.auth.UserThenEmailBasedUserResolver;
 import org.nuxeo.ecm.platform.oauth2.providers.NuxeoOAuth2ServiceProvider;
 import org.nuxeo.ecm.platform.oauth2.providers.OAuth2ServiceProvider;
 import org.nuxeo.ecm.platform.ui.web.auth.service.LoginProviderLinkComputer;
@@ -135,7 +135,7 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
         if (userMapper != null) {
           userResolver = new UserMapperResolver(this, userMapper);
         } else {
-          userResolver = new EmailBasedUserResolver(this);
+          userResolver = new UserThenEmailBasedUserResolver(this);
         }
       } else {
         Constructor<? extends UserResolver> c =

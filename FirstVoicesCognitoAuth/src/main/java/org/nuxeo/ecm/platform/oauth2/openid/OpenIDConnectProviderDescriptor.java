@@ -26,9 +26,9 @@ import org.nuxeo.common.xmap.annotation.XNode;
 import org.nuxeo.common.xmap.annotation.XNodeList;
 import org.nuxeo.common.xmap.annotation.XObject;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.DefaultOpenIDUserInfo;
-import org.nuxeo.ecm.platform.oauth2.openid.auth.EmailBasedUserResolver;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.OpenIDUserInfo;
 import org.nuxeo.ecm.platform.oauth2.openid.auth.UserResolver;
+import org.nuxeo.ecm.platform.oauth2.openid.auth.UserThenEmailBasedUserResolver;
 import org.nuxeo.runtime.model.Descriptor;
 
 @XObject("provider")
@@ -36,7 +36,7 @@ public class OpenIDConnectProviderDescriptor implements Descriptor {
 
   public static final String DEFAULT_ACCESS_TOKEN_KEY = "access_token";
   public static final Class<? extends UserResolver> DEFAULT_USER_RESOLVER_CLASS =
-      EmailBasedUserResolver.class;
+      UserThenEmailBasedUserResolver.class;
   public static final Class<? extends RedirectUriResolver> DEFAULT_REDIRECT_URI_RESOLVER_CLASS =
       RedirectUriResolverHelper.class;
   public static final Class<? extends OpenIDUserInfo> DEFAULT_USER_INFO_CLASS =

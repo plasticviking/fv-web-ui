@@ -33,7 +33,6 @@ import org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProvider;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
-@SuppressWarnings("common-java:DuplicatedBlocks")
 public class UserThenEmailBasedUserResolver extends UserResolver {
 
   private static final Log log = LogFactory.getLog(UserThenEmailBasedUserResolver.class);

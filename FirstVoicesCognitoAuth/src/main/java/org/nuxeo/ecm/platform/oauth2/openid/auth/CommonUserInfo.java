@@ -4,6 +4,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Key;
 import java.util.Date;
 
+@SuppressWarnings("java:S1214") // Sonar thinks these are constants and complains
 public interface CommonUserInfo extends OpenIDUserInfo {
 
   @Key("sub") String subject = null;
