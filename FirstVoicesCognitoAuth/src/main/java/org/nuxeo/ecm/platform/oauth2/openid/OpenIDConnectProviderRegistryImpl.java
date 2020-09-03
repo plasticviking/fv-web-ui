@@ -94,8 +94,8 @@ public class OpenIDConnectProviderRegistryImpl extends DefaultComponent
   }
 
   protected void registerPendingProviders() {
-    List<OpenIDConnectProviderDescriptor> providers = getDescriptors(PROVIDER_EP);
-    for (OpenIDConnectProviderDescriptor provider : providers) {
+    List<OpenIDConnectProviderDescriptor> pendingProviders = getDescriptors(PROVIDER_EP);
+    for (OpenIDConnectProviderDescriptor provider : pendingProviders) {
       registerOpenIdProvider(provider);
     }
   }
@@ -108,7 +108,8 @@ public class OpenIDConnectProviderRegistryImpl extends DefaultComponent
       redirectUriResolver =
           provider.getRedirectUriResolver().getDeclaredConstructor().newInstance();
     } catch (ReflectiveOperationException e) {
-      throw new RuntimeException(e);
+      log.error("Error instantiating redirect URI resolve", e);
+      return;
     }
 
     if (oauth2ProviderRegistry != null) {

@@ -117,7 +117,7 @@ public class OpenIDUserInfoStoreImpl implements OpenIDUserInfoStore {
       filter.put(OPENID_PROVIDER_KEY, providerName);
       filter.put(NUXEO_LOGIN_KEY, nuxeoLogin);
       DocumentModelList entries = session.query(filter);
-      if (entries.size() == 0) {
+      if (entries.isEmpty()) {
         return null;
       }
       DocumentModel entry = entries.get(0);

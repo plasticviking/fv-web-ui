@@ -31,6 +31,7 @@ import org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProvider;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public abstract class UserResolver {
 
   private static final Log log = LogFactory.getLog(UserResolver.class);
@@ -56,9 +57,7 @@ public abstract class UserResolver {
     DocumentModel user = userManager.getBareUserModel();
     user.setPropertyValue(userManager.getUserIdField(), nuxeoLogin);
     try {
-      userDoc = Framework.doPrivileged(() -> {
-        return userManager.createUser(user);
-      });
+      userDoc = Framework.doPrivileged(() -> (userManager.createUser(user)));
     } catch (NuxeoException e) {
       log.error("Error while creating user " + nuxeoLogin + "in UserManager", e);
       return null;

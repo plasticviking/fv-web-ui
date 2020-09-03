@@ -33,6 +33,7 @@ import org.nuxeo.ecm.platform.oauth2.openid.OpenIDConnectProvider;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class UserThenEmailBasedUserResolver extends UserResolver {
 
   private static final Log log = LogFactory.getLog(UserThenEmailBasedUserResolver.class);
@@ -41,7 +42,8 @@ public class UserThenEmailBasedUserResolver extends UserResolver {
     super(provider);
   }
 
-  @Override public String findNuxeoUser(OpenIDUserInfo userInfo) {
+  @Override
+  public String findNuxeoUser(OpenIDUserInfo userInfo) {
 
     try {
       UserManager userManager = Framework.getService(UserManager.class);
@@ -77,12 +79,10 @@ public class UserThenEmailBasedUserResolver extends UserResolver {
 
           DocumentModel nuxeoUser = this.createNuxeoUser(username);
           ArrayList<String> groups = new ArrayList<>();
-          groups.add("administrators");
+          groups.add("members");
           nuxeoUser.setProperty("user", "groups", groups);
           nuxeoUser = updateUserInfo(nuxeoUser, userInfo);
-          //nuxeoUser.setPropertyValue(userManager.getUserEmailField(), email);
           log.warn(nuxeoUser.toString());
-          //updateUserInfo(nuxeoUser)
 
           return (String) nuxeoUser.getPropertyValue(userManager.getUserIdField());
         }
@@ -97,7 +97,8 @@ public class UserThenEmailBasedUserResolver extends UserResolver {
     }
   }
 
-  @Override public DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
+  @Override
+  public DocumentModel updateUserInfo(DocumentModel user, OpenIDUserInfo userInfo) {
     try {
       UserManager userManager = Framework.getService(UserManager.class);
       user.setPropertyValue(userManager.getUserEmailField(), userInfo.getEmail());

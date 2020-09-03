@@ -24,7 +24,9 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Key;
 import java.util.Date;
+import java.util.Objects;
 
+@SuppressWarnings("common-java:DuplicatedBlocks")
 public class DefaultOpenIDUserInfo extends GenericJson implements OpenIDUserInfo {
 
   @Key("sub") protected String subject;
@@ -65,79 +67,98 @@ public class DefaultOpenIDUserInfo extends GenericJson implements OpenIDUserInfo
 
   @Key("updated_time") protected String updatedTime;
 
-  @Override public String getSubject() {
+  @Override
+  public String getSubject() {
     return subject;
   }
 
-  @Override public String getName() {
+  @Override
+  public String getName() {
     return name;
   }
 
-  @Override public String getGivenName() {
+  @Override
+  public String getGivenName() {
     return givenName;
   }
 
-  @Override public String getFamilyName() {
+  @Override
+  public String getFamilyName() {
     return familyName;
   }
 
-  @Override public String getMiddleName() {
+  @Override
+  public String getMiddleName() {
     return middleName;
   }
 
-  @Override public String getNickname() {
+  @Override
+  public String getNickname() {
     return nickname;
   }
 
-  @Override public String getPreferredUsername() {
+  @Override
+  public String getPreferredUsername() {
     return preferredUsername;
   }
 
-  @Override public String getProfile() {
+  @Override
+  public String getProfile() {
     return profile;
   }
 
-  @Override public String getPicture() {
+  @Override
+  public String getPicture() {
     return picture;
   }
 
-  @Override public String getWebsite() {
+  @Override
+  public String getWebsite() {
     return website;
   }
 
-  @Override public String getEmail() {
+  @Override
+  public String getEmail() {
     return email;
   }
 
-  @Override public boolean isEmailVerified() {
+  @Override
+  public boolean isEmailVerified() {
     return emailVerified;
   }
 
-  @Override public String getGender() {
+  @Override
+  public String getGender() {
     return gender;
   }
 
-  @Override public Date getBirthdate() {
+  @Override
+  public Date getBirthdate() {
     return birthdate;
   }
 
-  @Override public String getZoneInfo() {
+  @Override
+  public String getZoneInfo() {
     return zoneInfo;
   }
 
-  @Override public String getLocale() {
+  @Override
+  public String getLocale() {
     return locale;
   }
 
-  @Override public String getPhoneNumber() {
+  @Override
+  public String getPhoneNumber() {
     return phoneNumber;
   }
 
-  @Override public String getAddress() {
+  @Override
+  public String getAddress() {
     return address;
   }
 
-  @Override public Date getUpdatedTime() {
+  @Override
+  public Date getUpdatedTime() {
     Date date;
     try {
       DateTime dateTime = DateTime.parseRfc3339(updatedTime);
@@ -148,4 +169,23 @@ public class DefaultOpenIDUserInfo extends GenericJson implements OpenIDUserInfo
     return date;
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    final DefaultOpenIDUserInfo info = (DefaultOpenIDUserInfo) o;
+    return Objects.equals(name, info.name) && Objects.equals(email, info.email);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), name, email);
+  }
 }

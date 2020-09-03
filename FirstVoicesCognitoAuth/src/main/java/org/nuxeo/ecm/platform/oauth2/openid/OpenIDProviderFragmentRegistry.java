@@ -34,7 +34,6 @@ import org.nuxeo.runtime.model.ContributionFragmentRegistry;
  * @since 5.7
  * @deprecated since 11.1
  */
-@Deprecated
 public class OpenIDProviderFragmentRegistry
     extends ContributionFragmentRegistry<OpenIDConnectProviderDescriptor> {
 

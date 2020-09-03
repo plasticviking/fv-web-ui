@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.lang.reflect.Constructor;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
@@ -86,7 +87,6 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
    * @deprecated since 11.1, use {@link #OpenIDConnectProvider(OAuth2ServiceProvider, String,
    * String, Class, String, boolean, RedirectUriResolver, Class, String, String)}
    */
-  @Deprecated
   public OpenIDConnectProvider(OAuth2ServiceProvider oauth2Provider,
                                String accessTokenKey,
                                String userInfoURL,
@@ -153,9 +153,9 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
    */
   public String createStateToken(HttpServletRequest request) {
     String state = new BigInteger(130, new SecureRandom()).toString(32);
-    request.getSession()
-           .setAttribute(OpenIDConnectAuthenticator.STATE_SESSION_ATTRIBUTE + "_" + getName(),
-               state);
+    request
+        .getSession()
+        .setAttribute(OpenIDConnectAuthenticator.STATE_SESSION_ATTRIBUTE + "_" + getName(), state);
     return state;
   }
 
@@ -164,19 +164,18 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
    * request is the user that was supposed to.
    */
   public boolean verifyStateToken(HttpServletRequest request) {
-    return request.getParameter(OpenIDConnectAuthenticator.STATE_URL_PARAM_NAME)
-                  .equals(request.getSession()
-                                 .getAttribute(
-                                     OpenIDConnectAuthenticator.STATE_SESSION_ATTRIBUTE + "_"
-                                         + getName()));
+    return request
+        .getParameter(OpenIDConnectAuthenticator.STATE_URL_PARAM_NAME)
+        .equals(request
+            .getSession()
+            .getAttribute(OpenIDConnectAuthenticator.STATE_SESSION_ATTRIBUTE + "_" + getName()));
   }
 
-  public String getAuthenticationUrl(HttpServletRequest req, String requestedUrl) {
+  public String getAuthenticationUrl(HttpServletRequest req) {
     // redirect to the authorization flow
     AuthorizationCodeFlow flow =
         ((NuxeoOAuth2ServiceProvider) oauth2Provider).getAuthorizationCodeFlow();
     AuthorizationCodeRequestUrl authorizationUrl = flow.newAuthorizationUrl(); //
-    // .setResponseTypes("token");
     authorizationUrl.setRedirectUri(getRedirectUri(req));
 
     String state = createStateToken(req);
@@ -257,7 +256,7 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
       }
 
       HttpResponse response = request.execute();
-      String body = IOUtils.toString(response.getContent(), "UTF-8");
+      String body = IOUtils.toString(response.getContent(), StandardCharsets.UTF_8);
       log.debug(body);
       userInfo = parseUserInfo(body);
 
@@ -283,6 +282,6 @@ public class OpenIDConnectProvider implements LoginProviderLinkComputer {
 
   @Override
   public String computeUrl(HttpServletRequest req, String requestedUrl) {
-    return getAuthenticationUrl(req, requestedUrl);
+    return getAuthenticationUrl(req);
   }
 }

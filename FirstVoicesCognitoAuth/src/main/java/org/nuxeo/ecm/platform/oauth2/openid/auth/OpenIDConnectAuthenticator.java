@@ -56,8 +56,7 @@ public class OpenIDConnectAuthenticator implements NuxeoAuthenticationPlugin {
     req.setAttribute(LOGIN_ERROR, msg);
   }
 
-  public UserIdentificationInfo retrieveIdentityFromOAuth(HttpServletRequest req,
-                                                          HttpServletResponse resp) {
+  public UserIdentificationInfo retrieveIdentityFromOAuth(HttpServletRequest req) {
 
     // Getting the "error" URL parameter
     String error = req.getParameter(ERROR_URL_PARAM_NAME);
@@ -158,8 +157,8 @@ public class OpenIDConnectAuthenticator implements NuxeoAuthenticationPlugin {
     if (code == null && error == null) {
       return null;
     }
-    UserIdentificationInfo userIdent = retrieveIdentityFromOAuth(httpRequest, httpResponse);
-    return userIdent;
+
+    return retrieveIdentityFromOAuth(httpRequest);
   }
 
   @Override
@@ -176,5 +175,6 @@ public class OpenIDConnectAuthenticator implements NuxeoAuthenticationPlugin {
 
   @Override
   public void initPlugin(Map<String, String> parameters) {
+    // No initialization is required
   }
 }

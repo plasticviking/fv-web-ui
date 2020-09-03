@@ -21,6 +21,7 @@
 package org.nuxeo.ecm.platform.oauth2.openid;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.nuxeo.runtime.api.Framework;
 
 public class OpenIDConnectHelper {
@@ -34,7 +35,7 @@ public class OpenIDConnectHelper {
     if (registry != null) {
       return registry.getProviders();
     }
-    return null;
+    return Collections.emptyList();
   }
 
   public static Collection<OpenIDConnectProvider> getEnabledProviders() {
@@ -43,6 +44,6 @@ public class OpenIDConnectHelper {
     if (registry != null) {
       return registry.getEnabledProviders();
     }
-    return null;
+    return Collections.emptyList();
   }
 }
