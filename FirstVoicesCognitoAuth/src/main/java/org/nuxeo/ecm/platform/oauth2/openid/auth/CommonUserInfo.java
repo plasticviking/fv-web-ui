@@ -1,142 +1,142 @@
 package org.nuxeo.ecm.platform.oauth2.openid.auth;
 
+import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Key;
 import java.util.Date;
 
-@SuppressWarnings("java:S1214") // Sonar thinks these are constants and complains
-public interface CommonUserInfo extends OpenIDUserInfo {
+public abstract class CommonUserInfo extends GenericJson implements OpenIDUserInfo {
 
-  @Key("sub") String subject = null;
+  @Key("sub") protected String subject = null;
 
-  @Key("name") String name = null;
+  @Key("name") protected String name = null;
 
-  @Key("given_name") String givenName = null;
+  @Key("given_name") protected String givenName = null;
 
-  @Key("family_name") String familyName = null;
+  @Key("family_name") protected String familyName = null;
 
-  @Key("middle_name") String middleName = null;
+  @Key("middle_name") protected String middleName = null;
 
-  @Key("nickname") String nickname = null;
+  @Key("nickname") protected String nickname = null;
 
-  @Key("preferred_username") String preferredUsername = null;
+  @Key("preferred_username") protected String preferredUsername = null;
 
-  @Key("profile") String profile = null;
+  @Key("profile") protected String profile = null;
 
-  @Key("picture") String picture = null;
+  @Key("picture") protected String picture = null;
 
-  @Key("website") String website = null;
+  @Key("website") protected String website = null;
 
-  @Key("email") String email = null;
+  @Key("email") protected String email = null;
 
-  @Key("email_verified") boolean emailVerified = false;
+  @Key("email_verified") protected boolean emailVerified = false;
 
-  @Key("gender") String gender = null;
+  @Key("gender") protected String gender = null;
 
-  @Key("birthdate") Date birthdate = null;
+  @Key("birthdate") protected Date birthdate = null;
 
-  @Key("zoneinfo") String zoneInfo = null;
+  @Key("zoneinfo") protected String zoneInfo = null;
 
-  @Key("locale") String locale = null;
+  @Key("locale") protected String locale = null;
 
-  @Key("phone_number") String phoneNumber = null;
+  @Key("phone_number") protected String phoneNumber = null;
 
-  @Key("address") String address = null;
+  @Key("address") protected String address = null;
 
-  @Key("updated_time") String updatedTime = null;
+  @Key("updated_time") protected String updatedTime = null;
 
   @Override
-  default String getSubject() {
+  public String getSubject() {
     return subject;
   }
 
   @Override
-  default String getName() {
+  public String getName() {
     return name;
   }
 
   @Override
-  default String getGivenName() {
+  public String getGivenName() {
     return givenName;
   }
 
   @Override
-  default String getFamilyName() {
+  public String getFamilyName() {
     return familyName;
   }
 
   @Override
-  default String getMiddleName() {
+  public String getMiddleName() {
     return middleName;
   }
 
   @Override
-  default String getNickname() {
+  public String getNickname() {
     return nickname;
   }
 
   @Override
-  default String getPreferredUsername() {
+  public String getPreferredUsername() {
     return preferredUsername;
   }
 
   @Override
-  default String getProfile() {
+  public String getProfile() {
     return profile;
   }
 
   @Override
-  default String getPicture() {
+  public String getPicture() {
     return picture;
   }
 
   @Override
-  default String getWebsite() {
+  public String getWebsite() {
     return website;
   }
 
   @Override
-  default String getEmail() {
+  public String getEmail() {
     return email;
   }
 
   @Override
-  default boolean isEmailVerified() {
+  public boolean isEmailVerified() {
     return emailVerified;
   }
 
   @Override
-  default String getGender() {
+  public String getGender() {
     return gender;
   }
 
   @Override
-  default Date getBirthdate() {
+  public Date getBirthdate() {
     return birthdate;
   }
 
   @Override
-  default String getZoneInfo() {
+  public String getZoneInfo() {
     return zoneInfo;
   }
 
   @Override
-  default String getLocale() {
+  public String getLocale() {
     return locale;
   }
 
   @Override
-  default String getPhoneNumber() {
+  public String getPhoneNumber() {
     return phoneNumber;
   }
 
   @Override
-  default String getAddress() {
+  public String getAddress() {
     return address;
   }
 
   @Override
-  default Date getUpdatedTime() {
+  public Date getUpdatedTime() {
     Date date;
     try {
       DateTime dateTime = DateTime.parseRfc3339(updatedTime);
@@ -146,4 +146,6 @@ public interface CommonUserInfo extends OpenIDUserInfo {
     }
     return date;
   }
+
+
 }

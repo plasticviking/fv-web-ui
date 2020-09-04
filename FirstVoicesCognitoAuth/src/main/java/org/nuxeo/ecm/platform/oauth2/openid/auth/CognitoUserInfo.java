@@ -20,11 +20,10 @@
 
 package org.nuxeo.ecm.platform.oauth2.openid.auth;
 
-import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.Key;
 import java.util.Objects;
 
-public class CognitoUserInfo extends GenericJson implements CommonUserInfo {
+public class CognitoUserInfo extends CommonUserInfo {
 
   @Key("username") protected String username;
 
