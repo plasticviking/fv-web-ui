@@ -66,13 +66,8 @@ public class UserThenEmailBasedUserResolver extends UserResolver {
 
           //check the configuration. We could create a user now.
           String username = ((CognitoUserInfo) userInfo).getUsername();
-          String email = userInfo.getEmail();
 
           log.warn("About to create the user " + username);
-
-          String name = userInfo.getName();
-          String nickname = userInfo.getNickname();
-          String zoneInfo = userInfo.getZoneInfo();
 
           DocumentModel nuxeoUser = this.createNuxeoUser(username);
           ArrayList<String> groups = new ArrayList<>();
