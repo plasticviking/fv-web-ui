@@ -20,18 +20,9 @@
 
 package org.nuxeo.ecm.platform.oauth2.openid.auth;
 
-import com.google.api.client.util.Key;
 import java.util.Objects;
 
 public class DefaultOpenIDUserInfo extends CommonUserInfo {
-
-  @Key("sub") protected String subject;
-
-  @Override
-  public String getSubject() {
-    return subject;
-  }
-
 
   @Override
   public boolean equals(final Object o) {

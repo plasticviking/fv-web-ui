@@ -4,46 +4,47 @@ import com.google.api.client.json.GenericJson;
 import com.google.api.client.util.DateTime;
 import com.google.api.client.util.Key;
 import java.util.Date;
+import java.util.Objects;
 
 public abstract class CommonUserInfo extends GenericJson implements OpenIDUserInfo {
 
-  @Key("sub") protected String subject = null;
+  @Key("sub") protected String subject;
 
-  @Key("name") protected String name = null;
+  @Key("name") protected String name;
 
-  @Key("given_name") protected String givenName = null;
+  @Key("given_name") protected String givenName;
 
-  @Key("family_name") protected String familyName = null;
+  @Key("family_name") protected String familyName;
 
-  @Key("middle_name") protected String middleName = null;
+  @Key("middle_name") protected String middleName;
 
-  @Key("nickname") protected String nickname = null;
+  @Key("nickname") protected String nickname;
 
-  @Key("preferred_username") protected String preferredUsername = null;
+  @Key("preferred_username") protected String preferredUsername;
 
-  @Key("profile") protected String profile = null;
+  @Key("profile") protected String profile;
 
-  @Key("picture") protected String picture = null;
+  @Key("picture") protected String picture;
 
-  @Key("website") protected String website = null;
+  @Key("website") protected String website;
 
-  @Key("email") protected String email = null;
+  @Key("email") protected String email;
 
   @Key("email_verified") protected boolean emailVerified = false;
 
-  @Key("gender") protected String gender = null;
+  @Key("gender") protected String gender;
 
-  @Key("birthdate") protected Date birthdate = null;
+  @Key("birthdate") protected Date birthdate;
 
-  @Key("zoneinfo") protected String zoneInfo = null;
+  @Key("zoneinfo") protected String zoneInfo;
 
-  @Key("locale") protected String locale = null;
+  @Key("locale") protected String locale;
 
-  @Key("phone_number") protected String phoneNumber = null;
+  @Key("phone_number") protected String phoneNumber;
 
-  @Key("address") protected String address = null;
+  @Key("address") protected String address;
 
-  @Key("updated_time") protected String updatedTime = null;
+  @Key("updated_time") protected String updatedTime;
 
   @Override
   public String getSubject() {
@@ -147,5 +148,23 @@ public abstract class CommonUserInfo extends GenericJson implements OpenIDUserIn
     return date;
   }
 
+  @Override
+  public boolean equals(final Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    if (!super.equals(o)) {
+      return false;
+    }
+    final CommonUserInfo info = (CommonUserInfo) o;
+    return Objects.equals(subject, info.subject) && Objects.equals(email, info.email);
+  }
 
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), subject, email);
+  }
 }
