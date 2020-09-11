@@ -61,7 +61,9 @@ function DashboardDetailTasksContainer() {
           definitions,
           dialectPath: itemDialectPath,
           id: itemId,
+          itemType,
           literalTranslations,
+          metadata,
           partOfSpeech,
           photos,
           phrases,
@@ -136,7 +138,7 @@ function DashboardDetailTasksContainer() {
                   <DetailWordPhrase.Presentation
                     acknowledgement={acknowledgement}
                     audio={audio}
-                    categories={categories}
+                    categories={categories} // NOTE: also handles phrase books
                     culturalNotes={culturalNotes}
                     definitions={definitions}
                     title={itemTitle}
@@ -147,7 +149,9 @@ function DashboardDetailTasksContainer() {
                     pronunciation={pronunciation}
                     relatedAssets={relatedAssets}
                     relatedToAssets={relatedToAssets}
+                    metadata={metadata}
                     videos={videos}
+                    docType={itemType}
                   />
                 }
                 childrenTaskApproval={
@@ -159,6 +163,7 @@ function DashboardDetailTasksContainer() {
                     docDialectPath={itemDialectPath}
                     key={itemId}
                     refreshData={refreshData}
+                    requestChangesText="Reject"
                   />
                 }
               />

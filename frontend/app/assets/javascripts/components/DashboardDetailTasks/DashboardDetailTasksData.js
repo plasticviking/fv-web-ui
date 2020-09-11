@@ -5,6 +5,7 @@ import selectn from 'selectn'
 import useNavigationHelpers from 'common/useNavigationHelpers'
 import useDashboard from 'DataSource/useDashboard'
 import useDocument from 'DataSource/useDocument'
+
 import ProviderHelpers from 'common/ProviderHelpers'
 import { URL_QUERY_PLACEHOLDER } from 'common/Constants'
 import { TableContextSort, TableContextCount } from 'components/Table/TableContext'
@@ -24,7 +25,7 @@ function DashboardDetailTasksData({ children, columnRender }) {
   const [selectedTaskData, setSelectedTaskData] = useState({})
   const { getSearchObject, navigate, navigateReplace } = useNavigationHelpers()
 
-  const { computeDocument } = useDocument()
+  const { computeDocument, fetchDocumentSingleArg } = useDocument()
   const { count: tasksCount = 0, fetchTasksRemoteData, fetchTask, tasks = [], userId, resetTasks } = useDashboard()
 
   const {
@@ -65,24 +66,51 @@ function DashboardDetailTasksData({ children, columnRender }) {
   }, [queryPage, queryPageSize, querySortBy, querySortOrder])
 
   const refreshData = () => {
-    // Refreshes list in the sidebar
+    // TODO: if single item is displayed, need to move to back a page
+    // TODO: if reject, close open panel
+    // TODO: Refresh list in the sidebar
     fetchTasksUsingQueries()
-    // TODO: May need to do something with any opened detail panel
   }
 
   // Redirect when http://...?task=[ID] and we have tasks + userId
   useEffect(() => {
     if (queryTask && tasks.length > 0) {
-      navigateReplace(
-        getUrlDetailView({
-          task: queryTask === URL_QUERY_PLACEHOLDER ? selectn([0, 'id'], tasks) : queryTask,
-          item: queryTask === URL_QUERY_PLACEHOLDER ? selectn([0, 'targetDocumentsIds', 0], tasks) : queryItem, // TODO: NOT SELECTING CORRECTLY?
-        })
-      )
+      if (queryTask === URL_QUERY_PLACEHOLDER) {
+        navigateReplace(
+          getUrlDetailView({
+            task: selectn([0, 'id'], tasks),
+            item: selectn([0, 'targetDocumentsIds'], tasks),
+          })
+        )
+      } else if (queryItem === undefined) {
+        // Task selected but no Item. So pick the first item....
+        navigateReplace(
+          getUrlDetailView({
+            task: queryTask,
+            item: selectn([0, 'targetDocumentsIds'], tasks),
+          })
+        )
+      } else {
+        navigateReplace(
+          getUrlDetailView({
+            task: queryTask,
+            item: queryItem,
+          })
+        )
+      }
     }
   }, [queryItem, queryTask, tasks, userId])
 
-  // TODO: Curently only handling words
+  // Get Item Details
+  useEffect(() => {
+    if (queryItem) {
+      fetchDocumentSingleArg({
+        pathOrId: queryItem,
+        headers: { 'enrichers.document': 'ancestry,phrase,permissions' },
+      })
+    }
+  }, [queryItem])
+
   useEffect(() => {
     const extractComputeDocumentItem = ProviderHelpers.getEntry(computeDocument, queryItem)
     const _selectedItemData = selectn(['response'], extractComputeDocumentItem)
@@ -94,27 +122,57 @@ function DashboardDetailTasksData({ children, columnRender }) {
     // const metadata = selectn('response', _selectedItemData) ? (
     //   <MetadataPanel properties={this.props.properties} computeEntity={_selectedItemData} />
     // ) : null
-    setSelectedItemData({
-      state: selectn('state', _selectedItemData),
-      acknowledgement: selectn('properties.fv-word:acknowledgement', _selectedItemData),
-      audio: selectn('contextParameters.word.related_audio', _selectedItemData) || [],
-      categories: selectn('contextParameters.word.categories', _selectedItemData) || [],
+
+    // type
+    // properties["fv-phrase:acknowledgement"]
+    // properties["fv-phrase:phrase_books"][0]
+    const type = selectn('type', _selectedItemData)
+    const commonData = {
       culturalNotes: selectn('properties.fv:cultural_note', _selectedItemData) || [],
       definitions: selectn('properties.fv:definitions', _selectedItemData),
       dialectPath: selectn('contextParameters.ancestry.dialect.path', _selectedItemData),
       id: selectn(['uid'], _selectedItemData),
-      itemType: selectn('type', _selectedItemData),
+      itemType: type,
       literalTranslations: selectn('properties.fv:literal_translation', _selectedItemData),
-      partOfSpeech: selectn('contextParameters.word.part_of_speech', _selectedItemData),
-      photos: selectn('contextParameters.word.related_pictures', _selectedItemData) || [],
-      phrases: selectn('contextParameters.word.related_phrases', _selectedItemData) || [],
-      pronunciation: selectn('properties.fv-word:pronunciation', _selectedItemData),
-      relatedAssets: selectn('contextParameters.word.related_assets', _selectedItemData) || [],
-      relatedToAssets: selectn('contextParameters.word.related_by', _selectedItemData) || [],
+      state: selectn('state', _selectedItemData),
       title: selectn('title', _selectedItemData),
-      videos: selectn('contextParameters.word.related_videos', _selectedItemData) || [],
-    })
-  }, [queryItem])
+      metadata: { response: _selectedItemData },
+    }
+    let itemTypeSpecificData = {}
+    switch (type) {
+      case 'FVPhrase':
+        itemTypeSpecificData = {
+          acknowledgement: selectn('properties.fv-phrase:acknowledgement', _selectedItemData),
+          audio: selectn('contextParameters.phrase.related_audio', _selectedItemData) || [],
+          categories: selectn('contextParameters.phrase.phrase_books', _selectedItemData) || [],
+          partOfSpeech: selectn('contextParameters.phrase.part_of_speech', _selectedItemData),
+          photos: selectn('contextParameters.phrase.related_pictures', _selectedItemData) || [],
+          phrases: selectn('contextParameters.phrase.related_phrases', _selectedItemData) || [],
+          pronunciation: selectn('properties.fv-phrase:pronunciation', _selectedItemData),
+          relatedAssets: selectn('contextParameters.phrase.related_assets', _selectedItemData) || [],
+          relatedToAssets: selectn('contextParameters.phrase.related_by', _selectedItemData) || [],
+          videos: selectn('contextParameters.phrase.related_videos', _selectedItemData) || [],
+        }
+        break
+
+      default:
+        // FVWord
+        itemTypeSpecificData = {
+          acknowledgement: selectn('properties.fv-word:acknowledgement', _selectedItemData),
+          audio: selectn('contextParameters.word.related_audio', _selectedItemData) || [],
+          categories: selectn('contextParameters.word.categories', _selectedItemData) || [],
+          partOfSpeech: selectn('contextParameters.word.part_of_speech', _selectedItemData),
+          photos: selectn('contextParameters.word.related_pictures', _selectedItemData) || [],
+          phrases: selectn('contextParameters.word.related_phrases', _selectedItemData) || [],
+          pronunciation: selectn('properties.fv-word:pronunciation', _selectedItemData),
+          relatedAssets: selectn('contextParameters.word.related_assets', _selectedItemData) || [],
+          relatedToAssets: selectn('contextParameters.word.related_by', _selectedItemData) || [],
+          videos: selectn('contextParameters.word.related_videos', _selectedItemData) || [],
+        }
+        break
+    }
+    setSelectedItemData({ ...commonData, ...itemTypeSpecificData })
+  }, [computeDocument, queryItem])
 
   // Get Task Details
   useEffect(() => {
@@ -157,7 +215,7 @@ function DashboardDetailTasksData({ children, columnRender }) {
       const selectedTask = tasks.filter((task) => {
         return task.id === id
       })
-      selectedTargetDocumentId = selectn([0, 'targetDocumentsIds', 0], selectedTask)
+      selectedTargetDocumentId = selectn([0, 'targetDocumentsIds'], selectedTask)
     }
 
     navigate(
