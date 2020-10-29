@@ -9,6 +9,10 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 
 public class EtagHelper {
 
+  private EtagHelper() {
+
+  }
+
   public static String computeEtag(List<DocumentModel> docs) {
 
     MessageDigest md;

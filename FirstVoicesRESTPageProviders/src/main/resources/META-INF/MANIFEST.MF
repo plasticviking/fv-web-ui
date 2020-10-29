@@ -10,5 +10,4 @@ Bundle-Vendor: Nuxeo
 Nuxeo-Component: OSGI-INF/extensions/ca.firstvoices.pageproviders.categories.xml,
   OSGI-INF/extensions/ca.firstvoices.pageproviders.tasks.xml,
   OSGI-INF/extensions/ca.firstvoices.pageproviders.portals.xml,
-  OSGI-INF/extensions/ca.firstvoices.rest.cache.xml,
   OSGI-INF/extensions/ca.firstvoices.rest.httpcache.xml
