@@ -20,7 +20,7 @@ import ConfGlobal from 'common/conf/local.js'
 // REDUX
 import { connect } from 'react-redux'
 // REDUX: actions/dispatch/func
-import { fetchPortals } from 'reducers/fvPortal'
+import { fetchPortalsFromCustomAPI } from 'reducers/fvPortal'
 import { fetchDirectory } from 'reducers/directory'
 import { pushWindowPath } from 'reducers/windowPath'
 
@@ -47,7 +47,7 @@ export class ExploreDialects extends Component {
     computeLogin: object.isRequired,
     properties: object.isRequired,
     // REDUX: actions/dispatch/func
-    fetchPortals: func.isRequired,
+    fetchPortalsFromCustomAPI: func.isRequired,
     pushWindowPath: func.isRequired,
     fetchDirectory: func.isRequired,
   }
@@ -140,11 +140,7 @@ export class ExploreDialects extends Component {
   }
 
   _fetchData = (newProps) => {
-    newProps.fetchPortals(
-      'get_dialects',
-      { 'enrichers.document': 'lightancestry,lightportal', properties: '' },
-      { queryParams: newProps.routeParams.area }
-    )
+    newProps.fetchPortalsFromCustomAPI()
     newProps.fetchDirectory('parent_languages', 2000, true)
   }
 
@@ -191,7 +187,7 @@ const mapStateToProps = (state /*, ownProps*/) => {
 
 // REDUX: actions/dispatch/func
 const mapDispatchToProps = {
-  fetchPortals,
+  fetchPortalsFromCustomAPI,
   fetchDirectory,
   pushWindowPath,
 }
