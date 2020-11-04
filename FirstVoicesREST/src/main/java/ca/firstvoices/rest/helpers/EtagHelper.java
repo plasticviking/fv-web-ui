@@ -29,10 +29,10 @@ public class EtagHelper {
       (doc -> Optional.ofNullable(doc.getPropertyValue("dc:modified")).map(s -> {
         int hash = s.hashCode();
         byte[] result = new byte[4];
-        result[0] = (hash & 0xFF000000) >> 24;
-        result[1] = (hash & 0x00FF0000) >> 16;
-        result[2] = (hash & 0x0000FF00) >> 8;
-        result[3] = (hash & 0x000000FF);
+        result[0] = (byte) ((hash & 0xFF000000) >> 24);
+        result[1] = (byte) ((hash & 0x00FF0000) >> 16);
+        result[2] = (byte) ((hash & 0x0000FF00) >> 8);
+        result[3] = (byte) (hash & 0x000000FF);
         return result;
       }).orElse(new byte[]{0x00}));
 
