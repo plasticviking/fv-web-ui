@@ -31,10 +31,10 @@ export const fetchPortals = function fetchPortals(pageProvider, headers = {}, pa
   }
 }
 
-export const fetchPortalsFromCustomAPI = function fetchPortalsFromCustomAPI() {
+export const fetchPortalsFromCustomAPI = function fetchPortalsFromCustomAPI(params) {
   return (dispatch) => {
     dispatch({ type: FV_FETCH_PORTALS_START })
-    return DirectoryOperations.getDocumentsViaCustomAPI('/portal/')
+    return DirectoryOperations.getDocumentsViaCustomAPI(`/portal/${params.area}`)
       .then((response) => {
         dispatch({ type: FV_FETCH_PORTALS_FETCH_SUCCESS, documents: response })
       })
