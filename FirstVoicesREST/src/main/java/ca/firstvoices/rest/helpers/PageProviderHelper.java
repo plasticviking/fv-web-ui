@@ -13,6 +13,9 @@ import org.nuxeo.runtime.api.Framework;
 
 public class PageProviderHelper {
 
+  private PageProviderHelper() {
+  }
+
   public static List<DocumentModel> getPageProviderResults(CoreSession session,
                                                            String ppName,
                                                            Integer pageSize,
