@@ -25,7 +25,6 @@ import static ca.firstvoices.export.utils.FVExportConstants.DIALECT_RESOURCES_TY
 import static ca.firstvoices.export.utils.FVExportConstants.PDF_FORMAT;
 import static ca.firstvoices.export.utils.FVExportUtils.findDialectChildWithRef;
 import static ca.firstvoices.export.utils.FVExportUtils.makePrincipalWorkDigest;
-
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -46,9 +45,10 @@ import org.nuxeo.runtime.api.Framework;
 /*
  * This end-point will return all the documents export by a specific principal
  */
-@Operation(id = FVFormattedDocumentGetter.ID, category = Constants.CAT_DOCUMENT, label = "Get "
-    + "exported documents", description = "Retrieve formatted (CSV or PDF) documents from "
-    + "principals home directory.")
+@Operation(id = FVFormattedDocumentGetter.ID,
+    category = Constants.CAT_DOCUMENT,
+    label = "Get " + "exported documents",
+    description = "Retrieve formatted (CSV or PDF) documents from " + "principals home directory.")
 public class FVFormattedDocumentGetter {
 
   public static final String ID = "Document.GetFormattedDocument";
@@ -57,14 +57,11 @@ public class FVFormattedDocumentGetter {
 
   protected AutomationService automation = Framework.getService(AutomationService.class);
 
-  @Param(name = "format", values = {CSV_FORMAT, PDF_FORMAT})
-  protected String format = CSV_FORMAT;
+  @Param(name = "format", values = {CSV_FORMAT, PDF_FORMAT}) protected String format = CSV_FORMAT;
 
-  @Context
-  protected CoreSession session;
+  @Context protected CoreSession session;
 
-  @Context
-  protected OperationContext ctx;
+  @Context protected OperationContext ctx;
 
   /**
    * @param input - dialect to check for export documents
@@ -74,7 +71,7 @@ public class FVFormattedDocumentGetter {
   // files
   @OperationMethod
   public DocumentModelList run(DocumentModel input) {
-    Map<String, Object> parameters = new HashMap<String, Object>();
+    Map<String, Object> parameters = new HashMap<>();
     DocumentModelList result = null;
 
     try {
@@ -85,11 +82,11 @@ public class FVFormattedDocumentGetter {
 
       if (exportFileDocs != null) {
         result = exportFileDocs; // "fileName:" + exportFileName + ", documentId:" +
-        // exportFileDoc.getId() ;
       } else {
         parameters.put("message",
             "Error: While attempting to retrieve formatted documents from your (" + ctx
-                .getPrincipal().getName() + ") home directory.");
+                .getPrincipal()
+                .getName() + ") home directory.");
 
         automation.run(ctx, "WebUI.AddInfoMessage", parameters);
       }
@@ -100,15 +97,15 @@ public class FVFormattedDocumentGetter {
     return result;
   }
 
-  private DocumentModelList findExportDocs(CoreSession session, String resourcesFolderGUID,
-      String workDigest) {
+  private DocumentModelList findExportDocs(
+      CoreSession session, String resourcesFolderGUID, String workDigest) {
     DocumentModelList wrappers = null;
 
     String wrapperQ = "SELECT * FROM FVExport WHERE ecm:ancestorId = '" + resourcesFolderGUID
         + "' AND fvexport:workdigest = '" + workDigest + "' ORDER BY dc:created DESC";
     DocumentModelList docs = session.query(wrapperQ);
 
-    if (docs != null && docs.size() > 0) {
+    if (docs != null && !docs.isEmpty()) {
       wrappers = docs;
     }
 

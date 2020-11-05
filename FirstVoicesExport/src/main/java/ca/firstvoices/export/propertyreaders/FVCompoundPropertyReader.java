@@ -21,7 +21,6 @@
 package ca.firstvoices.export.propertyreaders;
 
 import static ca.firstvoices.export.utils.FVExportUtils.makePropertyReader;
-
 import ca.firstvoices.export.formatproducers.FVAbstractProducer;
 import ca.firstvoices.export.utils.ExportColumnRecord;
 import java.util.ArrayList;
@@ -42,14 +41,14 @@ import org.nuxeo.ecm.core.api.IdRef;
 public class FVCompoundPropertyReader extends FVAbstractPropertyReader {
 
   private static final Log log = LogFactory.getLog(FVCompoundPropertyReader.class);
-  private FVDataBinding[] compound;
-  private List<FVAbstractPropertyReader> compoundReaders;
+  private final List<FVDataBinding> compound;
+  private final List<FVAbstractPropertyReader> compoundReaders;
 
-  public FVCompoundPropertyReader(CoreSession session, ExportColumnRecord spec,
-      FVAbstractProducer specOwner) {
+  public FVCompoundPropertyReader(
+      CoreSession session, ExportColumnRecord spec, FVAbstractProducer specOwner) {
     super(session, spec, specOwner);
     compound = spec.compound;
-    maxColumns = compound.length;
+    maxColumns = compound.size();
 
     // storage for compoundReaders needs to be initialized before making readers
     compoundReaders = new ArrayList<>();
@@ -120,44 +119,41 @@ public class FVCompoundPropertyReader extends FVAbstractPropertyReader {
 
     List<FVDataBinding> compoundOutput = new ArrayList<>();
 
-    try {
-      Object obj = doc.getPropertyValue(propertyToRead);
+    Object obj = doc.getPropertyValue(propertyToRead);
 
-      if (obj instanceof String[]) {
-        String[] list = (String[]) obj; // list of object to be de-referenced
+    if (obj instanceof String[]) {
+      String[] list = (String[]) obj; // list of object to be de-referenced
 
-        if (list.length != 0) {
-          // checking if there are any present
-          for (String guid : list) {
-            DocumentModel refDoc = session.getDocument(new IdRef(guid));
+      if (list.length != 0) {
+        // checking if there are any present
+        for (String guid : list) {
+          DocumentModel refDoc = session.getDocument(new IdRef(guid));
 
-            List<FVDataBinding> output = new ArrayList<>();
+          List<FVDataBinding> output = new ArrayList<>();
 
-            if (refDoc == null) {
-              throw new Exception("FVCompoundPropertyReader: Invalid document");
-            }
-
-            for (FVAbstractPropertyReader prop : compoundReaders) {
-              List<FVDataBinding> listToAdd;
-
-              try {
-                listToAdd = prop.readPropertyFromObject(refDoc);
-              } catch (Exception e) {
-                listToAdd = propertyDoesNotExist(prop.columnNameForOutput);
-              }
-
-              output.addAll(listToAdd);
-            }
-
-            compoundOutput.add(createCompoundProperty(columnNameForOutput, output));
+          if (refDoc == null) {
+            throw new IllegalArgumentException("FVCompoundPropertyReader: Invalid document");
           }
+
+          for (FVAbstractPropertyReader prop : compoundReaders) {
+            List<FVDataBinding> listToAdd;
+
+            try {
+              listToAdd = prop.readPropertyFromObject(refDoc);
+            } catch (Exception e) {
+              listToAdd = propertyDoesNotExist(prop.columnNameForOutput);
+            }
+
+            output.addAll(listToAdd);
+          }
+
+          compoundOutput.add(createCompoundProperty(columnNameForOutput, output));
         }
       }
-    } catch (Exception e) {
-      log.warn(e);
     }
 
-    if (compoundOutput.size() == 0) {
+
+    if (compoundOutput.isEmpty()) {
       compoundOutput.add(createCompoundProperty(columnNameForOutput, writeEmptyRow()));
     }
 
@@ -186,7 +182,7 @@ public class FVCompoundPropertyReader extends FVAbstractPropertyReader {
    * FVCompoundPropertyReader has to generate its own list of readers
    */
   private void makeReaders() {
-    if (compoundReaders.size() > 0) {
+    if (!compoundReaders.isEmpty()) {
       return;
     }
 

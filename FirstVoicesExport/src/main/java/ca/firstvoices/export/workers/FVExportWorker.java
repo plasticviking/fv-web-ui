@@ -22,7 +22,6 @@ package ca.firstvoices.export.workers;
 
 import static ca.firstvoices.export.utils.FVExportConstants.FVWORD;
 import static ca.firstvoices.export.utils.FVExportConstants.ON_DEMAND_WORKER_CATEGORY;
-
 import ca.firstvoices.export.formatproducers.FVAbstractProducer;
 import ca.firstvoices.export.formatproducers.FVPhraseCSVProducer;
 import ca.firstvoices.export.formatproducers.FVWordCSVProducer;
@@ -63,14 +62,14 @@ public class FVExportWorker extends FVAbstractExportWork {
     if (!getDocuments().isEmpty()) {
       openSystemSession();
 
-      List listToProcess = getDocuments();
+      List<DocumentLocation> listToProcess = getDocuments();
 
       FVAbstractProducer fileOutputProducer;
 
-      if (workInfo.exportElement.equals(FVWORD)) {
-        fileOutputProducer = new FVWordCSVProducer(session, workInfo.fileName, workInfo.columns);
+      if (workInfo.getExportElement().equals(FVWORD)) {
+        fileOutputProducer = new FVWordCSVProducer(session, workInfo.getFileName(), workInfo.getColumns());
       } else {
-        fileOutputProducer = new FVPhraseCSVProducer(session, workInfo.fileName, workInfo.columns);
+        fileOutputProducer = new FVPhraseCSVProducer(session, workInfo.getFileName(), workInfo.getColumns());
       }
 
       fileOutputProducer.writeColumnNames();
@@ -92,7 +91,7 @@ public class FVExportWorker extends FVAbstractExportWork {
           workInfo.setExportProgress(percent + "% done.");
         }
 
-        DocumentLocation docLocation = (DocumentLocation) listToProcess.get(size - 1);
+        DocumentLocation docLocation = listToProcess.get(size - 1);
         listToProcess.remove(size - 1);
 
         if (docLocation != null) {
@@ -103,10 +102,9 @@ public class FVExportWorker extends FVAbstractExportWork {
 
             assert (output != null) : "Null output from producer";
 
-            if (output != null) {
-              fileOutputProducer.writeRowData(output);
-              counter++;
-            }
+            fileOutputProducer.writeRowData(output);
+            counter++;
+
           }
         } else {
           log.warn("NUll docLocation in FVExportWorker.");

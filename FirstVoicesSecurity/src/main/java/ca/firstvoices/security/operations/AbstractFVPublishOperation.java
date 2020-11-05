@@ -45,7 +45,7 @@ public abstract class AbstractFVPublishOperation {
    * @param doc document to check published versions for.
    * @return {@code true} if document has ANY published version; {@code false} otherwise
    */
-  protected Boolean hasPublication(DocumentModel doc) {
+  protected boolean hasPublication(DocumentModel doc) {
 
     List<PublishedDocument> publishedDocuments = tree
         .getExistingPublishedDocument(new DocumentLocationImpl(doc));

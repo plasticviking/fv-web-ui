@@ -22,6 +22,8 @@ package ca.firstvoices.security.utils;
 
 public class CustomSecurityConstants {
 
+  private CustomSecurityConstants() {}
+
   public static final String RECORD = "Record";
   public static final String APPROVE = "Approve";
   public static final String CAN_ASK_FOR_PUBLISH = "CanAskForPublishing";

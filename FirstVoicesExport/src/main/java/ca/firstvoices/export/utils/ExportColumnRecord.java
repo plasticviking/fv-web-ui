@@ -20,7 +20,9 @@
 
 package ca.firstvoices.export.utils;
 
+import ca.firstvoices.export.propertyreaders.FVAbstractPropertyReader;
 import ca.firstvoices.export.propertyreaders.FVDataBinding;
+import java.util.List;
 
 /*
  * ExportColumnRecord class binds list of values together to provide a concise record to describe
@@ -32,15 +34,16 @@ import ca.firstvoices.export.propertyreaders.FVDataBinding;
  */
 public class ExportColumnRecord {
 
-  public String colID;          // column label as received from UI to identify property
-  public String property;       // property string to retrieve value
-  public Boolean useForExport;   // set to true if it is ready to be used for export
-  public Integer numCols;        // max number of columns we want to allow in csv
-  public Class requiredPropertyReader;
-  public FVDataBinding[] compound;
+  public final String colID;          // column label as received from UI to identify property
+  public final String property;       // property string to retrieve value
+  public final boolean useForExport;   // set to true if it is ready to be used for export
+  public final int numCols;        // max number of columns we want to allow in csv
+  public final Class<? extends FVAbstractPropertyReader> requiredPropertyReader;
+  public final List<FVDataBinding> compound;
 
-  ExportColumnRecord(String columnId, String prop, Boolean ufe, Integer nc, Class rpr,
-      FVDataBinding[] c) {
+  ExportColumnRecord(
+      String columnId, String prop, boolean ufe, Integer nc, Class<?
+      extends FVAbstractPropertyReader> rpr, List<FVDataBinding> c) {
     colID = columnId;
     property = prop;
     useForExport = ufe;

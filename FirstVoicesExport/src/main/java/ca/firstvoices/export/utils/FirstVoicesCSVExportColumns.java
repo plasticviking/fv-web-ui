@@ -21,6 +21,7 @@
 package ca.firstvoices.export.utils;
 
 import java.util.HashMap;
+import java.util.Map;
 
 /*
  * Binding class for connecting instructions from UI, to column names in export output to
@@ -39,7 +40,7 @@ public class FirstVoicesCSVExportColumns {
     return columnRecordHashMap.get(columnToExport);
   }
 
-  public HashMap<String, ExportColumnRecord> getColumnRecordHashMap() {
+  public Map<String, ExportColumnRecord> getColumnRecordHashMap() {
     return columnRecordHashMap;
   }
 }

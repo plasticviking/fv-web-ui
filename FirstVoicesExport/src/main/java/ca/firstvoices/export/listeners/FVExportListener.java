@@ -29,7 +29,6 @@ import static ca.firstvoices.export.utils.FVExportConstants.FINISH_EXPORT_BY_WRA
 import static ca.firstvoices.export.utils.FVExportConstants.INHERITED_FROM_OTHER;
 import static ca.firstvoices.export.utils.FVExportConstants.PRODUCE_FORMATTED_DOCUMENT;
 import static ca.firstvoices.export.utils.FVExportUtils.makeExportWorkerID;
-
 import ca.firstvoices.export.utils.FVExportUtils;
 import ca.firstvoices.export.utils.FVExportWorkInfo;
 import ca.firstvoices.export.workers.FVAbstractExportWork;
@@ -37,8 +36,6 @@ import ca.firstvoices.export.workers.FVCyclicExportWorker;
 import ca.firstvoices.export.workers.FVExportBlobWorker;
 import ca.firstvoices.export.workers.FVExportWorker;
 import java.util.ArrayList;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.repository.RepositoryManager;
 import org.nuxeo.ecm.core.event.Event;
@@ -51,8 +48,6 @@ import org.nuxeo.runtime.api.Framework;
  *
  */
 public class FVExportListener implements EventListener {
-
-  private static final Log log = LogFactory.getLog(FVExportListener.class);
 
   protected WorkManager workManager;
 
@@ -95,8 +90,7 @@ public class FVExportListener implements EventListener {
 
   private FVAbstractExportWork produceBlobWorker(EventContext ctx) {
     FVExportWorkInfo info = (FVExportWorkInfo) ctx.getProperty(EXPORT_WORK_INFO);
-    FVExportBlobWorker work = new FVExportBlobWorker(String.valueOf(System.nanoTime()), info);
-    return work;
+    return new FVExportBlobWorker(String.valueOf(System.nanoTime()), info);
   }
 
   private FVAbstractExportWork produceWorker(EventContext ctx, FVAbstractExportWork work) {
@@ -112,13 +106,13 @@ public class FVExportListener implements EventListener {
     } else {
       FVExportWorkInfo workInfo = new FVExportWorkInfo();
 
-      workInfo.workDuration = System.currentTimeMillis();
-      workInfo.dialectGUID = INHERITED_FROM_OTHER;
-      workInfo.dialectName = INHERITED_FROM_OTHER;
-      workInfo.exportFormat = INHERITED_FROM_OTHER;
-      workInfo.initiatorName = INHERITED_FROM_OTHER;
-      workInfo.exportElement = INHERITED_FROM_OTHER;
-      workInfo.continueAutoEvent = AUTO_NEXT_EXPORT_WORKER; // continue to next export document set
+      workInfo.setWorkDuration(System.currentTimeMillis());
+      workInfo.setDialectGUID(INHERITED_FROM_OTHER);
+      workInfo.setDialectName(INHERITED_FROM_OTHER);
+      workInfo.setExportFormat(INHERITED_FROM_OTHER);
+      workInfo.setInitiatorName(INHERITED_FROM_OTHER);
+      workInfo.setExportElement(INHERITED_FROM_OTHER);
+      workInfo.setContinueAutoEvent(AUTO_NEXT_EXPORT_WORKER); // continue to next export document set
 
       work.setExportQuery(INHERITED_FROM_OTHER);
       work.setInitiatorName("System");

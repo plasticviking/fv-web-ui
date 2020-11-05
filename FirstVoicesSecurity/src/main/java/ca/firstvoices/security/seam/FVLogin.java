@@ -64,7 +64,7 @@ public class FVLogin extends StartupHelper {
   protected transient FVUserProfileService fvUserProfileService;
 
   public static String getURIFromPath(String redirectTo)
-      throws URISyntaxException, UnsupportedEncodingException {
+      throws URISyntaxException {
     redirectTo = URLEncoder.DEFAULT.encode(redirectTo, Charset.availableCharsets().get("UTF-8"));
     return new URI(redirectTo).toASCIIString();
   }

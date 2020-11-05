@@ -53,7 +53,7 @@ public class FVDialectRegularDocumentPermissions extends AbstractFirstVoicesDial
       return input;
     }
 
-    HashMap<String, String> groupsToCreate = new HashMap<String, String>();
+    HashMap<String, String> groupsToCreate = new HashMap<>();
 
     try {
       groupsToCreate

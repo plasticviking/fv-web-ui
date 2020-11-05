@@ -48,17 +48,17 @@ public class FirstVoicesWordTranslationReader extends FVAbstractPropertyReader {
     Object prop = word.getPropertyValue(propertyToRead);
     Object[] colA = columns.toArray();
 
-    if (prop != null && prop instanceof List) {
+    if (prop instanceof List) {
       ArrayList<HashMap<String, String>> property = (ArrayList<HashMap<String, String>>) prop;
-      Integer counter = 0;
+      int counter = 0;
 
-      for (Integer i = 0; i < maxColumns; i++) {
+      for (int i = 0; i < maxColumns; i++) {
         if (property.size() > i) {
           HashMap<String, String> map = property.get(counter);
           Collection<String> hashMapValues = map.values();
-          Iterator iter = hashMapValues.iterator();
+          Iterator<String> iter = hashMapValues.iterator();
 
-          String output = (String) iter.next();
+          String output = iter.next();
           if (iter.hasNext()) {
             output = output + " (" + iter.next() + ")";
           }

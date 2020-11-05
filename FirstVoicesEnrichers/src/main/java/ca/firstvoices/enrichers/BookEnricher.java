@@ -53,7 +53,7 @@ public class BookEnricher extends AbstractJsonEnricher<DocumentModel> {
     jg.writeObject(bookJsonObject);
   }
 
-  private ObjectNode constructBookJSON(DocumentModel doc) throws IOException {
+  private ObjectNode constructBookJSON(DocumentModel doc) {
     ObjectMapper mapper = new ObjectMapper();
 
     // JSON object to be returned

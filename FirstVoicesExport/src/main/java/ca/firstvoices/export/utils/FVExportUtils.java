@@ -23,6 +23,7 @@ package ca.firstvoices.export.utils;
 import ca.firstvoices.export.formatproducers.FVAbstractProducer;
 import ca.firstvoices.export.propertyreaders.FVAbstractPropertyReader;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -35,8 +36,12 @@ import org.nuxeo.ecm.core.work.api.WorkManager;
 
 public class FVExportUtils {
 
-  public static DocumentModel findDialectChildWithRef(CoreSession session, DocumentRef dialectRef,
-      String dialectChildType) {
+  private FVExportUtils() {
+
+  }
+
+  public static DocumentModel findDialectChildWithRef(
+      CoreSession session, DocumentRef dialectRef, String dialectChildType) {
     DocumentModelList children = session.getChildren(dialectRef);
 
     for (DocumentModel child : children) {
@@ -53,8 +58,8 @@ public class FVExportUtils {
   }
 
   // TODO: replace with query
-  public static DocumentModel findChildWithName(CoreSession session, DocumentRef parentRef,
-      String childName) {
+  public static DocumentModel findChildWithName(
+      CoreSession session, DocumentRef parentRef, String childName) {
     DocumentModelList children = session.getChildren(parentRef);
 
     for (DocumentModel child : children) {
@@ -67,7 +72,7 @@ public class FVExportUtils {
   }
 
   public static String makeExportWorkerID(FVExportWorkInfo info) {
-    return info.initiatorName + "-" + info.dialectGUID + "-" + info.exportFormat;
+    return info.getInitiatorName() + "-" + info.getDialectGUID() + "-" + info.getExportFormat();
   }
 
   // TODO: need to find how this is handled in the production
@@ -88,8 +93,8 @@ public class FVExportUtils {
 
   }
 
-  public static String getPathToChildInDialect(CoreSession session, DocumentModel dialect,
-      String childType) {
+  public static String getPathToChildInDialect(
+      CoreSession session, DocumentModel dialect, String childType) {
     DocumentModel resourceFolder = findDialectChildWithRef(session, dialect.getRef(), childType);
     if (resourceFolder == null) {
       return null;
@@ -98,15 +103,15 @@ public class FVExportUtils {
   }
 
   public static String makeExportDigest(Principal p, String query, List<String> columns) {
-    String colStr = "";
+    StringBuilder colStr = new StringBuilder();
 
     for (String s : columns) {
-      colStr = colStr + s;
+      colStr.append(s);
     }
 
-    colStr = colStr + query + makePrincipalWorkDigest(p);
+    colStr.append(query).append(makePrincipalWorkDigest(p));
 
-    return makeDigestHash(colStr);
+    return makeDigestHash(colStr.toString());
   }
 
   public static String makePrincipalWorkDigest(Principal p) {
@@ -118,27 +123,29 @@ public class FVExportUtils {
   }
 
   public static String makeDigestHash(String hashCandidate) {
-    String md5Hex = DigestUtils.md5Hex(hashCandidate).toUpperCase();
-    return md5Hex;
+    return DigestUtils.md5Hex(hashCandidate).toUpperCase();
   }
 
-  public static FVAbstractPropertyReader makePropertyReader(CoreSession session,
-      ExportColumnRecord colR, FVAbstractProducer producer) throws Exception {
+  public static FVAbstractPropertyReader makePropertyReader(
+      CoreSession session, ExportColumnRecord colR, FVAbstractProducer producer)
+      throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
+      InstantiationException {
     Class<?> clazz = colR.requiredPropertyReader;
-    Constructor<?> constructor = clazz
-        .getConstructor(CoreSession.class, ExportColumnRecord.class, FVAbstractProducer.class);
-    FVAbstractPropertyReader instance = (FVAbstractPropertyReader) constructor
-        .newInstance(session, colR, producer);
+    Constructor<?> constructor =
+        clazz.getConstructor(CoreSession.class, ExportColumnRecord.class, FVAbstractProducer.class);
+    FVAbstractPropertyReader instance =
+        (FVAbstractPropertyReader) constructor.newInstance(session, colR, producer);
     instance.session = session;
 
     return instance;
   }
 
-  public static boolean checkForRunningWorkerBeforeProceeding(String workId,
-      WorkManager workManager) {
+  public static boolean checkForRunningWorkerBeforeProceeding(
+      String workId, WorkManager workManager) {
     if (workManager == null) {
       return false; // worker is running
     }
+
     return workManager.find(workId, null) != null; // worker is running
     // worker is not running
   }

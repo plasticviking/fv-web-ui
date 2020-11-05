@@ -28,7 +28,6 @@ import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_BOOK;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CHARACTER;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_PHRASE;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_WORD;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.security.Principal;
@@ -51,21 +50,21 @@ import org.nuxeo.ecm.core.api.impl.blob.JSONBlob;
 /**
  * @author cstuart
  */
-@Operation(id = FVGenerateJsonStatistics.ID, category = Constants.CAT_FETCH, label =
-    "FVGenerateJsonStatistics", description = "")
+@Operation(id = FVGenerateJsonStatistics.ID,
+    category = Constants.CAT_FETCH,
+    label = "FVGenerateJsonStatistics",
+    description = "")
 public class FVGenerateJsonStatistics {
 
   public static final String ID = "FVGenerateJsonStatistics";
-  protected final String baseDocsQuery = "SELECT * FROM %s WHERE ecm:path STARTSWITH '%s' AND "
-      + "ecm:currentLifeCycleState <> 'deleted'";
-  private final List<String> allowedDocTypes = Arrays
-      .asList("words", "phrases", "characters", "songs", "stories");
-  @Context
-  protected CoreSession session;
-  @Param(name = "dialectPath")
-  protected String dialectPath;
-  @Param(name = "docTypes")
-  protected StringList docTypes;
+  protected static final String BASE_DOCS_QUERY =
+      "SELECT * FROM %s WHERE ecm:path STARTSWITH '%s' AND "
+          + "ecm:currentLifeCycleState <> 'deleted'";
+  private final List<String> allowedDocTypes =
+      Arrays.asList("words", "phrases", "characters", "songs", "stories");
+  @Context protected CoreSession session;
+  @Param(name = "dialectPath") protected String dialectPath;
+  @Param(name = "docTypes") protected StringList docTypes;
   protected String sectionDialectId;
   protected String principalName;
   protected int maxQueryResults = 5;
@@ -110,30 +109,30 @@ public class FVGenerateJsonStatistics {
       documentJsonObj.put("total", resultDocs.totalSize());
 
       // Docs in 'New' state
-      DocumentModelList newDocs = session
-          .query(query + " AND ecm:currentLifeCycleState='New'", null, 1, 0, true);
+      DocumentModelList newDocs =
+          session.query(query + " AND ecm:currentLifeCycleState='New'", null, 1, 0, true);
       documentJsonObj.put("new", newDocs.totalSize());
 
       // Docs in 'Enabled' state
-      DocumentModelList enabledDocs = session
-          .query(query + " AND ecm:currentLifeCycleState='Enabled'", null, 1, 0, true);
+      DocumentModelList enabledDocs =
+          session.query(query + " AND ecm:currentLifeCycleState='Enabled'", null, 1, 0, true);
       documentJsonObj.put("enabled", enabledDocs.totalSize());
 
       // Docs in 'Published' state
-      DocumentModelList publishedDocs = session
-          .query(query + " AND ecm:currentLifeCycleState='Published'", null, 1, 0, true);
+      DocumentModelList publishedDocs =
+          session.query(query + " AND ecm:currentLifeCycleState='Published'", null, 1, 0, true);
       documentJsonObj.put("published", publishedDocs.totalSize());
 
       // Docs in 'Disabled' state
-      DocumentModelList disabledDocs = session
-          .query(query + " AND ecm:currentLifeCycleState='Disabled'", null, 1, 0, true);
+      DocumentModelList disabledDocs =
+          session.query(query + " AND ecm:currentLifeCycleState='Disabled'", null, 1, 0, true);
       documentJsonObj.put("disabled", disabledDocs.totalSize());
 
       // Get current date
       GregorianCalendar today = new GregorianCalendar();
-      int currentYear = today.get(GregorianCalendar.YEAR);
-      int currentMonth = today.get(GregorianCalendar.MONTH) + 1;
-      int currentDay = today.get(GregorianCalendar.DAY_OF_MONTH);
+      int currentYear = today.get(java.util.Calendar.YEAR);
+      int currentMonth = today.get(java.util.Calendar.MONTH) + 1;
+      int currentDay = today.get(java.util.Calendar.DAY_OF_MONTH);
       String todayDateString =
           currentYear + "-" + (currentMonth < 10 ? ("0" + currentMonth) : (currentMonth)) + "-"
               + currentDay;
@@ -150,22 +149,22 @@ public class FVGenerateJsonStatistics {
 
       // Count documents created within the last 7 days
       GregorianCalendar sevenDaysAgo = new GregorianCalendar();
-      sevenDaysAgo.add(GregorianCalendar.DAY_OF_MONTH, -7);
-      int sevenDaysAgoYear = sevenDaysAgo.get(GregorianCalendar.YEAR);
-      int sevenDaysAgoMonth = sevenDaysAgo.get(GregorianCalendar.MONTH) + 1;
-      int sevenDaysAgoDay = sevenDaysAgo.get(GregorianCalendar.DAY_OF_MONTH);
-      String sevenDaysAgoDateString =
-          sevenDaysAgoYear + "-" + (sevenDaysAgoMonth < 10 ? ("0" + sevenDaysAgoMonth)
-              : (sevenDaysAgoMonth)) + "-" + sevenDaysAgoDay;
+      sevenDaysAgo.add(java.util.Calendar.DAY_OF_MONTH, -7);
+      int sevenDaysAgoYear = sevenDaysAgo.get(java.util.Calendar.YEAR);
+      int sevenDaysAgoMonth = sevenDaysAgo.get(java.util.Calendar.MONTH) + 1;
+      int sevenDaysAgoDay = sevenDaysAgo.get(java.util.Calendar.DAY_OF_MONTH);
+      String sevenDaysAgoDateString = sevenDaysAgoYear + "-" + (sevenDaysAgoMonth < 10
+          ? ("0" + sevenDaysAgoMonth)
+          : (sevenDaysAgoMonth)) + "-" + sevenDaysAgoDay;
       String createdWithinSevenDaysQuery =
           query + " AND dc:created >= DATE '" + sevenDaysAgoDateString + "'";
-      DocumentModelList createdWithin7DaysDocs = session
-          .query(createdWithinSevenDaysQuery, null, 1, 0, true);
+      DocumentModelList createdWithin7DaysDocs =
+          session.query(createdWithinSevenDaysQuery, null, 1, 0, true);
       documentJsonObj.put("created_within_7_days", createdWithin7DaysDocs.totalSize());
 
       // Count available in childrens archive
-      DocumentModelList childrensArchiveDocs = session
-          .query(query + " AND fv:available_in_childrens_archive=1", null, 1, 0, true);
+      DocumentModelList childrensArchiveDocs =
+          session.query(query + " AND fv:available_in_childrens_archive=1", null, 1, 0, true);
       documentJsonObj.put("available_in_childrens_archive", childrensArchiveDocs.totalSize());
     }
     return documentJsonObj;
@@ -185,16 +184,16 @@ public class FVGenerateJsonStatistics {
     }
 
     if (docType.equalsIgnoreCase("words")) {
-      query = String.format(baseDocsQuery, FV_WORD, dialectPath) + proxyQueryParams;
+      query = String.format(BASE_DOCS_QUERY, FV_WORD, dialectPath) + proxyQueryParams;
     } else if (docType.equalsIgnoreCase("phrases")) {
-      query = String.format(baseDocsQuery, FV_PHRASE, dialectPath) + proxyQueryParams;
+      query = String.format(BASE_DOCS_QUERY, FV_PHRASE, dialectPath) + proxyQueryParams;
     } else if (docType.equalsIgnoreCase("characters")) {
-      query = String.format(baseDocsQuery, FV_CHARACTER, dialectPath) + proxyQueryParams;
+      query = String.format(BASE_DOCS_QUERY, FV_CHARACTER, dialectPath) + proxyQueryParams;
     } else if (docType.equalsIgnoreCase("songs")) {
-      query = String.format(baseDocsQuery, FV_BOOK, dialectPath) + proxyQueryParams
+      query = String.format(BASE_DOCS_QUERY, FV_BOOK, dialectPath) + proxyQueryParams
           + " AND fvbook:type = 'song'";
     } else if (docType.equalsIgnoreCase("stories")) {
-      query = String.format(baseDocsQuery, FV_BOOK, dialectPath) + proxyQueryParams
+      query = String.format(BASE_DOCS_QUERY, FV_BOOK, dialectPath) + proxyQueryParams
           + " AND fvbook:type = 'story'";
     }
 

@@ -28,6 +28,8 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 
 public class UtilityTestWordGenerator {
 
+  private UtilityTestWordGenerator() {}
+
   private static String path =
       "/FV/Workspaces/Data/Test-Language-Familiy-2/Test-language-2/Test" + "-Dialect-2/Dictionary";
 
@@ -38,7 +40,7 @@ public class UtilityTestWordGenerator {
     for (int i = 6001; i < 7001; i++) {
       String wordValue = testWord + i;
 
-      Map<String, Object> complexValue = new HashMap<String, Object>();
+      Map<String, Object> complexValue = new HashMap<>();
       complexValue.put("language", "english");
       complexValue.put("translation", "translation" + wordValue);
       ArrayList<Object> definitionsList = new ArrayList<>();
@@ -48,7 +50,7 @@ public class UtilityTestWordGenerator {
       word.setPropertyValue("fv:reference", wordValue);
       word.setPropertyValue("fv-word:part_of_speech", "Basic");
       word.setPropertyValue("dc:title", wordValue + "#");
-      word = session.createDocument(word);
+      session.createDocument(word);
 
       if (i % 20 == 0) {
         session.save();

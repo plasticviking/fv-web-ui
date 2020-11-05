@@ -47,7 +47,7 @@ public class LanguageAdministrators extends AbstractSecurityPolicy {
   @Override
   public Access checkPermission(Document doc, ACP mergedAcp, NuxeoPrincipal principal,
       String permission, String[] resolvedPermissions, String[] additionalPrincipals)
-      throws SecurityException {
+       {
 
     List<String> additionalPrincipalsList = Arrays.asList(additionalPrincipals);
 

@@ -62,7 +62,7 @@ public class FVDialectPublishedDocumentPermissions extends AbstractFirstVoicesDi
       return input;
     }
 
-    HashMap<String, String> groupsToCreate = new HashMap<String, String>();
+    HashMap<String, String> groupsToCreate = new HashMap<>();
 
     try {
       groupsToCreate

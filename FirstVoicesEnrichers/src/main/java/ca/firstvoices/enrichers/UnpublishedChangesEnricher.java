@@ -62,7 +62,7 @@ public class UnpublishedChangesEnricher extends AbstractJsonEnricher<DocumentMod
     jg.writeObject(unpublishedChangesJsonObject);
   }
 
-  private ObjectNode constructUnpublishedChangesJSON(DocumentModel doc) throws IOException {
+  private ObjectNode constructUnpublishedChangesJSON(DocumentModel doc) {
     ObjectMapper mapper = new ObjectMapper();
 
     return CoreInstance.doPrivileged(doc.getCoreSession(), session -> {

@@ -26,7 +26,6 @@ package ca.firstvoices.security.listeners;
 
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_PHRASE;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_WORD;
-
 import java.util.List;
 import java.util.Map;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -48,7 +47,7 @@ import org.nuxeo.ecm.platform.web.common.exceptionhandling.ExceptionHelper;
  */
 public class FVDocumentValidationEventListener implements EventListener {
 
-  public void handleEvent(Event event) throws NuxeoException {
+  public void handleEvent(Event event) {
 
     // aboutToCreate and beforeDocumentModification events
     if (!DocumentEventTypes.ABOUT_TO_CREATE.equals(event.getName())
@@ -77,10 +76,10 @@ public class FVDocumentValidationEventListener implements EventListener {
         generateValidationError(event, "Title cannot be empty.");
       }
 
-      List<Map<String, String>> literalTranslations = (List<Map<String, String>>) doc
-          .getPropertyValue("fv:literal_translation");
-      List<Map<String, String>> definitions = (List<Map<String, String>>) doc
-          .getPropertyValue("fv:definitions");
+      List<Map<String, String>> literalTranslations =
+          (List<Map<String, String>>) doc.getPropertyValue("fv:literal_translation");
+      List<Map<String, String>> definitions =
+          (List<Map<String, String>>) doc.getPropertyValue("fv:definitions");
 
       // Return an error if definitions is empty
       if (definitions == null || definitions.isEmpty()) {
@@ -121,11 +120,9 @@ public class FVDocumentValidationEventListener implements EventListener {
       }
 
       // Phrase-specific
-      if (doc.getType().equals(FV_PHRASE)) {
-        if (!documentTitleValidates(ctx, title)) {
-          generateValidationError(event,
-              "A phrase with the same title already exists in this dictionary.");
-        }
+      if (doc.getType().equals(FV_PHRASE) && !documentTitleValidates(ctx, title)) {
+        generateValidationError(event,
+            "A phrase with the same title already exists in this dictionary.");
       }
     } else if (doc.getType().matches("FVCategory|FVContributor|FVPhraseBook|FVBook|FVGallery")) {
       // Validation for other specified document types
@@ -159,10 +156,16 @@ public class FVDocumentValidationEventListener implements EventListener {
     DocumentModel parentDoc = ctx.getCoreSession().getDocument(parentRef);
     // searching for documents with same title in the parent folderish document Exclude the
     // current document from the results
-    StringBuilder sb = new StringBuilder(
-        "SELECT " + NXQL.ECM_UUID + " FROM " + docType + " WHERE ");
-    sb.append("dc:title").append("=").append(NXQL.escapeString(title)).append(" AND ")
-        .append(NXQL.ECM_PARENTID).append("=").append(NXQL.escapeString(parentDoc.getId()));
+    StringBuilder sb =
+        new StringBuilder("SELECT " + NXQL.ECM_UUID + " FROM " + docType + " WHERE ");
+    sb
+        .append("dc:title")
+        .append("=")
+        .append(NXQL.escapeString(title))
+        .append(" AND ")
+        .append(NXQL.ECM_PARENTID)
+        .append("=")
+        .append(NXQL.escapeString(parentDoc.getId()));
 
     // If an existing document is being modified, exclude it from the results of the query
     if (doc.getId() != null) {
@@ -192,9 +195,16 @@ public class FVDocumentValidationEventListener implements EventListener {
     DocumentModel parentDoc = ctx.getCoreSession().getDocument(parentRef);
     // searching for documents with same title in the parent folderish document
     StringBuilder sb = new StringBuilder("SELECT " + NXQL.ECM_UUID + " FROM FVWord WHERE ");
-    sb.append("dc:title").append("=").append(NXQL.escapeString(title)).append(" AND ")
-        .append(NXQL.ECM_PARENTID).append("=").append(NXQL.escapeString(parentDoc.getId()))
-        .append(" AND ").append("fv-word:part_of_speech='" + partOfSpeech + "'");
+    sb
+        .append("dc:title")
+        .append("=")
+        .append(NXQL.escapeString(title))
+        .append(" AND ")
+        .append(NXQL.ECM_PARENTID)
+        .append("=")
+        .append(NXQL.escapeString(parentDoc.getId()))
+        .append(" AND ")
+        .append("fv-word:part_of_speech='" + partOfSpeech + "'");
 
     // If an existing word is being modified, exclude it from the results of the query
     if (doc.getId() != null) {
@@ -212,7 +222,8 @@ public class FVDocumentValidationEventListener implements EventListener {
     event.markBubbleException();
     event.markRollBack();
     throw new NuxeoException(ExceptionHelper.unwrapException(new RecoverableClientException(
-        "Bubbling exception by " + FVDocumentValidationEventListener.class.getName(), message,
+        "Bubbling exception by " + FVDocumentValidationEventListener.class.getName(),
+        message,
         null)));
   }
 

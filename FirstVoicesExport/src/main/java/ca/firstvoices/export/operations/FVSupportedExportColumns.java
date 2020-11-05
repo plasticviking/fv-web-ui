@@ -24,29 +24,28 @@ import static ca.firstvoices.export.utils.FVExportConstants.CSV_FORMAT;
 import static ca.firstvoices.export.utils.FVExportConstants.FVPHRASE;
 import static ca.firstvoices.export.utils.FVExportConstants.FVWORD;
 import static ca.firstvoices.export.utils.FVExportConstants.PDF_FORMAT;
-
 import ca.firstvoices.export.utils.ExportColumnRecord;
 import ca.firstvoices.export.utils.FVPhraseExportCSVColumns;
 import ca.firstvoices.export.utils.FVWordExportCSVColumns;
-import java.util.HashMap;
+import java.util.Map;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
 import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
 import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.automation.core.util.StringList;
 
-@Operation(id = FVSupportedExportColumns.ID, category = Constants.CAT_DOCUMENT, label = "Get "
-    + "list of supported export columns.", description = "Returns supported column labels in "
-    + "export to CSV or PDF. ")
+@Operation(id = FVSupportedExportColumns.ID,
+    category = Constants.CAT_DOCUMENT,
+    label = "Get " + "list of supported export columns.",
+    description = "Returns supported column labels in " + "export to CSV or PDF. ")
 public class FVSupportedExportColumns {
 
   public static final String ID = "Document.FVSupportedExportColumns";
 
-  @Param(name = "format", values = {CSV_FORMAT, PDF_FORMAT})
-  protected String format = CSV_FORMAT;
+  @Param(name = "format", values = {CSV_FORMAT, PDF_FORMAT}) protected String format = CSV_FORMAT;
 
-  @Param(name = "exportElement", values = {FVWORD, FVPHRASE})
-  protected String exportElement = FVPHRASE;
+  @Param(name = "exportElement", values = {FVWORD, FVPHRASE}) protected String exportElement =
+      FVPHRASE;
 
   @OperationMethod
   public StringList run() {
@@ -57,32 +56,32 @@ public class FVSupportedExportColumns {
     StringList returnList;
 
     if (exportElement.equals(FVWORD)) {
-      returnList = supportedWordQueries_CSV();
+      returnList = supportedWordQueriesCSV();
     } else {
-      returnList = supprtedPhraseQueries_CSV();
+      returnList = supportedPhraseQueriesCSV();
     }
 
     return returnList;
   }
 
-  private StringList supportedWordQueries_CSV() {
+  private StringList supportedWordQueriesCSV() {
     FVWordExportCSVColumns wc = new FVWordExportCSVColumns();
 
     return getValidExportColumns(wc.getColumnRecordHashMap());
   }
 
-  private StringList supprtedPhraseQueries_CSV() {
+  private StringList supportedPhraseQueriesCSV() {
     FVPhraseExportCSVColumns pc = new FVPhraseExportCSVColumns();
 
     return getValidExportColumns(pc.getColumnRecordHashMap());
   }
 
-  private StringList getValidExportColumns(HashMap<String, ExportColumnRecord> map) {
+  private StringList getValidExportColumns(Map<String, ExportColumnRecord> map) {
     StringList list = new StringList();
 
-    for (String k : map.keySet()) {
-      if (map.get(k).useForExport) {
-        list.add(k);
+    for (Map.Entry<String, ExportColumnRecord> k : map.entrySet()) {
+      if (k.getValue().useForExport) {
+        list.add(k.getKey());
       }
     }
 

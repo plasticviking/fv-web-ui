@@ -23,11 +23,8 @@ package ca.firstvoices.export.workers;
 import static ca.firstvoices.export.utils.FVExportConstants.BLOB_WORKER;
 import static ca.firstvoices.export.utils.FVExportConstants.EXPORT_WORK_INFO;
 import static ca.firstvoices.export.utils.FVExportConstants.MILLISECONDS;
-
 import ca.firstvoices.export.utils.FVExportWorkInfo;
 import java.io.File;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.impl.blob.FileBlob;
 import org.nuxeo.ecm.core.event.Event;
@@ -40,8 +37,6 @@ import org.nuxeo.runtime.api.Framework;
  *  start of the export
  */
 public class FVExportBlobWorker extends FVAbstractExportWork {
-
-  private static final Log log = LogFactory.getLog(FVExportBlobWorker.class);
 
   public FVExportBlobWorker(String id, FVExportWorkInfo info) {
     super(id);
@@ -62,30 +57,31 @@ public class FVExportBlobWorker extends FVAbstractExportWork {
   public void work() {
     openSystemSession();
 
-    File file = new File(workInfo.filePath);
-    FileBlob fileBlob = new FileBlob(file, workInfo.mimeType, workInfo.encoding);
+    File file = new File(workInfo.getFilePath());
+    FileBlob fileBlob = new FileBlob(file, workInfo.getMimeType(), workInfo.getEncoding());
 
-    DocumentModel wrapper = workInfo.wrapper;
+    DocumentModel wrapper = workInfo.getWrapper();
 
     wrapper.setPropertyValue("file:content", fileBlob);
 
-    workInfo.workDuration = (System.currentTimeMillis() - workInfo.workDuration) / MILLISECONDS;
+    workInfo.setWorkDuration(
+        (System.currentTimeMillis() - workInfo.getWorkDuration()) / MILLISECONDS);
     workInfo.setExportProgress(
-        "EXPORT: Total work time : " + workInfo.workDuration + "seconds while processing "
-            + workInfo.originalWorkloadSize + " documents.");
+        "EXPORT: Total work time : " + workInfo.getWorkDuration() + "seconds while processing "
+            + workInfo.getOriginalWorkloadSize() + " documents.");
     workInfo.setExportProgressValue(100.0);
 
     session.saveDocument(wrapper); // ?
     session.save();
 
-    if (workInfo.continueAutoEvent != null) {
+    if (workInfo.getContinueAutoEvent() != null) {
       EventProducer eventProducer = Framework.getService(EventProducer.class);
       EventContextImpl ctx = new EventContextImpl(session, session.getPrincipal());
 
       ctx.setProperty(EXPORT_WORK_INFO, workInfo);
 
-      Event event = ctx
-          .newEvent(workInfo.continueAutoEvent); // move to next set of exports if invoked by
+      Event event =
+          ctx.newEvent(workInfo.getContinueAutoEvent()); // move to next set of exports if invoked by
       // cyclic worker
       eventProducer.fireEvent(event);
     }

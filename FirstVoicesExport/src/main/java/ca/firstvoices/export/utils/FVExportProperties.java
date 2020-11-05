@@ -21,8 +21,13 @@
 package ca.firstvoices.export.utils;
 
 import ca.firstvoices.export.propertyreaders.FVDataBinding;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class FVExportProperties {
+
+  private FVExportProperties() {}
 
   public static final String LANGUAGE = "language"; // ??????
   // FVEXPORT:
@@ -51,8 +56,8 @@ public class FVExportProperties {
   public static final String PART_OF_SPEECH_ID = "fv-word:part_of_speech";
   public static final String PHONETIC_INFO = "fv-word:pronunciation";                // String
   public static final String REFERENCE = "fv:reference";
-  public static final String AVAILABLE_IN_CHILDRENS_ARCHIVE =
-      "fv:available_in_childrens_archive";    // Boolean
+  public static final String AVAILABLE_IN_CHILDRENS_ARCHIVE = "fv:available_in_childrens_archive";
+  // Boolean
   public static final String AVAILABLE_IN_GAMES = "fv-word:available_in_games";           //
   // Boolean
   public static final String CHILD_FOCUSED = "fv:child_focused";                     // Boolean
@@ -76,107 +81,44 @@ public class FVExportProperties {
   public static final String MEDIA_CHILD_FOCUSED = "fvm:child_focused";    // Boolean
   public static final String MEDIA_ORIGIN = "fvm:origin";           // String
   public static final String MEDIA_FILENAME = "file:filename";        // String
-  public static final String IMAGE_COMPUND = "fv:related_pictures";
-  public static final String AUDIO_COMPUND = "fv:related_audio";
-  public static final String VIDEO_COMPUND = "fv:related_videos";
-  // picture:
-  public static final String PICTURE_SOURCE = "picture:source";      // String
-  public static final String PICTURE_ORIGIN = "picture:origin";      // String
-  public static final String PICTURE_CAPTION = "picture:caption";     // String
-  public static final String PICTURE_CREDIT = "picture:credit";      // String
-  public static final String PICTURE_HEADLINE = "picture:headline";    // String
-  public static final FVDataBinding[] imgCompoundA = {
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_TITLE, TITLE),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_FILENAME, MEDIA_FILENAME),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_DESCRIPTION, DESCR),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SHARED_WITH_OTHER_DIALECTS,
-          MEDIA_SHARED),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SOURCE, MEDIA_ORIGIN),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_RECORDER, MEDIA_RECORDER),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_CHILD_FOCUSED, MEDIA_CHILD_FOCUSED)};
+  public static final String IMAGE_COMPOUND = "fv:related_pictures";
+  public static final String AUDIO_COMPOUND = "fv:related_audio";
+  public static final String VIDEO_COMPOUND = "fv:related_videos";
 
-  // audio:
+  public static final List<FVDataBinding> imgCompoundA =
+      Collections.unmodifiableList(Arrays.asList(new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_TITLE,
+              TITLE),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_FILENAME, MEDIA_FILENAME),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_DESCRIPTION, DESCR),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SHARED_WITH_OTHER_DIALECTS,
+              MEDIA_SHARED),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SOURCE, MEDIA_ORIGIN),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_RECORDER, MEDIA_RECORDER),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_CHILD_FOCUSED,
+              MEDIA_CHILD_FOCUSED)));
 
-  // video:
+  public static final List<FVDataBinding> audioCompoundA =
+      Collections.unmodifiableList(Arrays.asList(new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_TITLE,
+              TITLE),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_FILENAME, MEDIA_FILENAME),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_DESCRIPTION, DESCR),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_SHARED_WITH_OTHER_DIALECTS,
+              MEDIA_SHARED),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_SOURCE, MEDIA_ORIGIN),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_RECORDER, MEDIA_RECORDER),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_CHILD_FOCUSED,
+              MEDIA_CHILD_FOCUSED)));
 
-  //    public static final Map<String, String> imgCompoundMap = Stream.of(
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.IMG_TITLE,
-  //            TITLE ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.IMG_FILENAME,
-  //            MEDIA_FILENAME ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .IMG_DESCRIPTION, DESCR ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .IMG_SHARED_WITH_OTHER_DIALECTS, MEDIA_SHARED ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.IMG_SOURCE,
-  //            MEDIA_SOURCE ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.IMG_RECORDER,
-  //            MEDIA_RECORDER ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .IMG_CHILD_FOCUSED, MEDIA_CHILD_FOCUSED )
-  //    ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap
-  //    .SimpleEntry::getValue));
-  public static final FVDataBinding[] audioCompoundA = {
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_TITLE, TITLE),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_FILENAME, MEDIA_FILENAME),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_DESCRIPTION, DESCR),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_SHARED_WITH_OTHER_DIALECTS,
-          MEDIA_SHARED),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_SOURCE, MEDIA_ORIGIN),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_RECORDER, MEDIA_RECORDER),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_CHILD_FOCUSED,
-          MEDIA_CHILD_FOCUSED)};
+  public static final List<FVDataBinding> videoCompoundA =
+      Collections.unmodifiableList(Arrays.asList(new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_TITLE,
+              TITLE),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_FILENAME, MEDIA_FILENAME),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_DESCRIPTION, DESCR),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_SHARED_WITH_OTHER_DIALECTS,
+              MEDIA_SHARED),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_SOURCE, MEDIA_ORIGIN),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_RECORDER, MEDIA_RECORDER),
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_CHILD_FOCUSED,
+              MEDIA_CHILD_FOCUSED)));
 
-  //    public static final Map<String, String> audioCompoundMap = Stream.of(
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.AUDIO_TITLE,
-  //            TITLE ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.AUDIO_FILENAME,
-  //            MEDIA_FILENAME ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .AUDIO_DESCRIPTION,                         DESCR ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .AUDIO_SHARED_WITH_OTHER_DIALECTS,          MEDIA_SHARED ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.AUDIO_SOURCE,
-  //            MEDIA_SOURCE ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.AUDIO_RECORDER,
-  //            MEDIA_RECORDER ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .AUDIO_CHILD_FOCUSED,                       MEDIA_CHILD_FOCUSED )
-  //    ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap
-  //    .SimpleEntry::getValue));
-  public static final FVDataBinding[] videoCompoundA = {
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_TITLE, TITLE),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_FILENAME, MEDIA_FILENAME),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_DESCRIPTION, DESCR),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_SHARED_WITH_OTHER_DIALECTS,
-          MEDIA_SHARED),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_SOURCE, MEDIA_ORIGIN),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_RECORDER, MEDIA_RECORDER),
-      new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_CHILD_FOCUSED,
-          MEDIA_CHILD_FOCUSED)};
-
-  //    public static final Map<String, String> videoCompoundMap = Stream.of(
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.VIDEO_TITLE,
-  //            TITLE ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.VIDEO_FILENAME,
-  //            MEDIA_FILENAME ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .VIDEO_DESCRIPTION, DESCR ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .VIDEO_SHARED_WITH_OTHER_DIALECTS, MEDIA_SHARED ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.VIDEO_SOURCE,
-  //            MEDIA_SOURCE ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels.VIDEO_RECORDER,
-  //            MEDIA_RECORDER ),
-  //            new AbstractMap.SimpleEntry<>( FVExportConstants.ExportCSVLabels
-  //            .VIDEO_CHILD_FOCUSED, MEDIA_CHILD_FOCUSED )
-  //    ).collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap
-  //    .SimpleEntry::getValue));
-
-
-  public FVExportProperties() {
-  }
-
-  //--
-  //--
 }

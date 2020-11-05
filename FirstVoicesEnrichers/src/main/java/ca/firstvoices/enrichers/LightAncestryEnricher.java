@@ -96,7 +96,7 @@ public class LightAncestryEnricher extends AbstractJsonEnricher<DocumentModel> {
     if (isProxy) {
       DocumentModelList proxies = session.getProxies(new IdRef(docIdRef), null);
 
-      if (proxies.size() > 0) {
+      if (!proxies.isEmpty()) {
         resolvedDoc = proxies.get(0);
       }
     }

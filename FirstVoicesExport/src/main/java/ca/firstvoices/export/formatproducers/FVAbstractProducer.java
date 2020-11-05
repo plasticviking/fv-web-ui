@@ -75,7 +75,7 @@ public abstract class FVAbstractProducer {
 
   protected CoreSession session; // producer session
 
-  protected Boolean hasCompoundReaders = false;
+  protected boolean hasCompoundReaders = false;
 
   FVAbstractProducer(CoreSession session, FirstVoicesCSVExportColumns spec) {
     this.propertyReaders = new ArrayList<>();
@@ -145,19 +145,20 @@ public abstract class FVAbstractProducer {
     // within Nuxeo data
     // space
 
-    workInfo.fileNameAsSaved = outputFile.getName();
-    workInfo.fileName = originalFileName;
-    workInfo.filePath = outputFile.getPath();
-    workInfo.fileLength = outputFile.length();
+    workInfo.setFileNameAsSaved(outputFile.getName());
+    workInfo.setFileName(originalFileName);
+    workInfo.setFilePath(outputFile.getPath());
+    workInfo.setFileLength(outputFile.length());
 
     // generate new request event to move temporary file to its final location
     // and attach it to a wrapper which will represent it to users
-    DocumentEventContext documentEventContext = new DocumentEventContext(session,
-        session.getPrincipal(), dialect);
+    DocumentEventContext documentEventContext =
+        new DocumentEventContext(session, session.getPrincipal(), dialect);
     documentEventContext.setProperty(EXPORT_WORK_INFO, workInfo);
 
-    Event event = documentEventContext
-        .newEvent(FINISH_EXPORT_BY_WRAPPING_BLOB); // notify about export completion
+    Event event =
+        documentEventContext.newEvent(FINISH_EXPORT_BY_WRAPPING_BLOB); // notify about export
+    // completion
     EventProducer eventProducer = Framework.getService(EventProducer.class);
     eventProducer.fireEvent(event);
   }
@@ -201,7 +202,7 @@ public abstract class FVAbstractProducer {
    * @param suffix   - this is format type CSV or PDF
    * @return - true if temporary file was successfully created
    */
-  public Boolean createTemporaryOutputFile(String fileName, String suffix) {
+  public boolean createTemporaryOutputFile(String fileName, String suffix) {
     try {
       originalFileName = fileName;
       outputFile = File.createTempFile(fileName, "." + suffix.toLowerCase());
@@ -280,8 +281,8 @@ public abstract class FVAbstractProducer {
 
           if (o.isMultiLine()) {
             FVDataBinding lineObject = (FVDataBinding) o.getColumnObject(scan - 1);
-            List<FVDataBinding> compoundColumnObjects = (List<FVDataBinding>) lineObject
-                .getListOfColumnObjects();
+            List<FVDataBinding> compoundColumnObjects =
+                (List<FVDataBinding>) lineObject.getListOfColumnObjects();
 
             for (FVDataBinding colObj : compoundColumnObjects) {
               singleLine.add(colObj);

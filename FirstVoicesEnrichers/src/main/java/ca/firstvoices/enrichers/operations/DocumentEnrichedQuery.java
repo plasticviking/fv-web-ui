@@ -91,12 +91,8 @@ public class DocumentEnrichedQuery {
   @OperationMethod
   public DocumentModelList run() throws OperationException {
 
-    switch (enrichment) {
-      case CATEGORY_CHILDREN_ENRICHMENT:
-        query = EnricherUtils.expandCategoriesToChildren(session, query);
-        break;
-      default:
-        break;
+    if (CATEGORY_CHILDREN_ENRICHMENT.equals(enrichment)) {
+      query = EnricherUtils.expandCategoriesToChildren(session, query);
     }
 
     PageProviderDefinition def = PageProviderHelper.getPageProviderDefinition("es_nxql_search");

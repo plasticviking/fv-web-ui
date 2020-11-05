@@ -54,7 +54,7 @@ public class MediaEnricher extends AbstractJsonEnricher<DocumentModel> {
     jg.writeObject(mediaJsonObject);
   }
 
-  private ObjectNode constructMediaJSON(DocumentModel doc) throws IOException {
+  private ObjectNode constructMediaJSON(DocumentModel doc) {
     ObjectMapper mapper = new ObjectMapper();
 
     // JSON object to be returned

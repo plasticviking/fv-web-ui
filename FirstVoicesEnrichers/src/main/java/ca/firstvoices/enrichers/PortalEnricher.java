@@ -33,8 +33,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentNotFoundException;
@@ -47,8 +45,6 @@ import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 public class PortalEnricher extends AbstractJsonEnricher<DocumentModel> {
 
   public static final String NAME = "portal";
-
-  private static final Log log = LogFactory.getLog(PortalEnricher.class);
 
   public PortalEnricher() {
     super(NAME);

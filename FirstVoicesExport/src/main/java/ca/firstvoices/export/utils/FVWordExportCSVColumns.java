@@ -210,13 +210,13 @@ public final class FVWordExportCSVColumns extends FirstVoicesCSVExportColumns {
 
     // COMPOUND READERS
     columnRecordHashMap.put(IMAGE,
-        new ExportColumnRecord(IMAGE, FVExportProperties.IMAGE_COMPUND, true, 0,
+        new ExportColumnRecord(IMAGE, FVExportProperties.IMAGE_COMPOUND, true, 0,
             FVCompoundPropertyReader.class, FVExportProperties.imgCompoundA));
     columnRecordHashMap.put(AUDIO,
-        new ExportColumnRecord(AUDIO, FVExportProperties.AUDIO_COMPUND, true, 0,
+        new ExportColumnRecord(AUDIO, FVExportProperties.AUDIO_COMPOUND, true, 0,
             FVCompoundPropertyReader.class, FVExportProperties.audioCompoundA));
     columnRecordHashMap.put(VIDEO,
-        new ExportColumnRecord(VIDEO, FVExportProperties.VIDEO_COMPUND, true, 0,
+        new ExportColumnRecord(VIDEO, FVExportProperties.VIDEO_COMPOUND, true, 0,
             FVCompoundPropertyReader.class, FVExportProperties.videoCompoundA));
 
     // AUDIO COMPOUND

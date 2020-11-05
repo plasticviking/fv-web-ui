@@ -55,7 +55,7 @@ public class LabelEnricher extends AbstractJsonEnricher<DocumentModel> {
     jg.writeObject(wordJsonObject);
   }
 
-  private ObjectNode constructWordJSON(DocumentModel doc) throws IOException {
+  private ObjectNode constructWordJSON(DocumentModel doc) {
     ObjectMapper mapper = new ObjectMapper();
 
     // JSON object to be returned

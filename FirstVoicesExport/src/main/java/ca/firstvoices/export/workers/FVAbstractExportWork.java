@@ -91,51 +91,50 @@ public abstract class FVAbstractExportWork extends AbstractWork {
   }
 
   public String getInitiatorName() {
-    return workInfo.initiatorName;
+    return workInfo.getInitiatorName();
   }
 
   public void setInitiatorName(String name) {
-    workInfo.initiatorName = name;
+    workInfo.setInitiatorName(name);
   }
 
   public String getDialectName() {
-    return workInfo.dialectName;
+    return workInfo.getDialectName();
   }
 
   public void setDialectName(String dname) {
-    workInfo.dialectName = dname;
+    workInfo.setDialectName(dname);
   }
 
   public String getDialectGUID() {
-    return workInfo.dialectGUID;
+    return workInfo.getDialectGUID();
   }
 
   public void setDialectGUID(String dguid) {
-    workInfo.dialectGUID = dguid;
+    workInfo.setDialectGUID(dguid);
   }
 
   public String getExportFormat() {
-    return workInfo.exportFormat;
+    return workInfo.getExportFormat();
   }
 
   public void setExportFormat(String exportFormat) {
-    workInfo.exportFormat = exportFormat;
+    workInfo.setExportFormat(exportFormat);
   }
 
   public String getExportQuery() {
-    return workInfo.exportQuery;
+    return workInfo.getExportQuery();
   }
 
   public void setExportQuery(String exportQuery) {
-    workInfo.exportQuery = exportQuery;
+    workInfo.setExportQuery(exportQuery);
   }
 
   public StringList getExportColumns() {
-    return workInfo.columns;
+    return workInfo.getColumns();
   }
 
   public void setExportColumns(StringList clist) {
-    workInfo.columns = clist;
+    workInfo.setColumns(clist);
   }
-
 }

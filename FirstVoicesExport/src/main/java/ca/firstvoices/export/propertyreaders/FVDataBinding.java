@@ -85,7 +85,7 @@ public class FVDataBinding {
   }
 
   // will confirm if dealing with multi-line output from a compound property
-  public Boolean isMultiLine() {
+  public boolean isMultiLine() {
     return readPropertyValue instanceof List;
   }
 

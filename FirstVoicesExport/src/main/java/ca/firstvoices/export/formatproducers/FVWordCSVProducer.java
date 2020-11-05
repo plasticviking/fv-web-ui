@@ -34,6 +34,7 @@ import ca.firstvoices.export.utils.FVWordExportCSVColumns;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.core.util.StringList;
@@ -88,45 +89,62 @@ public class FVWordCSVProducer extends FVAbstractProducer {
   protected void createDefaultPropertyReaders() {
     // Binding spec for this producer Key to reader binding binding spec owner
     propertyReaders.add(new FVPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.TITLE), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.TITLE),
+        this));
     propertyReaders.add(new FVPartOfSpeechPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.PART_OF_SPEECH_ID), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.PART_OF_SPEECH_ID),
+        this));
     propertyReaders.add(new FVPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.PHONETIC_INFO), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.PHONETIC_INFO),
+        this));
     propertyReaders.add(new FirstVoicesWordTranslationReader(session,
         spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.DOMINANT_LANGUAGE_DEFINITION),
         this));
     propertyReaders.add(new FirstVoicesWordTranslationReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.LITERAL_TRANSLATION), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.LITERAL_TRANSLATION),
+        this));
     propertyReaders.add(new FVCategoryPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.REALTED_PHRASE), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.REALTED_PHRASE),
+        this));
     propertyReaders.add(new FVSimpleListPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CULTURAL_NOTE), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CULTURAL_NOTE),
+        this));
     propertyReaders.add(new FVCategoryPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CATEGORIES), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CATEGORIES),
+        this));
     propertyReaders.add(new FVPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.REFERENCE), this));
-    propertyReaders.add(new FVBooleanPropertyReader(session, spec.getColumnExportRecord(
-        FVExportConstants.ExportCSVLabels.AVAILABLE_IN_CHILDRENS_ARCHIVE), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.REFERENCE),
+        this));
     propertyReaders.add(new FVBooleanPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.AVAILABLE_IN_GAMES), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.AVAILABLE_IN_CHILDRENS_ARCHIVE),
+        this));
+    propertyReaders.add(new FVBooleanPropertyReader(session,
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.AVAILABLE_IN_GAMES),
+        this));
     propertyReaders.add(new FVPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.ASSIGNED_USR_ID), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.ASSIGNED_USR_ID),
+        this));
     propertyReaders.add(new FVPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.WORD_STATUS), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.WORD_STATUS),
+        this));
     propertyReaders.add(new FVSimpleListPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CONTRIBUTOR), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CONTRIBUTOR),
+        this));
     propertyReaders.add(new FVPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CHANGE_DTTM), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.CHANGE_DTTM),
+        this));
 
     hasCompoundReaders = true; // have to set this flag manually as property readers are created
     // manually
     propertyReaders.add(new FVCompoundPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.IMAGE), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.IMAGE),
+        this));
     propertyReaders.add(new FVCompoundPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.AUDIO), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.AUDIO),
+        this));
     propertyReaders.add(new FVCompoundPropertyReader(session,
-        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.VIDEO), this));
+        spec.getColumnExportRecord(FVExportConstants.ExportCSVLabels.VIDEO),
+        this));
   }
 
   protected FVSimpleCSVWriter getCsvWriter() throws IOException {

@@ -28,8 +28,6 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.io.marshallers.json.enrichers.AbstractJsonEnricher;
@@ -43,8 +41,6 @@ import org.nuxeo.ecm.core.io.registry.reflect.Setup;
 public class LightPortalEnricher extends AbstractJsonEnricher<DocumentModel> {
 
   public static final String NAME = "lightportal";
-
-  private static final Log log = LogFactory.getLog(LightPortalEnricher.class);
 
   public LightPortalEnricher() {
     super(NAME);

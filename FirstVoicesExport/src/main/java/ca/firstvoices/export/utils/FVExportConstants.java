@@ -71,6 +71,8 @@ public final class FVExportConstants {
   // CSV Columns to be placed in exported document
   public final class ExportCSVLabels {
 
+    private ExportCSVLabels() {}
+
     public static final String WORD_VALUE = "WORD";
     public static final String CULTURAL_NOTE = "CULTURAL_NOTE";
     public static final String PART_OF_SPEECH_ID = "PART_OF_SPEECH_ID";
@@ -158,17 +160,5 @@ public final class FVExportConstants {
 
   }
 
-  //    public static final String[] imageCompund = { ExportCSVLabels.IMG_TITLE, ExportCSVLabels
-  //    .IMG_FILENAME, ExportCSVLabels.IMG_DESCRIPTION, ExportCSVLabels
-  //    .IMG_SHARED_WITH_OTHER_DIALECTS, ExportCSVLabels.IMG_SOURCE, ExportCSVLabels
-  //    .IMG_RECORDER };
-  //    public static final String[] videoCompund = { ExportCSVLabels.VIDEO_TITLE,
-  //    ExportCSVLabels.VIDEO_FILENAME, ExportCSVLabels.VIDEO_DESCRIPTION, ExportCSVLabels
-  //    .VIDEO_SHARED_WITH_OTHER_DIALECTS, ExportCSVLabels.VIDEO_SOURCE, ExportCSVLabels
-  //    .VIDEO_RECORDER};
-  //    public static final String[] audioCompund = { ExportCSVLabels.AUDIO_TITLE,
-  //    ExportCSVLabels.AUDIO_FILENAME, ExportCSVLabels.AUDIO_DESCRIPTION, ExportCSVLabels
-  //    .AUDIO_SHARED_WITH_OTHER_DIALECTS, ExportCSVLabels.AUDIO_SOURCE, ExportCSVLabels
-  //    .AUDIO_RECORDER };
 
 }

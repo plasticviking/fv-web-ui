@@ -66,14 +66,14 @@ public abstract class AbstractFirstVoicesDialectOperation {
     if (userManager.getGroup(groupName) == null) {
 
       DocumentModel groupDocModel = userManager.getBareGroupModel();
-      ArrayList<String> parentGroups = new ArrayList<String>();
+      ArrayList<String> parentGroups = new ArrayList<>();
 
       parentGroups.add(group.getKey());
 
       // Create parent group if it does not exist
       if (userManager.getGroup(group.getKey()) == null) {
         DocumentModel parentGroupDocModel = userManager.getBareGroupModel();
-        ArrayList<String> parentParentGroups = new ArrayList<String>();
+        ArrayList<String> parentParentGroups = new ArrayList<>();
         parentParentGroups.add(userManager.getGroupMembersField());
 
         parentGroupDocModel

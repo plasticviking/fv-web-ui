@@ -37,15 +37,15 @@ import org.nuxeo.ecm.core.api.IdRef;
 /**
  * Operation publishes all ancestors up to a certain document type.
  */
-@Operation(id = FVPublishParents.ID, category = Constants.CAT_DOCUMENT, label = "FVPublishParents"
-    , description = "")
+@Operation(id = FVPublishParents.ID,
+    category = Constants.CAT_DOCUMENT,
+    label = "FVPublishParents",
+    description = "")
 public class FVPublishParents extends AbstractFVPublishOperation {
 
   public static final String ID = "FVPublishParents";
   private static final Log log = LogFactory.getLog(FVPublishParents.class);
-  @Param(name = "stopDocumentType", required = true)
-  protected String stopDocumentType;
-  private OperationContext ctx;
+  @Param(name = "stopDocumentType", required = true) protected String stopDocumentType;
 
   /**
    * Method recursively publishes all parents, up to a certain type. For example, it publishes all
@@ -53,6 +53,7 @@ public class FVPublishParents extends AbstractFVPublishOperation {
    *
    * @param parent
    * @return section to publish the next iteration to
+   *
    * @since TODO
    */
   protected DocumentModel publishAncestors(DocumentModel parent) {
@@ -74,11 +75,11 @@ public class FVPublishParents extends AbstractFVPublishOperation {
     tree = ps.getPublicationTree(ps.getAvailablePublicationTree().get(0), session, null);
 
     // Run Sub-Automation chain to discover if stopDocumentType is published
-    try {
+    try (OperationContext ctx = new OperationContext(session)) {
       // Run new operation (Document.GetParent to get parent type
-      ctx = new OperationContext(session);
+
       ctx.setInput(input);
-      Map<String, Object> params = new HashMap<String, Object>();
+      Map<String, Object> params = new HashMap<>();
       params.put("type", stopDocumentType);
       DocumentModel stopTypeParent = (DocumentModel) service.run(ctx, "Document.GetParent", params);
 
@@ -90,8 +91,6 @@ public class FVPublishParents extends AbstractFVPublishOperation {
     } catch (OperationException e) {
       // TODO Auto-generated catch block
       log.error(e);
-    } finally {
-      ctx.close();
     }
 
     // Stop Type parent is published
