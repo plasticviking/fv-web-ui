@@ -22,7 +22,9 @@ package ca.firstvoices.security.utils;
 
 public class CustomSecurityConstants {
 
-  private CustomSecurityConstants() {}
+  private CustomSecurityConstants() {
+
+  }
 
   public static final String RECORD = "Record";
   public static final String APPROVE = "Approve";

@@ -23,7 +23,6 @@ package ca.firstvoices.security.securitypolicies.groups;
 import static ca.firstvoices.data.schemas.DomainTypesConstants.FV_DIALECT;
 import static ca.firstvoices.data.schemas.DomainTypesConstants.FV_LANGUAGE;
 import static ca.firstvoices.data.schemas.DomainTypesConstants.FV_LANGUAGE_FAMILY;
-
 import ca.firstvoices.security.utils.CustomSecurityConstants;
 import java.util.Arrays;
 import java.util.List;
@@ -45,9 +44,9 @@ public class LanguageAdministrators extends AbstractSecurityPolicy {
   private static final Log log = LogFactory.getLog(LanguageAdministrators.class);
 
   @Override
-  public Access checkPermission(Document doc, ACP mergedAcp, NuxeoPrincipal principal,
-      String permission, String[] resolvedPermissions, String[] additionalPrincipals)
-       {
+  public Access checkPermission(
+      Document doc, ACP mergedAcp, NuxeoPrincipal principal, String permission,
+      String[] resolvedPermissions, String[] additionalPrincipals) {
 
     List<String> additionalPrincipalsList = Arrays.asList(additionalPrincipals);
 
@@ -55,9 +54,10 @@ public class LanguageAdministrators extends AbstractSecurityPolicy {
         + principal.getName());
 
     // Skip administrators, system user and groups that aren't language administrators
-    if (additionalPrincipalsList.contains("administrators") || principal.getName()
-        .equals(SecurityConstants.SYSTEM_USERNAME) || !additionalPrincipalsList
-        .contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP)) {
+    if (additionalPrincipalsList.contains("administrators") || principal
+        .getName()
+        .equals(SecurityConstants.SYSTEM_USERNAME) || !additionalPrincipalsList.contains(
+        CustomSecurityConstants.LANGUAGE_ADMINS_GROUP)) {
       return Access.UNKNOWN;
     }
 
@@ -71,8 +71,8 @@ public class LanguageAdministrators extends AbstractSecurityPolicy {
     // Publishing permissions
 
     // Allow ADD_CHILDREN on section root (for when hierarchy needs to be created from scratch)
-    if ("/FV/sections/Data".equals(doc.getPath()) && SecurityConstants.ADD_CHILDREN
-        .equals(permission)) {
+    if ("/FV/sections/Data".equals(doc.getPath()) && SecurityConstants.ADD_CHILDREN.equals(
+        permission)) {
       return Access.GRANT;
     }
 
@@ -90,9 +90,8 @@ public class LanguageAdministrators extends AbstractSecurityPolicy {
       // Allow ADD_CHILDREN on Families, Languages and section root (for when hierarchy needs to
       // be created from
       // scratch)
-      if (FV_LANGUAGE.equals(docType)
-          || FV_LANGUAGE_FAMILY.equals(docType) && SecurityConstants.ADD_CHILDREN
-          .equals(permission)) {
+      if (FV_LANGUAGE.equals(docType) || FV_LANGUAGE_FAMILY.equals(docType)
+          && SecurityConstants.ADD_CHILDREN.equals(permission)) {
         return Access.GRANT;
       }
     }
