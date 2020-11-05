@@ -25,7 +25,6 @@ import static ca.firstvoices.data.lifecycle.Constants.PUBLISH_TRANSITION;
 import static ca.firstvoices.data.lifecycle.Constants.REPUBLISH_TRANSITION;
 import static org.junit.Assert.assertNotNull;
 
-import ca.firstvoices.nuxeo.enrichers.UnpublishedChangesEnricher;
 import ca.firstvoices.publisher.services.FirstVoicesPublisherService;
 import javax.inject.Inject;
 import org.junit.After;
@@ -62,7 +61,7 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
     "FirstVoicesCoreIO",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.operations.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.services.xml",
-    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.templates.factories.xml",
+    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.templates.factories.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.schemas.ProxySchema.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.services.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.listeners.xml",

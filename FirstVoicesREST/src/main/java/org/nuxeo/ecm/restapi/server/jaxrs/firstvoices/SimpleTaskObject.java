@@ -1,10 +1,9 @@
 package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
 import static org.nuxeo.ecm.automation.core.operations.services.query.DocumentPaginatedQuery.ASC;
-
 import ca.firstvoices.core.io.marshallers.tasks.models.SimpleTaskAdapter;
-import ca.firstvoices.utils.CustomSecurityConstants;
-import ca.firstvoices.visibility.services.UpdateVisibilityService;
+import ca.firstvoices.operations.visibility.services.UpdateVisibilityService;
+import ca.firstvoices.security.utils.CustomSecurityConstants;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
@@ -76,8 +75,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
 
   TaskService taskService = Framework.getService(TaskService.class);
 
-  UpdateVisibilityService updateVisibilityService = Framework
-      .getService(UpdateVisibilityService.class);
+  UpdateVisibilityService updateVisibilityService =
+      Framework.getService(UpdateVisibilityService.class);
 
   @GET
   @Path("{taskId}")
@@ -105,7 +104,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
   @PUT
   @Path("{taskId}/approve")
   @Produces(MediaType.TEXT_PLAIN)
-  public Response approve(@PathParam("taskId") String taskId,
+  public Response approve(
+      @PathParam("taskId") String taskId,
       @QueryParam("requestedVisibility") String requestedVisibility) {
     CoreSession session = getContext().getCoreSession();
 
@@ -123,7 +123,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
 
         // Validate visibility
         if (!updateVisibilityService.isValidVisibility(requestedVisibility)) {
-          return Response.status(Status.BAD_REQUEST)
+          return Response
+              .status(Status.BAD_REQUEST)
               .entity("Requested visibility " + requestedVisibility + " is not a valid option.")
               .build();
         }
@@ -133,21 +134,25 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
         String approvedCommentText = "Approved with no change.";
 
         if (!taskObject.getRequestedVisibility().equals(requestedVisibility)) {
-          approvedCommentText = "Approved with a visibility change from '"
-              + taskObject.getRequestedVisibility() + "' to '" + requestedVisibility + "'";
+          approvedCommentText =
+              "Approved with a visibility change from '" + taskObject.getRequestedVisibility()
+                  + "' to '" + requestedVisibility + "'";
         }
         data.put(GraphNode.NODE_VARIABLE_COMMENT, approvedCommentText);
 
         // Update visibility (if necessary)
-        updateVisibilityService
-            .updateVisibility(session.getDocument(targetDoc), requestedVisibility);
+        updateVisibilityService.updateVisibility(session.getDocument(targetDoc),
+            requestedVisibility);
 
         Task coreTask = taskService.getTask(session, taskId);
 
         if (taskService.canEndTask(session.getPrincipal(), coreTask)) {
-          taskService
-              .endTask(session, session.getPrincipal(), coreTask, approvedCommentText,
-                  TaskEventNames.WORKFLOW_TASK_COMPLETED, true);
+          taskService.endTask(session,
+              session.getPrincipal(),
+              coreTask,
+              approvedCommentText,
+              TaskEventNames.WORKFLOW_TASK_COMPLETED,
+              true);
         } else {
           throw new DocumentSecurityException();
         }
@@ -157,7 +162,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
         return Response.status(Status.GONE).build();
       }
     } catch (DocumentSecurityException exception) {
-      return Response.status(Status.FORBIDDEN)
+      return Response
+          .status(Status.FORBIDDEN)
           .entity("You do not have permission to approve this task.")
           .build();
     }
@@ -169,8 +175,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
   @Consumes(MediaType.APPLICATION_JSON)
   @Produces(MediaType.TEXT_PLAIN)
   @Path("{taskId}/requestChanges")
-  public Response requestChanges(@PathParam("taskId") String taskId,
-      String approvalProperties) throws IOException {
+  public Response requestChanges(@PathParam("taskId") String taskId, String approvalProperties)
+      throws IOException {
 
     final String approvedVisibilityFieldName = "approvedVisibility";
     final String commentFieldName = "comment";
@@ -192,7 +198,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
 
         // Validate visibility
         if (!updateVisibilityService.isValidVisibility(approvedVisibility)) {
-          return Response.status(Status.BAD_REQUEST)
+          return Response
+              .status(Status.BAD_REQUEST)
               .entity("Requested visibility state is not a valid option.")
               .build();
         }
@@ -214,13 +221,16 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
 
       // Delegate task
       // A notification will be sent, configured in FVCoreIO -> notifications
-      taskService.delegateTask(getContext().getCoreSession(), taskId,
-          new ArrayList<>(recorders), comment);
+      taskService.delegateTask(getContext().getCoreSession(),
+          taskId,
+          new ArrayList<>(recorders),
+          comment);
 
       session.save();
 
     } catch (DocumentSecurityException exception) {
-      return Response.status(Status.FORBIDDEN)
+      return Response
+          .status(Status.FORBIDDEN)
           .entity("You do not have permission to approve this task.")
           .build();
     }
@@ -237,12 +247,16 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
       Task task = taskService.getTask(session, taskId);
 
       if (taskService.canEndTask(session.getPrincipal(), task)) {
-        taskService
-            .endTask(session, session.getPrincipal(), task, "Task ignored.",
-                TaskEventNames.WORKFLOW_TASK_REJECTED, false);
+        taskService.endTask(session,
+            session.getPrincipal(),
+            task,
+            "Task ignored.",
+            TaskEventNames.WORKFLOW_TASK_REJECTED,
+            false);
       }
     } catch (DocumentSecurityException exception) {
-      return Response.status(Status.FORBIDDEN)
+      return Response
+          .status(Status.FORBIDDEN)
           .entity("You do not have permission to ignore this task.")
           .build();
     }
@@ -263,7 +277,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
     JsonNode json = new ObjectMapper().readTree(requestProperties);
 
     if (!json.has(docIdFieldName)) {
-      return Response.status(Status.BAD_REQUEST)
+      return Response
+          .status(Status.BAD_REQUEST)
           .entity("docId property missing in JSON body.")
           .build();
     }
@@ -272,7 +287,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
     CoreSession session = ctx.getCoreSession();
 
     if (!session.exists(docId)) {
-      return Response.status(Status.NOT_FOUND)
+      return Response
+          .status(Status.NOT_FOUND)
           .entity("Document with docId " + docId + " was not found.")
           .build();
     }
@@ -280,21 +296,24 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
     DocumentModel doc = session.getDocument(docId);
 
     if (!doc.hasSchema("fvcore")) {
-      return Response.status(Status.BAD_REQUEST)
+      return Response
+          .status(Status.BAD_REQUEST)
           .entity("Tasks can only be executed on documents with fvcore schema.")
           .build();
     }
 
-    if (!session
-        .hasPermission(session.getPrincipal(), doc.getRef(),
-            CustomSecurityConstants.RECORD)) {
-      return Response.status(Status.FORBIDDEN)
+    if (!session.hasPermission(session.getPrincipal(),
+        doc.getRef(),
+        CustomSecurityConstants.RECORD)) {
+      return Response
+          .status(Status.FORBIDDEN)
           .entity("You do not have permission to start a task on this document.")
           .build();
     }
 
     if (!taskService.getTaskInstances(doc, (NuxeoPrincipal) null, session).isEmpty()) {
-      return Response.status(Status.CONFLICT)
+      return Response
+          .status(Status.CONFLICT)
           .entity("A task is already present for this document.")
           .build();
     }
@@ -307,7 +326,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
 
       // Validate visibility
       if (!updateVisibilityService.isValidVisibility(requestedVisibility)) {
-        return Response.status(Status.BAD_REQUEST)
+        return Response
+            .status(Status.BAD_REQUEST)
             .entity("Requested visibility state is not a valid option.")
             .build();
       }
@@ -323,10 +343,19 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
       taskVariables.put("visibilityChanged", "false");
     }
 
-    taskService.createTask(session, session.getPrincipal(), doc, "RoutingTask",
-        "RoutingTask", null,
-        new ArrayList<>(getActors(doc, CustomSecurityConstants.APPROVE)), false,
-        requestedVisibility, comment, null, null, null);
+    taskService.createTask(session,
+        session.getPrincipal(),
+        doc,
+        "RoutingTask",
+        "RoutingTask",
+        null,
+        new ArrayList<>(getActors(doc, CustomSecurityConstants.APPROVE)),
+        false,
+        requestedVisibility,
+        comment,
+        null,
+        null,
+        null);
 
     session.save();
 
@@ -386,15 +415,19 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
     List<SortInfo> sortInfos = null;
     if (StringUtils.isNotBlank(sortBy)) {
       sortInfos = new ArrayList<>();
-      boolean sortAscending = (sortOrder != null && !sortOrder.isEmpty() && ASC
-          .equalsIgnoreCase(
-              sortOrder.toLowerCase()));
+      boolean sortAscending = (sortOrder != null && !sortOrder.isEmpty() && ASC.equalsIgnoreCase(
+          sortOrder.toLowerCase()));
       sortInfos.add(new SortInfo(sortBy, sortAscending));
     }
 
-    return getPaginableEntries((PageProvider<SimpleTaskAdapter>) pps
-        .getPageProvider("", ppDefinition, getSearchDocument(), sortInfos,
-            pageSize, currentPageIndex, props, params));
+    return getPaginableEntries((PageProvider<SimpleTaskAdapter>) pps.getPageProvider("",
+        ppDefinition,
+        getSearchDocument(),
+        sortInfos,
+        pageSize,
+        currentPageIndex,
+        props,
+        params));
   }
 
   private Paginable<SimpleTaskAdapter> getEntriesExcludingDelegatedTasks() {
@@ -408,8 +441,8 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
     }
 
     // Will exclude delegated tasks for language admins
-    PageProviderDefinition ppDefinition = pageProviderService
-        .getPageProviderDefinition(EXCLUDE_DELEGATED_PP_NAME);
+    PageProviderDefinition ppDefinition =
+        pageProviderService.getPageProviderDefinition(EXCLUDE_DELEGATED_PP_NAME);
 
     if (ppDefinition == null) {
       throw new NuxeoException("Page provider given not found");
@@ -429,24 +462,30 @@ public class SimpleTaskObject extends PaginableObject<SimpleTaskAdapter> {
 
     UserManager userManager = Framework.getService(UserManager.class);
 
-    PrincipalHelper principalHelper = new PrincipalHelper(userManager,
-        Framework.getService(PermissionProvider.class));
+    PrincipalHelper principalHelper =
+        new PrincipalHelper(userManager, Framework.getService(PermissionProvider.class));
 
-    Set<String> usersAndGroups = principalHelper
-        .getUserAndGroupIdsForPermission(doc, permission, false, false, true);
+    Set<String> usersAndGroups =
+        principalHelper.getUserAndGroupIdsForPermission(doc, permission, false, false, true);
 
     // Exclude super admins
-    List<String> groupsToExclude = userManager.getAdministratorsGroups().stream()
-        .map((group -> "group:" + group)).collect(
-            Collectors.toList());
+    List<String> groupsToExclude = userManager
+        .getAdministratorsGroups()
+        .stream()
+        .map((group -> "group:" + group))
+        .collect(Collectors.toList());
 
     // Exclude current user's groups
-    groupsToExclude.addAll(
-        doc.getCoreSession().getPrincipal().getAllGroups().stream().map((group -> "group:" + group))
-            .collect(
-                Collectors.toList()));
+    groupsToExclude.addAll(doc
+        .getCoreSession()
+        .getPrincipal()
+        .getAllGroups()
+        .stream()
+        .map((group -> "group:" + group))
+        .collect(Collectors.toList()));
 
-    return usersAndGroups.stream()
+    return usersAndGroups
+        .stream()
         .filter(userOrGroup -> !groupsToExclude.contains(userOrGroup))
         .filter(userOrGroup -> !userOrGroup.contains("user:"))
         .collect(Collectors.toSet());

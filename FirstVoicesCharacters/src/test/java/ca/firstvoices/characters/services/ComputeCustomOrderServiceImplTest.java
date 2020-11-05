@@ -66,7 +66,7 @@ import org.nuxeo.runtime.test.runner.FeaturesRunner;
     "org.nuxeo.ecm.platform.rendition.core", "org.nuxeo.ecm.platform.video.core",
     "org.nuxeo.ecm.platform.audio.core", "org.nuxeo.ecm.automation.scripting",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.services.xml",
-    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.templates.factories.xml",
+    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.templates.factories.xml",
     "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.operations.xml",
     "FirstVoicesCharacters:OSGI-INF/services/customOrderCompute-contrib.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.services.xml",

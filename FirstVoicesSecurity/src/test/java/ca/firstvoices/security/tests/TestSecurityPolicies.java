@@ -30,7 +30,7 @@ import static ca.firstvoices.data.schemas.DomainTypesConstants.FV_LANGUAGE_FAMIL
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import ca.firstvoices.utils.CustomSecurityConstants;
+import ca.firstvoices.security.utils.CustomSecurityConstants;
 import javax.inject.Inject;
 import javax.security.auth.login.LoginException;
 import org.junit.After;
@@ -66,8 +66,8 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
     "org.nuxeo.ecm.user.invite",
     "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.operations.xml",
     "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.auth.xml",
-    "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.securitypolicies.groups.xml",
-    "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.securitypolicies.lifecycle.xml"})
+    "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.security.securitypolicies.groups.xml",
+    "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.security.securitypolicies.lifecycle.xml"})
 @PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})
 public class TestSecurityPolicies extends AbstractFVTest {
 

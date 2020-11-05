@@ -57,7 +57,7 @@ import org.nuxeo.runtime.api.Framework;
     "org.nuxeo.ecm.platform.picture.core", "org.nuxeo.ecm.platform.rendition.core",
     "org.nuxeo.ecm.platform.video.core", "org.nuxeo.ecm.platform.audio.core",
     "org.nuxeo.ecm.automation.scripting", "org.nuxeo.ecm.platform.web.common",
-    "FirstVoicesPublisher:OSGI-INF/extensions/ca.firstvoices.templates.factories.xml",
+    "FirstVoicesPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.templates.factories.xml",
     "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.operations.xml",
     "FirstVoicesDraftEditor:OSGI-INF/extensions/ca.firstvoices.editors.operations.xml",
     "FirstVoicesDraftEditor:OSGI-INF/extensions/ca.firstvoices.editors.configuration.adapter.xml",

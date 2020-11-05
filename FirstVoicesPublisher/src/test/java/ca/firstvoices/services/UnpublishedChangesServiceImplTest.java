@@ -25,6 +25,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import ca.firstvoices.publisher.services.FirstVoicesPublisherService;
+import ca.firstvoices.publisher.services.UnpublishedChangesService;
+import ca.firstvoices.publisher.services.UnpublishedChangesServiceImpl;
 import ca.firstvoices.runner.FirstVoicesCoreTestsFeature;
 import ca.firstvoices.testUtil.AbstractTestDataCreatorTest;
 import ca.firstvoices.testUtil.annotations.TestDataConfiguration;
@@ -61,7 +63,7 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
     "org.nuxeo.ecm.platform.rendition.core", "org.nuxeo.ecm.platform.video.core",
     "org.nuxeo.ecm.platform.audio.core", "org.nuxeo.ecm.automation.scripting",
     "FirstVoicesNuxeoPublisher.tests:OSGI-INF/extensions/ca.firstvoices.fakestudio.xml",
-    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.templates.factories.xml",
+    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.templates.factories.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.schemas.ProxySchema.xml",
     "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.operations.xml",})
 @PartialDeploy(bundle = "FirstVoicesData", extensions = {TargetExtensions.ContentModel.class})

@@ -22,8 +22,7 @@ package ca.firstvoices.enrichers;
 
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_WORD;
 
-import ca.firstvoices.dialect.assets.services.RelationsService;
-import ca.firstvoices.nuxeo.enrichers.WordEnricher;
+import ca.firstvoices.operations.dialect.assets.services.RelationsService;
 import javax.inject.Inject;
 import org.junit.Assert;
 import org.junit.Before;

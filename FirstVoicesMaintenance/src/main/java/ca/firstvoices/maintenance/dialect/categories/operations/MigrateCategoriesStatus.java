@@ -7,7 +7,7 @@ import ca.firstvoices.maintenance.dialect.categories.Constants;
 import ca.firstvoices.maintenance.dialect.categories.services.MigrateCategoriesService;
 import ca.firstvoices.maintenance.services.MaintenanceLogger;
 import ca.firstvoices.publisher.services.FirstVoicesPublisherService;
-import ca.firstvoices.services.UnpublishedChangesService;
+import ca.firstvoices.publisher.services.UnpublishedChangesService;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;

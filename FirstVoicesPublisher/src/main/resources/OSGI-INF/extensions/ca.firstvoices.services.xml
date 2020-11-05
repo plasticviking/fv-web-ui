@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
-<component name="ca.firstvoices.services.UnpublishedChangesService" version="1.0">
+<component name="ca.firstvoices.publisher.services.UnpublishedChangesService" version="1.0">
 
-  <implementation class="ca.firstvoices.services.UnpublishedChangesServiceImpl"/>
+  <implementation class="ca.firstvoices.publisher.services.UnpublishedChangesServiceImpl"/>
   <service>
-    <provide interface="ca.firstvoices.services.UnpublishedChangesService"/>
+    <provide interface="ca.firstvoices.publisher.services.UnpublishedChangesService"/>
   </service>
 
 </component>

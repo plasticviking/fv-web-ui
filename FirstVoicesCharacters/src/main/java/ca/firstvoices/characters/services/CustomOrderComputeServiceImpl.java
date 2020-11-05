@@ -27,7 +27,7 @@ import ca.firstvoices.core.io.utils.DialectUtils;
 import ca.firstvoices.core.io.utils.SessionUtils;
 import ca.firstvoices.core.io.utils.StateUtils;
 import ca.firstvoices.data.schemas.DialectTypesConstants;
-import ca.firstvoices.services.UnpublishedChangesService;
+import ca.firstvoices.publisher.services.UnpublishedChangesService;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;

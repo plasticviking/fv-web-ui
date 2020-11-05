@@ -27,8 +27,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import ca.firstvoices.seam.FVLogin;
-import ca.firstvoices.services.FVUserProfileService;
+import ca.firstvoices.security.seam.FVLogin;
+import ca.firstvoices.security.services.FVUserProfileService;
 import ca.firstvoices.utils.FVUserPreferencesSetup;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;

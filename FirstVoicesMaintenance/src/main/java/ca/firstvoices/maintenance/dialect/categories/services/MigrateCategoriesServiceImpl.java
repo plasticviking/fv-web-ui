@@ -5,7 +5,7 @@ import static ca.firstvoices.data.lifecycle.Constants.PUBLISH_TRANSITION;
 import static ca.firstvoices.data.lifecycle.Constants.REPUBLISH_TRANSITION;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CATEGORY;
 
-import ca.firstvoices.services.UnpublishedChangesService;
+import ca.firstvoices.publisher.services.UnpublishedChangesService;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;

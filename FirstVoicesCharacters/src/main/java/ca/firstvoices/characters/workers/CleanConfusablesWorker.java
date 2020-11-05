@@ -7,7 +7,7 @@ import ca.firstvoices.characters.services.CleanupCharactersService;
 import ca.firstvoices.core.io.utils.StateUtils;
 import ca.firstvoices.data.schemas.DialectTypesConstants;
 import ca.firstvoices.maintenance.common.RequiredJobsUtils;
-import ca.firstvoices.services.UnpublishedChangesService;
+import ca.firstvoices.publisher.services.UnpublishedChangesService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;

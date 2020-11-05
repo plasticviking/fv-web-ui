@@ -24,6 +24,7 @@ import static ca.firstvoices.data.lifecycle.Constants.PUBLISH_TRANSITION;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
+import ca.firstvoices.publisher.operations.CheckUnpublishedChanges;
 import ca.firstvoices.publisher.services.FirstVoicesPublisherService;
 import ca.firstvoices.runner.FirstVoicesCoreTestsFeature;
 import ca.firstvoices.testUtil.AbstractTestDataCreatorTest;
@@ -61,7 +62,7 @@ import org.nuxeo.runtime.test.runner.TargetExtensions;
     "org.nuxeo.ecm.platform.publisher.core", "org.nuxeo.ecm.platform.picture.core",
     "org.nuxeo.ecm.platform.rendition.core", "org.nuxeo.ecm.platform.video.core",
     "org.nuxeo.ecm.platform.audio.core", "org.nuxeo.ecm.automation.scripting",
-    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.templates.factories.xml",
+    "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.publisher.templates.factories.xml",
     "FirstVoicesNuxeoPublisher:OSGI-INF/extensions/ca.firstvoices.schemas.ProxySchema.xml",
     "FirstVoicesNuxeoPublisher.tests:OSGI-INF/extensions/ca.firstvoices.fakestudio.xml",
     "FirstVoicesSecurity:OSGI-INF/extensions/ca.firstvoices.operations.xml",})

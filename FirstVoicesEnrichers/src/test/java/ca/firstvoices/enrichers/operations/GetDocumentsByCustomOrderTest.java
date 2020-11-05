@@ -24,7 +24,6 @@ import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CHARACTER;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_WORD;
 import static ca.firstvoices.testUtil.helpers.DocumentTestHelpers.createDocument;
 import ca.firstvoices.characters.services.CustomOrderComputeService;
-import ca.firstvoices.nuxeo.operations.GetDocumentsByCustomOrder;
 import ca.firstvoices.runner.FirstVoicesCoreTestsFeature;
 import ca.firstvoices.testUtil.AbstractFirstVoicesDataTest;
 import java.util.Arrays;
