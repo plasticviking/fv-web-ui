@@ -28,7 +28,9 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 
 public class UtilityTestWordGenerator {
 
-  private UtilityTestWordGenerator() {}
+  private UtilityTestWordGenerator() {
+
+  }
 
   private static String path =
       "/FV/Workspaces/Data/Test-Language-Familiy-2/Test-language-2/Test" + "-Dialect-2/Dictionary";

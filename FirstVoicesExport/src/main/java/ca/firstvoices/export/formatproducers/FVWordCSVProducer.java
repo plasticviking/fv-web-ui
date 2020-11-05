@@ -21,7 +21,6 @@
 package ca.firstvoices.export.formatproducers;
 
 import static ca.firstvoices.export.utils.FVExportConstants.CSV_FORMAT;
-
 import ca.firstvoices.export.propertyreaders.FVBooleanPropertyReader;
 import ca.firstvoices.export.propertyreaders.FVCategoryPropertyReader;
 import ca.firstvoices.export.propertyreaders.FVCompoundPropertyReader;
@@ -34,7 +33,6 @@ import ca.firstvoices.export.utils.FVWordExportCSVColumns;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.nuxeo.ecm.automation.core.util.StringList;

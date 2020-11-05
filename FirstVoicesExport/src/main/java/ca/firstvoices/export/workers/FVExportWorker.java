@@ -67,9 +67,11 @@ public class FVExportWorker extends FVAbstractExportWork {
       FVAbstractProducer fileOutputProducer;
 
       if (workInfo.getExportElement().equals(FVWORD)) {
-        fileOutputProducer = new FVWordCSVProducer(session, workInfo.getFileName(), workInfo.getColumns());
+        fileOutputProducer =
+            new FVWordCSVProducer(session, workInfo.getFileName(), workInfo.getColumns());
       } else {
-        fileOutputProducer = new FVPhraseCSVProducer(session, workInfo.getFileName(), workInfo.getColumns());
+        fileOutputProducer =
+            new FVPhraseCSVProducer(session, workInfo.getFileName(), workInfo.getColumns());
       }
 
       fileOutputProducer.writeColumnNames();

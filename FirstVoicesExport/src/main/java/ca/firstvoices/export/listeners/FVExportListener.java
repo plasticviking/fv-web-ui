@@ -101,7 +101,8 @@ public class FVExportListener implements EventListener {
 
       work.setExportColumns(pc);
 
-      work.setDocuments(Framework.getService(RepositoryManager.class).getDefaultRepositoryName(),
+      work.setDocuments(
+          Framework.getService(RepositoryManager.class).getDefaultRepositoryName(),
           (ArrayList<String>) ctx.getProperty(DOCS_TO_EXPORT));
     } else {
       FVExportWorkInfo workInfo = new FVExportWorkInfo();
@@ -112,7 +113,8 @@ public class FVExportListener implements EventListener {
       workInfo.setExportFormat(INHERITED_FROM_OTHER);
       workInfo.setInitiatorName(INHERITED_FROM_OTHER);
       workInfo.setExportElement(INHERITED_FROM_OTHER);
-      workInfo.setContinueAutoEvent(AUTO_NEXT_EXPORT_WORKER); // continue to next export document set
+      // continue to next export document set
+      workInfo.setContinueAutoEvent(AUTO_NEXT_EXPORT_WORKER);
 
       work.setExportQuery(INHERITED_FROM_OTHER);
       work.setInitiatorName("System");

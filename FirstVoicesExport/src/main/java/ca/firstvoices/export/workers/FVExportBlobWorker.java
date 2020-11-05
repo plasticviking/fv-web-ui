@@ -81,7 +81,8 @@ public class FVExportBlobWorker extends FVAbstractExportWork {
       ctx.setProperty(EXPORT_WORK_INFO, workInfo);
 
       Event event =
-          ctx.newEvent(workInfo.getContinueAutoEvent()); // move to next set of exports if invoked by
+          ctx.newEvent(workInfo.getContinueAutoEvent()); // move to next set of exports if
+      // invoked by
       // cyclic worker
       eventProducer.fireEvent(event);
     }

@@ -71,7 +71,9 @@ public final class FVExportConstants {
   // CSV Columns to be placed in exported document
   public final class ExportCSVLabels {
 
-    private ExportCSVLabels() {}
+    private ExportCSVLabels() {
+
+    }
 
     public static final String WORD_VALUE = "WORD";
     public static final String CULTURAL_NOTE = "CULTURAL_NOTE";

@@ -27,7 +27,7 @@ import org.nuxeo.runtime.api.Framework;
 public class FVLoginUtils {
 
   private FVLoginUtils() {
-    
+
   }
 
   // this is configured with a property to be set easily in nuxeo.conf in different envs

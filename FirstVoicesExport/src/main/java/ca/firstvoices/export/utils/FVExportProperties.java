@@ -85,21 +85,19 @@ public class FVExportProperties {
   public static final String AUDIO_COMPOUND = "fv:related_audio";
   public static final String VIDEO_COMPOUND = "fv:related_videos";
 
-  public static final List<FVDataBinding> imgCompoundA =
-      Collections.unmodifiableList(Arrays.asList(new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_TITLE,
-              TITLE),
-          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_FILENAME, MEDIA_FILENAME),
-          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_DESCRIPTION, DESCR),
-          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SHARED_WITH_OTHER_DIALECTS,
-              MEDIA_SHARED),
-          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SOURCE, MEDIA_ORIGIN),
-          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_RECORDER, MEDIA_RECORDER),
-          new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_CHILD_FOCUSED,
-              MEDIA_CHILD_FOCUSED)));
+  public static final List<FVDataBinding> imgCompoundA = Collections.unmodifiableList(Arrays.asList(
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_TITLE, TITLE),
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_FILENAME, MEDIA_FILENAME),
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_DESCRIPTION, DESCR),
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SHARED_WITH_OTHER_DIALECTS,
+          MEDIA_SHARED),
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_SOURCE, MEDIA_ORIGIN),
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_RECORDER, MEDIA_RECORDER),
+      new FVDataBinding(FVExportConstants.ExportCSVLabels.IMG_CHILD_FOCUSED, MEDIA_CHILD_FOCUSED)));
 
   public static final List<FVDataBinding> audioCompoundA =
-      Collections.unmodifiableList(Arrays.asList(new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_TITLE,
-              TITLE),
+      Collections.unmodifiableList(Arrays.asList(
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_TITLE, TITLE),
           new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_FILENAME, MEDIA_FILENAME),
           new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_DESCRIPTION, DESCR),
           new FVDataBinding(FVExportConstants.ExportCSVLabels.AUDIO_SHARED_WITH_OTHER_DIALECTS,
@@ -110,8 +108,8 @@ public class FVExportProperties {
               MEDIA_CHILD_FOCUSED)));
 
   public static final List<FVDataBinding> videoCompoundA =
-      Collections.unmodifiableList(Arrays.asList(new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_TITLE,
-              TITLE),
+      Collections.unmodifiableList(Arrays.asList(
+          new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_TITLE, TITLE),
           new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_FILENAME, MEDIA_FILENAME),
           new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_DESCRIPTION, DESCR),
           new FVDataBinding(FVExportConstants.ExportCSVLabels.VIDEO_SHARED_WITH_OTHER_DIALECTS,
