@@ -7,7 +7,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-enrichers</artifactId>
-  <name>FirstVoicesEnrichers</name>
+  <name>Enrichers</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.common</groupId>

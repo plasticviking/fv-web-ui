@@ -131,10 +131,12 @@ public class FVExportUtils {
       throws NoSuchMethodException, IllegalAccessException, InvocationTargetException,
       InstantiationException {
     Class<?> clazz = colR.requiredPropertyReader;
-    Constructor<?> constructor =
-        clazz.getConstructor(CoreSession.class, ExportColumnRecord.class, FVAbstractProducer.class);
-    FVAbstractPropertyReader instance =
-        (FVAbstractPropertyReader) constructor.newInstance(session, colR, producer);
+    Constructor<?> constructor = clazz.getConstructor(CoreSession.class,
+        ExportColumnRecord.class,
+        FVAbstractProducer.class);
+    FVAbstractPropertyReader instance = (FVAbstractPropertyReader) constructor.newInstance(session,
+        colR,
+        producer);
     instance.session = session;
 
     return instance;

@@ -20,7 +20,7 @@
 
   <groupId>ca.firstvoices</groupId>
   <artifactId>firstvoices-modules-parent</artifactId>
-  <name>First Voices Project Parent</name>
+  <name>First Voices</name>
   <packaging>pom</packaging>
   <version>3.5.4</version>
 
@@ -53,11 +53,6 @@
         <groupId>org.nuxeo.ecm.automation</groupId>
         <artifactId>nuxeo-automation-core</artifactId>
         <version>${nuxeo.distribution.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>ca.firstvoices</groupId>
-        <artifactId>migration-contributions</artifactId>
-        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>com.amazonaws</groupId>

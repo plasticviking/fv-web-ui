@@ -6,7 +6,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-data</artifactId>
-  <name>FirstVoicesData</name>
+  <name>Shared Data Definitions</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>

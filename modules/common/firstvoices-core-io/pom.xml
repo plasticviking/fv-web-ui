@@ -9,7 +9,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-core-io</artifactId>
-  <name>FirstVoicesCoreIO</name>
+  <name>Core IO</name>
 
   <dependencies>
     <dependency>

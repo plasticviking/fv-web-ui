@@ -8,7 +8,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-rest-api-simple</artifactId>
-  <name>FirstVoicesSimplifiedAPI</name>
+  <name>Simplified API</name>
   <dependencies>
 
     <dependency>

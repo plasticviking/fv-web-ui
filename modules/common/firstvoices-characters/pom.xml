@@ -12,7 +12,7 @@
   </parent>
 
   <artifactId>firstvoices-characters</artifactId>
-  <name>FirstVoicesCharacters</name>
+  <name>Character Services and Operations</name>
 
   <dependencies>
 

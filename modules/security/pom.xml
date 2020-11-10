@@ -10,7 +10,7 @@
 
   <artifactId>modules.security</artifactId>
   <packaging>pom</packaging>
-  <name>FirstVoices Security Modules</name>
+  <name>Security Modules</name>
 
   <modules>
     <module>firstvoices-security</module>

@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>firstvoices-rest-page-providers</artifactId>
-  <name>FirstVoicesRESTPageProviders</name>
+  <name>Page Providers for REST API</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.common</groupId>

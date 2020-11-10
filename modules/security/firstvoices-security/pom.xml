@@ -7,7 +7,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-security</artifactId>
-  <name>FirstVoicesSecurity</name>
+  <name>Security</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.common</groupId>

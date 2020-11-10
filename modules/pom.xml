@@ -10,7 +10,7 @@
 
   <artifactId>modules</artifactId>
   <packaging>pom</packaging>
-  <name>FirstVoices Modules</name>
+  <name>Modules</name>
 
   <modules>
     <module>security</module>

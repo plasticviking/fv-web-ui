@@ -8,7 +8,7 @@
     <artifactId>modules.common</artifactId>
     <version>3.5.4</version>
   </parent>
-  <name>FirstVoicesPublisher</name>
+  <name>Publisher</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.common</groupId>

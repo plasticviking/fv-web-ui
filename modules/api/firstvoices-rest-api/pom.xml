@@ -6,8 +6,8 @@
     <artifactId>modules.api</artifactId>
     <version>3.5.4</version>
   </parent>
-  <artifactId>modules.api.firstvoices-rest-api</artifactId>
-  <name>FirstVoicesREST</name>
+  <artifactId>firstvoices-rest-api</artifactId>
+  <name>Nuxeo REST API Integration</name>
   <dependencies>
     <!-- task/routing dependencies -->
     <dependency>
@@ -81,7 +81,7 @@
     </dependency>
     <dependency>
       <groupId>ca.firstvoices</groupId>
-      <artifactId>firstvoices-rations</artifactId>
+      <artifactId>firstvoices-operations</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
@@ -267,6 +267,17 @@
     </dependency>
     <dependency>
       <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-publisher-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.javers</groupId>
+      <artifactId>javers-core</artifactId>
+      <version>5.8.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
       <artifactId>nuxeo-platform-url-core</artifactId>
       <scope>test</scope>
     </dependency>
@@ -297,6 +308,12 @@
       <artifactId>firstvoices-core-tests</artifactId>
       <scope>test</scope>
       <type>test-jar</type>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ca.firstvoices</groupId>
+      <artifactId>firstvoices-maintenance-common</artifactId>
+      <scope>test</scope>
       <version>${project.version}</version>
     </dependency>
     <dependency>

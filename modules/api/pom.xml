@@ -10,7 +10,7 @@
 
   <artifactId>modules.api</artifactId>
   <packaging>pom</packaging>
-  <name>FirstVoices API Modules</name>
+  <name>API Modules</name>
 
   <modules>
     <module>firstvoices-rest-api</module>

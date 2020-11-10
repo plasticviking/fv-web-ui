@@ -7,7 +7,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-security-cognito-auth</artifactId>
-  <name>FirstVoicesCognitoAuth</name>
+  <name>Cognito Authentication Integration</name>
   <dependencies>
     <dependency>
       <groupId>com.amazonaws</groupId>

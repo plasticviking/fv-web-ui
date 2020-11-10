@@ -7,7 +7,7 @@
     <artifactId>modules.common</artifactId>
     <version>3.5.4</version>
   </parent>
-  <name>FirstVoicesCoreTests</name>
+  <name>Core Testing Framework</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.ecm.automation</groupId>

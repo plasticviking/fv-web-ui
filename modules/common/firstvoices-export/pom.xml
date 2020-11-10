@@ -7,7 +7,7 @@
     <version>3.5.4</version>
   </parent>
   <artifactId>firstvoices-export</artifactId>
-  <name>FirstVoicesExport</name>
+  <name>Export Services</name>
   <dependencies>
     <dependency>
       <groupId>org.nuxeo.common</groupId>

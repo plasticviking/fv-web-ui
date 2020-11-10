@@ -10,7 +10,7 @@
 
   <artifactId>modules.common</artifactId>
   <packaging>pom</packaging>
-  <name>FirstVoices Common Modules</name>
+  <name>Common Modules</name>
 
   <modules>
     <module>firstvoices-characters</module>

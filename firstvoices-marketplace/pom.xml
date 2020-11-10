@@ -30,7 +30,7 @@
     </dependency>
     <dependency>
       <groupId>ca.firstvoices</groupId>
-      <artifactId>firstvoices-security-user-registrations</artifactId>
+      <artifactId>firstvoices-security-user-registration</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
