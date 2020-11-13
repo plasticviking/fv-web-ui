@@ -1,7 +1,7 @@
 package ca.firstvoices.rest.marshallers;
 
-import ca.firstvoices.rest.dtos.LabelCategory;
-import ca.firstvoices.rest.dtos.LabelCategoryList;
+import ca.firstvoices.rest.data.LabelCategory;
+import ca.firstvoices.rest.data.LabelCategoryList;
 import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import org.nuxeo.ecm.core.io.marshallers.json.AbstractJsonWriter;

@@ -1,4 +1,4 @@
-package ca.firstvoices.rest.dtos;
+package ca.firstvoices.rest.data;
 
 import java.io.Serializable;
 import java.util.List;
