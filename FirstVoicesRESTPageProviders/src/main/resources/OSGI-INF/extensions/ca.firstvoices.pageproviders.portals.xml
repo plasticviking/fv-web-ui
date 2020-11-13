@@ -10,7 +10,7 @@
 
     <genericPageProvider name="PORTALS_LIST_SECTIONS_PP" class="org.nuxeo.elasticsearch.provider.ElasticSearchNxqlPageProvider">
       <property name="checkQueryCache">true</property>
-      <pattern quoteParameters="false">SELECT * FROM FVPortal WHERE ecm:path STARTSWITH '/FV/Sections' AND ecm:isTrashed
+      <pattern quoteParameters="false">SELECT * FROM FVPortal WHERE ecm:path STARTSWITH '/FV/sections' AND ecm:isTrashed
         =0 AND ecm:isVersion = 0
       </pattern>
     </genericPageProvider>

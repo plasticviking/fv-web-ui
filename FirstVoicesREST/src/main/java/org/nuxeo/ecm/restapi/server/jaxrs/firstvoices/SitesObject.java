@@ -17,9 +17,9 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 
-@WebObject(type = "portal")
+@WebObject(type = "site")
 @Produces({MediaType.APPLICATION_JSON})
-public class PortalsObject extends DefaultObject {
+public class SitesObject extends DefaultObject {
 
   public static final String PORTALS_LIST_SECTIONS_PP = "PORTALS_LIST_SECTIONS_PP";
   public static final String PORTALS_LIST_WORKSPACES_PP = "PORTALS_LIST_WORKSPACES_PP";
@@ -57,7 +57,7 @@ public class PortalsObject extends DefaultObject {
 
   @GET
   @Path("sections")
-  public Response listPortalsSections(@Context HttpServletRequest request,
+  public Response listSitesSections(@Context HttpServletRequest request,
                                       @QueryParam(value = "pageSize") Integer pageSize,
                                       @QueryParam(value = "currentPage") Integer currentPage) {
     return simplePageProviderResponse(request, PORTALS_LIST_SECTIONS_PP, pageSize, currentPage);
@@ -65,7 +65,7 @@ public class PortalsObject extends DefaultObject {
 
   @GET
   @Path("Workspaces")
-  public Response listPortalsWorkspaces(@Context HttpServletRequest request,
+  public Response listSitesWorkspaces(@Context HttpServletRequest request,
                                         @QueryParam(value = "pageSize") Integer pageSize,
                                         @QueryParam(value = "currentPage") Integer currentPage) {
     return simplePageProviderResponse(request, PORTALS_LIST_WORKSPACES_PP, pageSize, currentPage);
