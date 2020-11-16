@@ -2,9 +2,11 @@ package ca.firstvoices.rest.data;
 
 import java.io.Serializable;
 
+@SuppressWarnings("java:S1700")
 public class Label implements Serializable {
 
   private final String id;
+
   private final String label;
   private final String type;
   private final String category;
