@@ -17,8 +17,8 @@ public interface DirectoryFreshnessService {
 
   /**
    * Trigger an update of the serial associated with this directory (the serial can be a timestamp,
-   * uuid, etc.). Implementations should keep it in state so that subsequent calls to getSerial will
-   * return this value until updated again.
+   * uuid, etc.). Implementations should keep it in state so that subsequent calls to getSerial
+   * will return this value until updated again.
    *
    * @param directoryName Use one of the interface constants to reference a specific directory
    */

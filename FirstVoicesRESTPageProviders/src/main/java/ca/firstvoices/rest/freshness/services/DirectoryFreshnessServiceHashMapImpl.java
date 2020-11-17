@@ -7,9 +7,10 @@ import java.util.UUID;
 /**
  * Simple in-memory UUID based implementation of the DirectoryFreshnessService. Uses UUIDs as
  * serials.
- * <p>
- * May not work well in clustered environments if sticky-sessions are disabled (in which case a more
- * robust mechanism involving database or distributed-cache storage should be preferred).
+ *
+ * <p>May not work well in clustered environments if sticky-sessions are disabled (in which case
+ * a more robust mechanism involving database or distributed-cache storage should be preferred).
+ * </p>
  */
 public class DirectoryFreshnessServiceHashMapImpl implements DirectoryFreshnessService {
 
