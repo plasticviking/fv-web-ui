@@ -36,7 +36,6 @@ export const fetchDirectory = (name, pageSize, returnFullObject = false) => {
   }
 }
 
-
 export const fetchLabelDirectory = (statename, name) => {
   return (dispatch) => {
     dispatch({ type: LABEL_DIRECTORY_FETCH_START })
@@ -48,14 +47,14 @@ export const fetchLabelDirectory = (statename, name) => {
           text: directoryEntry.label,
           templateStrings: directoryEntry.templateStrings,
           category: directoryEntry.category,
-        }
-        ))
+          type: directoryEntry.type,
+          parent: directoryEntry.parent,
+        }))
 
         const directories = {}
         directories[statename] = options
         dispatch({ type: LABEL_DIRECTORY_FETCH_SUCCESS, directoryEntries: directories, directory: statename })
-      },
-      )
+      })
       .catch((error) => {
         dispatch({ type: LABEL_DIRECTORY_FETCH_ERROR, error: error })
       })

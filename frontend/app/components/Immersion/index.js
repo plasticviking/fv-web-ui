@@ -123,7 +123,7 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     newProps.fetchDocument(newProps.routeParams.dialect_path + '/Label Dictionary')
     if (newProps.computeDirectory.isFetching !== true && newProps.computeDirectory.success !== true) {
       newProps.fetchLabelDirectory('fv_label_categories', 'categories')
-      newProps.fetchLabelDirectory('fv_labels', 'labels')
+      newProps.fetchLabelDirectory('fv_labels', 'immersive_labels')
     }
   }
 
@@ -136,12 +136,12 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     // First map the nodes of the array to an object -> create a hash table.
     for (let i = 0, len = arr.length; i < len; i++) {
       arrElem = arr[i]
-      mappedArr[arrElem.id] = arrElem
-      mappedArr[arrElem.id].children = []
+      mappedArr[arrElem.value] = arrElem
+      mappedArr[arrElem.value].children = []
     }
 
     for (const id in mappedArr) {
-      if (mappedArr.hasOwnProperty(id)) {
+      if (Object.prototype.hasOwnProperty.call(mappedArr, id)) {
         mappedElem = mappedArr[id]
         // If the element is not at the root level, add it to its parent array of children.
         if (mappedElem.parent !== '') {
@@ -159,11 +159,9 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     return tree
   }
 
-  handleSearch = () => {
-  }
+  handleSearch = () => {}
 
-  resetSearch = () => {
-  }
+  resetSearch = () => {}
 
   // FILTERS
   initialFilterInfo = () => {
@@ -179,8 +177,7 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     this.setState({ translateFilter })
   }
 
-  clearFilter = () => {
-  }
+  clearFilter = () => {}
 
   render() {
     const { classes } = this.props
@@ -189,7 +186,7 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     const { routeParams } = this.props
     const computeDocument = ProviderHelpers.getEntry(
       this.props.computeDocument,
-      `${routeParams.dialect_path}/Label Dictionary`,
+      `${routeParams.dialect_path}/Label Dictionary`
     )
 
     const computePortal = ProviderHelpers.getEntry(this.props.computePortal, `${routeParams.dialect_path}/Portal`)
@@ -201,7 +198,7 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     const allLabels = selectn('directoryEntries.fv_labels', this.props.computeDirectory) || []
 
     const pageTitle = `${selectn('response.contextParameters.ancestry.dialect.dc:title', computePortal) ||
-    ''} Immersion Portal` // need locale key
+      ''} Immersion Portal` // need locale key
 
     const wordListView = selectn('response.uid', computeDocument) ? (
       <ImmersionListView
