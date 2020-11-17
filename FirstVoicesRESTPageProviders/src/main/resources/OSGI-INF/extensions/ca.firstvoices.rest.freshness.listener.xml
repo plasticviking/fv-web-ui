@@ -2,7 +2,7 @@
 <component name="ca.firstvoices.rest.freshness.listener" version="1.0.0">
 
   <extension target="org.nuxeo.ecm.core.event.EventServiceComponent" point="listener">
-    <listener name="dclistener" async="true" postCommit="true" priority="100"
+    <listener name="freshnessListener" async="true" postCommit="true" priority="100"
               class="ca.firstvoices.rest.freshness.listeners.DirectoryFreshnessListener">
       <event>documentCreated</event>
       <event>documentDuplicated</event>

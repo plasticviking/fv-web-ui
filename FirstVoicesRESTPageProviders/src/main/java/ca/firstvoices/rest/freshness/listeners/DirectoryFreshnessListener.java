@@ -8,6 +8,16 @@ import org.nuxeo.ecm.core.event.EventContext;
 import org.nuxeo.ecm.core.event.EventListener;
 import org.nuxeo.ecm.core.event.impl.DocumentEventContext;
 
+/**
+ * The purpose of the DirectoryFreshnessListener is to observe modification events
+ * impacting the `fv_label` and `fv_label_category` directories. When modifications to
+ * those directories occur, we want to generate a new random UUID that serves as a cache
+ * freshness tag.
+ *
+ * The specific events triggering the invalidation are mapped in the ca.firstvoices.rest
+ * .freshness.service extension.
+ */
+/
 public class DirectoryFreshnessListener implements EventListener {
 
   @Inject private DirectoryFreshnessService directoryFreshnessService;
