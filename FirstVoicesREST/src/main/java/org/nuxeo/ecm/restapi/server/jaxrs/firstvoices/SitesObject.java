@@ -1,13 +1,9 @@
 package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
-import ca.firstvoices.nuxeo.utils.EnricherUtils;
 import ca.firstvoices.rest.data.Site;
 import ca.firstvoices.rest.data.SiteList;
 import ca.firstvoices.rest.helpers.EtagHelper;
 import ca.firstvoices.rest.helpers.PageProviderHelper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -24,7 +20,6 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpHeaders;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
-import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.security.ACE;
@@ -50,7 +45,11 @@ public class SitesObject extends DefaultObject {
             pageSize,
             currentPage);
 
-    runner.runUnrestricted();
+    if (doPrivileged) {
+      runner.runUnrestricted();
+    } else {
+      runner.run();
+    }
 
     return runner.getResponse();
 
