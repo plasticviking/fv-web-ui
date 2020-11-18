@@ -63,7 +63,7 @@ export class PortalListDialects extends Component {
 
   _createTile = (tile) => {
     // Switch roles
-    const dialectRoles = selectn('contextParameters.lightportal.roles', tile)
+    const dialectRoles = selectn('roles', tile)
     const actionIcon = ProviderHelpers.isActiveRole(dialectRoles) ? (
       <span>
         <Grade />
@@ -71,7 +71,7 @@ export class PortalListDialects extends Component {
     ) : null
 
     // Dialect title
-    const title = selectn('contextParameters.lightancestry.dialect.dc:title', tile)
+    const title = selectn('title', tile)
     const logo = selectn('contextParameters.lightportal.fv-portal:logo', tile)
     const dialectCoverImage = encodeURI(UIHelpers.getThumbnail(logo, 'Medium'))
     const href = encodeURI(`/${this.props.siteTheme}${tile.path.replace('/Portal', '')}`)
@@ -126,8 +126,7 @@ export class PortalListDialects extends Component {
     })
 
     items.forEach((archive) => {
-      const archiveName =
-        selectn('contextParameters.lightancestry.dialect.fvdialect:parent_language', archive) || defaultArchiveName
+      const archiveName = selectn('parentLanguageTitle', archive) || defaultArchiveName
       if (!languages[archiveName]) {
         languages[archiveName] = []
       }
