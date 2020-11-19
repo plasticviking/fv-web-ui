@@ -4,7 +4,9 @@ import selectn from 'selectn'
 
 import classNames from 'classnames'
 
-import Pagination from 'components/Pagination'
+import ReactPaginate from 'react-paginate'
+import ChevronLeft from '@material-ui/icons/ChevronLeft'
+import ChevronRight from '@material-ui/icons/ChevronRight'
 
 import { MenuItem, Select, TextField } from '@material-ui/core'
 
@@ -44,7 +46,7 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
         currentPageIndex: 1,
       }
       ;['_onPageChange', '_onPageSizeChange', '_onGoToPage', '_getPageSizeControls'].forEach(
-        (method) => (this[method] = this[method].bind(this))
+        (method) => (this[method] = this[method].bind(this)),
       )
     }
 
@@ -55,7 +57,7 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
         Object.assign({}, this.props.fetcherParams, {
           currentPageIndex: this.state.currentPageIndex,
           pageSize: currentPageSize,
-        })
+        }),
       )
 
       this.setState({ currentPageSize: currentPageSize })
@@ -66,7 +68,7 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
         Object.assign({}, this.props.fetcherParams, {
           currentPageIndex: newPageIndex,
           pageSize: this.state.currentPageSize,
-        })
+        }),
       )
 
       this.setState({ currentPageIndex: newPageIndex })
@@ -103,12 +105,20 @@ export default function withPagination(ComposedFilter, pageSize = 10, pageRange 
 
           <div className="row PrintHide" style={{ marginTop: '15px' }}>
             <div className={classNames('col-md-7', 'col-xs-12')} style={{ paddingBottom: '15px' }}>
-              <Pagination
+              <ReactPaginate
+                activeClassName={'active'}
+                breakClassName={'pagination-page'}
+                breakLabel={<a style={{ paddingBottom: '7px' }}>...</a>}
+                containerClassName={'pagination'}
                 forcePage={this.props.fetcherParams.currentPageIndex - 1}
-                pageCount={selectn('pageCount', this.props.metadata)}
                 marginPagesDisplayed={0}
-                pageRangeDisplayed={UIHelpers.isViewSize('xs') ? 3 : 10}
+                nextLabel={<ChevronRight data-testid="pagination__next" />}
                 onPageChange={this._onPageChange}
+                pageCount={selectn('pageCount', this.props.metadata)}
+                pageLinkClassName={'pagination-page'}
+                pageRangeDisplayed={UIHelpers.isViewSize('xs') ? 3 : 10}
+                previousLabel={<ChevronLeft />}
+                subContainerClassName={'pages pagination'}
               />
             </div>
 
