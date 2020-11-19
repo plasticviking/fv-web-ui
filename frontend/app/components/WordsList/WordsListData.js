@@ -208,7 +208,7 @@ function WordsListData({ children }) {
           const href = NavigationHelpers.generateUIDPath(routeParams.siteTheme, data, 'words')
           const hrefEdit = NavigationHelpers.generateUIDEditPath(routeParams.siteTheme, data, 'words')
           const hrefEditRedirect = `${hrefEdit}?redirect=${encodeURIComponent(
-            `${window.location.pathname}${window.location.search}`
+            `${window.location.pathname}${window.location.search}`,
           )}`
           const editButton =
             isWorkspaces && hrefEdit ? (
@@ -453,8 +453,6 @@ function WordsListData({ children }) {
     listViewMode: listView.mode,
     metadata,
     navigationRouteSearch,
-    page: parseInt(routeParams.page, 10),
-    pageSize: parseInt(routeParams.pageSize, 10),
     pageTitle,
     dictionaryId,
     pushWindowPath,

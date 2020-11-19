@@ -1,9 +1,14 @@
 package ca.firstvoices.tests.mocks.services;
 
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_ALPHABET;
+import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_BOOK;
+import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_BOOKS;
+import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_BOOK_ENTRY;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CATEGORIES;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CATEGORY;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CHARACTER;
+import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CONTRIBUTOR;
+import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_CONTRIBUTORS;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_DICTIONARY;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_PHRASE;
 import static ca.firstvoices.data.schemas.DialectTypesConstants.FV_WORD;
@@ -13,8 +18,10 @@ import static ca.firstvoices.data.schemas.DomainTypesConstants.FV_LANGUAGE_FAMIL
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 import java.util.concurrent.ThreadLocalRandom;
@@ -59,6 +66,10 @@ public class MockDialectServiceImpl implements MockDialectService {
   private static int multiCount = ThreadLocalRandom.current().nextInt(0, multiChars.length);
   private static int maskCount = ThreadLocalRandom.current().nextInt(0, maskChars.length);
   private static int uniCount = ThreadLocalRandom.current().nextInt(0, uniChars.length);
+
+  private static final String TRANSLATION = "translation";
+  private static final String LANGUAGE = "language";
+  private static final String ENGLISH = "english";
 
   private static void generateRandomAlphabet() {
 
@@ -166,6 +177,9 @@ public class MockDialectServiceImpl implements MockDialectService {
     DocumentModelList phraseBooks = generateFVPhraseBooks(session, dialect.getPathAsString());
     generateFVWords(session, dialect.getPathAsString(), words, categories);
     generateFVPhrases(session, dialect.getPathAsString(), maxEntries / 2, words, phraseBooks);
+    generateFVContributors(session, dialect.getPathAsString());
+    generateFVSongs(session, dialect.getPathAsString(), 5, words);
+    generateFVStories(session, dialect.getPathAsString(), 5, words);
 
     return dialect;
 
@@ -195,6 +209,9 @@ public class MockDialectServiceImpl implements MockDialectService {
     DocumentModelList phraseBooks = generateFVPhraseBooks(session, dialect.getPathAsString());
     generateFVPhrases(session, dialect.getPathAsString(), phraseEntries, currentWords, phraseBooks);
     generateFVWords(session, dialect.getPathAsString(), currentWords, categories);
+    generateFVContributors(session, dialect.getPathAsString());
+    generateFVSongs(session, dialect.getPathAsString(), 5, currentWords);
+    generateFVStories(session, dialect.getPathAsString(), 5, currentWords);
 
     return dialect;
 
@@ -268,6 +285,10 @@ public class MockDialectServiceImpl implements MockDialectService {
         session.createDocumentModel(dialect.getPathAsString(), "Categories", FV_CATEGORIES));
     createDocument(session,
         session.createDocumentModel(dialect.getPathAsString(), "Phrase Books", FV_CATEGORIES));
+    createDocument(session,
+        session.createDocumentModel(dialect.getPathAsString(), "Contributors", FV_CONTRIBUTORS));
+    createDocument(session,
+        session.createDocumentModel(dialect.getPathAsString(), "Stories & Songs", FV_BOOKS));
 
     return dialect;
   }
@@ -386,4 +407,85 @@ public class MockDialectServiceImpl implements MockDialectService {
     return fvPhraseBooks;
   }
 
+  private DocumentModelList generateFVContributors(CoreSession session, String path) {
+    //Generate contributors
+    DocumentModelList fvContributors = new DocumentModelListImpl();
+
+    DocumentModel contributorDoc = session
+        .createDocumentModel(path + "/Contributors", "Contributor", FV_CONTRIBUTOR);
+    fvContributors.add(createDocument(session, contributorDoc));
+    return fvContributors;
+  }
+
+  private DocumentModelList generateFVSongs(CoreSession session, String path, int songEntries,
+      String[] wordsToUse) {
+    return createBook(session, path, "song", wordsToUse, songEntries);
+  }
+
+  private DocumentModelList generateFVStories(CoreSession session, String path, int storyEntries,
+      String[] wordsToUse) {
+    return createBook(session, path, "story", wordsToUse, storyEntries);
+  }
+
+  private DocumentModelList createBook(CoreSession session, String path,
+      String type, String[] wordsToUse, int numBooks) {
+    DocumentModelList fvBooks = new DocumentModelListImpl();
+    //Generate a book of specified type
+    for (int i = 0; i < numBooks; i++) {
+      String title = generateRandomPhrase(ThreadLocalRandom.current().nextInt(3, 10),
+          wordsToUse);
+
+      DocumentModel bookDoc = session
+          .createDocumentModel(path + "/Stories & Songs", title, FV_BOOK);
+      bookDoc.setPropertyValue("fvbook:type", type);
+
+      ArrayList<Map<String, String>> titleTranslation = new ArrayList<>();
+      Map<String, String> titleTranslationEntry = new HashMap<>();
+      titleTranslationEntry.put(TRANSLATION, "Title Translation to English");
+      titleTranslationEntry.put(LANGUAGE, ENGLISH);
+      titleTranslation.add(titleTranslationEntry);
+      bookDoc.setPropertyValue("fvbook:title_literal_translation", titleTranslation);
+
+      String introduction = generateRandomPhrase(ThreadLocalRandom.current().nextInt(10, 50),
+          wordsToUse);
+      bookDoc.setPropertyValue("fvbook:introduction", introduction);
+
+      ArrayList<Map<String, String>> introductionTranslation = new ArrayList<>();
+      Map<String, String> introductionTranslationEntry = new HashMap<>();
+      introductionTranslationEntry.put(TRANSLATION, "Introduction translation to English");
+      introductionTranslationEntry.put(LANGUAGE, ENGLISH);
+      introductionTranslation.add(introductionTranslationEntry);
+      bookDoc.setPropertyValue("fvbook:introduction_literal_translation", introductionTranslation);
+
+      bookDoc.setPropertyValue("fvbook:acknowledgement", "Acknowledgement");
+      String[] culturalNoteArr = {"Cultural note"};
+      bookDoc.setPropertyValue("fv:cultural_note", culturalNoteArr);
+      String[] contributorsArray = {"Contributor"};
+      bookDoc.setPropertyValue("dc:contributors", contributorsArray);
+
+      fvBooks.add(createDocument(session, bookDoc));
+
+      // generate pages within book
+      String bookPath = bookDoc.getPathAsString();
+      int numPages = ThreadLocalRandom.current().nextInt(1, 15);
+      for (int k = 0; k < numPages; k++) {
+
+        ArrayList<Map<String, String>> pageTranslation = new ArrayList<>();
+        Map<String, String> pageTranslationEntry = new HashMap<>();
+        pageTranslationEntry.put(LANGUAGE, ENGLISH);
+        pageTranslationEntry.put(TRANSLATION, "Page translation to English");
+        pageTranslation.add(pageTranslationEntry);
+
+        DocumentModelList fvPage = new DocumentModelListImpl();
+        String pageTitle = generateRandomPhrase(ThreadLocalRandom.current().nextInt(15, 130),
+            wordsToUse);
+        DocumentModel pageDoc = session
+            .createDocumentModel(bookPath, pageTitle, FV_BOOK_ENTRY);
+        pageDoc.setPropertyValue("fvbookentry:dominant_language_text", pageTranslation);
+        fvPage.add(createDocument(session, pageDoc));
+      }
+    }
+
+    return fvBooks;
+  }
 }
