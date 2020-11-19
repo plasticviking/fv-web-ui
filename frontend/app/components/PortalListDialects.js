@@ -1,32 +1,31 @@
 /*
-Copyright 2020 First People's Cultural Council
+ Copyright 2020 First People's Cultural Council
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+ http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-*/
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
-import { List } from 'immutable'
-import selectn from 'selectn'
-import DialectTile from 'components/DialectTile'
-
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+ */
 import Grade from '@material-ui/icons/Grade'
+
+import ProviderHelpers from 'common/ProviderHelpers'
+import DialectTile from 'components/DialectTile'
+import { List } from 'immutable'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
 
 // REDUX
 import { connect } from 'react-redux'
 import { pushWindowPath } from 'reducers/windowPath'
-
-import ProviderHelpers from 'common/ProviderHelpers'
-import UIHelpers from 'common/UIHelpers'
+import selectn from 'selectn'
+import NavigationHelpers from '../common/NavigationHelpers'
 
 const { oneOfType, instanceOf, array, func, object, string, bool } = PropTypes
 
@@ -72,8 +71,15 @@ export class PortalListDialects extends Component {
 
     // Dialect title
     const title = selectn('title', tile)
-    const logo = selectn('contextParameters.lightportal.fv-portal:logo', tile)
-    const dialectCoverImage = encodeURI(UIHelpers.getThumbnail(logo, 'Medium'))
+    let dialectCoverImage = 'assets/images/cover.png'
+    const logoID = selectn('logoId', tile) || null
+
+    if (logoID !== null) {
+      dialectCoverImage = `${NavigationHelpers.getBaseURL()}nxpicsfile/default/${tile.logoPath}/Thumbnail:content/`
+    }
+
+    dialectCoverImage = encodeURI(dialectCoverImage)
+
     const href = encodeURI(`/${this.props.siteTheme}${tile.path.replace('/Portal', '')}`)
     const dialectTitle = this.props.intl.searchAndReplace(title)
     const dialectDescription = tile.description ? (

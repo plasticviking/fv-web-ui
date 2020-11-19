@@ -10,17 +10,17 @@ public class Site implements Serializable {
   private final Set<String> roles;
   private final String title;
   private final String parentLanguageTitle;
-  private final String logoPath;
+  private final String logoId;
 
   public Site(
       final String path, final String uid, final Set<String> roles, final String title,
-      final String parentLanguageTitle, final String logoPath) {
+      final String parentLanguageTitle, final String logoId) {
     this.path = path;
     this.uid = uid;
     this.roles = roles;
     this.title = title;
     this.parentLanguageTitle = parentLanguageTitle;
-    this.logoPath = logoPath;
+    this.logoId = logoId;
   }
 
   public String getPath() {
@@ -43,7 +43,7 @@ public class Site implements Serializable {
     return parentLanguageTitle;
   }
 
-  public String getLogoPath() {
-    return logoPath;
+  public String getLogoId() {
+    return logoId;
   }
 }

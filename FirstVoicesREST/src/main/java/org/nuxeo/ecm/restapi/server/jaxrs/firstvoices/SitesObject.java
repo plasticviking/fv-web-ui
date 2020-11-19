@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import org.apache.http.HttpHeaders;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.security.ACE;
@@ -34,12 +35,16 @@ public class SitesObject extends DefaultObject {
   public static final String PORTALS_LIST_SECTIONS_PP = "PORTALS_LIST_SECTIONS_PP";
   public static final String PORTALS_LIST_WORKSPACES_PP = "PORTALS_LIST_WORKSPACES_PP";
 
+  /**
+   * Retrieve the PageProvider results for the given PageProvider.
+   * @param doPrivileged if the query should be run in an unrestricted session
+   * */
   private Response simplePageProviderResponse(
       HttpServletRequest request, String pageProviderName, Integer pageSize, Integer currentPage,
       boolean doPrivileged) {
 
-    ResponseGeneratingUnrestrictedSessionRunner runner =
-        new ResponseGeneratingUnrestrictedSessionRunner(ctx.getCoreSession(),
+    ResponseGeneratingQueryRunner runner =
+        new ResponseGeneratingQueryRunner(ctx.getCoreSession(),
             request,
             pageProviderName,
             pageSize,
@@ -80,7 +85,7 @@ public class SitesObject extends DefaultObject {
         false);
   }
 
-  private static class ResponseGeneratingUnrestrictedSessionRunner
+  private static class ResponseGeneratingQueryRunner
       extends UnrestrictedSessionRunner {
 
     private Response response;
@@ -94,20 +99,22 @@ public class SitesObject extends DefaultObject {
     private final Integer pageSize;
     private final Integer currentPage;
 
-    ResponseGeneratingUnrestrictedSessionRunner(
+    ResponseGeneratingQueryRunner(
         CoreSession session, HttpServletRequest request, String pageProviderName, Integer pageSize,
         Integer currentPage) {
       super(session);
+
       this.request = request;
       this.pageProviderName = pageProviderName;
       this.pageSize = pageSize;
       this.currentPage = currentPage;
-
     }
 
     @Override
+    /**
+     * When finished, getResponse() can be used to retrieve the response object
+     * */
     public void run() {
-
       List<DocumentModel> results = PageProviderHelper.getPageProviderResults(session,
           pageProviderName,
           pageSize,
@@ -134,7 +141,17 @@ public class SitesObject extends DefaultObject {
           associatedLanguageFamily = session.getProxies(new IdRef((String) dm.getProperty(
               "fvancestry",
               "family")), null).get(0);
-          logoImageId = (String) dm.getProperty("fvproxy", "proxied_logo");
+
+          DocumentModelList logoProxies = session.getProxies(
+              new IdRef((String) dm.getProperty("fv-portal", "logo")), null
+                                                            );
+
+          if (logoProxies.isEmpty()) {
+            logoImageId = null;
+          } else {
+            logoImageId = logoProxies.get(0).getId();
+          }
+
         } else {
           associatedDialect = session.getDocument(new IdRef((String) dm.getProperty(
               "fvancestry",
@@ -145,7 +162,6 @@ public class SitesObject extends DefaultObject {
           logoImageId = (String) dm.getProperty("fv-portal", "logo");
         }
 
-
         Set<String> roles = new HashSet<>();
 
         for (ACE ace : associatedDialect.getACP().getACL("local").getACEs()) {
@@ -153,15 +169,20 @@ public class SitesObject extends DefaultObject {
               .getPrincipal()
               .isMemberOf(ace.getUsername())) {
             roles.add("Member");
-            break;
+          }
+          if (SecurityConstants.READ.equals(ace.getPermission()) && session
+              .getPrincipal()
+              .isMemberOf(ace.getUsername())) {
+            roles.add("Member");
           }
         }
 
-        return new Site(associatedDialect.getPathAsString(), associatedDialect.getId(), roles,
-        (String) associatedDialect.getPropertyValue("dc:title"),
-            (String) associatedLanguageFamily.getPropertyValue(
-            "dc:title"), logoImageId
-            );
+        return new Site(associatedDialect.getPathAsString(),
+            associatedDialect.getId(),
+            roles,
+            (String) associatedDialect.getPropertyValue("dc:title"),
+            (String) associatedLanguageFamily.getPropertyValue("dc:title"),
+            logoImageId);
 
       }).collect(Collectors.toList());
       SiteList mappedResults = new SiteList(sites);
