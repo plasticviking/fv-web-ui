@@ -159,6 +159,10 @@ public class SitesObject extends DefaultObject {
             }
           }
 
+          DocumentModelList logoProxies = session.getProxies(
+              new IdRef((String) dm.getProperty("fv-portal", "logo")), null
+                                                            );
+
           String logoId = (String) dm.getProperty("fv-portal", "logo");
           if (logoId != null) {
             DocumentModelList proxies = session.getProxies(new IdRef(logoId), null);
@@ -213,4 +217,3 @@ public class SitesObject extends DefaultObject {
   }
 
 }
-
