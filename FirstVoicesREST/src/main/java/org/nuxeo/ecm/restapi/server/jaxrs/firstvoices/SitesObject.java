@@ -130,9 +130,10 @@ public class SitesObject extends DefaultObject {
       }
 
       List<Site> sites = results.stream().map(dm -> {
-        String logoImageId;
+        String logoImageId = null;
         DocumentModel associatedDialect = null;
         DocumentModel associatedLanguageFamily = null;
+        DocumentModel associatedLogo = null;
 
         if (dm.isProxy()) {
 
@@ -151,21 +152,20 @@ public class SitesObject extends DefaultObject {
               "fvancestry",
               "family");
 
-          if (ancestryID != null) {
-            DocumentModelList proxies = session.getProxies(new IdRef(ancestryID), null);
+          if (associatedLanguageFamilyID != null) {
+            DocumentModelList proxies = session.getProxies(new IdRef(associatedLanguageFamilyID), null);
             if (!proxies.isEmpty()) {
               associatedLanguageFamily = proxies.get(0);
             }
           }
 
-          DocumentModelList logoProxies = session.getProxies(
-              new IdRef((String) dm.getProperty("fv-portal", "logo")), null
-                                                            );
-
-          if (logoProxies.isEmpty()) {
-            logoImageId = null;
-          } else {
-            logoImageId = logoProxies.get(0).getId();
+          String logoId = (String) dm.getProperty("fv-portal", "logo");
+          if (logoId != null) {
+            DocumentModelList proxies = session.getProxies(new IdRef(logoId), null);
+            if (!proxies.isEmpty()) {
+              associatedLogo = proxies.get(0);
+              logoImageId = associatedLogo.getId();
+            }
           }
 
         } else {
@@ -213,3 +213,4 @@ public class SitesObject extends DefaultObject {
   }
 
 }
+
