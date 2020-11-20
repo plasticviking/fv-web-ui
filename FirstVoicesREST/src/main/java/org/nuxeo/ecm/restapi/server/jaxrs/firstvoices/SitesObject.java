@@ -137,9 +137,7 @@ public class SitesObject extends DefaultObject {
 
         if (dm.isProxy()) {
 
-          String ancestryID = (String) dm.getProperty(
-              "fvancestry",
-              "dialect");
+          String ancestryID = (String) dm.getProperty("fvancestry", "dialect");
 
           if (ancestryID != null) {
             DocumentModelList proxies = session.getProxies(new IdRef(ancestryID), null);
@@ -148,9 +146,7 @@ public class SitesObject extends DefaultObject {
             }
           }
 
-          String associatedLanguageFamilyID = (String) dm.getProperty(
-              "fvancestry",
-              "family");
+          String associatedLanguageFamilyID = (String) dm.getProperty("fvancestry", "family");
 
           if (associatedLanguageFamilyID != null) {
             DocumentModelList proxies = session.getProxies(new IdRef(associatedLanguageFamilyID),
@@ -171,21 +167,23 @@ public class SitesObject extends DefaultObject {
 
         } else {
           associatedDialect = session.getDocument(new IdRef((String) dm.getProperty(
-              "fvancestry",
-              "dialect")));
+              "fvancestry", "dialect")));
           associatedLanguageFamily = session.getDocument(new IdRef((String) dm.getProperty(
-              "fvancestry",
-              "family")));
+              "fvancestry", "family")));
           logoImageId = (String) dm.getProperty("fv-portal", "logo");
         }
 
         Set<String> roles = new HashSet<>();
 
-        for (ACE ace : associatedDialect.getACP().getACL("local").getACEs()) {
-          if (SecurityConstants.READ.equals(ace.getPermission()) && session
-              .getPrincipal()
-              .isMemberOf(ace.getUsername())) {
-            roles.add("Member");
+        if (associatedDialect != null && associatedDialect.getACP() != null
+            && associatedDialect.getACP().getACL("local") != null) {
+          for (ACE ace : associatedDialect.getACP().getACL("local").getACEs()) {
+            if (SecurityConstants.READ.equals(ace.getPermission())) {
+              if (session.getPrincipal() != null
+                  && session.getPrincipal().isMemberOf(ace.getUsername())) {
+                roles.add("Member");
+              }
+            }
           }
         }
 
