@@ -187,16 +187,23 @@ public class SitesObject extends DefaultObject {
           }
         }
 
-        return new Site(associatedDialect.getPathAsString(),
-            associatedDialect.getId(),
-            roles,
-            (associatedDialect != null ? (String) associatedDialect.getPropertyValue("dc:title")
-                : null),
-            (associatedLanguageFamily != null ? (String) associatedLanguageFamily.getPropertyValue(
-                "dc:title") : null),
-            logoImageId);
+        if (associatedDialect != null) {
 
-      }).collect(Collectors.toList());
+          return new Site(
+              associatedDialect.getPathAsString(),
+              associatedDialect.getId(),
+              roles,
+              (associatedDialect != null
+                  ? (String) associatedDialect.getPropertyValue("dc:title") : null),
+              (associatedLanguageFamily != null
+                  ? (String) associatedLanguageFamily.getPropertyValue("dc:title")
+                  : null),
+              logoImageId);
+        } else {
+          return null;
+        }
+
+      }).filter(d -> d != null).collect(Collectors.toList());
       SiteList mappedResults = new SiteList(sites);
 
       Response.ResponseBuilder responseBuilder = Response.ok().entity(mappedResults).cacheControl(
