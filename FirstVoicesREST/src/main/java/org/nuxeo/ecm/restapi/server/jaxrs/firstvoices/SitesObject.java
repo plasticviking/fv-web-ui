@@ -175,10 +175,12 @@ public class SitesObject extends DefaultObject {
 
         Set<String> roles = new HashSet<>();
 
-        if (associatedDialect != null && associatedDialect.getACP() != null && associatedDialect.getACP().getACL("local") != null) {
+        if (associatedDialect != null && associatedDialect.getACP() != null &&
+            associatedDialect.getACP().getACL("local") != null) {
           for (ACE ace : associatedDialect.getACP().getACL("local").getACEs()) {
             if (SecurityConstants.READ.equals(ace.getPermission())) {
-              if (session.getPrincipal() != null && session.getPrincipal().isMemberOf(ace.getUsername())) {
+              if (session.getPrincipal() != null &&
+                  session.getPrincipal().isMemberOf(ace.getUsername())) {
                 roles.add("Member");
               }
             }
