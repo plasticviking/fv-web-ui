@@ -95,18 +95,18 @@ function KidsPhrasesByPhrasebookData({ children }) {
   const _items = selectn('response.entries', computedPhrases)
   const items = _items
     ? _items.map((item) => {
-        const _audio = selectn(['contextParameters', 'phrase', 'related_audio', 0, 'path'], item)
-        return {
-          title: item.title,
-          href: `/${appendPathArrayAfterLandmark({
-            pathArray: ['phrases', item.uid],
-            splitWindowPath,
-            landmarkArray: ['learn'],
-          })}`,
-          audio: _audio ? `${NavigationHelpers.getBaseURL()}${_audio}` : undefined,
-          image: selectn(['contextParameters', 'phrase', 'related_pictures', 0, 'views', 1, 'url'], item),
-        }
-      })
+      const _audio = selectn(['contextParameters', 'phrase', 'related_audio', 0, 'path'], item)
+      return {
+        title: item.title,
+        href: `/${appendPathArrayAfterLandmark({
+          pathArray: ['phrases', item.uid],
+          splitWindowPath,
+          landmarkArray: ['learn'],
+        })}`,
+        audio: _audio ? `${NavigationHelpers.getBaseURL()}${_audio}` : undefined,
+        image: selectn(['contextParameters', 'phrase', 'related_pictures', 0, 'views', 1, 'url'], item),
+      }
+    })
     : undefined
 
   // Send out to children

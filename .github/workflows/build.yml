@@ -48,6 +48,7 @@ jobs:
           backend_files: |
             FirstVoices*/**
             FV*/**
+            modules/**
             pom.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

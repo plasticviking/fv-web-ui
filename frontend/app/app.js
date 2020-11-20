@@ -51,14 +51,14 @@ render(
   <Provider store={store}>
     <Login />
   </Provider>,
-  document.getElementById('login')
+  document.getElementById('login'),
 )
 
 render(
   <Provider store={store}>
     <AppWrapper {...context} />
   </Provider>,
-  document.getElementById('app-wrapper')
+  document.getElementById('app-wrapper'),
 )
 
 /*window.addEventListener("unhandledrejection", function(err, promise) {

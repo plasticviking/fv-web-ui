@@ -42,7 +42,7 @@ export default {
       rows.push(
         <li className={classNameListItem} key={i}>
           {extractDatum(entry, i)}
-        </li>
+        </li>,
       )
     })
 
@@ -62,7 +62,7 @@ export default {
         <span key={`generateDelimitedDatumFromDataset${i}`}>
           {i > 0 ? delimiter : ''}
           <span className={classNameText}>{extractDatum(entry, i)}</span>
-        </span>
+        </span>,
       )
     })
 

@@ -103,7 +103,7 @@ export default function withFilter(ComposedFilter, DefaultFetcherParams) {
             }
 
             return field
-          }.bind(this)
+          }.bind(this),
         )
 
         options = options.set('fields', fields)
@@ -198,7 +198,7 @@ export default function withFilter(ComposedFilter, DefaultFetcherParams) {
             currentPageIndex: 1,
             filters: preparedFilters,
           }),
-          isReset ? {} : filters
+          isReset ? {} : filters,
         )
       }
     }

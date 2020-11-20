@@ -67,7 +67,7 @@ export default {
       '/' +
         arrayPopImmutable(currentPathArray)
           .concat(forwardPathArray)
-          .join('/')
+          .join('/'),
     )
   },
   // Navigate forward, replacing the current page within the URL
@@ -76,7 +76,7 @@ export default {
       '/' +
         arrayPopImmutable(currentPathArray, forwardPathArray.length)
           .concat(forwardPathArray)
-          .join('/')
+          .join('/'),
     )
   },
   // Navigate forward by appending the forward path
@@ -338,7 +338,7 @@ export const updateUrlIfPageOrPageSizeIsDifferent = ({
         '/' +
           arrayPopImmutable(splitWindowPath, [pageSizeNum, pageNum].length)
             .concat([pageSizeNum, pageNum])
-            .join('/')
+            .join('/'),
       )
     } else {
       // When no pagination, append to url

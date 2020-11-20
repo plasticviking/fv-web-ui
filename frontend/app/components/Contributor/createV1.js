@@ -102,7 +102,7 @@ export class PageDialectContributorsCreate extends Component {
       selectn('success', ProviderHelpers.getEntry(nextProps.computeContributor, this.state.contributorPath))
     ) {
       this.props.onDocumentCreated(
-        ProviderHelpers.getEntry(nextProps.computeContributor, this.state.contributorPath).response
+        ProviderHelpers.getEntry(nextProps.computeContributor, this.state.contributorPath).response,
       )
     }
   }
@@ -156,7 +156,7 @@ export class PageDialectContributorsCreate extends Component {
           properties: properties,
         },
         null,
-        now
+        now,
       )
 
       this.setState({
@@ -184,7 +184,7 @@ export class PageDialectContributorsCreate extends Component {
           {intl.trans(
             'views.pages.explore.dialect.contributors.add_new_contributor_to_x',
             'Add New Contributor to ' + dialect.get('dc:title'),
-            'first'
+            'first',
           )}
         </h1>
 

@@ -186,7 +186,7 @@ class PageDialectImmersionList extends PageDialectLearnBase {
     const { routeParams } = this.props
     const computeDocument = ProviderHelpers.getEntry(
       this.props.computeDocument,
-      `${routeParams.dialect_path}/Label Dictionary`
+      `${routeParams.dialect_path}/Label Dictionary`,
     )
 
     const computePortal = ProviderHelpers.getEntry(this.props.computePortal, `${routeParams.dialect_path}/Portal`)

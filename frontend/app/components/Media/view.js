@@ -155,7 +155,7 @@ export class MediaView extends Component {
           ' AND ' +
           ProviderHelpers.switchWorkspaceSectionKeys(
             this._getMediaRelatedField(selectn('response.type', computeResource)),
-            this.props.routeParams.area
+            this.props.routeParams.area,
           ) +
           " = '" +
           selectn('response.uid', computeResource) +
@@ -239,7 +239,7 @@ export class MediaView extends Component {
                                   <List
                                     subheader={this.props.intl.trans(
                                       'views.pages.explore.dialect.media.available_renditions',
-                                      'Available Renditions'
+                                      'Available Renditions',
                                     )}
                                     component="div"
                                   >
@@ -368,8 +368,8 @@ export class MediaView extends Component {
       null,
       this.props.intl.trans(
         'views.pages.explore.dialect.media.resource_published_success',
-        'Resource published successfully!'
-      )
+        'Resource published successfully!',
+      ),
     )
   }
 

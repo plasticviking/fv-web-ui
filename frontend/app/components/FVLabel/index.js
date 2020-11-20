@@ -47,7 +47,7 @@ function FVLabel({
     params,
     prepend,
     append,
-    forceLocale
+    forceLocale,
   )
   const isAdmin = (selectn('response.contextParameters.permissions', actualDialect) || []).includes('Write')
 

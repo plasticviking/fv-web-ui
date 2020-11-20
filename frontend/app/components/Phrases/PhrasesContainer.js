@@ -74,7 +74,7 @@ function PhrasesContainer() {
                                 title={intl.trans(
                                   'views.pages.explore.dialect.learn.phrases.browse_by_phrase_books',
                                   'Browse Phrasebooks',
-                                  'phrases'
+                                  'phrases',
                                 )}
                                 listItemData={listItemData}
                               />

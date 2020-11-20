@@ -346,7 +346,7 @@ export class AppFrontController extends Component {
             if (nuxeoPath.length >= languageFamilyPathLocation) {
               routeParams.language_family_name = decodeURI(nuxeoPath[languageFamilyPathLocation])
               routeParams.language_family_path = decodeURI(
-                '/' + nuxeoPath.slice(0, languageFamilyPathLocation + 1).join('/')
+                '/' + nuxeoPath.slice(0, languageFamilyPathLocation + 1).join('/'),
               )
             }
           }
@@ -378,9 +378,9 @@ export class AppFrontController extends Component {
                       return props.replaceWindowPath(value.get('target')({ props: props }))
                     },
                   },
-                  matchedPage.get('page')
-                )
-              )
+                  matchedPage.get('page'),
+                ),
+              ),
             )
 
             return false

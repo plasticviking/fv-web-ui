@@ -197,7 +197,7 @@ class ImmersionListView extends Component {
         new Map({
           id: routeParams.dialect_path,
           entity: computeDialect2,
-        })
+        }),
       )
     }
 

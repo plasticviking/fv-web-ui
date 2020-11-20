@@ -80,8 +80,8 @@ export class BrowseComponent extends Component {
     const providedTitleFilter = selectn('otherContext.providedFilter', this.props.dialect)
     const appliedParams = providedTitleFilter
       ? Object.assign({}, DefaultFetcherParams, {
-          filters: { 'properties.dc:title': { appliedFilter: providedTitleFilter } },
-        })
+        filters: { 'properties.dc:title': { appliedFilter: providedTitleFilter } },
+      })
       : DefaultFetcherParams
 
     this.state = {
@@ -148,7 +148,7 @@ export class BrowseComponent extends Component {
           'select_contributors_from_x_dialect',
           'Select contributors from ' + selectn('properties.dc:title', dialect) + ' dialect',
           'first',
-          [selectn('properties.dc:title', dialect)]
+          [selectn('properties.dc:title', dialect)],
         )}:`
         // Note: ContributorsListView sets DictionaryList props (eg: hasSorting, rowClickhandler, etc)
         view = (
@@ -169,7 +169,7 @@ export class BrowseComponent extends Component {
           'select_links_from_x_dialect',
           'Select links from ' + selectn('properties.dc:title', dialect) + ' dialect',
           'first',
-          [selectn('properties.dc:title', dialect)]
+          [selectn('properties.dc:title', dialect)],
         )}:`
         // Note: LinksListView has a rowClickHandler that checks for a props.action fn()
         view = (
@@ -192,7 +192,7 @@ export class BrowseComponent extends Component {
           'select_existing_words_from_x_dialect',
           'Select existing words from ' + selectn('properties.dc:title', dialect) + ' dialect',
           'first',
-          [selectn('properties.dc:title', dialect)]
+          [selectn('properties.dc:title', dialect)],
         )}:`
         view = (
           <WordsListView

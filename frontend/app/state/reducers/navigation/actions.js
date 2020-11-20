@@ -30,7 +30,7 @@ export const loadGuide = (currentPage, pageMatch) => {
       '/FV/Workspaces/SharedData/Guides',
       'FVGuide',
       " AND fvguide:pageMatch LIKE '/" + currentPageArray.join('/') + "/'",
-      { 'enrichers.document': '' }
+      { 'enrichers.document': '' },
     )
       .then((response) => {
         dispatch({ type: LOAD_GUIDE_SUCCESS, document: response, page: pageMatch })
@@ -49,7 +49,7 @@ export const loadNavigation = () => {
       '/FV/sections/Site/Resources',
       'FVPage',
       ' AND fvpage:primary_navigation = 1',
-      { headers: { properties: 'dublincore,fvpage' } }
+      { headers: { properties: 'dublincore,fvpage' } },
     )
       .then((response) => {
         dispatch({ type: LOAD_NAVIGATION_SUCCESS, document: response })
@@ -87,7 +87,7 @@ export const setRouteParams = (
     matchedPage: undefined,
     matchedRouteParams: undefined,
     search: {},
-  }
+  },
 ) => {
   return {
     type: SET_ROUTE_PARAMS,

@@ -67,8 +67,8 @@ function SearchDictionaryData({ children }) {
       searchDocuments(
         getQueryPath(),
         `AND ecm:primaryType IN ('${currentFilter}') AND ( ecm:fulltext_dictionary_all_field = '${_searchTerm}' OR /*+ES: OPERATOR(fuzzy) */ fv:definitions/*/translation ILIKE '${_searchTerm}' OR /*+ES: OPERATOR(fuzzy) */ dc:title ILIKE '${_searchTerm}' )&currentPageIndex=${Number(
-          page
-        ) - 1}&pageSize=${pageSize}&sortBy=ecm:fulltextScore`
+          page,
+        ) - 1}&pageSize=${pageSize}&sortBy=ecm:fulltextScore`,
       )
     }
   }
@@ -115,7 +115,7 @@ function SearchDictionaryData({ children }) {
           formattedEntry.href = NavigationHelpers.generateUIDPath(
             routeParams.siteTheme,
             entry,
-            StringHelpers.makePlural(entry.properties['fvbook:type'])
+            StringHelpers.makePlural(entry.properties['fvbook:type']),
           )
           formattedEntry.translations = selectn('properties.fvbook:title_literal_translation', entry)
           _formattedData.push(formattedEntry)
@@ -135,8 +135,8 @@ function SearchDictionaryData({ children }) {
     if (newSearchValue && newSearchValue !== '') {
       navigate(
         `${window.location.pathname}?${getSearchObjectAsUrlQuery(
-          Object.assign({}, getSearchObject(), { query: newSearchValue })
-        )}`
+          Object.assign({}, getSearchObject(), { query: newSearchValue }),
+        )}`,
       )
     }
   }
@@ -147,7 +147,7 @@ function SearchDictionaryData({ children }) {
 
   const changePagination = (pagePageSize) => {
     navigate(
-      `${window.location.pathname}?${getSearchObjectAsUrlQuery(Object.assign({}, getSearchObject(), pagePageSize))}`
+      `${window.location.pathname}?${getSearchObjectAsUrlQuery(Object.assign({}, getSearchObject(), pagePageSize))}`,
     )
   }
 

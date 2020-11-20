@@ -207,7 +207,7 @@ function PhrasesListData({ children }) {
           const href = NavigationHelpers.generateUIDPath(routeParams.siteTheme, data, 'phrases')
           const hrefEdit = NavigationHelpers.generateUIDEditPath(routeParams.siteTheme, data, 'phrases')
           const hrefEditRedirect = `${hrefEdit}?redirect=${encodeURIComponent(
-            `${window.location.pathname}${window.location.search}`
+            `${window.location.pathname}${window.location.search}`,
           )}`
           const editButton =
             isWorkspaces && hrefEdit ? (
