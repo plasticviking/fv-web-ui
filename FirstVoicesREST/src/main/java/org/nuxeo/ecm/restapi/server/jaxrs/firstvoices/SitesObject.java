@@ -166,21 +166,21 @@ public class SitesObject extends DefaultObject {
           }
 
         } else {
-          associatedDialect = session.getDocument(new IdRef((String) dm.getProperty("fvancestry",
-              "dialect")));
-          associatedLanguageFamily = session.getDocument(new IdRef((String) dm.getProperty("fvancestry",
-              "family")));
+          associatedDialect = session.getDocument(new IdRef((String) dm.getProperty(
+              "fvancestry", "dialect")));
+          associatedLanguageFamily = session.getDocument(new IdRef((String) dm.getProperty(
+              "fvancestry", "family")));
           logoImageId = (String) dm.getProperty("fv-portal", "logo");
         }
 
         Set<String> roles = new HashSet<>();
 
-        if (associatedDialect != null && associatedDialect.getACP() != null &&
-            associatedDialect.getACP().getACL("local") != null) {
+        if (associatedDialect != null && associatedDialect.getACP() != null
+            && associatedDialect.getACP().getACL("local") != null) {
           for (ACE ace : associatedDialect.getACP().getACL("local").getACEs()) {
             if (SecurityConstants.READ.equals(ace.getPermission())) {
-              if (session.getPrincipal() != null &&
-                  session.getPrincipal().isMemberOf(ace.getUsername())) {
+              if (session.getPrincipal() != null
+                  && session.getPrincipal().isMemberOf(ace.getUsername())) {
                 roles.add("Member");
               }
             }
