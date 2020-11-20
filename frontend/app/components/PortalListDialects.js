@@ -75,7 +75,7 @@ export class PortalListDialects extends Component {
     const logoID = selectn('logoId', tile) || null
 
     if (logoID !== null) {
-      dialectCoverImage = `${NavigationHelpers.getBaseURL()}nxpicsfile/default/${tile.logoPath}/Thumbnail:content/`
+      dialectCoverImage = `${NavigationHelpers.getBaseURL()}nxpicsfile/default/${tile.logoId}/Thumbnail:content/`
     }
 
     dialectCoverImage = encodeURI(dialectCoverImage)
