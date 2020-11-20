@@ -98,14 +98,14 @@ export class ExploreDialect extends Component {
         this.props.intl.trans(
           'views.pages.explore.dialect.fetching_community_portal',
           'Fetching community portal.',
-          'first'
+          'first',
         ),
         null,
         this.props.intl.trans(
           'views.pages.explore.dialect.problem_fetching_portal',
           'Problem fetching community portal it may be unpublished or offline.',
-          'first'
-        )
+          'first',
+        ),
       )
     }
   }
@@ -152,8 +152,8 @@ export class ExploreDialect extends Component {
         'first',
         [],
         null,
-        '!'
-      )
+        '!',
+      ),
     )
   }
 
@@ -161,7 +161,7 @@ export class ExploreDialect extends Component {
     NavigationHelpers.navigate(
       NavigationHelpers.generateUIDPath(this.props.routeParams.siteTheme, selectn('properties', item), 'words'),
       this.props.pushWindowPath,
-      true
+      true,
     )
   }
 
@@ -181,7 +181,7 @@ export class ExploreDialect extends Component {
 
     let computePortal = ProviderHelpers.getEntry(
       this.props.computePortal,
-      this.props.routeParams.dialect_path + '/Portal'
+      this.props.routeParams.dialect_path + '/Portal',
     )
 
     const isSection = this.props.routeParams.area === SECTIONS
@@ -446,7 +446,7 @@ export class ExploreDialect extends Component {
               <div className={classNames('col-xs-12')}>
                 <TextHeader
                   tag="h2"
-                  title={this.props.intl.trans('views.pages.explore.dialect.about', 'REGION DATA', 'upper')}
+                  title={this.props.intl.trans('views.pages.explore.dialect.region_data', 'REGION DATA', 'upper')}
                   properties={this.props.properties}
                 />
 

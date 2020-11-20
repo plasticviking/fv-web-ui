@@ -116,7 +116,7 @@ const HelperModeToggle = ({
               {!isInHelpMode && (
                 <>
                   <LiveHelpIcon />
-                  Enable Helper Mode
+                  Activate Translation Helper
                 </>
               )}
               {isInHelpMode && (

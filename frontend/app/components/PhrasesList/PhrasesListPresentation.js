@@ -28,16 +28,18 @@ import FVButton from 'components/FVButton'
 import FVLabel from 'components/FVLabel'
 import {
   dictionaryListSmallScreenColumnDataTemplate,
-  dictionaryListSmallScreenTemplateWords,
+  dictionaryListSmallScreenTemplatePhrases,
 } from 'components/DictionaryList/DictionaryListSmallScreen'
-import { getSearchObject } from 'common/NavigationHelpers'
 import AuthorizationFilter from 'components/AuthorizationFilter'
 const SearchDialect = React.lazy(() => import('components/SearchDialect'))
 const FlashcardList = React.lazy(() => import('components/FlashcardList'))
 const DictionaryListSmallScreen = React.lazy(() => import('components/DictionaryList/DictionaryListSmallScreen'))
 const DictionaryListLargeScreen = React.lazy(() => import('components/DictionaryList/DictionaryListLargeScreen'))
 const ExportDialect = React.lazy(() => import('components/ExportDialect'))
-import '!style-loader!css-loader!./WordsList.css'
+
+import { getSearchObject } from 'common/NavigationHelpers'
+
+import '!style-loader!css-loader!./PhrasesList.css'
 import '!style-loader!css-loader!components/DictionaryList/DictionaryList.css'
 
 // ===============================================================
@@ -49,7 +51,7 @@ const VIEWMODE_SMALL_SCREEN = 2
 const VIEWMODE_LARGE_SCREEN = 3
 
 /**
- * @summary WordsListData
+ * @summary PhrasesListData
  * @version 1.0.1
  * @component
  *
@@ -58,7 +60,7 @@ const VIEWMODE_LARGE_SCREEN = 3
  *
  */
 
-function WordsListPresentation(props) {
+function PhrasesListPresentation(props) {
   const intl = IntlService.instance
   const DefaultFetcherParams = { currentPageIndex: 1, pageSize: 10, sortBy: 'fv:custom_order', sortOrder: 'asc' }
   let columnsEnhanced = [...props.columns]
@@ -112,7 +114,7 @@ function WordsListPresentation(props) {
   const noResults =
     selectn('length', props.items) === 0 ? (
       <div
-        className={'WordsList WordsList--noData'}
+        className={'PhrasesList PhrasesList--noData'}
         dangerouslySetInnerHTML={{
           __html: intl.translate({
             key: 'no_results_found_dictionary',
@@ -135,7 +137,7 @@ function WordsListPresentation(props) {
           hasExportDialect: props.hasExportDialect,
            */
     // View mode
-    clickHandlerViewMode: props.wordsListClickHandlerViewMode,
+    clickHandlerViewMode: props.clickHandlerViewMode,
     dictionaryListViewMode: props.dictionaryListViewMode,
     hasViewModeButtons: props.hasViewModeButtons,
   }
@@ -153,7 +155,7 @@ function WordsListPresentation(props) {
       // --------------------
       columns: columnsEnhanced,
       items: props.items,
-      dictionaryListSmallScreenTemplate: dictionaryListSmallScreenTemplateWords,
+      dictionaryListSmallScreenTemplate: dictionaryListSmallScreenTemplatePhrases,
     },
     hasPagination: props.hasPagination,
     pageSize: DefaultFetcherParams.pageSize,
@@ -182,7 +184,7 @@ function WordsListPresentation(props) {
     <Suspense fallback={<div>Loading...</div>}>
       <div>
         <h1 className="DialectPageTitle">{props.pageTitle}</h1>
-        <div id="CreateNewWord" className="text-right">
+        <div id="CreateNewEntry" className="text-right">
           <AuthorizationFilter filter={props.filter} hideFromSections routeParams={props.routeParams}>
             <button
               type="button"
@@ -192,9 +194,9 @@ function WordsListPresentation(props) {
               className="PrintHide buttonRaised"
             >
               <FVLabel
-                transKey="views.pages.explore.dialect.learn.words.create_new_word"
-                defaultStr="Create New Word"
-                transform="words"
+                transKey="views.pages.explore.dialect.learn.phrases.create_new_phrase"
+                defaultStr="Create New Phrase"
+                transform="phrases"
               />
             </button>
           </AuthorizationFilter>
@@ -304,7 +306,7 @@ function generateListButtons({
         <FVButton
           variant="contained"
           color="primary"
-          className="WordsList__viewModeButton"
+          className="PhrasesList__viewModeButton"
           onClick={() => {
             clickHandlerViewMode(VIEWMODE_DEFAULT)
           }}
@@ -314,7 +316,7 @@ function generateListButtons({
       ) : (
         <FVButton
           variant="contained"
-          className="WordsList__viewModeButton"
+          className="PhrasesList__viewModeButton"
           onClick={() => {
             clickHandlerViewMode(VIEWMODE_FLASHCARD)
           }}
@@ -337,7 +339,7 @@ function generateListButtons({
   }
 
   return (
-    <div className="WordsList__ListButtonsGroup">
+    <div className="PhrasesList__ListButtonsGroup">
       {buttonFlashcard}
       {exportDialect}
     </div>
@@ -355,7 +357,7 @@ function generateSortTitleLargeSmall({ columns = [], pageSize, sortOrder, sortBy
           return (
             <button
               type="button"
-              className="WordsList__colSort"
+              className="PhrasesList__colSort"
               onClick={() => {
                 sortCol({
                   newSortBy: column.sortBy,
@@ -463,7 +465,7 @@ function getListLargeScreen({ dictionaryListLargeScreenProps = {}, hasPagination
 // ===============================================================
 
 const { array, bool, func, instanceOf, number, object, oneOfType, string } = PropTypes
-WordsListPresentation.propTypes = {
+PhrasesListPresentation.propTypes = {
   // Pagination
   fetcher: func, // TODO
   fetcherParams: object, // NOTE: object of paging data: currentPageIndex, pageSize, filters
@@ -476,19 +478,18 @@ WordsListPresentation.propTypes = {
   exportDialectLabel: string,
   exportDialectQuery: string,
   dialect: object, // NOTE: used to determine permissions with export dialect
-  // Misc WordsList
+  // Misc PhrasesList
   columns: array.isRequired, // NOTE: Important prop. Defines table headers and how cells are rendered.
   dialectClassName: string,
   filter: object,
   handleCreateClick: func,
-  smallScreenTemplate: func, // NOTE: Overides generic template/layout used by DictionaryListSmallScreen
-  wordsListClickHandlerViewMode: func, // NOTE: event handler for clicks on view mode buttons (eg: Flashcard)
+  clickHandlerViewMode: func, // NOTE: event handler for clicks on view mode buttons (eg: Flashcard)
   dictionaryListViewMode: number, // NOTE: can force a specific view mode with this prop (eg: always in VIEWMODE_LARGE_SCREEN)
   hasSorting: bool, // NOTE: can explicitly disable sorting if needed. EG: since we are reusing components, sometimes the `columns` prop will have a sort property within the data but where you are reusing the component it doesn't make sense to sort, `hasSorting={false}` would help you.
   hasViewModeButtons: bool, // NOTE: Toggles all of the view mode buttons (currently there is only Flashcard but there used to be more options)
   items: oneOfType([array, instanceOf(List)]), // NOTE: Important prop. Primary source of data (filteredItems is also used!)
   pageTitle: string,
-  rowClickHandler: func, // NOTE: this list view is used in the browse mode where you can select items to add to other documents (eg: add a contributor to a word). This is the event handler for that action
+  rowClickHandler: func, // NOTE: this list view is used in the browse mode where you can select items to add to other documents (eg: add a contributor to a phrase). This is the event handler for that action
   sortHandler: func, // NOTE: event handler for sort actions. If not defined, the url will be updated instead.
   // <SearchDialect />
   handleSearch: func, // NOTE: After <SearchDialect /> updates search data in redux, this callback is called. TODO: could drop if all components are subscribed to Redux > Search updates.
@@ -502,20 +503,20 @@ WordsListPresentation.propTypes = {
   setRouteParams: func,
 }
 
-WordsListPresentation.defaultProps = {
+PhrasesListPresentation.defaultProps = {
   // Export
   hasExportDialect: false,
-  // WordsList
+  // PhrasesList
   columns: [],
   handleCreateClick: () => {},
-  wordsListClickHandlerViewMode: () => {},
+  clickHandlerViewMode: () => {},
   // General List
   hasSorting: true,
   hasViewModeButtons: true,
   // Search
   handleSearch: () => {},
   resetSearch: () => {},
-  searchDialectDataType: 6,
+  searchDialectDataType: 5,
 }
 
-export default WordsListPresentation
+export default PhrasesListPresentation

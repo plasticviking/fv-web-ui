@@ -39,7 +39,7 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import CategoriesListView from 'components/Categories/CategoriesListView'
 import ContributorsListView from 'components/LearnBase/contributors-list-view'
 import LinksListView from 'components/LearnBase/links-list-view'
-import PhraseListView from 'components/Phrases/list-view'
+import PhraseListView from 'components/PhrasesCreateEdit/list-view'
 import WordsListView from 'components/WordsCreateEdit/list-view'
 import FVLabel from 'components/FVLabel'
 const DefaultFetcherParams = {
@@ -148,7 +148,7 @@ export class BrowseComponent extends Component {
           'select_contributors_from_x_dialect',
           'Select contributors from ' + selectn('properties.dc:title', dialect) + ' dialect',
           'first',
-          [selectn('properties.dc:title', dialect)]
+          [selectn('properties.dc:title', dialect)],
         )}:`
         // Note: ContributorsListView sets DictionaryList props (eg: hasSorting, rowClickhandler, etc)
         view = (
@@ -169,7 +169,7 @@ export class BrowseComponent extends Component {
           'select_links_from_x_dialect',
           'Select links from ' + selectn('properties.dc:title', dialect) + ' dialect',
           'first',
-          [selectn('properties.dc:title', dialect)]
+          [selectn('properties.dc:title', dialect)],
         )}:`
         // Note: LinksListView has a rowClickHandler that checks for a props.action fn()
         view = (
@@ -192,7 +192,7 @@ export class BrowseComponent extends Component {
           'select_existing_words_from_x_dialect',
           'Select existing words from ' + selectn('properties.dc:title', dialect) + ' dialect',
           'first',
-          [selectn('properties.dc:title', dialect)]
+          [selectn('properties.dc:title', dialect)],
         )}:`
         view = (
           <WordsListView

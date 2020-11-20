@@ -175,7 +175,7 @@ class SelectMediaComponent extends Component {
 
     // Bind methods to 'this'
     ;['_handleOpen', '_handleClose', '_handleSelectElement', 'fetchData'].forEach(
-      (method) => (this[method] = this[method].bind(this))
+      (method) => (this[method] = this[method].bind(this)),
     )
   }
 
@@ -220,7 +220,7 @@ class SelectMediaComponent extends Component {
 
     const FilteredPaginatedMediaList = withFilter(
       withPagination(MediaList, DefaultFetcherParams.pageSize),
-      DefaultFetcherParams
+      DefaultFetcherParams,
     )
 
     return (
@@ -233,8 +233,8 @@ class SelectMediaComponent extends Component {
             {`${this.props.intl.searchAndReplace(
               `Select existing ${fileTypeLabel} from ${selectn(
                 'properties.dc:title',
-                dialect
-              )} dialect or shared resources`
+                dialect,
+              )} dialect or shared resources`,
             )}:`}
           </DialogTitle>
           <DialogContent>
@@ -272,7 +272,7 @@ class SelectMediaComponent extends Component {
               color="secondary"
               onClick={this._handleClose}
             >
-              <FVLabel transKey="cancel" defaultStr="Cancel" transform="first" />
+              {this.props.intl.trans('cancel', 'Cancel', 'first')}
             </FVButton>
           </DialogActions>
         </Dialog>
@@ -309,7 +309,7 @@ class SelectMediaComponent extends Component {
           '&currentPageIndex=' +
           (fetcherParams.currentPageIndex - 1) +
           '&pageSize=' +
-          fetcherParams.pageSize
+          fetcherParams.pageSize,
       )
 
       this.setState({
