@@ -153,15 +153,12 @@ public class SitesObject extends DefaultObject {
               "family");
 
           if (associatedLanguageFamilyID != null) {
-            DocumentModelList proxies = session.getProxies(new IdRef(associatedLanguageFamilyID), null);
+            DocumentModelList proxies = session.getProxies(new IdRef(associatedLanguageFamilyID),
+                null);
             if (!proxies.isEmpty()) {
               associatedLanguageFamily = proxies.get(0);
             }
           }
-
-          DocumentModelList logoProxies = session.getProxies(
-              new IdRef((String) dm.getProperty("fv-portal", "logo")), null
-                                                            );
 
           String logoId = (String) dm.getProperty("fv-portal", "logo");
           if (logoId != null) {
