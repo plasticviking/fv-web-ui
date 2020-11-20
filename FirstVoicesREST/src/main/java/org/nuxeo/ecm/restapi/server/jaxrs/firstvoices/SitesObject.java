@@ -4,6 +4,7 @@ import ca.firstvoices.rest.data.Site;
 import ca.firstvoices.rest.data.SiteList;
 import ca.firstvoices.rest.helpers.EtagHelper;
 import ca.firstvoices.rest.helpers.PageProviderHelper;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -130,17 +131,32 @@ public class SitesObject extends DefaultObject {
 
       List<Site> sites = results.stream().map(dm -> {
         String logoImageId;
-        DocumentModel associatedDialect;
-        DocumentModel associatedLanguageFamily;
+        DocumentModel associatedDialect = null;
+        DocumentModel associatedLanguageFamily = null;
 
         if (dm.isProxy()) {
 
-          associatedDialect = session.getProxies(new IdRef((String) dm.getProperty(
+          String ancestryID = (String) dm.getProperty(
               "fvancestry",
-              "dialect")), null).get(0);
-          associatedLanguageFamily = session.getProxies(new IdRef((String) dm.getProperty(
+              "dialect");
+
+          if (ancestryID != null) {
+            DocumentModelList proxies = session.getProxies(new IdRef(ancestryID), null);
+            if (!proxies.isEmpty()) {
+              associatedDialect = proxies.get(0);
+            }
+          }
+
+          String associatedLanguageFamilyID = (String) dm.getProperty(
               "fvancestry",
-              "family")), null).get(0);
+              "family");
+
+          if (ancestryID != null) {
+            DocumentModelList proxies = session.getProxies(new IdRef(ancestryID), null);
+            if (!proxies.isEmpty()) {
+              associatedLanguageFamily = proxies.get(0);
+            }
+          }
 
           DocumentModelList logoProxies = session.getProxies(
               new IdRef((String) dm.getProperty("fv-portal", "logo")), null
@@ -170,18 +186,15 @@ public class SitesObject extends DefaultObject {
               .isMemberOf(ace.getUsername())) {
             roles.add("Member");
           }
-          if (SecurityConstants.READ.equals(ace.getPermission()) && session
-              .getPrincipal()
-              .isMemberOf(ace.getUsername())) {
-            roles.add("Member");
-          }
         }
 
         return new Site(associatedDialect.getPathAsString(),
             associatedDialect.getId(),
             roles,
-            (String) associatedDialect.getPropertyValue("dc:title"),
-            (String) associatedLanguageFamily.getPropertyValue("dc:title"),
+            (associatedDialect != null ? (String) associatedDialect.getPropertyValue("dc:title")
+                : null),
+            (associatedLanguageFamily != null ? (String) associatedLanguageFamily.getPropertyValue(
+                "dc:title") : null),
             logoImageId);
 
       }).collect(Collectors.toList());
