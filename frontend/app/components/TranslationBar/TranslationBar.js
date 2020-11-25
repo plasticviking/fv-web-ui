@@ -68,7 +68,7 @@ class TranslationBar extends Component {
     ProviderHelpers.fetchIfMissing(
       newProps.routeParams.dialect_path,
       this.props.fetchDialect2,
-      this.props.computeDialect2,
+      this.props.computeDialect2
     )
   }
 

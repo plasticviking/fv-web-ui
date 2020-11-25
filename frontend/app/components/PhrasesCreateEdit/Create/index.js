@@ -120,7 +120,7 @@ export class PhrasesCreate extends Component {
       NavigationHelpers.navigate(
         NavigationHelpers.generateUIDPath(this.props.routeParams.siteTheme, selectn('response', nextPhrase), 'phrases'),
         this.props.replaceWindowPath,
-        true,
+        true
       )
     }
   }
@@ -157,7 +157,7 @@ export class PhrasesCreate extends Component {
       await this.props.fetchDialect2(this.props.routeParams.dialect_path)
       const computingDialect2 = ProviderHelpers.getEntry(
         this.props.computeDialect2,
-        this.props.routeParams.dialect_path,
+        this.props.routeParams.dialect_path
       )
       if (computingDialect2.isError) {
         this.setState({
@@ -196,7 +196,7 @@ export class PhrasesCreate extends Component {
     const properties = {}
 
     for (const key in formValue) {
-      if (formValue.hasOwnProperty(key) && key) {
+      if (key && Object.prototype.hasOwnProperty.call(formValue, key)) {
         if (formValue[key] && formValue[key] !== '') {
           // Filter out null values in an array
           if (formValue[key] instanceof Array) {
@@ -225,7 +225,7 @@ export class PhrasesCreate extends Component {
           properties: properties,
         },
         null,
-        now,
+        now
       )
 
       this.setState({
@@ -249,7 +249,7 @@ export class PhrasesCreate extends Component {
     ) {
       FVPhraseOptions.fields['fv:definitions'].item.fields.language.attrs.defaultValue = selectn(
         'response.properties.fvdialect:dominant_language',
-        computeDialect2,
+        computeDialect2
       )
     }
 

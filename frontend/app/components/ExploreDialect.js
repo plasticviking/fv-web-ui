@@ -36,7 +36,7 @@ import { pushWindowPath, replaceWindowPath } from 'reducers/windowPath'
 import selectn from 'selectn'
 
 import ProviderHelpers from 'common/ProviderHelpers'
-import NavigationHelpers from 'common/NavigationHelpers'
+import NavigationHelpers, { routeHasChanged } from 'common/NavigationHelpers'
 import PromiseWrapper from 'components/PromiseWrapper'
 import EditableComponentHelper from 'components/EditableComponentHelper'
 import Header from 'components/Header'
@@ -45,7 +45,6 @@ import PageToolbar from 'components/PageToolbar'
 import GridView from 'components/LearnBase/grid-view'
 import TextHeader from 'components/Typography/text-header'
 import AuthorizationFilter from 'components/AuthorizationFilter'
-import { routeHasChanged } from 'common/NavigationHelpers'
 import Kids from 'components/Kids'
 import FVLabel from 'components/FVLabel'
 
@@ -98,14 +97,14 @@ export class ExploreDialect extends Component {
         this.props.intl.trans(
           'views.pages.explore.dialect.fetching_community_portal',
           'Fetching community portal.',
-          'first',
+          'first'
         ),
         null,
         this.props.intl.trans(
           'views.pages.explore.dialect.problem_fetching_portal',
           'Problem fetching community portal it may be unpublished or offline.',
-          'first',
-        ),
+          'first'
+        )
       )
     }
   }
@@ -152,8 +151,8 @@ export class ExploreDialect extends Component {
         'first',
         [],
         null,
-        '!',
-      ),
+        '!'
+      )
     )
   }
 
@@ -161,7 +160,7 @@ export class ExploreDialect extends Component {
     NavigationHelpers.navigate(
       NavigationHelpers.generateUIDPath(this.props.routeParams.siteTheme, selectn('properties', item), 'words'),
       this.props.pushWindowPath,
-      true,
+      true
     )
   }
 
@@ -181,7 +180,7 @@ export class ExploreDialect extends Component {
 
     let computePortal = ProviderHelpers.getEntry(
       this.props.computePortal,
-      this.props.routeParams.dialect_path + '/Portal',
+      this.props.routeParams.dialect_path + '/Portal'
     )
 
     const isSection = this.props.routeParams.area === SECTIONS

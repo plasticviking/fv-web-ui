@@ -69,7 +69,7 @@ export default class DialogCreateForm extends React.Component {
         createNewButtonLabel = intl.trans(
           'views.pages.explore.dialect.phrases.create_new_phrase',
           'Create New Phrase',
-          'words',
+          'words'
         )
         break
 
@@ -79,14 +79,14 @@ export default class DialogCreateForm extends React.Component {
           createNewButtonLabel = intl.trans(
             'views.pages.explore.dialect.phrases.create_new_phrase_book',
             'Create New Phrase Book',
-            'words',
+            'words'
           )
 
           if (this.props.value) {
             createNewButtonLabel = intl.trans(
               'views.pages.explore.dialect.phrases.edit_phrase_book',
               'Edit Phrase Book',
-              'words',
+              'words'
             )
             createForm = (
               <PageDialectPhraseBooksEdit
@@ -107,7 +107,7 @@ export default class DialogCreateForm extends React.Component {
           createNewButtonLabel = intl.trans(
             'views.pages.explore.dialect.phrases.create_new_category',
             'Create New Category',
-            'words',
+            'words'
           )
         }
         break
@@ -117,14 +117,14 @@ export default class DialogCreateForm extends React.Component {
         createNewButtonLabel = intl.trans(
           'views.pages.explore.dialect.phrases.create_new_contributor',
           'Create New Contributor',
-          'words',
+          'words'
         )
 
         if (this.props.value) {
           createNewButtonLabel = intl.trans(
             'views.pages.explore.dialect.phrases.edit_contributor',
             'Edit Contributor',
-            'words',
+            'words'
           )
           createForm = (
             <PageDialectContributorEdit

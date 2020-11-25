@@ -1,5 +1,4 @@
 import useWindowPath from 'dataSources/useWindowPath'
-import NavigationHelpers, { getNewPaginationUrl } from 'common/NavigationHelpers'
 import URLHelpers from 'common/URLHelpers'
 /**
  * @summary useNavigationHelpers
@@ -9,38 +8,43 @@ import URLHelpers from 'common/URLHelpers'
  *
  * @component
  *
- * @returns object {object} {changePagination}
- * @returns object.changePagination {function} Url is updated when changePagination({page, pageSize}) is called
  */
 function useNavigationHelpers() {
-  const { splitWindowPath, pushWindowPath, replaceWindowPath } = useWindowPath()
+  const { pushWindowPath, replaceWindowPath } = useWindowPath()
+  const navigate = (url) => {
+    // Add context path if it's defined and isn't in the url
+    const ctxPath = URLHelpers.getContextPath()
+    pushWindowPath(url.indexOf(ctxPath) === 0 ? url : `${ctxPath}${url}`)
+  }
+
   return {
-    changePagination: ({ page, pageSize }) => {
-      NavigationHelpers.navigate(getNewPaginationUrl({ splitWindowPath, page, pageSize }), pushWindowPath, false)
-    },
-    navigate: (url) => {
-      NavigationHelpers.navigate(url, pushWindowPath, false)
-    },
+    navigate,
     navigateReplace: (url) => {
-      NavigationHelpers.navigate(url, replaceWindowPath, false)
+      // Add context path if it's defined and isn't in the url
+      const ctxPath = URLHelpers.getContextPath()
+      replaceWindowPath(url.indexOf(ctxPath) === 0 ? url : `${ctxPath}${url}`)
     },
-    getSearchObject: () => {
-      if (window.location.search === '') {
-        return {}
+    getSearchAsObject: (defaultSearch = {}) => {
+      const search = {}
+      const decode = ['letter']
+      if (window.location.search !== '') {
+        const searchParams = (window.location.search || '?').replace(/^\?/, '')
+        searchParams.split('&').forEach((item) => {
+          if (item !== '' && /=/.test(item)) {
+            const propValue = item.split('=')
+            search[propValue[0]] = decode.includes(propValue[0]) ? decodeURI(propValue[1]) : propValue[1]
+          }
+        })
       }
 
-      const search = {}
-      const searchParams = (window.location.search || '?').replace(/^\?/, '')
-      searchParams.split('&').forEach((item) => {
-        if (item !== '' && /=/.test(item)) {
-          const propValue = item.split('=')
-          search[propValue[0]] = propValue[1]
-        }
-      })
-      return search
+      return Object.assign({}, defaultSearch, search)
     },
-    getBaseURL: () => {
-      return URLHelpers.getBaseURL()
+    convertObjToUrlQuery: (obj) => {
+      const urlQueryArray = []
+      for (const [key, value] of Object.entries(obj)) {
+        urlQueryArray.push(`${key}=${value}`)
+      }
+      return `${urlQueryArray.join('&')}`
     },
   }
 }

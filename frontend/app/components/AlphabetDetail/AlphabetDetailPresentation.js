@@ -104,11 +104,11 @@ function AlphabetDetailPresentation({
                     label: UIHelpers.isViewSize('xs')
                       ? intl.trans('words', 'Words', 'first')
                       : intl.trans(
-                        'views.pages.explore.dialect.learn.alphabet.words_starting_with_x',
-                        'Words Starting with ' + character,
-                        'words',
-                        [character],
-                      ),
+                          'views.pages.explore.dialect.learn.alphabet.words_starting_with_x',
+                          'Words Starting with ' + character,
+                          'words',
+                          [character]
+                        ),
                     id: 'find_words',
                     className: 'fontBCSans',
                   },
@@ -116,11 +116,11 @@ function AlphabetDetailPresentation({
                     label: UIHelpers.isViewSize('xs')
                       ? intl.trans('phrases', 'Phrases', 'first')
                       : intl.trans(
-                        'views.pages.explore.dialect.learn.alphabet.phrases_starting_with_x',
-                        'Phrases Starting with ' + character,
-                        'words',
-                        [character],
-                      ),
+                          'views.pages.explore.dialect.learn.alphabet.phrases_starting_with_x',
+                          'Phrases Starting with ' + character,
+                          'words',
+                          [character]
+                        ),
                     id: 'find_phrases',
                     className: 'fontBCSans',
                   },

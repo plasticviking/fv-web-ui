@@ -17,15 +17,11 @@ import usePortal from 'dataSources/usePortal'
 import useSearchDialect from 'dataSources/useSearchDialect'
 import useWindowPath from 'dataSources/useWindowPath'
 import useWord from 'dataSources/useWord'
+import useNavigationHelpers from 'common/useNavigationHelpers'
 
 // Helpers
 import { getDialectClassname } from 'common/Helpers'
-import NavigationHelpers, {
-  appendPathArrayAfterLandmark,
-  getSearchObject,
-  hasPagination,
-  updateUrlIfPageOrPageSizeIsDifferent,
-} from 'common/NavigationHelpers'
+import NavigationHelpers from 'common/NavigationHelpers'
 import ProviderHelpers from 'common/ProviderHelpers'
 import UIHelpers from 'common/UIHelpers'
 import { WORKSPACES } from 'common/Constants'
@@ -59,61 +55,85 @@ function WordsListData({ children }) {
   const { intl } = useIntl()
   const { listView, setListViewMode } = useListView()
   const { computeLogin } = useLogin()
-  const { routeParams, setRouteParams, navigationRouteSearch } = useRoute()
+  const { routeParams, setRouteParams } = useRoute()
   const { computePortal, fetchPortal } = usePortal()
   const { computeSearchDialect } = useSearchDialect()
-  const { pushWindowPath, splitWindowPath } = useWindowPath()
+  const { pushWindowPath } = useWindowPath()
   const { computeWords, fetchWords } = useWord()
+  const { getSearchAsObject, convertObjToUrlQuery, navigate } = useNavigationHelpers()
+  const { siteTheme, dialect_path: dialectPath, area } = routeParams
+  // const { searchNxqlQuery = '' } = computeSearchDialect
+  const {
+    category: queryCategory,
+    letter: queryLetter,
+    page: queryPage,
+    pageSize: queryPageSize,
+    sortBy: querySortBy,
+    sortOrder: querySortOrder,
+  } = getSearchAsObject({
+    category: routeParams.category,
+    page: 1,
+    pageSize: 10,
+    sortBy: 'dc:title',
+    sortOrder: 'desc',
+  })
+  const dictionaryKey = `${dialectPath}/Dictionary`
+  const portalKey = `${dialectPath}/Portal`
 
-  const { searchNxqlQuery = '' } = computeSearchDialect
-  //
-
+  // Fetch Dialect, Document, Portal
   useEffect(() => {
-    fetchData()
+    ProviderHelpers.fetchIfMissing(dialectPath, fetchDialect2, computeDialect2)
+    ProviderHelpers.fetchIfMissing(dictionaryKey, fetchDocument, computeDocument)
+    ProviderHelpers.fetchIfMissing(portalKey, fetchPortal, computePortal)
   }, [])
 
-  useEffect(() => {
-    if (curFetchDocumentAction === 'FV_DOCUMENT_FETCH_SUCCESS') {
-      fetchListViewData({ pageIndex: routeParams.page, pageSize: routeParams.pageSize })
-    }
-  }, [
-    curFetchDocumentAction,
-    routeParams.area,
-    routeParams.category,
-    routeParams.letter,
-    routeParams.page,
-    routeParams.pageSize,
-    navigationRouteSearch,
-  ])
+  // Parse Dialect
+  const computedDialect2 = ProviderHelpers.getEntry(computeDialect2, dialectPath)
+  const dialect = selectn('response', computedDialect2)
 
-  const dictionaryKey = `${routeParams.dialect_path}/Dictionary`
-  const DEFAULT_LANGUAGE = 'english'
-  const { searchNxqlSort = {} } = computeSearchDialect
-  const { DEFAULT_SORT_COL, DEFAULT_SORT_TYPE } = searchNxqlSort
-
-  const [columns] = useState(getColumns())
-
-  // Parsing computeDocument
+  // Parse Document
   const extractComputeDocument = ProviderHelpers.getEntry(computeDocument, dictionaryKey)
   const dialectUid = selectn('response.contextParameters.ancestry.dialect.uid', extractComputeDocument)
   const curFetchDocumentAction = selectn('action', extractComputeDocument)
   const dictionary = selectn('response', extractComputeDocument)
   const dictionaryId = selectn('uid', dictionary)
 
-  // Parsing computePortal
-  const extractComputePortal = ProviderHelpers.getEntry(computePortal, `${routeParams.dialect_path}/Portal`)
+  // Parse Portal
+  const extractComputePortal = ProviderHelpers.getEntry(computePortal, portalKey)
   const dialectClassName = getDialectClassname(extractComputePortal)
   const pageTitle = `${selectn('response.contextParameters.ancestry.dialect.dc:title', extractComputePortal) ||
     ''} ${intl.trans('words', 'Words', 'first')}`
 
-  // Parsing computeDialect2
-  const computedDialect2 = ProviderHelpers.getEntry(computeDialect2, routeParams.dialect_path)
-  const dialect = selectn('response', computedDialect2)
-
-  // Parsing computeWords
+  // Parse Words
   const computedWords = ProviderHelpers.getEntry(computeWords, dictionaryKey)
   const items = selectn('response.entries', computedWords)
   const metadata = selectn('response', computedWords)
+
+  useEffect(() => {
+    if (curFetchDocumentAction === 'FV_DOCUMENT_FETCH_SUCCESS') {
+      let currentAppliedFilter = ''
+      if (queryCategory) {
+        currentAppliedFilter = ` AND ${
+          area === 'Workspaces' ? 'fv-word:categories' : 'fvproxy:proxied_categories'
+        }/* IN ("${queryCategory}") &enrichment=category_children`
+      }
+      // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
+      const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
+
+      const nql = `${currentAppliedFilter}&currentPageIndex=${queryPage -
+        1}&dialectId=${dialectUid}&pageSize=${queryPageSize}&sortOrder=${querySortOrder}&sortBy=${querySortBy}${
+        queryLetter ? `&letter=${queryLetter}&starts_with_query=Document.CustomOrderQuery` : startsWithQuery
+      }`
+
+      fetchWords(dictionaryKey, nql)
+    }
+  }, [curFetchDocumentAction, area, queryCategory, queryLetter, queryPage, queryPageSize, querySortOrder, querySortBy])
+
+  const DEFAULT_LANGUAGE = 'english'
+  const { searchNxqlSort = {} } = computeSearchDialect
+  const { DEFAULT_SORT_COL, DEFAULT_SORT_TYPE } = searchNxqlSort
+
+  const [columns] = useState(getColumns())
 
   const computeEntities = Immutable.fromJS([
     {
@@ -121,74 +141,36 @@ function WordsListData({ children }) {
       entity: computeWords,
     },
   ])
-
-  const fetchData = async () => {
-    // Dialect
-    await ProviderHelpers.fetchIfMissing(routeParams.dialect_path, fetchDialect2, computeDialect2)
-    // Document
-    await ProviderHelpers.fetchIfMissing(dictionaryKey, fetchDocument, computeDocument)
-    // Portal
-    await ProviderHelpers.fetchIfMissing(`${routeParams.dialect_path}/Portal`, fetchPortal, computePortal)
-    // Words
-    fetchListViewData()
-  }
-
-  async function fetchListViewData({ pageIndex = 1, pageSize = 10, resetSearch = false } = {}) {
+  /*
+  function fetchListViewData({ category, letter, pageIndex, pageSize, sortOrder, sortBy, resetSearch}) {
     let currentAppliedFilter = ''
 
-    if (searchNxqlQuery && !resetSearch) {
+    if (searchNxqlQuery && resetSearch !== true) {
       currentAppliedFilter = ` AND ${searchNxqlQuery}`
     }
 
-    if (routeParams.category && !resetSearch) {
+    if (category && resetSearch !== true) {
       // Private
-      if (routeParams.area === 'Workspaces') {
-        currentAppliedFilter = ` AND fv-word:categories/* IN ("${routeParams.category}") &enrichment=category_children`
+      if (area === 'Workspaces') {
+        currentAppliedFilter = ` AND fv-word:categories/* IN ("${category}") &enrichment=category_children`
       }
       // Public
-      if (routeParams.area === 'sections') {
-        currentAppliedFilter = ` AND fvproxy:proxied_categories/* IN ("${routeParams.category}") &enrichment=category_children`
+      if (area === 'sections') {
+        currentAppliedFilter = ` AND fvproxy:proxied_categories/* IN ("${category}") &enrichment=category_children`
       }
     }
     // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
     const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
-    const searchObj = getSearchObject()
-    // 1st: redux values, 2nd: url search query, 3rd: defaults
-    const sortOrder = navigationRouteSearch.sortOrder || searchObj.sortOrder || DEFAULT_SORT_TYPE
-    const sortBy = navigationRouteSearch.sortBy || searchObj.sortBy || DEFAULT_SORT_COL
 
-    const nql = `${currentAppliedFilter}&currentPageIndex=${pageIndex -
-      1}&dialectId=${dialectUid}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortBy=${sortBy}${
-      routeParams.letter ? `&letter=${routeParams.letter}&starts_with_query=Document.CustomOrderQuery` : startsWithQuery
+    const nql = `${currentAppliedFilter}&currentPageIndex=${
+      pageIndex - 1
+    }&dialectId=${dialectUid}&pageSize=${pageSize}&sortOrder=${sortOrder}&sortBy=${sortBy}${
+      letter ? `&letter=${letter}&starts_with_query=Document.CustomOrderQuery` : startsWithQuery
     }`
 
     fetchWords(dictionaryKey, nql)
   }
-
-  const onNavigateRequest = (path) => {
-    if (hasPagination) {
-      NavigationHelpers.navigateForward(splitWindowPath.slice(0, splitWindowPath.length - 2), [path], pushWindowPath)
-    } else {
-      NavigationHelpers.navigateForward(splitWindowPath, [path], pushWindowPath)
-    }
-  }
-
-  const handleCreateClick = () => {
-    const url = appendPathArrayAfterLandmark({
-      pathArray: ['create'],
-      splitWindowPath: splitWindowPath,
-    })
-    if (url) {
-      NavigationHelpers.navigate(`/${url}`, pushWindowPath, false)
-    } else {
-      onNavigateRequest({
-        hasPagination,
-        path: 'create',
-        pushWindowPath,
-        splitWindowPath,
-      })
-    }
-  }
+  */
 
   // Filter for AuthorizationFilter
   const filter = {
@@ -204,11 +186,11 @@ function WordsListData({ children }) {
         title: intl.trans('word', 'Word', 'first'),
         columnDataTemplate: dictionaryListSmallScreenColumnDataTemplate.cellRender,
         render: (v, data) => {
-          const isWorkspaces = routeParams.area === WORKSPACES
-          const href = NavigationHelpers.generateUIDPath(routeParams.siteTheme, data, 'words')
-          const hrefEdit = NavigationHelpers.generateUIDEditPath(routeParams.siteTheme, data, 'words')
+          const isWorkspaces = area === WORKSPACES
+          const href = NavigationHelpers.generateUIDPath(siteTheme, data, 'words')
+          const hrefEdit = NavigationHelpers.generateUIDEditPath(siteTheme, data, 'words')
           const hrefEditRedirect = `${hrefEdit}?redirect=${encodeURIComponent(
-            `${window.location.pathname}${window.location.search}`,
+            `${window.location.pathname}${window.location.search}`
           )}`
           const editButton =
             isWorkspaces && hrefEdit ? (
@@ -230,7 +212,7 @@ function WordsListData({ children }) {
                   href={hrefEditRedirect}
                   onClick={(e) => {
                     e.preventDefault()
-                    NavigationHelpers.navigate(hrefEditRedirect, pushWindowPath, false)
+                    navigate(hrefEditRedirect)
                   }}
                 >
                   <Edit title={intl.trans('edit', 'Edit', 'first')} />
@@ -320,7 +302,7 @@ function WordsListData({ children }) {
       },
     ]
     // NOTE: Append `categories` & `state` columns if on Workspaces
-    if (routeParams.area === WORKSPACES) {
+    if (area === WORKSPACES) {
       columnsArray.push({
         name: 'fv-word:categories',
         title: intl.trans('categories', 'Categories', 'first'),
@@ -342,117 +324,68 @@ function WordsListData({ children }) {
   }
 
   function fetcher({ currentPageIndex, pageSize }) {
-    let newUrl = ''
-    if (routeParams.letter) {
-      newUrl = appendPathArrayAfterLandmark({
-        pathArray: [pageSize, currentPageIndex],
-        splitWindowPath: splitWindowPath,
-        landmarkArray: [routeParams.letter],
-      })
-    } else if (routeParams.category) {
-      newUrl = appendPathArrayAfterLandmark({
-        pathArray: [pageSize, currentPageIndex],
-        splitWindowPath: splitWindowPath,
-        landmarkArray: [routeParams.category],
-      })
-    } else {
-      newUrl = appendPathArrayAfterLandmark({
-        pathArray: [pageSize, currentPageIndex],
-        splitWindowPath: splitWindowPath,
-        landmarkArray: ['words'],
-      })
-    }
-    if (newUrl) {
-      NavigationHelpers.navigate(`/${newUrl}`, pushWindowPath)
-    }
+    navigate(
+      `${window.location.pathname}?${convertObjToUrlQuery(
+        Object.assign({}, getSearchAsObject(), { page: currentPageIndex, pageSize })
+      )}`
+    )
   }
 
-  const sortHandler = async ({ page, pageSize, sortBy, sortOrder } = {}) => {
-    await setRouteParams({
-      search: {
-        pageSize,
-        page,
-        sortBy,
-        sortOrder,
-      },
-    })
-    // Conditionally update the url after a sort event
-    updateUrlIfPageOrPageSizeIsDifferent({
-      page,
-      pageSize,
-      pushWindowPath: pushWindowPath,
-      routeParamsPage: routeParams.page,
-      routeParamsPageSize: routeParams.pageSize,
-      splitWindowPath: splitWindowPath,
-      windowLocationSearch: window.location.search, // Set only if you want to append the search
-    })
+  const sortHandler = ({ page, pageSize, sortBy, sortOrder } = {}) => {
+    navigate(
+      `${window.location.pathname}?${convertObjToUrlQuery(
+        Object.assign({}, getSearchAsObject(), { page, pageSize, sortBy, sortOrder })
+      )}`
+    )
   }
 
   const _resetSearch = () => {
-    // Remove alphabet/category filter urls
-    if (routeParams.category || routeParams.letter) {
-      let resetUrl = `/${splitWindowPath.join('/')}`
-      const _splitWindowPath = [...splitWindowPath]
-      const learnIndex = _splitWindowPath.indexOf('learn')
-      if (learnIndex !== -1) {
-        _splitWindowPath.splice(learnIndex + 2)
-        resetUrl = `/${_splitWindowPath.join('/')}`
-      }
-      NavigationHelpers.navigate(`${resetUrl}/${routeParams.pageSize}/1`, pushWindowPath, false)
-    } else {
-      // When facets change, pagination should be reset.
-      // In these pages (words/phrase), list views are controlled via URL
-      fetchListViewData({ pageIndex: routeParams.page, pageSize: routeParams.pageSize, resetSearch: true })
-      resetURLPagination()
-    }
+    const searchObj = getSearchAsObject()
+    const filterOut = ['category', 'letter', 'page', 'sortBy', 'sortOrder']
+    const filteredByKey = Object.fromEntries(
+      Object.entries(searchObj).filter(([key]) => {
+        return filterOut.includes(key) === false
+      })
+    )
+    navigate(
+      `${window.location.pathname}?${convertObjToUrlQuery(
+        Object.assign({}, filteredByKey, { page: 1, pageSize: searchObj.pageSize })
+      )}`
+    )
   }
 
-  const resetURLPagination = ({ pageSize = null, preserveSearch = false } = {}) => {
-    const urlPage = 1
-    const urlPageSize = pageSize || routeParams.pageSize || 10
-
-    const navHelperCallback = (url) => {
-      pushWindowPath(`${url}${preserveSearch ? window.location.search : ''}`)
-    }
-    const hasPaginationUrl = hasPagination(splitWindowPath)
-    if (hasPaginationUrl) {
-      // Replace them
-      NavigationHelpers.navigateForwardReplaceMultiple(splitWindowPath, [urlPageSize, urlPage], navHelperCallback)
-    } else {
-      // No pagination in url (eg: .../learn/words), append `urlPage` & `urlPageSize`
-      NavigationHelpers.navigateForward(splitWindowPath, [urlPageSize, urlPage], navHelperCallback)
-    }
+  // TODO: Will be updated over in FW-1188-search-dialect-url
+  const handleSearch = (/*{ href, updateUrl = true } = {}*/) => {
+    // console.log('handleSearch', {href, updateUrl})
+    // if (href && updateUrl) {
+    //   navigate(href)
+    // } else {
+    //   resetURLPagination({ preserveSearch: true })
+    // }
+    // // fetchListViewData({ pageIndex: queryPage, pageSize: queryPageSize })
   }
-
-  const handleSearch = async ({ href, updateUrl = true } = {}) => {
-    if (href && updateUrl) {
-      NavigationHelpers.navigate(href, pushWindowPath, false)
-    } else {
-      resetURLPagination({ preserveSearch: true })
-    }
-
-    fetchListViewData({ pageIndex: routeParams.page, pageSize: routeParams.pageSize })
-  }
-
+  const hrefCreate = `/explore${dialectPath}/learn/words/create`
   return children({
     columns: columns,
     computeEntities,
     dialect,
     dialectClassName,
     dialectUid,
-    fetcher: fetcher,
+    fetcher,
     fetcherParams: {
-      currentPageIndex: routeParams.page,
-      pageSize: routeParams.pageSize,
+      currentPageIndex: queryPage,
+      pageSize: queryPageSize,
     },
     filter,
-    handleCreateClick,
+    hrefCreate,
     handleSearch,
-    isKidsTheme: routeParams.siteTheme === 'kids',
+    isKidsTheme: siteTheme === 'kids',
     items,
     listViewMode: listView.mode,
     metadata,
-    navigationRouteSearch,
+    navigationRouteSearch: getSearchAsObject(), // TODO REMOVE?
+    page: parseInt(queryPage, 10),
+    pageSize: parseInt(queryPageSize, 10),
     pageTitle,
     dictionaryId,
     pushWindowPath,

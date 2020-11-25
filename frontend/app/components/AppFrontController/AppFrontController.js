@@ -20,7 +20,7 @@ import { WORKSPACES } from 'common/Constants'
 import { withTheme } from '@material-ui/core/styles'
 
 import ProviderHelpers from 'common/ProviderHelpers'
-import { routeHasChanged /*, getSearchObject*/ } from 'common/NavigationHelpers'
+import { routeHasChanged } from 'common/NavigationHelpers'
 import { Redirector } from 'common/Redirector'
 // import UIHelpers from 'common/UIHelpers'
 import StringHelpers from 'common/StringHelpers'
@@ -143,7 +143,7 @@ export class AppFrontController extends Component {
     if (matchedPage && (matchedPageUpdated || siteThemeUpdated)) {
       let page
       let navigation
-
+      // Note: https://eslint.org/docs/rules/no-prototype-builtins
       const siteTheme = Object.prototype.hasOwnProperty.call(routeParams, 'siteTheme')
         ? routeParams.siteTheme
         : 'default'
@@ -346,7 +346,7 @@ export class AppFrontController extends Component {
             if (nuxeoPath.length >= languageFamilyPathLocation) {
               routeParams.language_family_name = decodeURI(nuxeoPath[languageFamilyPathLocation])
               routeParams.language_family_path = decodeURI(
-                '/' + nuxeoPath.slice(0, languageFamilyPathLocation + 1).join('/'),
+                '/' + nuxeoPath.slice(0, languageFamilyPathLocation + 1).join('/')
               )
             }
           }
@@ -378,9 +378,9 @@ export class AppFrontController extends Component {
                       return props.replaceWindowPath(value.get('target')({ props: props }))
                     },
                   },
-                  matchedPage.get('page'),
-                ),
-              ),
+                  matchedPage.get('page')
+                )
+              )
             )
 
             return false
@@ -408,6 +408,7 @@ export class AppFrontController extends Component {
 
           TODO: investigate if statecharts would simplify matters
         */
+        // Note: https://eslint.org/docs/rules/no-prototype-builtins
         if (
           ((Object.prototype.hasOwnProperty.call(_routeParams, 'area') && _routeParams.area === WORKSPACES) ||
             matchedPage.get('path').indexOf(WORKSPACES) !== -1 ||
@@ -507,6 +508,8 @@ AppFrontController.propTypes = {
   replaceWindowPath: func.isRequired,
   setRouteParams: func.isRequired,
   updateWindowPath: func.isRequired,
+  intl: object,
+  setIntlWorkspace: func,
 }
 AppFrontController.defaultProps = {
   matchedPage: undefined,

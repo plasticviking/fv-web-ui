@@ -38,7 +38,7 @@ function BreadcrumbData({ children, matchedPage, routes }) {
   const { pushWindowPath, splitWindowPath } = useWindowPath()
 
   const REMOVE_FROM_BREADCRUMBS = ['FV', 'sections', 'Data', 'Workspaces', 'search', 'nuxeo', 'app', 'explore']
-  const isDialect = routeParams.hasOwnProperty('dialect_path')
+  const isDialect = Object.prototype.hasOwnProperty.call(routeParams, 'dialect_path')
 
   let splitPath = splitWindowPath
 

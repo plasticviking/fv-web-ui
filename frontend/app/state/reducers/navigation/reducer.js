@@ -80,7 +80,7 @@ export const navigationReducer = combineReducers({
       response: null,
       success: false,
     },
-    action = {},
+    action = {}
   ) {
     switch (action.type) {
       case LOAD_GUIDE_STARTED:
@@ -111,7 +111,7 @@ export const navigationReducer = combineReducers({
       matchedPage: undefined,
       search: DEFAULT_SEARCH,
     },
-    action = {},
+    action = {}
   ) {
     switch (action.type) {
       case SET_ROUTE_PARAMS: {

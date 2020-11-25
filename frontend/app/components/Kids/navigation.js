@@ -73,7 +73,7 @@ export class KidsNavigation extends Component {
     // )
     const computePortal = ProviderHelpers.getEntry(
       this.props.computePortal,
-      this.props.routeParams.dialect_path + '/Portal',
+      this.props.routeParams.dialect_path + '/Portal'
     )
 
     // const userTaskCount = selectn('response.length', computeUserTasks) || 0
@@ -131,7 +131,7 @@ export class KidsNavigation extends Component {
               <IconButton
                 onClick={this._onNavigateRequest.bind(
                   this,
-                  NavigationHelpers.generateStaticURL('/kids/FV/Workspaces/Data'),
+                  NavigationHelpers.generateStaticURL('/kids/FV/Workspaces/Data')
                 )}
               >
                 <AppsIcon />

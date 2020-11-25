@@ -56,7 +56,7 @@ export default class DirectoryOperations {
                     key: 'operations.could_not_access_server',
                     default: 'Could not access server',
                     case: 'first',
-                  })),
+                  }))
             )
           }
         } else {
@@ -112,7 +112,7 @@ export default class DirectoryOperations {
             }
           }
           return resolve(body)
-        },
+        }
       )
       setTimeout(() => {
         reject('Server timeout while attempting to send request.')
@@ -139,7 +139,7 @@ export default class DirectoryOperations {
             }
           }
           return resolve(body)
-        },
+        }
       )
       setTimeout(() => {
         reject('Server timeout while attempting to send request.')
@@ -187,7 +187,7 @@ export default class DirectoryOperations {
                     key: 'operations.could_not_access_server',
                     default: 'Could not access server',
                     case: 'first',
-                  }),
+                  })
               )
             }
           })
@@ -209,8 +209,8 @@ export default class DirectoryOperations {
       },
       StringHelpers.queryStringToObject(
         `?query=SELECT * FROM ${type} WHERE ${where} AND ecm:isVersion = 0 AND ecm:isTrashed = 0 ${_queryAppend}`,
-        true,
-      ),
+        true
+      )
     )
 
     /*
@@ -252,7 +252,7 @@ export default class DirectoryOperations {
                   key: 'operations.could_not_access_server',
                   default: 'Could not access server',
                   case: 'first',
-                }),
+                })
             )
           }
         })
@@ -285,7 +285,7 @@ export default class DirectoryOperations {
                   key: 'operations.could_not_access_server',
                   default: 'Could not access server',
                   case: 'first',
-                }),
+                })
             )
           }
         })
@@ -296,7 +296,7 @@ export default class DirectoryOperations {
     pageProvider = '',
     type = 'Document', // eslint-disable-line
     headers = null,
-    params = null,
+    params = null
   ) {
     // const queryParams = []
 
@@ -322,7 +322,7 @@ export default class DirectoryOperations {
               key: 'operations.could_not_access_server',
               default: 'Could not access server',
               case: 'first',
-            }),
+            })
           )
         })
     })
@@ -344,7 +344,7 @@ export default class DirectoryOperations {
               key: 'operations.could_not_retrieve_directory',
               default: 'Could not retrieve directory',
               case: 'first',
-            }),
+            })
           )
         })
     })
@@ -397,14 +397,14 @@ export default class DirectoryOperations {
                   params: [documentList.model.prototype.entityTypeName],
                   case: 'first',
                   append: '!',
-                }),
+                })
               )
             }
           })
           .catch((error) => {
             throw error
           })
-      },
+      }
     )
   }
 
@@ -414,7 +414,7 @@ export default class DirectoryOperations {
     select = '*',
     queryAppend = ' ORDER BY dc:title',
     headers = null,
-    params = null,
+    params = null
   ) {
     const defaultHeaders = {}
     const defaultParams = {}
@@ -439,8 +439,8 @@ export default class DirectoryOperations {
       },
       StringHelpers.queryStringToObject(
         `?query=SELECT ${select} FROM ${type} WHERE ${where} AND ecm:isVersion = 0 AND ecm:isTrashed = 0 ${_queryAppend}`,
-        true,
-      ),
+        true
+      )
     )
 
     return new Promise((resolve, reject) => {
@@ -463,7 +463,7 @@ export default class DirectoryOperations {
                   key: 'operations.could_not_access_server',
                   default: 'Could not access server',
                   case: 'first',
-                }),
+                })
             )
           }
         })

@@ -24,9 +24,12 @@ import useSearch from 'dataSources/useSearch'
 import useRoute from 'dataSources/useRoute'
 
 import useWindowPath from 'dataSources/useWindowPath'
-import useNavigationHelpers from 'common/useNavigationHelpers'
 import ProviderHelpers from 'common/ProviderHelpers'
-import NavigationHelpers, { getSearchObject, appendPathArrayAfterLandmark } from 'common/NavigationHelpers'
+import NavigationHelpers, {
+  getNewPaginationUrl,
+  getSearchObject,
+  appendPathArrayAfterLandmark,
+} from 'common/NavigationHelpers'
 
 /**
  * @summary KidsPhrasesByPhrasebookData
@@ -43,9 +46,8 @@ function KidsPhrasesByPhrasebookData({ children }) {
   const { computePortal, fetchPortal } = usePortal()
   const { computeDocument, fetchDocument } = useDocument()
   const { computePhrases, fetchPhrases } = usePhrases()
-  const { splitWindowPath } = useWindowPath()
+  const { splitWindowPath, pushWindowPath } = useWindowPath()
   const { searchParams } = useSearch()
-  const { changePagination } = useNavigationHelpers()
   const documentPath = `${routeParams.dialect_path}/Dictionary`
   // on load
   useEffect(() => {
@@ -95,18 +97,18 @@ function KidsPhrasesByPhrasebookData({ children }) {
   const _items = selectn('response.entries', computedPhrases)
   const items = _items
     ? _items.map((item) => {
-      const _audio = selectn(['contextParameters', 'phrase', 'related_audio', 0, 'path'], item)
-      return {
-        title: item.title,
-        href: `/${appendPathArrayAfterLandmark({
-          pathArray: ['phrases', item.uid],
-          splitWindowPath,
-          landmarkArray: ['learn'],
-        })}`,
-        audio: _audio ? `${NavigationHelpers.getBaseURL()}${_audio}` : undefined,
-        image: selectn(['contextParameters', 'phrase', 'related_pictures', 0, 'views', 1, 'url'], item),
-      }
-    })
+        const _audio = selectn(['contextParameters', 'phrase', 'related_audio', 0, 'path'], item)
+        return {
+          title: item.title,
+          href: `/${appendPathArrayAfterLandmark({
+            pathArray: ['phrases', item.uid],
+            splitWindowPath,
+            landmarkArray: ['learn'],
+          })}`,
+          audio: _audio ? `${NavigationHelpers.getBaseURL()}${_audio}` : undefined,
+          image: selectn(['contextParameters', 'phrase', 'related_pictures', 0, 'views', 1, 'url'], item),
+        }
+      })
     : undefined
 
   // Send out to children
@@ -120,7 +122,9 @@ function KidsPhrasesByPhrasebookData({ children }) {
     ]),
     items,
     hasItems: items && items.length !== 0,
-    onPaginationUpdate: changePagination,
+    onPaginationUpdate: ({ page, pageSize }) => {
+      NavigationHelpers.navigate(getNewPaginationUrl({ splitWindowPath, page, pageSize }), pushWindowPath, false)
+    },
     page: Number(routeParams.page),
     pageSize: Number(routeParams.pageSize),
     resultsCount: selectn('response.resultsCount', computedPhrases),

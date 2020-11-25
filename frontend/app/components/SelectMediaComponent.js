@@ -90,8 +90,8 @@ class SharedResourceGridTile extends Component {
     if (isDialectShared || isFVShared) {
       const tooltip = isDialectShared
         ? this.props.intl.trans('shared_from_x', 'Shared from ' + selectn('dc:title', resourceParentDialect), null, [
-          selectn('dc:title', resourceParentDialect),
-        ])
+            selectn('dc:title', resourceParentDialect),
+          ])
         : this.props.intl.trans('shared_from_x_collection', 'Shared from FirstVoices Collection', null, ['FirstVoices'])
       actionIcon = (
         <Tooltip title={tooltip}>
@@ -163,8 +163,8 @@ class SelectMediaComponent extends Component {
     const providedTitleFilter = selectn('otherContext.providedFilter', this.props.dialect)
     const appliedParams = providedTitleFilter
       ? Object.assign({}, DefaultFetcherParams, {
-        filters: { 'properties.dc:title': { appliedFilter: providedTitleFilter } },
-      })
+          filters: { 'properties.dc:title': { appliedFilter: providedTitleFilter } },
+        })
       : DefaultFetcherParams
 
     this.state = {
@@ -175,7 +175,7 @@ class SelectMediaComponent extends Component {
 
     // Bind methods to 'this'
     ;['_handleOpen', '_handleClose', '_handleSelectElement', 'fetchData'].forEach(
-      (method) => (this[method] = this[method].bind(this)),
+      (method) => (this[method] = this[method].bind(this))
     )
   }
 
@@ -220,7 +220,7 @@ class SelectMediaComponent extends Component {
 
     const FilteredPaginatedMediaList = withFilter(
       withPagination(MediaList, DefaultFetcherParams.pageSize),
-      DefaultFetcherParams,
+      DefaultFetcherParams
     )
 
     return (
@@ -233,8 +233,8 @@ class SelectMediaComponent extends Component {
             {`${this.props.intl.searchAndReplace(
               `Select existing ${fileTypeLabel} from ${selectn(
                 'properties.dc:title',
-                dialect,
-              )} dialect or shared resources`,
+                dialect
+              )} dialect or shared resources`
             )}:`}
           </DialogTitle>
           <DialogContent>
@@ -309,7 +309,7 @@ class SelectMediaComponent extends Component {
           '&currentPageIndex=' +
           (fetcherParams.currentPageIndex - 1) +
           '&pageSize=' +
-          fetcherParams.pageSize,
+          fetcherParams.pageSize
       )
 
       this.setState({

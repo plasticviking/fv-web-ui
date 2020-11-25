@@ -15,7 +15,7 @@ function useCharacter() {
     messageStart,
     messageSuccess,
     messageError,
-    propertiesOverride,
+    propertiesOverride
   ) => {
     const dispatchObj = _publishCharacter(
       pathOrId,
@@ -23,7 +23,7 @@ function useCharacter() {
       messageStart,
       messageSuccess,
       messageError,
-      propertiesOverride,
+      propertiesOverride
     )
     dispatch(dispatchObj)
   }

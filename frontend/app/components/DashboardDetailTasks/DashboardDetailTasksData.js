@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import selectn from 'selectn'
 import sanitize from 'common/Sanitize'
+import NavigationHelpers from 'common/NavigationHelpers'
 
 import useNavigationHelpers from 'common/useNavigationHelpers'
 import useDashboard from 'dataSources/useDashboard'
@@ -32,8 +33,8 @@ function DashboardDetailTasksData({ children, columnRender }) {
   const { intl } = useIntl()
   const [selectedItemData, setSelectedItemData] = useState({})
   const [selectedTaskData, setSelectedTaskData] = useState({})
-  const { getSearchObject, navigate, navigateReplace, getBaseURL } = useNavigationHelpers()
-  const baseUrl = getBaseURL()
+  const { getSearchAsObject, navigate, navigateReplace } = useNavigationHelpers()
+  const baseUrl = NavigationHelpers.getBaseURL()
 
   const { computeDocument, fetchDocumentSingleArg } = useDocument()
   const {
@@ -48,12 +49,17 @@ function DashboardDetailTasksData({ children, columnRender }) {
 
   const {
     item: queryItem,
-    page: queryPage = 1,
-    pageSize: queryPageSize = 10,
-    sortBy: querySortBy = 'date',
-    sortOrder: querySortOrder = 'desc',
+    page: queryPage,
+    pageSize: queryPageSize,
+    sortBy: querySortBy,
+    sortOrder: querySortOrder,
     task: queryTask,
-  } = getSearchObject()
+  } = getSearchAsObject({
+    page: 1,
+    pageSize: 10,
+    sortBy: 'date',
+    sortOrder: 'desc',
+  })
 
   // Escape key binding
   const onKeyPressed = (event) => {

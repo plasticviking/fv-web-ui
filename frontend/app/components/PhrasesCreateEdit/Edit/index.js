@@ -117,10 +117,10 @@ export class PhrasesEdit extends Component {
           NavigationHelpers.generateUIDPath(
             this.props.routeParams.siteTheme,
             selectn('response', currentPhrase),
-            'phrases',
+            'phrases'
           ),
           this.props.replaceWindowPath,
-          true,
+          true
         )
       }
     }

@@ -68,7 +68,7 @@ const FVUserRegistrationTemplate = function template(locals) {
       if (selectBox.selectedIndex !== 0) {
         selectedCommunityLanguageLabel = selectBox.options[selectBox.selectedIndex].innerHTML
         document.getElementById('language_team_member_name').innerHTML = document.getElementById(
-          'community_member_name',
+          'community_member_name'
         ).innerHTML = selectedCommunityLanguageLabel
       }
     }
@@ -389,7 +389,7 @@ const options = {
             {intl.trans(
               'models.describe_what_the_word_translates_to',
               'Describe what the word translates to regardless of context.',
-              'first',
+              'first'
             )}
           </i>
         ),
@@ -453,7 +453,7 @@ const options = {
             {intl.trans(
               'models.category_list_link',
               'Categories for your archive can be added and edited from your language homepage',
-              'first',
+              'first'
             )}
             .
           </i>
@@ -788,7 +788,7 @@ const options = {
             {intl.trans(
               'models.describe_what_the_title_translates_to',
               'Describe what the title translates to regardless of context.',
-              'first',
+              'first'
             )}
           </i>
         ),
@@ -830,7 +830,7 @@ const options = {
             {intl.trans(
               'models.describe_what_the_introduction_translates_to',
               'Describe what the introduction translates to regardless of context.',
-              'first',
+              'first'
             )}
           </i>
         ),
@@ -959,7 +959,7 @@ const options = {
             {intl.trans(
               'models.page_content_translation',
               'Describe what the book entry translates to regardless of context.',
-              'first',
+              'first'
             )}
           </i>
         ),
@@ -1082,7 +1082,7 @@ const options = {
           placeholder: intl.trans(
             'models.enter_phrase_book_description',
             'Enter phrase book description here',
-            'first',
+            'first'
           ),
         },
       },
@@ -1105,7 +1105,7 @@ const options = {
           placeholder: intl.trans(
             'models.enter_contributor_description',
             'Enter contributor description here',
-            'first',
+            'first'
           ),
         },
       },
@@ -1399,7 +1399,7 @@ const options = {
         help: intl.trans(
           'models.specify_url_if_linking',
           'Specify URL if linking to external or internal links.',
-          'first',
+          'first'
         ),
       } /*,
       'file:content': {

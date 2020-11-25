@@ -70,8 +70,8 @@ function AlphabetDetailData({ children }) {
       intl.trans(
         'views.pages.explore.dialect.learn.alphabet.character_published_success',
         'Character published successfully!',
-        'first',
-      ),
+        'first'
+      )
     )
   }
 

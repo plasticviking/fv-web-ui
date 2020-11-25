@@ -31,7 +31,7 @@ class MemoizationCache {
       function saveIt() {
         this.saveCacheToSessionStorage()
       }.bind(this),
-      3000,
+      3000
     )
   }
 
