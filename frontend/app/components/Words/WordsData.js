@@ -55,16 +55,9 @@ function WordsData(props) {
     },
   ])
 
-  const handleCategoryClick = () => {
-    // TODO: WILL BE FIXED IN FW-2035
-  }
-
   return props.children({
     computeEntities,
-    flashcardMode: false,
-    handleCategoryClick,
     intl,
-    routeParams,
   })
 }
 

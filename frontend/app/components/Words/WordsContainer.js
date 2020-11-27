@@ -30,7 +30,7 @@ import PromiseWrapper from 'components/PromiseWrapper'
 function WordsContainer() {
   return (
     <WordsData>
-      {({ computeEntities, handleCategoryClick, intl, routeParams }) => {
+      {({ computeEntities, intl }) => {
         return (
           <PromiseWrapper renderOnError computeEntities={computeEntities}>
             <div className="row">
@@ -41,14 +41,7 @@ function WordsContainer() {
                     let categoriesDataToRender = null
                     if (categoriesData && categoriesData.length > 0) {
                       categoriesDataToRender = (
-                        <DialectFilterListData
-                          selectedCategoryId={routeParams.category}
-                          setDialectFilterCallback={handleCategoryClick}
-                          facets={categoriesData}
-                          facetType="category"
-                          type="words"
-                          workspaceKey="fv-word:categories"
-                        >
+                        <DialectFilterListData filterListData={categoriesData} queryParam="category">
                           {({ listItemData }) => {
                             return (
                               <DialectFilterListPresentation

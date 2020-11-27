@@ -20,7 +20,6 @@ import useDocument from 'dataSources/useDocument'
 import useIntl from 'dataSources/useIntl'
 import usePortal from 'dataSources/usePortal'
 import useRoute from 'dataSources/useRoute'
-import useWindowPath from 'dataSources/useWindowPath'
 
 import ProviderHelpers from 'common/ProviderHelpers'
 
@@ -30,7 +29,6 @@ function PhrasesData(props) {
   const { intl } = useIntl()
   const { computePortal, fetchPortal } = usePortal()
   const { routeParams } = useRoute()
-  const { splitWindowPath } = useWindowPath()
   const dictionaryKey = `${routeParams.dialect_path}/Dictionary`
 
   useEffect(() => {
@@ -57,17 +55,9 @@ function PhrasesData(props) {
     },
   ])
 
-  const handlePhrasebookClick = () => {
-    // TODO: WILL BE FIXED IN FW-2027
-  }
-
   return props.children({
     computeEntities,
-    flashcardMode: false,
-    handlePhrasebookClick,
     intl,
-    routeParams,
-    splitWindowPath,
   })
 }
 
