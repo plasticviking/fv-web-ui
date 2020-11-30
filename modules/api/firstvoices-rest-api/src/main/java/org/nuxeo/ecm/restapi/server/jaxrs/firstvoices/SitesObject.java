@@ -4,14 +4,12 @@ import ca.firstvoices.rest.data.Site;
 import ca.firstvoices.rest.data.SiteList;
 import ca.firstvoices.rest.helpers.EtagHelper;
 import ca.firstvoices.rest.helpers.PageProviderHelper;
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
@@ -37,8 +35,6 @@ import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 @WebObject(type = "site")
 @Produces({MediaType.APPLICATION_JSON})
 public class SitesObject extends DefaultObject {
-
-  private static final Logger LOG = Logger.getLogger(SitesObject.class.getName());
 
   public static final String PORTALS_LIST_SECTIONS_PP = "PORTALS_LIST_SECTIONS_PP";
   public static final String PORTALS_LIST_WORKSPACES_PP = "PORTALS_LIST_WORKSPACES_PP";
@@ -77,8 +73,6 @@ public class SitesObject extends DefaultObject {
       @QueryParam(value = "currentPage") Integer currentPage) {
 
     ResultFilter rf = ((s, pageProviderName, d) -> {
-      LOG.warning(d.getParentRef().toString());
-
       if (pageProviderName.equals(PORTALS_LIST_WORKSPACES_PP)) {
         DocumentRef parentRef = d.getParentRef();
         if (parentRef == null) {
@@ -152,17 +146,11 @@ public class SitesObject extends DefaultObject {
     public void run() {
       List<DocumentModel> results = new LinkedList<>();
 
-      int f = 0;
-
       for (String pageProviderName : pageProviderNames) {
         List<DocumentModel> localResults = PageProviderHelper.getPageProviderResults(session,
             pageProviderName,
             pageSize,
             currentPage);
-
-        f += localResults.size();
-        LOG.warning("ppname is " + pageProviderName);
-        LOG.warning("f now = " + f);
 
         localResults
             .stream()
@@ -215,8 +203,7 @@ public class SitesObject extends DefaultObject {
           }
 
         } else {
-          associatedDialect = session.getDocument(new IdRef((String) dm.getProperty(
-              "fvancestry",
+          associatedDialect = session.getDocument(new IdRef((String) dm.getProperty("fvancestry",
               "dialect")));
           associatedLanguageFamily = session.getDocument(new IdRef((String) dm.getProperty(
               "fvancestry",
