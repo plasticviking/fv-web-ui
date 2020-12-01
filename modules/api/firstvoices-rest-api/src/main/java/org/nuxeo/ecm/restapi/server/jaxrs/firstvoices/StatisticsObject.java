@@ -150,6 +150,8 @@ public class StatisticsObject extends DefaultObject {
   }
 
   // Build the query for a specified document type
+  @SuppressWarnings("common-java:DuplicatedBlocks") //only until FVGenerateJSONStatistics is
+  // deprecated
   private String constructQuery(String dialectPath, String docType) {
 
     String query = null;
