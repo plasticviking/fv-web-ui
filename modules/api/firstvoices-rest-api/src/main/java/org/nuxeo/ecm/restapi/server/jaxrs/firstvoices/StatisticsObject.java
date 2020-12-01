@@ -11,14 +11,12 @@ import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.security.Principal;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -194,9 +192,7 @@ public class StatisticsObject extends DefaultObject {
     try (IterableQueryResult newDocs = session.queryAndFetch(query + " AND "
             + "ecm:currentLifeCycleState='New'",
         "NXQL",
-        1,
-        0,
-        true)) {
+        params)) {
       for (Map<String, Serializable> a : newDocs) {
         if (a.containsKey("COUNT(ecm:uuid)")) {
           result = BigDecimal.valueOf((Long) a.get("COUNT(ecm:uuid)"));

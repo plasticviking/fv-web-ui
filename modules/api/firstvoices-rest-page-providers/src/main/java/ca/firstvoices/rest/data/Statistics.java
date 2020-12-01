@@ -5,6 +5,9 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Period;
 import java.time.temporal.TemporalAmount;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +37,7 @@ public class Statistics implements Serializable {
     return metadata;
   }
 
-  public static class Metadata {
+  public static class Metadata implements Serializable {
 
     private final String requestingUser;
     private final String dialectPath;
@@ -54,7 +57,7 @@ public class Statistics implements Serializable {
 
   }
 
-  public static class TemporalRange {
+  public static class TemporalRange implements Serializable {
 
     private final String friendlyName;
     private final LocalDate start;
@@ -90,15 +93,15 @@ public class Statistics implements Serializable {
     }
   }
 
-  public static final TemporalRange[] RANGE_PRESETS = {
-      new TemporalRange("today", Period.ofDays(1)),
-      new TemporalRange("last_3_days", Period.ofDays(3)),
-      new TemporalRange("last_7_days", Period.ofDays(7)),
-      new TemporalRange("last_month", Period.ofMonths(1)),
-      new TemporalRange("last_3_months", Period.ofMonths(3)),
-      new TemporalRange("last_6_months", Period.ofMonths(6)),
-      new TemporalRange("last_year", Period.ofYears(1))
-  };
+  public static final Collection<TemporalRange> RANGE_PRESETS = Collections.unmodifiableCollection(
+      Arrays.asList(
+          new TemporalRange("today", Period.ofDays(1)),
+          new TemporalRange("last_3_days", Period.ofDays(3)),
+          new TemporalRange("last_7_days", Period.ofDays(7)),
+          new TemporalRange("last_month", Period.ofMonths(1)),
+          new TemporalRange("last_3_months", Period.ofMonths(3)),
+          new TemporalRange("last_6_months", Period.ofMonths(6)),
+          new TemporalRange("last_year", Period.ofYears(1))));
 
 }
 
