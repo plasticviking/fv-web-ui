@@ -3,6 +3,7 @@ package ca.firstvoices.operations.bulkupdate.services;
 import ca.firstvoices.operations.bulkupdate.BulkUpdateMode;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
@@ -25,7 +26,7 @@ public class BulkUpdateServiceImpl implements BulkUpdateService {
       } else if (mode == BulkUpdateMode.ADD_TO_ARRAY_PROPERTY) {
         Serializable[] currentValue = (Serializable[]) doc.getProperty(field).getValue();
         if (currentValue == null) {
-          doc.setPropertyValue(field, (Serializable)Arrays.asList(new Serializable[]{value}));
+          doc.setPropertyValue(field, (Serializable) Collections.singletonList(value));
         } else {
           List<Serializable> asList = Arrays.asList(currentValue);
           asList.add(value);

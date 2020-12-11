@@ -17,6 +17,8 @@ import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.impl.DocumentRefListImpl;
 import testUtil.AbstractFirstVoicesOperationsTest;
 
+// passing without throwing anything is the test case
+@SuppressWarnings("java:S2699")
 public class BulkUpdateTest extends AbstractFirstVoicesOperationsTest {
 
   @Inject AutomationService automationService;
