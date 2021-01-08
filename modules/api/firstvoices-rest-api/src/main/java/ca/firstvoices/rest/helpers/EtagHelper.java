@@ -38,7 +38,7 @@ public class EtagHelper {
       }).orElse(new byte[]{0x00}));
 
   public static final ETagAttributeMapper DC_MODIFIED_AND_NAME_MAPPER = (doc -> {
-    final int nameHashCode = Optional.ofNullable(doc.getName()).map(n -> n.hashCode()).orElse(0);
+    final int nameHashCode = Optional.ofNullable(doc.getName()).map(String::hashCode).orElse(0);
 
     return Optional.ofNullable(doc.getPropertyValue("dc:modified")).map(s -> {
       int hash = s.hashCode() ^ nameHashCode;

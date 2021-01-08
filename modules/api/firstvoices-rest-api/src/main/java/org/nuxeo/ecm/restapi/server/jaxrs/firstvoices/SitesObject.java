@@ -40,24 +40,26 @@ import org.nuxeo.runtime.api.Framework;
 @Produces({MediaType.APPLICATION_JSON})
 public class SitesObject extends DefaultObject {
 
-  public static final String PORTALS_LIST_SECTIONS_PP = "PORTALS_LIST_SECTIONS_PP";
-  public static final String PORTALS_LIST_WORKSPACES_PP = "PORTALS_LIST_WORKSPACES_PP";
-  public static final String DIALECTS_LIST_SECTIONS_PP = "DIALECTS_LIST_SECTIONS_PP";
-  public static final String DIALECTS_LIST_WORKSPACES_PP = "DIALECTS_LIST_WORKSPACES_PP";
+  protected static final String PORTALS_LIST_SECTIONS_PP = "PORTALS_LIST_SECTIONS_PP";
+  protected static final String PORTALS_LIST_WORKSPACES_PP = "PORTALS_LIST_WORKSPACES_PP";
+  protected static final String DIALECTS_LIST_SECTIONS_PP = "DIALECTS_LIST_SECTIONS_PP";
+  protected static final String DIALECTS_LIST_WORKSPACES_PP = "DIALECTS_LIST_WORKSPACES_PP";
 
   // they'll be tried in priority order, with the first one producing a result returning
-  public static final List<String> PORTALS_FIND_PPLIST = Arrays.asList("PORTALS_FIND_PP_PRIORITY1",
+  protected static final List<String> PORTALS_FIND_PPLIST = Arrays.asList(
+      "PORTALS_FIND_PP_PRIORITY1",
       "PORTALS_FIND_PP_PRIORITY2",
       "PORTALS_FIND_PP_PRIORITY3",
       "PORTALS_FIND_PP_PRIORITY4");
 
-  public static final String PORTAL_FOR_DIALECT_PP = "PORTAL_FOR_DIALECT_PP";
+  protected static final String PORTAL_FOR_DIALECT_PP = "PORTAL_FOR_DIALECT_PP";
 
   /**
    * Retrieve the PageProvider results for the given PageProvider.
    *
    * @param doPrivileged if the query should be run in an unrestricted session
    */
+  @SuppressWarnings("java:S107")
   private Response simplePageProviderResponse(
       HttpServletRequest request, List<String> pageProviderNames,
       List<String> cacheCheckOnlyPageProviderNames, boolean singleResult, Integer pageSize,
@@ -169,6 +171,7 @@ public class SitesObject extends DefaultObject {
     private final boolean singleResult;
     private final Object[] params;
 
+    @SuppressWarnings("java:S107")
     ResponseGeneratingQueryRunner(
         CoreSession session, HttpServletRequest request, List<String> pageProviderNames,
         List<String> cacheCheckOnlyPageProviderNames, boolean singleResult, Integer pageSize,
