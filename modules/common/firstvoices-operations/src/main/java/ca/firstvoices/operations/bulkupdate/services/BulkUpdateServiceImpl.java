@@ -17,10 +17,18 @@ public class BulkUpdateServiceImpl implements BulkUpdateService {
       Serializable value) {
 
     for (DocumentRef ref : refs) {
+
+      if (!session.exists(ref)) {
+        // skip deleted/nonexistent documents
+        continue;
+      }
+
       DocumentModel doc = session.getDocument(ref);
+
       if (doc == null) {
         throw new IllegalArgumentException("Invalid document ref");
       }
+
       if (mode == BulkUpdateMode.UPDATE_PROPERTY) {
         doc.setPropertyValue(field, value);
       } else if (mode == BulkUpdateMode.ADD_TO_ARRAY_PROPERTY) {
