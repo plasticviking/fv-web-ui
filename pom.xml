@@ -22,7 +22,7 @@
   <artifactId>firstvoices-modules-parent</artifactId>
   <name>First Voices</name>
   <packaging>pom</packaging>
-  <version>3.5.4</version>
+  <version>3.5.6-SNAPSHOT</version>
 
   <modules>
     <module>modules</module>
@@ -57,6 +57,11 @@
       <dependency>
         <groupId>com.amazonaws</groupId>
         <artifactId>aws-java-sdk-cognitoidp</artifactId>
+        <version>${aws.sdk.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.amazonaws</groupId>
+        <artifactId>aws-java-sdk-core</artifactId>
         <version>${aws.sdk.version}</version>
       </dependency>
       <dependency>
@@ -119,51 +124,6 @@
   </repositories>
 
   <profiles>
-
-<!--    <profile>-->
-<!--      <id>full</id>-->
-
-<!--      <activation>-->
-<!--        <activeByDefault>true</activeByDefault>-->
-<!--      </activation>-->
-
-<!--      <modules>-->
-<!--        <module>FirstVoicesHealthMonitor</module>-->
-<!--        <module>FirstVoicesCognitoAuth</module>-->
-<!--        <module>FirstVoicesSimplifiedAPI</module>-->
-<!--      </modules>-->
-
-<!--      <dependencyManagement>-->
-<!--        <dependencies>-->
-<!--          <dependency>-->
-<!--            <groupId>ca.firstvoices</groupId>-->
-<!--            <artifactId>FirstVoicesCognitoAuth</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--          </dependency>-->
-<!--          <dependency>-->
-<!--            <groupId>ca.firstvoices</groupId>-->
-<!--            <artifactId>FirstVoicesHealthMonitor</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--          </dependency>-->
-<!--          <dependency>-->
-<!--            <groupId>ca.firstvoices</groupId>-->
-<!--            <artifactId>FirstVoicesSimplifiedAPI</artifactId>-->
-<!--            <version>${project.version}</version>-->
-<!--          </dependency>-->
-<!--          <dependency>-->
-<!--            <groupId>com.amazonaws</groupId>-->
-<!--            <artifactId>aws-java-sdk-cognitoidp</artifactId>-->
-<!--            <version>${aws.sdk.version}</version>-->
-<!--          </dependency>-->
-<!--          <dependency>-->
-<!--            <groupId>com.amazonaws</groupId>-->
-<!--            <artifactId>aws-java-sdk-core</artifactId>-->
-<!--            <version>${aws.sdk.version}</version>-->
-<!--          </dependency>-->
-<!--        </dependencies>-->
-<!--      </dependencyManagement>-->
-
-<!--    </profile>-->
     <profile>
       <id>sonar</id>
       <properties>
