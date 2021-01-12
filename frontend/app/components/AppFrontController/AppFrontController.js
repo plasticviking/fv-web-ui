@@ -19,6 +19,7 @@ import { WORKSPACES } from 'common/Constants'
 
 import { withTheme } from '@material-ui/core/styles'
 
+import Suspender from 'common/Suspender'
 import ProviderHelpers from 'common/ProviderHelpers'
 import { routeHasChanged } from 'common/NavigationHelpers'
 import { Redirector } from 'common/Redirector'
@@ -28,9 +29,9 @@ import FVButton from 'components/FVButton'
 import WorkspaceSwitcher from 'components/WorkspaceSwitcher'
 import KidsNavigation from 'components/Kids/navigation'
 import Breadcrumb from 'components/Breadcrumb'
-import { PageError } from 'common/conf/pagesIndex'
+const PageError = React.lazy(() => import('components/PageError'))
 
-import '!style-loader!css-loader!./AppFrontController.css'
+import './AppFrontController.css'
 import FVLabel from 'components/FVLabel'
 import HelperModeToggle from 'components/HelperModeToggle/index'
 
@@ -240,7 +241,7 @@ export class AppFrontController extends Component {
       }
     }
 
-    return toRender
+    return <Suspender>{toRender}</Suspender>
   }
 
   _getInitialState() {

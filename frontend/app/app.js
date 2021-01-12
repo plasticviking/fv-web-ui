@@ -22,10 +22,7 @@ import ConfGlobal from 'common/conf/local.js'
 
 // REDUX
 import { Provider } from 'react-redux'
-import thunkMiddleware from 'redux-thunk'
-import { createStore, applyMiddleware, compose } from 'redux'
-
-import rootReducer from 'state/reducers'
+import store from 'state/store'
 
 // Views
 import AppWrapper from 'components/AppWrapper'
@@ -37,9 +34,8 @@ Sentry.init({
   dsn: 'https://b5b295e690dd4471be88933ec976d12d@o488868.ingest.sentry.io/5550001',
 })
 
-require('!style-loader!css-loader!normalize.css')
-require('bootstrap/less/bootstrap')
-require('styles/main')
+import 'normalize.css'
+import './assets/stylesheets/main.less'
 
 const context = {
   providedState: {
@@ -50,9 +46,6 @@ const context = {
     },
   },
 }
-const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-
-const store = createStore(rootReducer, composeEnhancers(applyMiddleware(thunkMiddleware)))
 
 // FW-1922: While this did not show any signs of slowing the page load
 // It may be worth finding a way to avoid using render multiple times

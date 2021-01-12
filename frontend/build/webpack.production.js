@@ -1,4 +1,4 @@
-const merge = require('webpack-merge')
+const { merge } = require('webpack-merge')
 const common = require('./webpack.common')
 
 const TerserPlugin = require('terser-webpack-plugin')
@@ -9,13 +9,12 @@ const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin')
  */
 module.exports = env => merge(common(env), {
   mode: 'production',
+  // TODO: configure server to disallow access to the Source Map file for normal users
+  devtool: 'source-map',
   optimization: {
-    moduleIds: 'hashed',
-    // consider enabling 'noEmitOnErrors' - see https://stackoverflow.com/questions/40080501/webpack-when-to-use-noerrorsplugin
-    // noEmitOnErrors: true,
+    // emitOnErrors: false,
     minimizer: [
       new TerserPlugin({
-        cache: true,
         parallel: true,
       }),
       new OptimizeCSSAssetsPlugin({}),

@@ -187,7 +187,7 @@ const DIALECT_LEARN_WORDS_ONLY_KIDS = {
       default: 'Words',
       case: 'words',
     }) + ' | {$dialect_name}',
-  page: <Pages.WordsCategoriesGrid.Container />,
+  page: <Pages.WordsCategoriesGridContainer />,
   extractPaths: true,
   redirects: [WORKSPACE_TO_SECTION_REDIRECT],
 }
@@ -400,11 +400,6 @@ const routes = [
     path: ['content-preview', new paramMatch('friendly_url', ANYTHING_BUT_SLASH)],
     page: <Pages.PageContent area={WORKSPACES} />,
     title: '{$pageTitle} | ' + intl.translate({ key: 'pages', default: 'Pages', case: 'first' }),
-    breadcrumbs: false,
-  },
-  {
-    path: ['test'],
-    page: <Pages.PageTest />,
     breadcrumbs: false,
   },
   {
@@ -1249,8 +1244,7 @@ const routes = [
         case: 'words',
       }) +
       ' | {$dialect_name} | {$siteTheme}',
-    page: <Pages.WordsCategoriesGrid.Container />,
-    extractPaths: true,
+    page: <Pages.WordsCategoriesGridContainer />,
     redirects: [WORKSPACE_TO_SECTION_REDIRECT],
   },
   addCategoryKids(DIALECT_LEARN_WORDS_ONLY_KIDS),
@@ -1867,7 +1861,7 @@ const routes = [
         default: 'Phrase Categories',
         case: 'words',
       }) + ' | {$dialect_name} | {$siteTheme}',
-    page: <Pages.PhraseBooksGrid.Container />,
+    page: <Pages.PhraseBooksGridContainer />,
     extractPaths: true,
     redirects: [WORKSPACE_TO_SECTION_REDIRECT],
   },
@@ -2514,8 +2508,7 @@ const routes = [
     id: 'dashboard',
     path: ['dashboard'],
     title: intl.translate({ key: 'dashboard', default: 'Dashboard', case: 'first' }),
-    page: <Pages.Dashboard.Container />,
-    breadcrumbs: false,
+    page: <Pages.DashboardContainer />,
     disableWorkspaceSectionNav: true,
   },
   {
@@ -2523,7 +2516,7 @@ const routes = [
     id: 'dashboard',
     path: ['dashboard', 'tasks'],
     title: intl.translate({ key: 'dashboard', default: 'Dashboard', case: 'first' }),
-    page: <Pages.DashboardDetailTasks.Container />,
+    page: <Pages.DashboardDetailTasksContainer />,
     breadcrumbs: false,
   },
   // Mentor-Apprentice Photo Project

@@ -323,15 +323,11 @@ function toJSKeepId(js) {
   if (typeof js !== 'object' || js === null) {
     return js
   } else if (Array.isArray(js)) {
-    return Immutable.Seq(js)
-      .map(toJSKeepId)
-      .toList()
+    return Immutable.Seq(js).map(toJSKeepId).toList()
   } else if (Object.prototype.hasOwnProperty.call(js, 'id')) {
     return Immutable.Seq(js).toMap()
   }
-  return Immutable.Seq(js)
-    .map(toJSKeepId)
-    .toMap()
+  return Immutable.Seq(js).map(toJSKeepId).toMap()
 }
 // prettier-ignore
 export default {

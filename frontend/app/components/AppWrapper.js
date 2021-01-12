@@ -25,9 +25,7 @@ import selectn from 'selectn'
 
 import AppFrontController from 'components/AppFrontController'
 import TranslationBar from 'components/TranslationBar/TranslationBar'
-
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-
 import FirstVoices from 'common/themes/FirstVoices.js'
 import FirstVoicesKids from 'common/themes/FirstVoicesKids.js' /// Fix this
 import FirstVoicesWorkspace from 'common/themes/FirstVoicesWorkspace.js' /// Fix this
@@ -57,20 +55,15 @@ class AppWrapper extends Component {
     const theme = selectn('siteTheme', this.props.properties)
     const prevTheme = selectn('siteTheme', prevProps.properties)
     if (theme !== prevTheme && theme !== this.state.siteTheme) {
-      let newTheme
-      switch (theme) {
-        case 'kids':
-          newTheme = createMuiTheme(FirstVoicesKids)
-          break
-
-        case 'workspace':
-          newTheme = createMuiTheme(FirstVoicesWorkspace)
-          break
-        default:
-          newTheme = createMuiTheme(FirstVoices)
+      let newTheme = FirstVoices
+      if (theme === 'kids') {
+        newTheme = FirstVoicesKids
+      }
+      if (theme === 'workspace') {
+        newTheme = FirstVoicesWorkspace
       }
       this.setState({
-        muiTheme: newTheme,
+        muiTheme: createMuiTheme(newTheme),
         siteTheme: theme,
       })
     }

@@ -125,8 +125,9 @@ function WordsListData({ children }) {
   // Parse Portal
   const extractComputePortal = ProviderHelpers.getEntry(computePortal, portalKey)
   const dialectClassName = getDialectClassname(extractComputePortal)
-  const pageTitle = `${selectn('response.contextParameters.ancestry.dialect.dc:title', extractComputePortal) ||
-    ''} ${intl.trans('words', 'Words', 'first')}`
+  const pageTitle = `${
+    selectn('response.contextParameters.ancestry.dialect.dc:title', extractComputePortal) || ''
+  } ${intl.trans('words', 'Words', 'first')}`
 
   // Parse Words
   const computedWords = ProviderHelpers.getEntry(computeWords, dictionaryId)
@@ -155,8 +156,9 @@ function WordsListData({ children }) {
       // WORKAROUND: DY @ 17-04-2019 - Mark this query as a "starts with" query. See DirectoryOperations.js for note
       const startsWithQuery = ProviderHelpers.isStartsWithQuery(currentAppliedFilter)
 
-      const nql = `${currentAppliedFilter}&currentPageIndex=${queryPage -
-        1}&dialectId=${dialectUid}&pageSize=${queryPageSize}&sortOrder=${querySortOrder}&sortBy=${querySortBy}${
+      const nql = `${currentAppliedFilter}&currentPageIndex=${
+        queryPage - 1
+      }&dialectId=${dialectUid}&pageSize=${queryPageSize}&sortOrder=${querySortOrder}&sortBy=${querySortBy}${
         queryLetter ? `&letter=${queryLetter}&starts_with_query=Document.CustomOrderQuery` : startsWithQuery
       }`
 

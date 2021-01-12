@@ -14,13 +14,25 @@
  limitations under the License.
  */
 import StringHelpers from 'common/StringHelpers'
-
-import request from 'request'
-
+import ky from 'ky'
 import BaseOperations from 'operations/BaseOperations'
 import IntlService from 'common/services/IntlService'
 
 const TIMEOUT = 60000
+
+const apiErrorHandler = (error) => {
+  if (Object.prototype.hasOwnProperty.call(error, 'response')) {
+    error.response.json().then((jsonError) => {
+      return StringHelpers.extractErrorMessage(jsonError)
+    })
+  }
+
+  if (Object.prototype.hasOwnProperty.call(error, 'message')) {
+    return error.message
+  }
+
+  return error
+}
 
 export default class DirectoryOperations {
   /**
@@ -28,17 +40,32 @@ export default class DirectoryOperations {
    * Allows for additional complex queries to be executed.
    */
   static getDocumentsViaAPI(path = '', headers) {
-    return new Promise((resolve, reject) => {
-      const options = {
-        url: path,
-        headers: headers,
-      }
-
-      request(options, (error, response, body) => {
-        if (error || response.statusCode !== 200) {
+    // TODO: need to confirm this works
+    /*
+    Called through `rest.query` when the `path` contains `ConfGlobal.apiURL`:
+    ```
+      if (pathOrId.indexOf(ConfGlobal.apiURL) !== -1) {
+        return DirectoryOperations.getDocumentsViaAPI(pathOrId)
+    ```
+    Not clear if the codebase has paths that use `ConfGlobal.apiURL`
+    */
+    const api = ky.create({
+      headers,
+      timeout: TIMEOUT,
+    })
+    return api
+      .get(path)
+      .then((response) => {
+        return response.json()
+      })
+      .then(
+        (response2) => {
+          return response2
+        },
+        (error) => {
           if (Object.prototype.hasOwnProperty.call(error, 'response')) {
             error.response.json().then((jsonError) => {
-              reject(StringHelpers.extractErrorMessage(jsonError))
+              return StringHelpers.extractErrorMessage(jsonError)
             })
           } else {
             let errorMessage = `Attempting to retrieve ${path}`
@@ -49,102 +76,60 @@ export default class DirectoryOperations {
               errorMessage += ' - '
             }
 
-            return reject(
+            return (
               errorMessage +
-                (error ||
-                  IntlService.instance.translate({
-                    key: 'operations.could_not_access_server',
-                    default: 'Could not access server',
-                    case: 'first',
-                  }))
+              (error ||
+                IntlService.instance.translate({
+                  key: 'operations.could_not_access_server',
+                  default: 'Could not access server',
+                  case: 'first',
+                }))
             )
           }
-        } else {
-          resolve(JSON.parse(body))
+          return 'An unknown error has occured.'
         }
-
-        reject('An unknown error has occured.')
-      })
-
-      setTimeout(() => {
-        reject('Server timeout while attempting to get documents.')
-      }, TIMEOUT)
-    })
+      )
   }
 
   static getFromAPI(path) {
-    return new Promise((resolve, reject) => {
-      request.get({ url: path, json: true }, function handleResponse(error, response, body) {
-        if (error) {
-          if (Object.prototype.hasOwnProperty.call(error, 'response')) {
-            error.response.json().then((jsonError) => {
-              return reject(StringHelpers.extractErrorMessage(jsonError))
-            })
-          } else {
-            return reject(error)
-          }
-        }
-        return resolve(body)
-      })
-      setTimeout(() => {
-        reject('Server timeout while attempting to get documents.')
-      }, TIMEOUT)
+    const api = ky.create({
+      timeout: TIMEOUT,
     })
+    return api
+      .get(path)
+      .then((response) => {
+        return response.json()
+      })
+      .then((response2) => {
+        return response2
+      }, apiErrorHandler)
   }
 
+  /* NOTE: Currently only using with `simpleTaskRequestChanges` & `postRequestReview`.
+  The endpoint returns nothing on success (just 200) so we don't want to run `response.json()`.
+  We are intentionally returning nothing.
+  */
   // Expects a path string and a javascript object with key value pairs for the endpoint params
   static postToAPI(path, bodyObject) {
-    return new Promise((resolve, reject) => {
-      request.post(
-        {
-          url: path,
-          body: JSON.stringify(bodyObject),
-          headers: { 'content-type': 'application/json' },
-        },
-        function handleResponse(error, response, body) {
-          if (error) {
-            if (Object.prototype.hasOwnProperty.call(error, 'response')) {
-              error.response.json().then((jsonError) => {
-                return reject(StringHelpers.extractErrorMessage(jsonError))
-              })
-            } else {
-              return reject(error)
-            }
-          }
-          return resolve(body)
-        }
-      )
-      setTimeout(() => {
-        reject('Server timeout while attempting to send request.')
-      }, TIMEOUT)
+    const api = ky.create({
+      timeout: TIMEOUT,
     })
+    return api.post(path, { json: bodyObject }).then(() => {
+      return
+    }, apiErrorHandler)
   }
 
+  /* NOTE: Currently only using with `simpleTaskApprove` & `simpleTaskIgnore`.
+  The endpoint returns nothing on success (just 200) so we don't want to run `response.json()`.
+  We are intentionally returning nothing.
+  */
   static putToAPI(path, bodyObject = {}) {
-    return new Promise((resolve, reject) => {
-      request.put(
-        {
-          url: path,
-          body: JSON.stringify(bodyObject),
-          headers: { 'content-type': 'application/json' },
-        },
-        function handleResponse(error, response, body) {
-          if (error) {
-            if (Object.prototype.hasOwnProperty.call(error, 'response')) {
-              error.response.json().then((jsonError) => {
-                return reject(StringHelpers.extractErrorMessage(jsonError))
-              })
-            } else {
-              return reject(error)
-            }
-          }
-          return resolve(body)
-        }
-      )
-      setTimeout(() => {
-        reject('Server timeout while attempting to send request.')
-      }, TIMEOUT)
+    const api = ky.create({
+      timeout: TIMEOUT,
     })
+    return api.put(path, { json: bodyObject }).then(() => {
+      return
+    }, apiErrorHandler)
   }
 
   /**

@@ -8,7 +8,6 @@ const path = require('path')
 
 // Root Directories
 const frontEndRootDirectory = paths.frontEndRootDirectory
-const rootDirectory = paths.rootDirectory
 
 // Source Directories
 const sourceDirectory = paths.sourceDirectory
@@ -32,7 +31,7 @@ const WarningsToErrorsPlugin = require('warnings-to-errors-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 const GitRevisionPlugin = require('git-revision-webpack-plugin')
 
 const gitRevisionPlugin = new GitRevisionPlugin({
@@ -55,13 +54,6 @@ module.exports = (env) => ({
    * Set the mode to development mode
    **/
   mode: 'development',
-
-  /**
-   * Source Mapping
-   * enhance debugging by adding meta info for the browser devtools
-   * source-map most detailed at the expense of build speed.
-   **/
-  devtool: false,
 
   /**
    * Development Server
@@ -103,7 +95,6 @@ module.exports = (env) => ({
    */
   entry: {
     app: path.resolve(sourceDirectory, 'app.js'),
-    game_libs: ['pixi', 'p2', 'phaser'],
   },
 
   // These options change how modules are resolved
@@ -111,32 +102,21 @@ module.exports = (env) => ({
     alias: alias,
     // Automatically resolve certain extensions.
     extensions: ['.js', '.less'],
+    fallback: {
+      stream: require.resolve('stream-browserify'),
+      crypto: require.resolve('crypto-browserify'),
+      http: require.resolve('stream-http'),
+      https: require.resolve('https-browserify'),
+      path: require.resolve('path-browserify'),
+      zlib: require.resolve('browserify-zlib'),
+    },
   },
 
   /**
    * Optimizations
    */
   optimization: {
-    runtimeChunk: true,
-    splitChunks: {
-      chunks: 'all',
-      maxInitialRequests: Infinity,
-      minSize: 0,
-      cacheGroups: {
-        reactVendor: {
-          test: /[\\/]node_modules[\\/](react|react-dom|react-redux|redux)[\\/]/,
-          name: 'core.vendors',
-        },
-        materialUI: {
-          test: /[\\/]node_modules[\\/](@material-ui)[\\/]/,
-          name: 'material-ui',
-        },
-        vendor: {
-          test: /[\\/]node_modules[\\/](!react)(!react-dom)(!react-redux)(!redux)(!@material-ui)[\\/]/,
-          name: 'vendor',
-        },
-      },
-    },
+    runtimeChunk: 'multiple',
   },
 
   /**
@@ -148,7 +128,7 @@ module.exports = (env) => ({
     filename: path.join(outputScriptsDirectory, '[name].[contenthash].js'),
     chunkFilename: path.join(outputScriptsDirectory, '[name].[contenthash].js'),
     path: env && env.legacy ? outputDirectoryLegacy : outputDirectory,
-    publicPath: '',
+    publicPath: '/',
   },
 
   /**
@@ -170,7 +150,8 @@ module.exports = (env) => ({
     }),
     new CaseSensitivePathsPlugin({ debug: true }),
     new WarningsToErrorsPlugin(),
-    new CleanWebpackPlugin([env && env.legacy ? outputDirectoryLegacy : outputDirectory], { root: rootDirectory }),
+    new CleanWebpackPlugin(),
+    // new CleanWebpackPlugin([env && env.legacy ? outputDirectoryLegacy : outputDirectory], { root: paths.rootDirectory }),
     new HtmlWebpackPlugin({
       template: path.resolve(frontEndRootDirectory, 'index.html'),
       templateParameters: {
@@ -186,15 +167,16 @@ module.exports = (env) => ({
       },
     }),
     new MiniCssExtractPlugin({
-      filename: path.join(outputStylesDirectory, '[name].[hash].css'),
-      chunkFilename: path.join(outputStylesDirectory, '[id].[hash].css'),
+      filename: path.join(outputStylesDirectory, '[name].[contenthash].css'),
+      chunkFilename: path.join(outputStylesDirectory, '[id].[contenthash].css'),
     }),
-    new CopyPlugin([
-      { from: sourceFontsDirectory, to: outputFontsDirectory },
-      { from: sourceImagesDirectory, to: outputImagesDirectory },
-      { from: sourceFaviconsDirectory, to: env && env.legacy ? outputDirectoryLegacy : outputDirectory },
-      { from: sourceGamesDirectory, to: outputGamesDirectory },
-    ]),
+    new CopyPlugin({
+      patterns: [
+        { from: sourceFontsDirectory, to: outputFontsDirectory },
+        { from: sourceImagesDirectory, to: outputImagesDirectory },
+        { from: sourceFaviconsDirectory, to: env && env.legacy ? outputDirectoryLegacy : outputDirectory },
+        { from: sourceGamesDirectory, to: outputGamesDirectory },
+      ]}),
     new webpack.DefinePlugin({
       ENV_NUXEO_URL: env && env.NUXEO_URL ? JSON.stringify(env.NUXEO_URL) : null,
       ENV_WEB_URL: env && env.WEB_URL ? JSON.stringify(env.WEB_URL) : null,
@@ -212,49 +194,47 @@ module.exports = (env) => ({
        */
       {
         test: /\.js$/,
-        loader: 'babel-loader',
-        exclude: env && env.legacy ? /node_modules\/(?!@fpcc|nuxeo)/ : /node_modules\/(?!@fpcc)/,
-        options: {
-          cacheDirectory: true,
-          presets: ['@babel/preset-env', '@babel/preset-react'],
-          plugins: [
-            ['@babel/plugin-syntax-dynamic-import'],
-            ['@babel/plugin-proposal-decorators', { legacy: true }],
-            ['@babel/plugin-proposal-class-properties', { loose: true }],
-          ],
-        },
-      },
-      {
-        test: require.resolve('react'),
-        use: 'expose-loader?React',
-      },
-      /**
-       * Look at removing this and just having peer dependencies
-       **/
-      {
-        test: /pixi\.js/,
-        use: {
-          loader: 'expose-loader',
-          query: 'PIXI',
-        },
-      },
-      {
-        test: /phaser-split\.js$/,
-        use: {
-          loader: 'expose-loader',
-          query: 'Phaser',
-        },
-      },
-      {
-        test: /p2\.js/,
-        use: {
-          loader: 'expose-loader',
-          query: 'p2',
-        },
+        use: [
+          {
+
+            loader: 'babel-loader',
+            options: {
+              exclude: env && env.legacy ? /node_modules\/(?!@fpcc|nuxeo)/ : /node_modules\/(?!@fpcc)/,
+              cacheDirectory: true,
+              presets: [
+                [
+                  '@babel/preset-env',
+                  {
+                    targets: {
+                      node: 'current',
+                    },
+                  },
+                ],
+                '@babel/preset-react',
+              ],
+              plugins: [
+                '@babel/plugin-syntax-jsx',
+                '@babel/plugin-syntax-dynamic-import',
+                ['@babel/plugin-proposal-decorators', { legacy: true }],
+                ['@babel/plugin-proposal-class-properties', { loose: true }],
+                '@babel/plugin-transform-runtime',
+              ],
+            },
+          },
+        ],
       },
       /**
        * Style Loaders
        */
+      {
+        test: /\.css$/i,
+        use: ['style-loader', {
+          loader: 'css-loader',
+          options: {
+            import: true,
+          },
+        }],
+      },
       {
         test: /\.less$/,
         use: [
@@ -280,63 +260,65 @@ module.exports = (env) => ({
        */
       {
         test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-        loader: 'url-loader?limit=10000&minetype=application/font-woff',
-        options: {
-          limit: 10000,
-          mimetype: 'application/font-woff',
-          name: path.join(outputFontsDirectory, '[name].[hash].[ext]'),
-        },
+        use: [
+          {
+            loader: 'url-loader?limit=10000&minetype=application/font-woff',
+            options: {
+              limit: 10000,
+              mimetype: 'application/font-woff',
+              name: path.join(outputFontsDirectory, '[name].[contenthash].[ext]'),
+            },
+          },
+        ],
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        options: {
-          limit: 10000,
-          mimetype: 'application/octet-stream',
-          name: path.join(outputFontsDirectory, '[name].[hash].[ext]'),
-        },
+        use: [
+          {
+            loader: 'url-loader',
+            options: {
+              limit: 10000,
+              mimetype: 'application/octet-stream',
+              name: path.join(outputFontsDirectory, '[name].[contenthash].[ext]'),
+            },
+          },
+        ],
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader',
-        options: {
-          name: path.join(outputFontsDirectory, '[name].[hash].[ext]'),
-        },
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: path.join(outputFontsDirectory, '[name].[contenthash].[ext]'),
+          },
+        }],
       },
       /**
        * Image Loaders
        */
       {
         test: /\.(jpg|jpeg|png|gif)$/,
-        loader: 'file-loader',
-        options: {
-          name: path.join(outputImagesDirectory, '[name].[hash].[ext]'),
-        },
+        use: [{
+          loader: 'file-loader',
+          options: {
+            name: path.join(outputImagesDirectory, '[name].[contenthash].[ext]'),
+          },
+        }],
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        options: {
-          name: path.join(outputImagesDirectory, '[name].[hash].[ext]'),
-          limit: 10000,
-          mimetype: 'image/svg+xml',
-        },
+        use: [{
+          loader: 'url-loader',
+          options: {
+            name: path.join(outputImagesDirectory, '[name].[contenthash].[ext]'),
+            limit: 10000,
+            mimetype: 'image/svg+xml',
+          },
+        }],
       },
     ],
   },
 
-  /**
-   * These options configure whether to polyfill or mock
-   * certain Node.js globals and modules.
-   * This allows code originally written for the Node.js environment
-   * to run in other environments like the browser.
-   */
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-    console: true,
-  },
   // https://webpack.js.org/configuration/performance/
   performance: {
     maxAssetSize: 250000,
