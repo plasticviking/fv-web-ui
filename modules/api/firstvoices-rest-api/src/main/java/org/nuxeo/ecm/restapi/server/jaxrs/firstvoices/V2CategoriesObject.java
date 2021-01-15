@@ -2,8 +2,6 @@ package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
 import ca.firstvoices.rest.data.Category;
 import ca.firstvoices.rest.data.CategoryList;
-import ca.firstvoices.rest.data.PhraseBook;
-import ca.firstvoices.rest.data.PhraseBookList;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedList;
