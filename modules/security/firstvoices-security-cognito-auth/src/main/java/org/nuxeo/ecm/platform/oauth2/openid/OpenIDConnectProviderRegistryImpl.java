@@ -124,7 +124,10 @@ public class OpenIDConnectProviderRegistryImpl extends DefaultComponent
         oauth2Provider.setScopes(provider.getScopes());
         oauth2Provider.setTokenServerURL(provider.getTokenServerURL());
         oauth2Provider.setUserAuthorizationURL(provider.getAuthorizationServerURL());
-        oauth2ProviderRegistry.updateProvider(provider.getName(), oauth2Provider);
+        final OAuth2ServiceProvider oauth2ProviderToUpdate = oauth2Provider;
+        Framework.doPrivileged(() -> {
+          oauth2ProviderRegistry.updateProvider(provider.getName(), oauth2ProviderToUpdate);
+        });
       }
 
       oauth2Provider = oauth2ProviderRegistry.addProvider(
