@@ -54,8 +54,8 @@ public class BulkUpdate {
   @Context CoreSession session;
 
   @OperationMethod()
-  public void run(List refs) {
-    List<DocumentRef> drf = (List<DocumentRef>) refs.stream().map(r -> {
+  public void run(List<Object> refs) {
+    List<DocumentRef> drf = refs.stream().map(r -> {
       if (r instanceof String) {
         return new IdRef((String) r);
       } else if (r instanceof DocumentRef) {
