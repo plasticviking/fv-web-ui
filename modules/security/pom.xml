@@ -16,7 +16,6 @@
     <module>firstvoices-security</module>
     <module>firstvoices-security-cognito-auth</module>
     <module>firstvoices-security-user-registration</module>
-    <module>firstvoices-security-lockout</module>
   </modules>
 
 </project>
