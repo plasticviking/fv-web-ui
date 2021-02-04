@@ -34,5 +34,15 @@
       <pageSize>1000</pageSize>
     </coreQueryPageProvider>
 
+    <coreQueryPageProvider name="FIND_PHRASES_WITH_PHRASEBOOK_PROXIED_PP">
+      <pattern>
+        select * from FVPhrase where fvproxy:proxied_categories = ? and ecm:isVersion=0 and ecm:isTrashed=0
+      </pattern>
+      <sort column="dc:title" ascending="true"/>
+      <pageSize>1000</pageSize>
+    </coreQueryPageProvider>
+
+
+
   </extension>
 </component>

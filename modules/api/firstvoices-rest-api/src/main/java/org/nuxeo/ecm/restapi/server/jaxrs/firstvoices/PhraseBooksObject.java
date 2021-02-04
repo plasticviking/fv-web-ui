@@ -32,6 +32,8 @@ public class PhraseBooksObject extends DefaultObject {
   public static final String FIND_PHRASEBOOKS_IN_PHRASEBOOK_PP =
       "FIND_PHRASEBOOKS_IN_PHRASEBOOK_PP";
   public static final String FIND_PHRASES_WITH_PHRASEBOOK_PP = "FIND_PHRASES_WITH_PHRASEBOOK_PP";
+  public static final String FIND_PHRASES_WITH_PHRASEBOOK_PROXIED_PP =
+      "FIND_PHRASES_WITH_PHRASEBOOK_PROXIED_PP";
 
   /**
    * Accepts the ID of a dialect for which to return all phrase books (and their item counts)
@@ -84,11 +86,17 @@ public class PhraseBooksObject extends DefaultObject {
       allPhrasebooks.addAll(pageProvider.getCurrentPage());
     }
 
+    String phrasesInPhraseBookPP = FIND_PHRASES_WITH_PHRASEBOOK_PP;
+    if (phraseBooksDoc.getPathAsString().toLowerCase().startsWith("/fv/sections")) {
+      phrasesInPhraseBookPP = FIND_PHRASES_WITH_PHRASEBOOK_PROXIED_PP;
+    }
+
+
     for (DocumentModel phraseBook : allPhrasebooks) {
 
       PageProvider<DocumentModel> phrasesInPhrasebookPageProvider =
           (PageProvider<DocumentModel>) pageProviderService
-              .getPageProvider(FIND_PHRASES_WITH_PHRASEBOOK_PP,
+              .getPageProvider(phrasesInPhraseBookPP,
               null,
               null,
               null,
