@@ -98,8 +98,6 @@ public class CategoriesObject extends DefaultObject {
     for (DocumentModel category : allCategories) {
 
 
-
-
       PageProvider<DocumentModel> wordsInCategoryPageProvider =
           (PageProvider<DocumentModel>) pageProviderService.getPageProvider(
               wordsInCategoryPP,
@@ -133,8 +131,8 @@ public class CategoriesObject extends DefaultObject {
 
     for (final Category cat : categoryMap.values()) {
       if (cat.getParentId() != null && categoryMap.containsKey(cat.getParentId())) {
-          categoryMap.get(cat.getParentId()).incrementEntryCount(cat.getEntryCount());
-        }
+        categoryMap.get(cat.getParentId()).incrementEntryCount(cat.getEntryCount());
+      }
     }
 
     List<Category> list = new ArrayList<>(categoryMap.values());
