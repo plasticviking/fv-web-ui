@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -133,11 +132,9 @@ public class CategoriesObject extends DefaultObject {
     }
 
     for (final Category cat : categoryMap.values()) {
-      if (cat.getParentId() != null) {
-        if (categoryMap.containsKey(cat.getParentId())) {
+      if (cat.getParentId() != null && categoryMap.containsKey(cat.getParentId())) {
           categoryMap.get(cat.getParentId()).incrementEntryCount(cat.getEntryCount());
         }
-      }
     }
 
     List<Category> list = new ArrayList<>(categoryMap.values());
