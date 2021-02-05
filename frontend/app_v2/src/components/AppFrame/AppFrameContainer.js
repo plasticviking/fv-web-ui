@@ -3,11 +3,11 @@ import { Switch, Route, Link } from 'react-router-dom'
 import './AppFrame.css'
 import About from 'components/About'
 import Suspender from 'components/Suspender'
-import Header from 'components/Header'
 import useRoute from 'app_v1/useRoute'
 import WordsListContainer from 'app_v1/WordsListContainer'
 import useSearchParams from 'common/useSearchParams'
 import DialectHeader from 'components/DialectHeader'
+import Topics from 'components/Topics'
 import WidgetWotd from 'components/WidgetWotd'
 
 /**
@@ -48,11 +48,9 @@ function AppFrameContainer() {
   }, [])
   return (
     <div className="AppFrame">
-      <Header.Container className="AppV2__header" />
-      {/* Sample nav for header */}
       <nav>
         <DialectHeader.Container />
-        <ul>
+        <ul className="p-0 flex flex-row w-full justify-evenly">
           <li>
             <Link to="/">Home</Link>
           </li>
@@ -61,6 +59,9 @@ function AppFrameContainer() {
           </li>
           <li>
             <Link to="/words">Words</Link>
+          </li>
+          <li>
+            <Link to="/topics">Topics</Link>
           </li>
         </ul>
       </nav>
@@ -72,6 +73,9 @@ function AppFrameContainer() {
             </Route>
             <Route path="/words">
               <WordsListContainer />
+            </Route>
+            <Route path="/topics">
+              <Topics.Container />
             </Route>
             <Route path="/">
               <Home />
