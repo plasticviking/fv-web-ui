@@ -3,7 +3,6 @@ import PropTypes from 'prop-types'
 import TopicsPresentationTopic from 'components/Topics/TopicsPresentationTopic'
 /**
  * @summary TopicsPresentation
- * @version 1.0.0
  * @component
  *
  * @param {object} props
@@ -14,13 +13,12 @@ function TopicsPresentation({ title, topics }) {
   return (
     <div className="Topics bg-white py-8">
       <div className="relative">
-        <h2 className="mb-12 relative z-10 text-center text-4xl text-fv-blue font-bold uppercase sm:text-5xl">
+        <h2 className="mb-12 relative z-10 text-center text-4xl text-fv-blue font-bold sm:text-5xl">
           <span
             className={`
             inline-block
             px-4
             sm:px-8
-            XXmd:px-16
             lg:px-20
 
             bg-white

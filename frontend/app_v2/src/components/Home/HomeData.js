@@ -3,7 +3,6 @@ import useGetSections from 'common/useGetSections'
 import homeAdaptor from 'components/Home/homeAdaptor'
 /**
  * @summary HomeData
- * @version 1.0.1
  * @component
  *
  * @param {object} props

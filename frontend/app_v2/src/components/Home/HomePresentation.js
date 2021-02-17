@@ -25,7 +25,6 @@ import {
 
 /**
  * @summary HomePresentation
- * @version 1.0.1
  * @component
  *
  * @param {object} props
@@ -61,6 +60,7 @@ function HomePresentation({
                 src={language.logoUrl}
                 classNameWidth="w-56 lg:w-72"
                 classNameHeight="h-56 lg:h-72"
+                alt=""
               />
             ) : (
               fallBackIcon
@@ -192,10 +192,19 @@ function HomePresentation({
   )
 }
 // PROPTYPES
-const { object } = PropTypes
+const { array, string, shape } = PropTypes
 HomePresentation.propTypes = {
-  data: object,
-  language: object,
+  data: shape({
+    uid: string,
+    pageTitle: string,
+    widgets: array,
+  }),
+  language: shape({
+    title: string,
+    uid: string,
+    path: string,
+    logoUrl: string,
+  }),
 }
 
 export default HomePresentation
