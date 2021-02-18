@@ -8,8 +8,6 @@ build:
     context: dockerfiles/firstvoices
   local:
     useDockerCLI: true
-  insecureRegistries:
-    - mk8s.mapleleaf.intranet:32000
 deploy:
   kubectl:
     manifests:

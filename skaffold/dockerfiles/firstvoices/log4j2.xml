@@ -1,184 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Log4j Configuration - For more configuration information and examples see https://logging.apache.org/log4j/2.x/ -->
-<Configuration monitorInterval="30" packages="io.sentry" status="WARN">
+<Configuration monitorInterval="30" status="WARN">
   <Appenders>
-    <!-- ================================= -->
-    <!-- Preserve messages in a local file -->
-    <!-- ================================= -->
     <RollingFile name="FILE" fileName="${sys:nuxeo.log.dir}/server.log"
                  filePattern="${sys:nuxeo.log.dir}/server-%d{yyyy-MM-dd}.log.gz" append="true">
       <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
       <CronTriggeringPolicy schedule="0 0 0 * * ?" evaluateOnStartup="true" /> <!-- Rollover at midnight every day -->
       <DefaultRolloverStrategy />
-      <ThresholdFilter level="WARN" onMatch="ACCEPT" />
+      <ThresholdFilter level="DEBUG" onMatch="ACCEPT" />
     </RollingFile>
 
-    <!-- ============================= -->
-    <!-- Gather errors in a local file -->
-    <!-- ============================= -->
-    <RollingFile name="ERROR-FILE" fileName="${sys:nuxeo.log.dir}/nuxeo-error.log"
-                 filePattern="${sys:nuxeo.log.dir}/nuxeo-error-%d{yyyy-MM-dd}.log.gz" append="true">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-      <CronTriggeringPolicy schedule="0 0 0 * * ?" evaluateOnStartup="true" /> <!-- Rollover at midnight every day -->
-      <DefaultRolloverStrategy />
-    </RollingFile>
-
-    <!-- ============================= -->
-    <!-- Gather stderr in a local file -->
-    <!-- ============================= -->
-    <RollingFile name="STDERR-FILE" fileName="${sys:nuxeo.log.dir}/stderr.log"
-                 filePattern="${sys:nuxeo.log.dir}/stderr-%d{yyyy-MM-dd}.log.gz" append="true">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-      <CronTriggeringPolicy schedule="0 0 0 * * ?" evaluateOnStartup="true" /> <!-- Rollover at midnight every day -->
-      <DefaultRolloverStrategy />
-    </RollingFile>
-
-    <!-- ============================== -->
-    <!-- Append messages to the console -->
-    <!-- ============================== -->
     <Console name="CONSOLE" target="SYSTEM_OUT">
-      <ThresholdFilter level="INFO" onMatch="ACCEPT" />
+      <ThresholdFilter level="DEBUG" onMatch="ACCEPT" />
       <PatternLayout pattern="%d{ISO8601} %-5p [%c{1}] %m%n" />
     </Console>
-
-    <File name="CLASSLOADER" fileName="${sys:nuxeo.log.dir}/classloader.log" append="false">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-    </File>
-
-    <File name="TOMCAT" fileName="${sys:nuxeo.log.dir}/tomcat.log" append="false">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-    </File>
-
-    <!-- Clustering logging -->
-    <!-- Uncomment the following to redirect the org.jgroups and org.jboss.ha categories to a cluster.log file.
-    <File name="CLUSTER" fileName="${sys:nuxeo.log.dir}/cluster.log" append="false">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-    </File>
-    -->
-
-    <!-- VCS Storage logging -->
-    <!--
-    <File name="STORAGE" fileName="${sys:nuxeo.log.dir}/storage.log" append="false">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-    </File>
-    -->
-    <!-- Elasticsearch logging -->
-    <!--
-    <File name="ELASTIC" fileName="${sys:nuxeo.log.dir}/elastic.log" append="false">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-    </File>
-    -->
-
-    <!-- ====================== -->
-    <!-- More Appender examples -->
-    <!-- ====================== -->
-
-    <!-- Automation Trace appender - add ref into automation.core category
-    <RollingFile name="AUTOMATION" fileName="${sys:nuxeo.log.dir}/automation.log"
-                 filePattern="${sys:nuxeo.log.dir}/automation-%d{yyyy-MM-dd}.log.gz" append="true">
-      <PatternLayout pattern="%d{ISO8601} %-5p [%t] [%c] %m%n" />
-      <CronTriggeringPolicy schedule="0 0 0 * * ?" evaluateOnStartup="true" />
-      <DefaultRolloverStrategy />
-    </RollingFile>
-    -->
-
-    <!-- Buffer events and log them asynchronously
-    <Async name="ASYNC" >
-      <AppenderRef ref="FILE" />
-      <AppenderRef ref="CONSOLE" />
-      <AppenderRef ref="SMTP" />
-    </Async>
-    -->
-
-    <!-- EMail events to an administrator
-    <SMTP name="SMTP" subject="Tomcat Server Errors" to="admin@myhost.domain.com" from="nobody@myhost.domain.com"
-          smtpHost="localhost" smtpPort="25" bufferSize="10">
-      <ThresholdFilter level="ERROR" onMatch="ACCEPT" />
-      <PatternLayout pattern="[%d{ABSOLUTE},%c{1}] %m%n" />
-    </SMTP>
-    -->
-
-    <!-- Syslog events
-    <Syslog name="SYSLOG" host="localhost" facility="LOCAL7">
-      <PatternLayout pattern="[%d{ABSOLUTE},%c{1}] %m%n" />
-    </Syslog>
-    -->
-    <!-- Log events to JMS (requires a topic to be created)
-    <JMS name="JMS" destinationBindingName="topic/MyErrorsTopic" factoryBindingName="java:/ConnectionFactory">
-      <ThresholdFilter level="ERROR" onMatch="ACCEPT" />
-    </JMS>
-    -->
-
-    <Sentry name="Sentry" dsn="https://9f99c993909b4dda85e7178a0eadc7fa@o155797.ingest.sentry.io/1212465" 
-        minimumBreadcrumbLevel="DEBUG"
-        minimumEventLevel="WARN"
-        />
   </Appenders>
   <Loggers>
-    <!-- ============= -->
-    <!-- Nuxeo Loggers -->
-    <!-- ============= -->
 
-    <Logger name="org.nuxeo" level="WARN" />
+    <Logger name="org.nuxeo" level="DEBUG" />
     <Logger name="org.nuxeo.ecm.core.storage.dbs.DBSCachingRepository" level="WARN" />
-    <Logger name="org.nuxeo.elasticsearch.ElasticSearchComponent" level="WARN" />
+    <Logger name="org.nuxeo.elasticsearch.ElasticSearchComponent" level="INFO" />
     <Logger name="org.nuxeo.elasticsearch.audit.ESAuditBackend" level="WARN" />
     <Logger name="org.nuxeo.elasticsearch.audit.ESAuditMigrationWork" level="WARN" />
     <Logger name="org.nuxeo.ecm.platform.query.core.PageProviderClassReplacerRegistry" level="WARN" />
-
-    <!-- Uncomment to debug fragments pre-processing
-    <Logger name="org.nuxeo.runtime.deployment.preprocessor" level="WARN" />
-    -->
-    <!-- Uncomment to debug SQL statements
     <Logger name="org.nuxeo.ecm.core.storage.sql.jdbc" level="trace" />
-    -->
-    <!-- Uncomment to debug concurrent session execution errors on thread
-    <Logger name="org.nuxeo.ecm.core.storage.sql.SessionImpl" level="WARN" />
-    -->
-    <!-- Display INFO logs for automation traces when activated -->
-    <!-- Add <appender-ref ref="AUTOMATION" /> if using AUTOMATION appender-->
-    <Logger name="org.nuxeo.ecm.automation.core" level="WARN" />
-    <!-- Display by default WARN logs for Automation Scripting -->
-    <Logger name="org.nuxeo.ecm.automation.scripting" level="WARN" />
-
-    <Logger name="org.nuxeo.runtime.reload" level="WARN" />
-    <Logger name="org.nuxeo.runtime.osgi.OSGiRuntimeService" level="WARN" />
-    <!-- Uncomment for components registration info
-    <Logger name="org.nuxeo.runtime.model.impl" level="WARN" />
-    -->
-    <Logger name="org.nuxeo.osgi.application.loader.FrameworkLoader" level="WARN" />
-    <Logger name="org.nuxeo.osgi.application.StandaloneApplication" level="WARN" />
-    <Logger name="org.nuxeo.osgi.application.FrameworkBootstrap" level="WARN" />
-    <Logger name="org.nuxeo.runtime.jboss.deployment.NuxeoDeployer" level="WARN" />
-    <Logger name="org.nuxeo.runtime.tomcat.NuxeoDeployer" level="WARN" />
-
-    <!-- Clustering logging -->
-    <!-- Uncomment the following to redirect the org.jgroups and org.jboss.ha categories to a cluster.log file.
-    <Logger name="org.jgroups" level="WARN" additivity="false">
-      <AppenderRef ref="CLUSTER" />
-    </Logger>
-    <Logger name="org.jboss.ha" level="WARN" additivity="false">
-      <AppenderRef ref="CLUSTER" />
-    </Logger>
-    -->
-    <!-- VCS Storage logging -->
-    <!--
-    <Logger name="org.nuxeo.ecm.core.management.jtajca" level="trace" additivity="false">
-      <AppenderRef ref="STORAGE" />
-    </Logger>
-    <Logger name="org.nuxeo.ecm.core.storage.sql.jdbc" level="trace" additivity="false">
-      <AppenderRef ref="STORAGE" />
-    </Logger>
-    -->
-    <!--
-    <Logger name="org.nuxeo.elasticsearch" level="trace" additivity="false">
-      <AppenderRef ref="ELASTIC" />
-    </Logger>
-    -->
-
-    <!-- =================== -->
-    <!-- Third Party Loggers -->
-    <!-- =================== -->
     <Logger name="org.apache.catalina.loader" level="WARN" additivity="false">
       <AppenderRef ref="CLASSLOADER" />
     </Logger>
@@ -186,55 +31,12 @@
       <AppenderRef ref="TOMCAT" />
     </Logger>
 
-    <Logger name="org.jboss.ejb3" level="WARN" />
-    <Logger name="org.jboss.ejb3.cache.simple.StatefulSessionFilePersistenceManager" level="WARN" />
-    <Logger name="org.jboss.management" level="WARN" /> <!-- Limit the JSR77 categories -->
-    <Logger name="org.jboss.mx.loading" level="WARN" />
-    <Logger name="org.jboss.seam" level="WARN" />
-    <Logger name="org.jboss.seam.contexts.Contexts" level="WARN" />
-    <Logger name="org.jboss.seam.contexts.Lifecycle" level="WARN" />
-    <Logger name="org.jboss.seam.security.permission.PersistentPermissionResolver" level="WARN" />
-    <!-- Limit the jboss-serialization to INFO as its DEBUG is verbose -->
-    <Logger name="org.jboss.serial" level="WARN" />
-    <Logger name="org.jboss.system.server.Server" level="WARN" />
-    <!-- Show the evolution of the DataSource pool in the logs [inUse/Available/Max]
-    <Logger name="org.jboss.resource.connectionmanager.JBossManagedConnectionPool" level="trace" />
-    -->
-    <!-- Decrease the priority threshold for the org.jboss.varia category
-    <Logger name="org.jboss.varia" level="WARN" />
-    -->
-    <!--Enable JBossWS message tracing
-    <Logger name="org.jboss.ws.core.MessageTrace" level="trace" />
-    -->
-
-    <Logger name="javax.enterprise.resource.webcontainer.jsf.application" level="WARN" />
-    <Logger name="javax.enterprise.resource.webcontainer.jsf.renderkit" level="WARN" />
-    <Logger name="javax.enterprise.resource.webcontainer.jsf.application" level="WARN" />
-    <Logger name="javax.enterprise.resource.webcontainer.jsf.lifecycle" level="WARN" />
-    <Logger name="org.richfaces.log.Config" level="WARN" />
-    <Logger name="org.ajax4jsf" level="WARN" />
-    <Logger name="org.ajax4jsf.cache.LRUMapCacheFactory" level="WARN" />
-
-    <Logger name="org.apache" level="WARN" /> <!-- Limit the org.apache category to INFO as its DEBUG is verbose -->
-    <Logger name="org.apache.cxf" level="WARN" />
-    <Logger name="org.apache.myfaces.renderkit.html.util.DefaultAddResource" level="WARN" />
-    <Logger name="org.apache.zookeeper" level="WARN" />
-    <Logger name="org.apache.kafka" level="WARN" />
-
-    <Logger name="org.hibernate" level="WARN" />
-    <Logger name="org.hibernate.engine.StatefulPersistenceContext.ProxyWarnLog" level="WARN" />
-    <Logger name="org.hibernate.impl.SessionFactoryObjectFactory" level="WARN" />
-    <Logger name="org.hibernate.cache.EhCacheProvider" level="WARN" />
-    <Logger name="org.hibernate.hql.ast.tree.FromElementType" level="WARN" />
-    <Logger name="org.hibernate.ejb.Ejb3Configuration" level="WARN" />
-
-    <Logger name="org.jbpm" level="WARN" />
-    <Logger name="org.jbpm.jpdl.xml.JpdlXmlReader" level="WARN" />
-
-    <Logger name="jacorb" level="WARN" /> <!-- Limit the jacorb category to WARN as its INFO is verbose -->
-    <Logger name="org.jgroups" level="WARN" /> <!-- Limit the org.jgroups category to WARN as its INFO is verbose -->
-    <Logger name="org.quartz" level="WARN" /> <!-- Limit the org.quartz category to WARN as its DEBUG is verbose -->
-    <Logger name="com.sun.jersey.spi.container.servlet.WebComponent" level="WARN" /> <!-- make Jersey less noisy -->
+    <Logger name="org.jboss" level="INFO" />
+    <Logger name="org.hibernate" level="INFO" />
+    <Logger name="jacorb" level="WARN" />
+    <Logger name="org.jgroups" level="WARN" />
+    <Logger name="org.quartz" level="WARN" />
+    <Logger name="com.sun.jersey.spi.container.servlet.WebComponent" level="WARN" /> 
     <Logger name="com.sun.jersey.spi.inject.Errors" level="WARN">
       <!-- hide warn on GET with payload used for elasticsearch passthrough -->
       <RegexFilter regex="The following warnings have been detected.*(\n.*org.nuxeo.elasticsearch.http.*){1,3}.*" onMatch="DENY" onMismatch="NEUTRAL" />
@@ -243,24 +45,11 @@
     <Logger name="org.apache.shindig.common.xml.XmlUtil" level="WARN" />
     <Logger name="org.apache.myfaces.shared_tomahawk" level="WARN" />
     <Logger name="org.artofsolving.jodconverter" level="WARN" />
-    <Logger name="net.openhft.chronicle.queue.impl.single.SCQIndexing" level="WARN" /> <!-- Hide perf warnings -->
 
     <Logger name="org.elasticsearch.bootstrap" level="WARN" />
 
-    <!-- See org.nuxeo.ecm.platform.ui.web.shield.ErrorPageForwarder and
-    org.nuxeo.ecm.platform.web.common.exceptionhandling.service.ExceptionHandlingContrib in
-    nuxeo-services/nuxeo-platform-web-common/src/main/resources/OSGI-INF/exception-handling-contrib.xml -->
-    <Logger name="nuxeo-error-log" level="trace">
-      <AppenderRef ref="ERROR-FILE" />
-    </Logger>
-    <!-- System.err redirected by Tomcat to a logger STDERR with level ERROR -->
-    <Logger name="STDERR" level="WARN" additivity="false">
-      <AppenderRef ref="STDERR-FILE" />
-    </Logger>
     <Root level="DEBUG">
       <AppenderRef ref="CONSOLE" />
-      <AppenderRef ref="FILE" />
-      <AppenderRef ref="Sentry"/>
     </Root>
   </Loggers>
 </Configuration>
