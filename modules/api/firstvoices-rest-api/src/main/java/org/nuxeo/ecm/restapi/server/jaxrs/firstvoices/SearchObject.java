@@ -20,6 +20,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.SortInfo;
 import org.nuxeo.ecm.webengine.model.WebObject;
 import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
@@ -35,7 +36,10 @@ public class SearchObject extends DefaultObject {
   @GET
   @Path("")
   public Response doSearch(
-      @QueryParam(value = "q") String query, @QueryParam(value = "parentPath") String parent,
+      @QueryParam(value = "q") String query,
+      @QueryParam(value = "parentPath") String parent,
+      @QueryParam(value = "ancestorId") String ancestorId,
+      @QueryParam(value = "docType") @DefaultValue("all") String docType,
       @QueryParam(value = "domain") @DefaultValue("both") String domain) {
 
     SearchDomain searchDomain = SearchDomain.BOTH;
@@ -46,29 +50,67 @@ public class SearchObject extends DefaultObject {
       // just use the default
     }
 
+    SearchResults.DocumentTypes documentTypes = SearchResults.DocumentTypes.ALL;
+
+    try {
+      documentTypes = SearchResults.DocumentTypes.valueOf(docType);
+    } catch (IllegalArgumentException e) {
+      // just use the default
+    }
+
     SearchResults searchResults = new SearchResults();
 
     searchResults.setQuery(query);
     searchResults.setDomain(searchDomain);
+    searchResults.setDocumentTypes(documentTypes);
 
     final CoreSession session = getContext().getCoreSession();
     final ElasticSearchService ess = Framework.getService(ElasticSearchService.class);
 
     BoolQueryBuilder basicConstraints;
 
+    BoolQueryBuilder typesQuery = QueryBuilders
+        .boolQuery();
+
+    switch (documentTypes) {
+
+      case BOOK:
+        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVBook"));
+        break;
+      case PHRASE:
+        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVPhrase"));
+        break;
+      case WORD:
+        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVWord"));
+        break;
+      case ALL:
+      default:
+        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVBook"));
+        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVPhrase"));
+        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVWord"));
+        break;
+    }
+
+    typesQuery.minimumShouldMatch(1);
+
     basicConstraints = QueryBuilders.boolQuery().must(QueryBuilders.matchQuery("ecm:isVersion",
-        false)).must(QueryBuilders
-        .boolQuery()
-        .should(QueryBuilders.matchQuery("ecm:primaryType", "FVWord"))
-        .should(QueryBuilders.matchQuery(
-            "ecm:primaryType",
-            "FVPhrase"))
-        .should(QueryBuilders.matchQuery("ecm:primaryType", "FVBook"))
-        .minimumShouldMatch(1));
+        false)).must(
+            typesQuery
+                    );
+
+    if (ancestorId != null && ancestorId.trim().length() > 0) {
+      //can't use ecm:ancestorId in ES, but we do have path
+      DocumentModel dm = session.getDocument(new IdRef(ancestorId));
+      if (dm != null) {
+        parent = dm.getPathAsString();
+      }
+    }
 
     if (parent != null && parent.trim().length() > 0) {
       basicConstraints.must(QueryBuilders.wildcardQuery("ecm:path", parent + "*"));
     }
+
+
 
     QueryBuilder englishQuery = QueryBuilders
         .fuzzyQuery("exact_matches_translations", query)
