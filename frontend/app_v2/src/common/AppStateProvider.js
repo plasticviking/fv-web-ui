@@ -6,22 +6,9 @@ import useRoute from 'app_v1/useRoute'
 import AppStateContext from 'common/AppStateContext'
 import AudioMachineData from 'components/AudioMachine/AudioMachineData'
 import api from 'services/api'
+import getSectionsAdaptor from 'services/api/adaptors/getSections'
 import { reducerInitialState, reducer } from 'common/reducer'
-export function getSectionsAdaptor(response) {
-  const {
-    title,
-    uid,
-    path,
-    logoId: idLogo,
-    // parentLanguageTitle,
-  } = response
-  return {
-    title,
-    uid,
-    path,
-    idLogo,
-  }
-}
+
 export function rawGetByIdAdaptor(response) {
   const fileContent = response?.properties?.['file:content'] || {}
   return {
@@ -51,7 +38,7 @@ function AppStateProvider({ children }) {
   const logoId = state.api.getSections.idLogo
   useEffect(() => {
     if (state.api.getSections.idLogo) {
-      api.rawGetById(logoId, rawGetByIdAdaptor).then(({ error: rawGetByIdError, data: rawGetByIdData }) => {
+      api.rawGetById(logoId, rawGetByIdAdaptor, 'file').then(({ error: rawGetByIdError, data: rawGetByIdData }) => {
         if (rawGetByIdError === undefined) {
           const { url } = rawGetByIdData
           // IMPORTANT: have to invalidate sections cache since
