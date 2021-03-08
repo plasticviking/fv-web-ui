@@ -33,7 +33,7 @@ import org.nuxeo.runtime.api.Framework;
 @Produces(MediaType.APPLICATION_JSON)
 public class SearchObject extends DefaultObject {
 
-  private final static String ECM_PRIMARY_TYPE = "ecm:primaryType";
+  private static final String ECM_PRIMARY_TYPE = "ecm:primaryType";
 
   @GET
   @Path("")
