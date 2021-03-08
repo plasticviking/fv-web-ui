@@ -33,6 +33,8 @@ import org.nuxeo.runtime.api.Framework;
 @Produces(MediaType.APPLICATION_JSON)
 public class SearchObject extends DefaultObject {
 
+  private final static String ECM_PRIMARY_TYPE = "ecm:primaryType";
+
   @GET
   @Path("")
   public Response doSearch(
@@ -75,19 +77,19 @@ public class SearchObject extends DefaultObject {
     switch (documentTypes) {
 
       case BOOK:
-        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVBook"));
+        typesQuery.should(QueryBuilders.matchQuery(ECM_PRIMARY_TYPE, "FVBook"));
         break;
       case PHRASE:
-        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVPhrase"));
+        typesQuery.should(QueryBuilders.matchQuery(ECM_PRIMARY_TYPE, "FVPhrase"));
         break;
       case WORD:
-        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVWord"));
+        typesQuery.should(QueryBuilders.matchQuery(ECM_PRIMARY_TYPE, "FVWord"));
         break;
       case ALL:
       default:
-        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVBook"));
-        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVPhrase"));
-        typesQuery.should(QueryBuilders.matchQuery("ecm:primaryType", "FVWord"));
+        typesQuery.should(QueryBuilders.matchQuery(ECM_PRIMARY_TYPE, "FVBook"));
+        typesQuery.should(QueryBuilders.matchQuery(ECM_PRIMARY_TYPE, "FVPhrase"));
+        typesQuery.should(QueryBuilders.matchQuery(ECM_PRIMARY_TYPE, "FVWord"));
         break;
     }
 
