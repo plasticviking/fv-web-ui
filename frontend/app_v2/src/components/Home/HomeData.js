@@ -1,6 +1,6 @@
 import api from 'services/api'
 import useGetSections from 'common/useGetSections'
-import homeAdaptor from 'components/Home/homeAdaptor'
+import getCommunityHomeAdaptor from 'services/api/adaptors/getCommunityHome'
 /**
  * @summary HomeData
  * @component
@@ -8,14 +8,13 @@ import homeAdaptor from 'components/Home/homeAdaptor'
  * @param {object} props
  *
  */
-// TODO: REMOVE HARDCODED LANGUAGE DEFAULT
 function HomeData() {
   const { title, uid, path, logoUrl } = useGetSections()
-  const { isLoading, error, data, dataOriginal } = api.getCommunityHome(title, homeAdaptor)
+  const { isLoading, error, data, dataOriginal } = api.getCommunityHome(title, getCommunityHomeAdaptor)
 
   return {
     isLoading,
-    error,
+    error: title === undefined || error,
     data,
     dataOriginal,
     language: {
