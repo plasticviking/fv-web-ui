@@ -85,8 +85,8 @@ public class AlphabetObject extends DefaultObject {
 
       String[] words = (String[]) charDoc.getPropertyValue("fvcharacter:related_words");
       if (words != null) {
-        for (Object s : words) {
-          Word w = wordFromId(session, (String) s);
+        for (String s : words) {
+          Word w = wordFromId(session, s);
           if (w != null) {
             c.getRelatedWords().add(w);
           }

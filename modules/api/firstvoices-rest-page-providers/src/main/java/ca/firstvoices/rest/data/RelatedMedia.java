@@ -1,8 +1,6 @@
 package ca.firstvoices.rest.data;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
 @SuppressWarnings("java:S1700")
 public class RelatedMedia implements Serializable {

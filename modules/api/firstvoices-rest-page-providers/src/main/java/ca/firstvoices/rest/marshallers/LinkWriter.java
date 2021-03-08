@@ -1,6 +1,5 @@
 package ca.firstvoices.rest.marshallers;
 
-import ca.firstvoices.rest.data.Character;
 import ca.firstvoices.rest.data.Link;
 import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
