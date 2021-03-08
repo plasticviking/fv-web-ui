@@ -3,21 +3,25 @@ package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
 import ca.firstvoices.rest.data.Alphabet;
 import ca.firstvoices.rest.data.Character;
+import ca.firstvoices.rest.data.RelatedMedia;
 import ca.firstvoices.rest.data.Word;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import javax.print.Doc;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import org.nuxeo.ecm.core.api.Blob;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.model.BlobNotFoundException;
 import org.nuxeo.ecm.platform.query.api.PageProvider;
 import org.nuxeo.ecm.platform.query.api.PageProviderService;
 import org.nuxeo.ecm.platform.query.nxql.CoreQueryDocumentPageProvider;
@@ -76,93 +80,118 @@ public class AlphabetObject extends DefaultObject {
       allCharacters.addAll(pageProvider.getCurrentPage());
     }
 
-    for (DocumentModel charDoc: allCharacters) {
+    for (DocumentModel charDoc : allCharacters) {
       Character c = new Character(charDoc.getId(), charDoc.getTitle());
 
-      Object v = charDoc.getPropertyValue("fvcharacter:related_words");
-      if (v != null) {
-        Word relatedWord;
+      String[] words = (String[]) charDoc.getPropertyValue("fvcharacter:related_words");
+      if (words != null) {
+        for (Object s : words) {
+          Word w = wordFromId(session, (String) s);
+          if (w != null) {
+            c.getRelatedWords().add(w);
+          }
+        }
+      }
+
+      String[] relatedAudio = (String[]) charDoc
+          .getPropertyValue("fvcore:related_audio");
+      if (relatedAudio != null) {
+        for (String audioId: relatedAudio) {
+          RelatedMedia m = mediaFromId(session, audioId);
+          if (m != null) {
+            c.getRelatedAudio().add(m);
+          }
+        }
+      }
+
+      String[] relatedPictures =  (String[]) charDoc
+          .getPropertyValue("fvcore:related_pictures");
+      if (relatedPictures != null) {
+        for (String pictureId: relatedPictures) {
+          RelatedMedia m = mediaFromId(session, pictureId);
+          if (m != null) {
+            c.getRelatedPictures().add(m);
+          }
+        }
+      }
+
+      String[] relatedVideo = (String[]) charDoc
+          .getPropertyValue("fvcore:related_videos");
+      if (relatedVideo != null) {
+        for (String videoId: relatedVideo) {
+          RelatedMedia m = mediaFromId(session, videoId);
+          if (m != null) {
+            c.getRelatedVideo().add(m);
+          }
+        }
       }
 
       alphabet.getCharacters().add(c);
     }
 
-
-
-
-    // Map<String, Category> categoryMap = new HashMap<>();
-
-    //
-    //    pageProvider = (PageProvider<DocumentModel>) pageProviderService.getPageProvider(
-    //        FIND_CATEGORY_IN_CATEGORIES_PP,
-    //        null,
-    //        null,
-    //        null,
-    //        props,
-    //        categoriesDoc.getId());
-    //
-    //    List<DocumentModel> allCategories = new LinkedList<>();
-    //    allCategories.addAll(pageProvider.getCurrentPage());
-    //    while (pageProvider.isNextPageAvailable()) {
-    //      pageProvider.nextPage();
-    //      allCategories.addAll(pageProvider.getCurrentPage());
-    //    }
-    //
-    //    String wordsInCategoryPP = FIND_WORDS_WITH_CATEGORY_PP;
-    //    if (categoriesDoc.getPathAsString().toLowerCase().startsWith("/fv/sections")) {
-    //      wordsInCategoryPP = FIND_WORDS_WITH_CATEGORY_PROXIED_PP;
-    //    }
-    //
-    //    for (DocumentModel category : allCategories) {
-    //
-    //
-    //      PageProvider<DocumentModel> wordsInCategoryPageProvider =
-    //          (PageProvider<DocumentModel>) pageProviderService.getPageProvider(
-    //              wordsInCategoryPP,
-    //              null,
-    //              null,
-    //              null,
-    //              props,
-    //              category.getId());
-    //
-    //
-    //      List<DocumentModel> allWords = new LinkedList<>(wordsInCategoryPageProvider
-    //     .getCurrentPage());
-    //      while (wordsInCategoryPageProvider.isNextPageAvailable()) {
-    //        wordsInCategoryPageProvider.nextPage();
-    //        allWords.addAll(wordsInCategoryPageProvider.getCurrentPage());
-    //      }
-    //
-    //      int entryCount = allWords.size();
-    //
-    //      String parentId = null;
-    //      DocumentRef parentDocumentRef = category.getParentRef();
-    //      if (parentDocumentRef != null) {
-    //        DocumentModel document = session.getDocument(parentDocumentRef);
-    //        if (DialectTypesConstants.FV_CATEGORY.equals(document.getType())) {
-    //          parentId = document.getId();
-    //        }
-    //
-    //        Category c = new Category(category.getId(), parentId, category.getTitle(),
-    //       entryCount);
-    //        categoryMap.put(category.getId(), c);
-    //      }
-    //    }
-    //
-    //    for (final Category cat : categoryMap.values()) {
-    //      if (cat.getParentId() != null && categoryMap.containsKey(cat.getParentId())) {
-    //        categoryMap.get(cat.getParentId()).incrementEntryCount(cat.getEntryCount());
-    //      }
-    //    }
-    //
-    //    List<Category> list = new ArrayList<>(categoryMap.values());
-    //
-    //    if (inUseOnly) {
-    //      list.removeIf(i -> i.getEntryCount() == 0);
-    //    }
-
     return Response.ok(alphabet).build();
 
+  }
+
+  private static Word wordFromId(CoreSession session, String id) {
+    DocumentModel dom = session.getDocument(new IdRef(id));
+    if (dom != null) {
+      Word w = new Word(id, (String) dom.getPropertyValue("fv-word:part_of_speech"),
+          dom.getTitle());
+
+      ArrayList<HashMap<String, String>> definitions =
+          (ArrayList<HashMap<String, String>>) dom.getPropertyValue("fv:definitions");
+      if (definitions != null) {
+        for (HashMap<String, String> definition: definitions) {
+          w.getTranslations().put(definition.get("language"), definition.get("translation"));
+        }
+      }
+
+      String[] relatedAudio = (String[]) dom.getPropertyValue("fvcore:related_audio");
+      if (relatedAudio != null) {
+        for (String audioId: relatedAudio) {
+          RelatedMedia m = mediaFromId(session, audioId);
+          if (m != null) {
+            w.getRelatedAudio().add(m);
+          }
+        }
+      }
+
+      return w;
+    }
+    return null;
+  }
+
+  private static RelatedMedia mediaFromId(CoreSession session, String id) {
+    DocumentModel dom = session.getDocument(new IdRef(id));
+
+    if (dom != null) {
+      Blob fileObj = null;
+
+      String filename = null;
+      String mimeType = null;
+      String binaryPath = null;
+
+      try {
+        fileObj = (Blob) dom.getPropertyValue("file:content");
+
+        if (fileObj != null) {
+          filename = fileObj.getFilename();
+          mimeType = fileObj.getMimeType();
+          binaryPath = "nxfile/default/" + dom.getId() + "/file:content/" + filename;
+        }
+
+      } catch (BlobNotFoundException e) {
+        // why does this trigger an exception? Nuxeo is astonishing.
+      }
+
+      return new RelatedMedia(id,
+          dom.getTitle(),
+          mimeType,
+          binaryPath
+         );
+    }
+    return null;
   }
 
 }
