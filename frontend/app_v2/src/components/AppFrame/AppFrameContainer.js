@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import { Helmet } from 'react-helmet'
 import './AppFrame.css'
 import About from 'components/About'
+import Alphabet from 'components/Alphabet'
 import Home from 'components/Home'
 import Suspender from 'components/Suspender'
 import WordsListContainer from 'app_v1/WordsListContainer'
@@ -29,6 +30,18 @@ function AppFrameContainer() {
               </Helmet>
               <About.Container />
             </Route>
+            <Route path="/:language/alphabet/:character">
+              <Helmet>
+                <title>Alphabet</title>
+              </Helmet>
+              <Alphabet.Container />
+            </Route>
+            <Route path="/:language/alphabet">
+              <Helmet>
+                <title>Alphabet</title>
+              </Helmet>
+              <Alphabet.Container />
+            </Route>
             <Route path="/:language/words">
               <Helmet>
                 <title>Words</title>
@@ -37,7 +50,7 @@ function AppFrameContainer() {
             </Route>
             <Route path="/:language/*">
               <div className="flex justify-center items-center min-h-screen">
-                <img src="/assets/images/under-construction.gif" alt="TODO" />
+                <img src="/assets/images/under-construction.gif" alt="This page is under construction" />
               </div>
             </Route>
             <Route path="/:language">
