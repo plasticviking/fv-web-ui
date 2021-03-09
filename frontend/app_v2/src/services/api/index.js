@@ -14,15 +14,6 @@ const formatResponse = (response, dataAdaptor) => {
   return { isLoading, error, data, dataOriginal: data }
 }
 
-const queryOptions = {
-  retry: (failureCount, { message: status }) => {
-    if (status !== '404' && status !== '401') {
-      return false
-    }
-    return failureCount > 2
-  },
-}
-
 const get = ({ path, headers }) => {
   return api.get(path, headers).json()
 }
@@ -33,60 +24,34 @@ const post = ({ path, bodyObject, headers }) => {
 
 export default {
   get,
-  // rawGetById is getById without useQuery - bypasses cache
-  rawGetById: (id, dataAdaptor, properties = '*') => {
-    return get({ path: `/nuxeo/api/v1/id/${id}?properties=${properties}` }).then(
-      (response) => {
-        if (dataAdaptor) {
-          return { isLoading: false, data: dataAdaptor(response), dataOriginal: response }
-        }
-        return { isLoading: false, data: response, dataOriginal: response }
-      },
-      (error) => {
-        return { isLoading: false, error }
-      }
-    )
-  },
-  getAlphabet: (language, dataAdaptor) => {
-    const response = useQuery(
-      ['getAlphabet', language],
-      async () => {
-        return await post({
-          path: '/nuxeo/api/v1/automation/Document.EnrichedQuery',
-          bodyObject: {
-            params: {
-              language: 'NXQL',
-              sortBy: 'fvcharacter:alphabet_order',
-              sortOrder: 'asc',
-              query: `SELECT * FROM FVCharacter WHERE ecm:path STARTSWITH '/FV/sections/Data/Test/Test/${language}/Alphabet' AND ecm:isVersion = 0 AND ecm:isTrashed = 0 `,
-            },
-            context: {},
+  getAlphabet: (sitename, dataAdaptor) => {
+    const response = useQuery(['getAlphabet', sitename], async () => {
+      return await post({
+        path: '/nuxeo/api/v1/automation/Document.EnrichedQuery',
+        bodyObject: {
+          params: {
+            language: 'NXQL',
+            sortBy: 'fvcharacter:alphabet_order',
+            sortOrder: 'asc',
+            query: `SELECT * FROM FVCharacter WHERE ecm:path STARTSWITH '/FV/sections/Data/Test/Test/${sitename}/Alphabet' AND ecm:isVersion = 0 AND ecm:isTrashed = 0 `,
           },
-          headers: { 'enrichers.document': 'character' },
-        })
-      },
-      queryOptions
-    )
+          context: {},
+        },
+        headers: { 'enrichers.document': 'character' },
+      })
+    })
     return formatResponse(response, dataAdaptor)
   },
-  getById: (id, dataAdaptor, properties = '*') => {
-    const response = useQuery(
-      ['getById', id],
-      async () => {
-        return await get({ path: `/nuxeo/api/v1/id/${id}?properties=${properties}` })
-      },
-      queryOptions
-    )
+  getById: (id, queryKey, dataAdaptor, properties = '*') => {
+    const response = useQuery([queryKey, id], async () => {
+      return await get({ path: `/nuxeo/api/v1/id/${id}?properties=${properties}` })
+    })
     return formatResponse(response, dataAdaptor)
   },
   getSections: (sitename, dataAdaptor) => {
-    const response = useQuery(
-      ['getSections', sitename],
-      async () => {
-        return await get({ path: `/nuxeo/api/v1/site/sections/${sitename}` })
-      },
-      queryOptions
-    )
+    const response = useQuery(['getSections', sitename], async () => {
+      return await get({ path: `/nuxeo/api/v1/site/sections/${sitename}` })
+    })
     return formatResponse(response, dataAdaptor)
   },
   // TODO: remove postman example server url
