@@ -25,16 +25,16 @@ const AlphabetData = () => {
   const { title } = useGetSections()
   const { character, language } = useParams()
   const { isLoading, error, data } = api.getAlphabet(title, getAlphabetAdaptor)
-  const [selectedData, setSelectedData] = useState()
+  const [selectedData, setSelectedData] = useState({})
 
   useEffect(() => {
     if (character && data) {
       const _selectedData = findSelectedCharacterData({ character, data, language })
-      if (_selectedData !== undefined) {
+      if (_selectedData !== undefined && _selectedData?.title !== selectedData?.title) {
         setSelectedData(_selectedData)
       }
     }
-  }, [character, data, selectedData])
+  }, [character, data])
 
   // Video Modal
   const [videoIsOpen, setVideoIsOpen] = useState(false)
