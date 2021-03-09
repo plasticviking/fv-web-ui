@@ -11,7 +11,6 @@ import getCommunityHomeAdaptor from 'services/api/adaptors/getCommunityHome'
 function HomeData() {
   const { title, uid, path, logoUrl } = useGetSections()
   const { isLoading, error, data, dataOriginal } = api.getCommunityHome(title, getCommunityHomeAdaptor)
-
   return {
     isLoading,
     error: title === undefined || error,

@@ -1,7 +1,6 @@
-/* DISABLEglobals ENV_NUXEO_URL */
 import { useQuery } from 'react-query'
 import ky from 'ky'
-import { /*BASE_URL,*/ TIMEOUT } from 'services/api/config'
+import { TIMEOUT } from 'services/api/config'
 const api = ky.create({
   timeout: TIMEOUT,
 })
@@ -116,5 +115,13 @@ export default {
     }
     // TODO: Confirm this path and params when FW-2106 BE is complete and handle success response in UI
     return post({ path: '/nuxeo/site/automation/Document.Mail', bodyObject: { params: params, input: docId } })
+  },
+  getUser: (dataAdaptor) => {
+    const response = useQuery('getUser', async () => {
+      return await get({
+        path: '/nuxeo/api/v1/me/',
+      })
+    })
+    return formatResponse(response, dataAdaptor)
   },
 }
