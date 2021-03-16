@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import org.hibernate.annotations.Parent;
+
 
 public class SearchResult implements Serializable {
 
