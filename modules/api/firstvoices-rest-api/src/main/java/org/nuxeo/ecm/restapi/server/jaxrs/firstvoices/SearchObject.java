@@ -171,11 +171,11 @@ public class SearchObject extends DefaultObject {
         .getStatistics()
         .getCountsByType()
         .putAll(
-                consumer
-                .getResults()
-                .stream()
-                .collect(Collectors.groupingBy(SearchResult::getType, Collectors.counting()))
-               );
+        consumer
+        .getResults()
+        .stream()
+        .collect(Collectors.groupingBy(SearchResult::getType, Collectors.counting()))
+        );
 
     return Response.ok(searchResults).build();
   }
