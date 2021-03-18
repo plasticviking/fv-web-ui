@@ -5,14 +5,14 @@ import PropTypes from 'prop-types'
 import useIcon from 'common/useIcon'
 
 /**
- * @summary DialectHeaderMenu
+ * @summary NavBarPresentationMenu
  * @component
  *
  * @param {object} props
  *
  * @returns {node} jsx markup
  */
-function DialectHeaderMenu({ id, title, itemsData, href, onMenuClick, openMenu, onClickOutside }) {
+function NavBarPresentationMenu({ id, title, itemsData, href, onMenuClick, openMenu, onClickOutside }) {
   const hasItems = !Array.isArray(itemsData) || !itemsData.length ? false : true
 
   const menuItems = itemsData
@@ -52,7 +52,7 @@ function DialectHeaderMenu({ id, title, itemsData, href, onMenuClick, openMenu, 
               onMenuClick(id)
             }
           }}
-          className="group p-2 bg-fv-charcoal rounded-md  inline-flex items-center text-lg font-medium text-white hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-fv-turquoise"
+          className="group p-1 bg-fv-charcoal rounded-md  inline-flex items-center text-lg font-medium text-white hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-fv-turquoise"
         >
           {useIcon(title, 'fill-current h-12 w-8')}
           <p className="ml-3 mr-2">{title}</p>
@@ -62,7 +62,7 @@ function DialectHeaderMenu({ id, title, itemsData, href, onMenuClick, openMenu, 
       {hasItems === false && (
         <Link
           to={href}
-          className="group p-2 bg-fv-charcoal rounded-md  inline-flex items-center text-lg font-medium text-white hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-fv-turquoise"
+          className="group p-1 bg-fv-charcoal rounded-md  inline-flex items-center text-lg font-medium text-white hover:text-gray-100 focus:outline-none focus:ring-2 focus:ring-fv-turquoise"
         >
           {useIcon(title, 'fill-current h-12 w-8')}
           <p className="ml-3 mr-2">{title}</p>
@@ -81,7 +81,7 @@ function DialectHeaderMenu({ id, title, itemsData, href, onMenuClick, openMenu, 
 
 // PROPTYPES
 const { array, string, func } = PropTypes
-DialectHeaderMenu.propTypes = {
+NavBarPresentationMenu.propTypes = {
   title: string,
   href: string,
   itemsData: array,
@@ -90,9 +90,9 @@ DialectHeaderMenu.propTypes = {
   openMenu: string,
   onClickOutside: func,
 }
-DialectHeaderMenu.defaultProps = {
+NavBarPresentationMenu.defaultProps = {
   onMenuClick: () => {},
   onClickOutside: () => {},
 }
 
-export default DialectHeaderMenu
+export default NavBarPresentationMenu

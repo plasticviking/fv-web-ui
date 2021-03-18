@@ -1,21 +1,21 @@
 import React, { useState } from 'react'
 import { useParams, Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import DialectHeaderPresentationMenu from './DialectHeaderPresentationMenu'
-import DialectHeaderPresentationMobile from './DialectHeaderPresentationMobile'
+import NavBarPresentationMenu from './NavBarPresentationMenu'
+import NavBarPresentationMobile from './NavBarPresentationMobile'
 import FVToggle from 'components/FVToggle'
 
 import useIcon from 'common/useIcon'
 
 /**
- * @summary DialectHeaderPresentation
+ * @summary NavBarPresentation
  * @component
  *
  * @param {object} props
  *
  * @returns {node} jsx markup
  */
-function DialectHeaderPresentation({
+function NavBarPresentation({
   className,
   currentUser,
   workspaceToggleValue,
@@ -36,8 +36,8 @@ function DialectHeaderPresentation({
   const userMenuId = 'user'
 
   const menus = menuData.map((menu) => (
-    <DialectHeaderPresentationMenu
-      key={`DialectHeaderMenu_${menu.title}`}
+    <NavBarPresentationMenu
+      key={`NavBarMenu_${menu.title}`}
       title={menu.title}
       itemsData={menu.itemsData}
       href={menu.href}
@@ -48,9 +48,9 @@ function DialectHeaderPresentation({
     />
   ))
   return (
-    <header id="Dialect_header" className={`relative bg-fv-charcoal ${className}`} onKeyUp={onKeyPress}>
+    <header id="NavBar" className={`relative bg-fv-charcoal ${className}`} onKeyUp={onKeyPress}>
       <nav className="max-w-screen-2xl mx-auto px-4 sm:px-6 xl:px-20">
-        <div className="flex justify-between items-center py-2 md:justify-start md:space-x-10">
+        <div className="flex justify-between items-center py-1 md:justify-start md:space-x-10">
           <div className="justify-start lg:w-0 lg:flex-1">
             <Link to={`/${sitename}/`}>
               <span className="sr-only">FirstVoices Logo</span>
@@ -147,14 +147,14 @@ function DialectHeaderPresentation({
       </nav>
       {/* -- Mobile Menu -- */}
       {mobileNavbarOpen ? (
-        <DialectHeaderPresentationMobile openCloseNavbar={openCloseMobileNavbar} menuData={menuData} />
+        <NavBarPresentationMobile openCloseNavbar={openCloseMobileNavbar} menuData={menuData} />
       ) : null}
     </header>
   )
 }
 // PROPTYPES
 const { array, bool, object, string, func } = PropTypes
-DialectHeaderPresentation.propTypes = {
+NavBarPresentation.propTypes = {
   currentUser: object,
   menuData: array,
   title: string,
@@ -166,7 +166,7 @@ DialectHeaderPresentation.propTypes = {
   onClickOutside: func,
   openMenu: string,
 }
-DialectHeaderPresentation.defaultProps = {
+NavBarPresentation.defaultProps = {
   title: '/',
   workspaceToggleValue: false,
   onWorkspaceModeClick: () => {},
@@ -175,4 +175,4 @@ DialectHeaderPresentation.defaultProps = {
   onClickOutside: () => {},
 }
 
-export default DialectHeaderPresentation
+export default NavBarPresentation
