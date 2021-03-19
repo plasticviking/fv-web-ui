@@ -1,27 +1,25 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+
+import Alphabet from 'components/Alphabet'
 import ContactUs from 'components/ContactUs'
+import Hero from 'components/Hero'
 import Topics from 'components/Topics'
 import Welcome from 'components/Welcome'
 import WordOfTheDay from 'components/WordOfTheDay'
-import Hero from 'components/Hero'
+import SearchInput from 'components/SearchInput'
+
 import CircleImage from 'components/CircleImage'
 import useIcon from 'common/useIcon'
 import {
-  WIDGET_HERO,
-  WIDGET_SCHEDULE,
-  WIDGET_LIST,
-  // WIDGET_LIST_WORD,
-  // WIDGET_LIST_PHRASE,
-  // WIDGET_LIST_SONG,
-  // WIDGET_LIST_STORY,
-  // WIDGET_LIST_MIXED,
-  // WIDGET_LIST_GENERIC,
-  WIDGET_WELCOME,
   WIDGET_ALPHABET,
-  WIDGET_STATS,
-  WIDGET_GALLERY,
   WIDGET_CONTACT,
+  WIDGET_GALLERY,
+  WIDGET_HERO,
+  WIDGET_LIST,
+  WIDGET_SCHEDULE,
+  WIDGET_STATS,
+  WIDGET_WELCOME,
 } from 'common/constants'
 
 /**
@@ -34,16 +32,7 @@ import {
  */
 function HomePresentation({ isLoading, error, data, language }) {
   const widgets = data ? data.widgets : []
-  const fallBackIcon = useIcon(
-    'Spinner',
-    `
-        fill-current
-        w-56
-        h-56
-        lg:w-72
-        lg:h-72
-      `
-  )
+  const fallBackIcon = useIcon('Spinner', 'fill-current w-56 h-56 lg:w-72 lg:h-72')
   if (isLoading) {
     return (
       <div className="flex justify-around p-10">
@@ -69,7 +58,7 @@ function HomePresentation({ isLoading, error, data, language }) {
     )
   }
   return (
-    <div className="Home">
+    <div>
       {widgets.length > 0 &&
         widgets.map(({ type, ...widgetProps }, index) => {
           if (type === WIDGET_HERO) {
@@ -77,8 +66,8 @@ function HomePresentation({ isLoading, error, data, language }) {
             const foregroundIcon = language.logoUrl ? (
               <CircleImage.Presentation
                 src={language.logoUrl}
-                classNameWidth="w-56 lg:w-72"
-                classNameHeight="h-56 lg:h-72"
+                classNameWidth="w-40 lg:w-52"
+                classNameHeight="h-40 lg:h-52"
                 alt=""
               />
             ) : (
@@ -88,44 +77,11 @@ function HomePresentation({ isLoading, error, data, language }) {
               <Hero.Presentation
                 key={index}
                 background={background}
-                foreground={<h1 className="font-bold text-3xl">{language.title}</h1>}
+                foreground={<h1 className="font-medium text-2xl">{language.title}</h1>}
                 foregroundIcon={foregroundIcon}
+                search={<SearchInput.Container />}
                 variant={variant}
                 uid={uid}
-                search={
-                  <div
-                    className={`
-                    bg-white
-                    flex
-                    px-12
-                    py-6
-                    rounded-25
-                    w-3/4
-                  `}
-                  >
-                    <button type="button">
-                      {useIcon(
-                        'Search',
-                        `
-                          fill-current
-                          h-12
-                          text-black
-                          w-12
-                        `
-                      )}
-                    </button>
-                    <input
-                      className={`
-                        ml-8
-                        text-black
-                        w-full
-                        text-4xl
-                      `}
-                      type="text"
-                      placeholder={`Search ${language.title}`}
-                    />
-                  </div>
-                }
               />
             )
           }
@@ -165,10 +121,9 @@ function HomePresentation({ isLoading, error, data, language }) {
           }
 
           if (type === WIDGET_ALPHABET) {
-            // console.log('WIDGET_ALPHABET', widgetProps)
             return (
               <div key={index} className="px-6">
-                <div>WIDGET_ALPHABET</div>
+                <Alphabet.Container widgetView />
               </div>
             )
           }
@@ -184,14 +139,14 @@ function HomePresentation({ isLoading, error, data, language }) {
           }
 
           if (type === WIDGET_CONTACT) {
-            const { contactText, contactEmail, dialectId, links, title } = widgetProps
+            const { contactText, contactEmail, siteId, links, title } = widgetProps
             // console.log('WIDGET_CONTACT', widgetProps)
             return (
               <div key={index}>
                 <ContactUs.Container
                   contactText={contactText}
                   contactEmail={contactEmail}
-                  dialectId={dialectId}
+                  siteId={siteId}
                   links={links}
                   title={title}
                 />
@@ -212,8 +167,10 @@ function HomePresentation({ isLoading, error, data, language }) {
   )
 }
 // PROPTYPES
-const { array, string, shape } = PropTypes
+const { array, bool, oneOfType, string, shape } = PropTypes
 HomePresentation.propTypes = {
+  isLoading: bool,
+  error: oneOfType([bool, array]),
   data: shape({
     uid: string,
     pageTitle: string,

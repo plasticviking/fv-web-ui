@@ -7,21 +7,33 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import AppFrameContainer from './components/AppFrame/AppFrameContainer'
 import { QueryClient, QueryClientProvider } from 'react-query'
 import AppStateProvider from 'common/AppStateProvider'
-const queryClient = new QueryClient()
+
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, { message: status }) => {
+        if (status !== '404' && status !== '401') {
+          return false
+        }
+        return failureCount > 2
+      },
+    },
+  },
+})
 
 ReactDOM.render(
   <AppV1Provider>
     <QueryClientProvider client={queryClient}>
       <Router>
         <Switch>
-          <Route path="/:language">
+          <Route path="/:sitename">
             <AppStateProvider>
               <AppFrameContainer />
             </AppStateProvider>
           </Route>
 
           <div className="grid h-screen">
-            <h1 className="place-self-center font-bold text-3xl">Missing language in url</h1>
+            <h1 className="place-self-center font-bold text-3xl">Missing site name in url</h1>
           </div>
         </Switch>
       </Router>

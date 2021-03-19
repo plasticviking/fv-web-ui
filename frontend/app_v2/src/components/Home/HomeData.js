@@ -1,6 +1,7 @@
 import api from 'services/api'
-import useGetSections from 'common/useGetSections'
-import getCommunityHomeAdaptor from 'services/api/adaptors/getCommunityHome'
+import { useParams } from 'react-router-dom'
+import useGetSite from 'common/useGetSite'
+import getHomeAdaptor from 'services/api/adaptors/getHome'
 /**
  * @summary HomeData
  * @component
@@ -9,9 +10,10 @@ import getCommunityHomeAdaptor from 'services/api/adaptors/getCommunityHome'
  *
  */
 function HomeData() {
-  const { title, uid, path, logoUrl } = useGetSections()
-  const { isLoading, error, data, dataOriginal } = api.getCommunityHome(title, getCommunityHomeAdaptor)
+  const { sitename } = useParams()
+  const { title, uid, path, logoUrl } = useGetSite()
 
+  const { isLoading, error, data, dataOriginal } = api.getHome(sitename, getHomeAdaptor)
   return {
     isLoading,
     error: title === undefined || error,

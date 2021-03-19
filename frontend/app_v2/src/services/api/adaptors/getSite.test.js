@@ -10,7 +10,6 @@ const input = {
     'group:members',
   ],
   title: 'ÜgwÛ',
-  parentLanguageTitle: null,
   logoId: null,
 }
 const expectedOutput = {
@@ -18,6 +17,7 @@ const expectedOutput = {
   title: 'ÜgwÛ',
   uid: '5210e2d1-9074-4cef-8d3a-20a88bace75c',
   idLogo: null,
+  logoUrl: '/nuxeo/nxpicsfile/default/null/Small:content/',
 }
 
 describe('getSectionsAdaptor', () => {
