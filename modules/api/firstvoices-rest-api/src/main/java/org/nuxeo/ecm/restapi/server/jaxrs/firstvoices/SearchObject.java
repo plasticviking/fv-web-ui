@@ -49,12 +49,9 @@ public class SearchObject extends DefaultObject {
       @QueryParam(value = "parentPath") String parent,
       @QueryParam(value = "ancestorId") String ancestorId,
       @QueryParam(value = "docType") @DefaultValue("all") String docType,
-      @QueryParam(value = "domain") @DefaultValue("both") String domain,
-      @QueryParam(value = "esOnly") @DefaultValue("false") String esOnly) {
+      @QueryParam(value = "domain") @DefaultValue("both") String domain) {
 
     SearchDomain searchDomain = SearchDomain.BOTH;
-
-    boolean elasticOnly = esOnly.equalsIgnoreCase("true");
 
     try {
       searchDomain = SearchDomain.valueOf(domain);
@@ -161,7 +158,7 @@ public class SearchObject extends DefaultObject {
     nxQueryBuilder.fetchFromElasticsearch();
     nxQueryBuilder.addSort(new SortInfo("_score", false));
     ElasticSearchResultConsumer consumer = new ElasticSearchResultConsumer(session,
-        d -> query.equals(d.getTitle()), elasticOnly);
+        d -> query.equals(d.getTitle()));
     nxQueryBuilder.hitDocConsumer(consumer);
 
     ess.query(nxQueryBuilder);
@@ -170,15 +167,15 @@ public class SearchObject extends DefaultObject {
 
     searchResults.getStatistics().setResultCount(searchResults.getResults().size());
 
-//    searchResults
-//        .getStatistics()
-//        .getCountsByType()
-//        .putAll(
-//        consumer
-//        .getResults()
-//        .stream()
-//        .collect(Collectors.groupingBy(SearchResult::getType, Collectors.counting()))
-//        );
+    searchResults
+        .getStatistics()
+        .getCountsByType()
+        .putAll(
+        consumer
+        .getResults()
+        .stream()
+        .collect(Collectors.groupingBy(SearchResult::getType, Collectors.counting()))
+        );
 
     return Response.ok(searchResults).build();
   }
@@ -187,13 +184,10 @@ public class SearchObject extends DefaultObject {
 
     private CoreSession session;
     private Predicate<DocumentModel> exactMatchP;
-    private boolean elasticOnly;
 
-    public ElasticSearchResultConsumer(CoreSession session, Predicate<DocumentModel> exactMatchP,
-     boolean elasticOnly) {
+    public ElasticSearchResultConsumer(CoreSession session, Predicate<DocumentModel> exactMatchP) {
       this.session = session;
       this.exactMatchP = exactMatchP;
-      this.elasticOnly = elasticOnly;
     }
 
     private List<SearchResult> rez = new LinkedList<>();
@@ -211,69 +205,92 @@ public class SearchObject extends DefaultObject {
       sr.setTitle(d.getTitle());
       sr.setPath(d.getPathAsString());
 
+      // find the parent dialect, if there is one
+      List<DocumentModel> parents = session.getParentDocuments(d.getRef());
 
-      if (!elasticOnly) {
-        // find the parent dialect, if there is one
-        List<DocumentModel> parents = session.getParentDocuments(d.getRef());
+      Optional
+          .ofNullable(parents)
+          .orElse(new ArrayList<>())
+          .stream()
+          .filter(p -> p.getType().equalsIgnoreCase("FVDialect"))
+          .findFirst()
+          .ifPresent(p -> sr.setParentDialect(p.getId(), p.getName(),
+              (String)p.getPropertyValue("fvdialect:short_url")));
 
-        Optional
-            .ofNullable(parents)
-            .orElse(new ArrayList<>())
-            .stream()
-            .filter(p -> p.getType().equalsIgnoreCase("FVDialect"))
-            .findFirst()
-            .ifPresent(p -> sr.setParentDialect(p.getId(), p.getName()));
+      // need to load it from the DB to get the required fields
+      DocumentModel dbDoc = session.getDocument(d.getRef());
+      sr.setType(getFriendlyType(dbDoc));
 
-        // need to load it from the DB to get the required fields
-        DocumentModel dbDoc = session.getDocument(d.getRef());
-        sr.setType(getFriendlyType(dbDoc));
-
-        Object pictures = dbDoc.getPropertyValue("fv:related_pictures");
-        if (pictures != null) {
-          if (pictures instanceof String) {
-            sr.getPictures().add((String) pictures);
-          }
-          if (pictures instanceof List) {
-            for (Object s : (List) pictures) {
-              if (s != null) {
-                if (s instanceof String) {
-                  sr.getPictures().add((String) s);
-                } else {
-                  sr.getPictures().add(s.toString());
-                }
+      Object pictures = dbDoc.getPropertyValue("fv:related_pictures");
+      if (pictures != null) {
+        if (pictures instanceof String) {
+          sr.getPictures().add((String) pictures);
+        }
+        if (pictures instanceof List) {
+          for (Object s : (List) pictures) {
+            if (s != null) {
+              if (s instanceof String) {
+                sr.getPictures().add((String) s);
+              } else {
+                sr.getPictures().add(s.toString());
               }
             }
           }
         }
-
-        Object audio = dbDoc.getPropertyValue("fv:related_audio");
-        if (audio != null) {
-          if (audio instanceof String) {
-            sr.getAudio().add((String) audio);
-          }
-          if (audio instanceof List) {
-            for (Object s : (List) audio) {
-              if (s != null) {
-                if (s instanceof String) {
-                  sr.getAudio().add((String) s);
-                } else {
-                  sr.getAudio().add(s.toString());
-                }
+        if (pictures instanceof Object[]) {
+          for (Object s : (Object[]) pictures) {
+            if (s != null) {
+              if (s instanceof String) {
+                sr.getPictures().add((String) s);
+              } else {
+                sr.getPictures().add(s.toString());
               }
             }
           }
         }
+      }
 
-        List<Map<String, String>> definitions = (List<Map<String, String>>) dbDoc.getPropertyValue(
-            "fv:definitions");
-
-        for (Map<String, String> definition : definitions) {
-          sr.getTranslations().putAll(definition);
+      Object audio = dbDoc.getPropertyValue("fv:related_audio");
+      if (audio != null) {
+        if (audio instanceof String) {
+          sr.getAudio().add((String) audio);
         }
-        if (this.exactMatchP != null) {
-          sr.setExactMatch(this.exactMatchP.test(dbDoc));
+        if (audio instanceof List) {
+          for (Object s : (List) audio) {
+            if (s != null) {
+              if (s instanceof String) {
+                sr.getAudio().add((String) s);
+              } else {
+                sr.getAudio().add(s.toString());
+              }
+            }
+          }
         }
+        if (audio instanceof Object[]) {
+          for (Object s : (Object[]) audio) {
+            if (s != null) {
+              if (s instanceof String) {
+                sr.getAudio().add((String) s);
+              } else {
+                sr.getAudio().add(s.toString());
+              }
+            }
+          }
+        }
+      }
 
+      List<Map<String, String>> definitions = (List<Map<String, String>>) dbDoc.getPropertyValue(
+          "fv:definitions");
+
+      for (Map<String, String> definition : definitions) {
+        if (definition.containsKey("language") && definition.containsKey("translation")) {
+          String language = definition.get("language");
+          String translation = definition.get("translation");
+          sr.getTranslations().put(language, translation);
+        }
+      }
+      if (this.exactMatchP != null) {
+        sr.setExactMatch(this.exactMatchP.test(dbDoc));
       }
 
       if (fields != null) {

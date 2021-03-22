@@ -92,17 +92,19 @@ public class SearchResult implements Serializable {
     this.exactMatch = exactMatch;
   }
 
-  public void setParentDialect(String id, String name) {
-    this.parentDialect = new ParentDialect(id, name);
+  public void setParentDialect(String id, String name, String shortUrl) {
+    this.parentDialect = new ParentDialect(id, name, shortUrl);
   }
 
   public class ParentDialect implements Serializable {
     private final String name;
     private final String id;
+    private final String shortUrl;
 
-    public ParentDialect(String id, String name) {
+    public ParentDialect(String id, String name, String shortUrl) {
       this.id = id;
       this.name = name;
+      this.shortUrl = shortUrl;
     }
 
     public String getName() {
@@ -113,6 +115,9 @@ public class SearchResult implements Serializable {
       return id;
     }
 
+    public String getShortUrl() {
+      return shortUrl;
+    }
   }
 
 }
