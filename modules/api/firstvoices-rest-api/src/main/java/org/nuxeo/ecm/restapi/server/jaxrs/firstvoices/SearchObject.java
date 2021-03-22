@@ -8,11 +8,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import javax.print.Doc;
-import javax.swing.text.Document;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -118,6 +115,8 @@ public class SearchObject extends DefaultObject {
     if (parent != null && parent.trim().length() > 0) {
       basicConstraints.must(QueryBuilders.wildcardQuery("ecm:path", parent + "*"));
     }
+
+
 
     QueryBuilder englishQuery = QueryBuilders
         .fuzzyQuery("exact_matches_translations", query)
@@ -297,6 +296,10 @@ public class SearchObject extends DefaultObject {
         sr.setScore(fields.getScore());
       }
 
+
+      if (this.exactMatchP != null) {
+        sr.setExactMatch(this.exactMatchP.test(dbDoc));
+      }
 
       rez.add(sr);
     }

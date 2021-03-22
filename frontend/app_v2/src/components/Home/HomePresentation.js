@@ -7,6 +7,7 @@ import Hero from 'components/Hero'
 import Topics from 'components/Topics'
 import Welcome from 'components/Welcome'
 import WordOfTheDay from 'components/WordOfTheDay'
+import SearchInput from 'components/SearchInput'
 
 import CircleImage from 'components/CircleImage'
 import useIcon from 'common/useIcon'
@@ -78,18 +79,7 @@ function HomePresentation({ isLoading, error, data, language }) {
                 background={background}
                 foreground={<h1 className="font-medium text-2xl">{language.title}</h1>}
                 foregroundIcon={foregroundIcon}
-                search={
-                  <div className="bg-white flex rounded-2xl w-3/5 text-fv-charcoal-light p-2 divide-x-2 divide-gray-300">
-                    <input
-                      className="w-full focus text-2xl px-4 py-2 "
-                      type="text"
-                      placeholder={`Search ${language.title}`}
-                    />
-                    <button type="button " className="p-2">
-                      {useIcon('Search', 'fill-current h-8 w-8 ')}
-                    </button>
-                  </div>
-                }
+                search={<SearchInput.Container />}
                 variant={variant}
                 uid={uid}
               />
@@ -149,14 +139,14 @@ function HomePresentation({ isLoading, error, data, language }) {
           }
 
           if (type === WIDGET_CONTACT) {
-            const { contactText, contactEmail, dialectId, links, title } = widgetProps
+            const { contactText, contactEmail, siteId, links, title } = widgetProps
             // console.log('WIDGET_CONTACT', widgetProps)
             return (
               <div key={index}>
                 <ContactUs.Container
                   contactText={contactText}
                   contactEmail={contactEmail}
-                  dialectId={dialectId}
+                  siteId={siteId}
                   links={links}
                   title={title}
                 />

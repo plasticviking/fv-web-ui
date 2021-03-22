@@ -5,14 +5,14 @@ import useUserGet from 'common/useUserGet'
 import useWorkspaceToggle from 'common/useWorkspaceToggle'
 import AppStateContext from 'common/AppStateContext'
 /**
- * @summary DialectHeaderData
+ * @summary NavBarData
  * @component
  *
  * @param {object} props
  * @param {function} props.children
  *
  */
-function DialectHeaderData() {
+function NavBarData() {
   const { menu } = useContext(AppStateContext)
   const { sitename } = useParams()
   const { machine, send } = menu
@@ -70,7 +70,7 @@ function DialectHeaderData() {
         { title: 'Words', href: `/${sitename}/words` },
         { title: 'Phrases', href: `/${sitename}/phrases` },
         { title: 'Alphabet', href: `/${sitename}/alphabet` },
-        { title: 'Topics', href: `/${sitename}/topics` },
+        { title: 'Categories', href: `/${sitename}/categories` },
       ],
     },
     {
@@ -115,4 +115,4 @@ function DialectHeaderData() {
   }
 }
 
-export default DialectHeaderData
+export default NavBarData
