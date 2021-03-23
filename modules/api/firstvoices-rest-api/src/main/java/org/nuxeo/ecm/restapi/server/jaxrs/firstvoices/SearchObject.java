@@ -220,35 +220,6 @@ public class SearchObject extends DefaultObject {
       DocumentModel dbDoc = session.getDocument(d.getRef());
       sr.setType(getFriendlyType(dbDoc));
 
-      Object pictures = dbDoc.getPropertyValue("fv:related_pictures");
-      if (pictures != null) {
-        if (pictures instanceof String) {
-          sr.getPictures().add((String) pictures);
-        }
-        if (pictures instanceof List) {
-          for (Object s : (List) pictures) {
-            if (s != null) {
-              if (s instanceof String) {
-                sr.getPictures().add((String) s);
-              } else {
-                sr.getPictures().add(s.toString());
-              }
-            }
-          }
-        }
-        if (pictures instanceof Object[]) {
-          for (Object s : (Object[]) pictures) {
-            if (s != null) {
-              if (s instanceof String) {
-                sr.getPictures().add((String) s);
-              } else {
-                sr.getPictures().add(s.toString());
-              }
-            }
-          }
-        }
-      }
-
       Object audio = dbDoc.getPropertyValue("fv:related_audio");
       if (audio != null) {
         if (audio instanceof String) {
@@ -282,10 +253,9 @@ public class SearchObject extends DefaultObject {
           "fv:definitions");
 
       for (Map<String, String> definition : definitions) {
-        if (definition.containsKey("language") && definition.containsKey("translation")) {
-          String language = definition.get("language");
+        if (definition.containsKey("translation")) {
           String translation = definition.get("translation");
-          sr.getTranslations().put(language, translation);
+          sr.getTranslations().add(translation);
         }
       }
       if (this.exactMatchP != null) {

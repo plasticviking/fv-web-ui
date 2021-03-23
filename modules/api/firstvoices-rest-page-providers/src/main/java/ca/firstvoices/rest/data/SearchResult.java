@@ -11,11 +11,10 @@ import javax.annotation.Nullable;
 public class SearchResult implements Serializable {
 
   private List<String> audio = new LinkedList<>();
-  private List<String> pictures = new LinkedList<>();
 
   private String type;
 
-  private Map<String, String> translations = new HashMap<>();
+  private List<String> translations = new LinkedList<>();
 
   private String title;
   private String id;
@@ -67,16 +66,12 @@ public class SearchResult implements Serializable {
     this.id = id;
   }
 
-  public Map<String, String> getTranslations() {
+  public List<String> getTranslations() {
     return translations;
   }
 
   public List<String> getAudio() {
     return audio;
-  }
-
-  public List<String> getPictures() {
-    return pictures;
   }
 
   @Nullable
