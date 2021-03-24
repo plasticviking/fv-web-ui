@@ -1,5 +1,4 @@
 #### Definition of Done
-
 - [ ] Reviewer can follow the flow of the code
 - [ ] Variables, methods are named properly and clearly
 - [ ] Methods are documented using comments (where not self-explanatory)
