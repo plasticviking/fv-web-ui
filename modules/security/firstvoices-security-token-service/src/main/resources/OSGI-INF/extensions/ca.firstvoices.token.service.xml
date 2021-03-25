@@ -1,0 +1,8 @@
+<component name="ca.firstvoices.token.service">
+
+    <implementation class="ca.firstvoices.token.services.TokenServiceImpl"/>
+
+    <service>
+        <provide interface="ca.firstvoices.token.services.TokenService"/>
+    </service>
+</component>

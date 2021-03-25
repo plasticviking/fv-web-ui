@@ -14,7 +14,7 @@
 
   <modules>
     <module>firstvoices-rest-api</module>
-    <module>firstvoices-rest-api-simple</module>
+<!--    <module>firstvoices-rest-api-simple</module>-->
     <module>firstvoices-rest-page-providers</module>
   </modules>
 

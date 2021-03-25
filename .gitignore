@@ -1,5 +1,7 @@
 .DS_Store
 **/.DS_Store
+**/__pycache__/
+**/db.sqlite3
 .sass-cache
 .project
 public
@@ -37,5 +39,3 @@ nashorn_code_cache
 /docker/database/*
 /docker/frontend/
 
-# Skaffold (for now)
-skaffold

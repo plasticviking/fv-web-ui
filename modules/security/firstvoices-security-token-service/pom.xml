@@ -1,0 +1,162 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>ca.firstvoices</groupId>
+    <artifactId>modules.security</artifactId>
+    <version>3.5.6</version>
+  </parent>
+  <artifactId>firstvoices-security-token-service</artifactId>
+  <name>Token API for Microservices</name>
+  <dependencies>
+
+
+<!--    <dependency>-->
+<!--      <groupId>org.glassfish.jersey.media</groupId>-->
+<!--      <artifactId>jersey-media-json-jackson</artifactId>-->
+<!--      <version>2.25.1</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.glassfish.jersey.inject</groupId>-->
+<!--      <artifactId>jersey-hk2</artifactId>-->
+<!--      <version>2.31</version>-->
+<!--    </dependency>-->
+
+<!--    <dependency>-->
+<!--      <groupId>org.glassfish.hk2</groupId>-->
+<!--      <artifactId>hk2-locator</artifactId>-->
+<!--      <version>2.6.1</version>-->
+<!--    </dependency>-->
+
+
+<!--    <dependency>-->
+<!--      <groupId>com.auth0</groupId>-->
+<!--      <artifactId>jwks-rsa</artifactId>-->
+<!--      <version>0.11.0</version>-->
+<!--    </dependency>-->
+
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-impl</artifactId>
+      <version>0.11.2</version>
+<!--      <scope>runtime</scope>-->
+    </dependency>
+
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-gson</artifactId>
+      <version>0.11.2</version>
+<!--      <scope>runtime</scope>-->
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.8.6</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.jsonwebtoken</groupId>
+      <artifactId>jjwt-api</artifactId>
+      <version>0.11.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.nuxeo.common</groupId>
+      <artifactId>nuxeo-common</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.core</groupId>
+      <artifactId>nuxeo-core-query</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.nuxeo.ecm.platform</groupId>
+      <artifactId>nuxeo-platform-usermanager-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>org.nuxeo.runtime</groupId>
+      <artifactId>nuxeo-runtime-jtajca</artifactId>
+    </dependency>
+<!--    <dependency>-->
+<!--      <groupId>com.sun.xml.bind</groupId>-->
+<!--      <artifactId>jaxb-impl</artifactId>-->
+<!--      <version>2.2.11</version>-->
+<!--    </dependency>-->
+  </dependencies>
+
+<!--  <build>-->
+<!--    <plugins>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-compiler-plugin</artifactId>-->
+<!--        <version>3.8.1</version>-->
+<!--      </plugin>-->
+<!--      <plugin>-->
+<!--        <groupId>org.apache.maven.plugins</groupId>-->
+<!--        <artifactId>maven-shade-plugin</artifactId>-->
+<!--        <version>3.2.3</version>-->
+<!--        <executions>-->
+<!--          <execution>-->
+<!--            <phase>package</phase>-->
+<!--            <goals>-->
+<!--              <goal>shade</goal>-->
+<!--            </goals>-->
+<!--            <configuration>-->
+<!--              <artifactSet>-->
+<!--                <includes>-->
+<!--                  <include>com.auth0:jwks-rsa</include>-->
+<!--                  <include>*:asm</include>-->
+<!--                  <include>io.jsonwebtoken:*</include>-->
+<!--                  <include>com.fasterxml.jackson.jaxrs:*</include>-->
+<!--                  <include>com.fasterxml.jackson.core:*</include>-->
+<!--                  <include>com.fasterxml.jackson.module:*</include>-->
+<!--                  <include>org.glassfish.jersey.core:*</include>-->
+<!--                  <include>org.glassfish.jersey.media:*</include>-->
+<!--                  <include>javax.ws.rs:*</include>-->
+<!--                  <include>org.glassfish.jersey.containers:*</include>-->
+<!--                  <include>org.glassfish.jersey.inject:*</include>-->
+<!--                  <include>org.glassfish.jersey.ext:*</include>-->
+<!--                  <include>*:jersey-guava</include>>-->
+<!--                  <include>org.glassfish.hk2:*</include>-->
+<!--                  <include>*:jaxb-impl</include>-->
+<!--                </includes>-->
+<!--              </artifactSet>-->
+<!--              <relocations>-->
+<!--                <relocation>-->
+<!--                  <pattern>javax.ws.rs</pattern>-->
+<!--                  <shadedPattern>tokenshaded.javax.ws.rs</shadedPattern>-->
+<!--                </relocation>-->
+<!--                <relocation>-->
+<!--                  <pattern>jersey.repackaged</pattern>-->
+<!--                  <shadedPattern>tokenshaded.jersey.repackaged</shadedPattern>-->
+<!--                </relocation>-->
+<!--              </relocations>-->
+<!--              <transformers>-->
+<!--                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
+<!--              </transformers>-->
+<!--            </configuration>-->
+<!--          </execution>-->
+<!--        </executions>-->
+<!--      </plugin>-->
+<!--    </plugins>-->
+<!--  </build>-->
+</project>

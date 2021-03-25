@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<component name="ca.firstvoices.operations.fileimport.services.FileImportService" version="1.0">
+  <implementation class="ca.firstvoices.operations.fileimport.services.FileImportServiceImpl"/>
+  <service>
+    <provide interface="ca.firstvoices.operations.fileimport.services.FileImportService"/>
+  </service>
+</component>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<fragment version="1">
+
+  <!-- API Servlet mapping -->
+  <extension target="web#SERVLET">
+    <servlet>
+      <servlet-name>token-servlet</servlet-name>
+      <servlet-class>ca.firstvoices.token.TokenServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+      <servlet-name>token-servlet</servlet-name>
+      <url-pattern>/token/*</url-pattern>
+    </servlet-mapping>
+  </extension>
+
+<!--  <install>-->
+<!--    <unzip from="${bundle.fileName}" to="/nuxeo.war" prefix="web">-->
+<!--      <include>web/redoc-static.html</include>-->
+<!--    </unzip>-->
+<!--  </install>-->
+
+
+</fragment>

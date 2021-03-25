@@ -1,0 +1,16 @@
+amqp==5.0.5
+asgiref==3.3.1
+certifi==2020.12.5
+chardet==4.0.0
+Django==3.1.7
+djangorestframework==3.12.2
+idna==2.10
+minio==7.0.2
+pika==1.2.0
+psycopg2==2.8.6
+PyJWT==2.0.1
+pytz==2021.1
+requests==2.25.1
+sqlparse==0.4.1
+urllib3==1.26.4
+vine==5.0.0

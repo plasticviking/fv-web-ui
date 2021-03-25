@@ -1,0 +1,75 @@
+apiVersion: skaffold/v2beta13
+kind: Config
+build:
+  cluster:
+    concurrency: 8
+      #    pullSecretName: kaniko-secret
+    volumes:
+      - name: m2-cache
+        persistentVolumeClaim:
+          claimName: m2-cache-claim
+    resources:
+      requests:
+        cpu: 2
+        ephemeralStorage: 10Gi
+        memory: 4Gi
+      limits:
+        cpu: 2
+        ephemeralStorage: 10Gi
+        memory: 4Gi
+  artifacts:
+  - image: frontend-v1
+    context: ../frontend
+    kaniko:
+      dockerfile: Dockerfile-skaffold
+      cache:
+        repo: ""
+  - image: frontend-v2
+    context: ../frontend/app_v2
+    kaniko:
+      dockerfile: Dockerfile-skaffold
+      cache:
+        repo: ""
+  - image: frontend-microservice
+    context: ../microservice-frontend
+    sync:
+      infer:
+        - '**/*.js'
+        - '**/*.ts'
+        - '**/*.tsx'
+        - '**/*.scss'
+    kaniko:
+      dockerfile: Dockerfile-skaffold
+      cache:
+        repo: ""
+  - image: firstvoices
+    context: ../
+    kaniko:
+      dockerfile: Dockerfile-skaffold
+      cache:
+        repo: ""
+      volumeMounts:
+        - name: m2-cache
+          mountPath: /root/.m2
+  - image: django-upload-microservice
+    context: ../django-backend
+    kaniko:
+      dockerfile: Dockerfile-skaffold
+      cache:
+        repo: ""
+deploy:
+  helm:
+    releases:
+      - name: skaffold-helm-release
+        chartPath: ./charts/firstvoices
+        artifactOverrides:
+          djangoUploadMicroservice:
+            image: django-upload-microservice
+          frontendV1:
+            image: frontend-v1
+          frontendV2:
+            image: frontend-v2
+          frontendMicroservice:
+            image: frontend-microservice
+          firstvoices:
+            image: firstvoices

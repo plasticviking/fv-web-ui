@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgresql-django-upload-microservice
+spec:
+  selector:
+    app: postgresql-django-upload-microservice
+  ports:
+    - port: 5432
+      targetPort: 5432

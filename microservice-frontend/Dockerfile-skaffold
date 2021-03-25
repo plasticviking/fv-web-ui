@@ -1,0 +1,16 @@
+FROM node:lts-alpine
+EXPOSE 5001
+
+COPY package.json .
+RUN npm install
+COPY .eslintrc .
+COPY .eslintignore .
+COPY .babelrc .
+COPY templates templates
+COPY serve.js .
+COPY start.js .
+COPY tsconfig.json .
+COPY webpack.dev.js .
+COPY webpack.dist.js .
+COPY src src
+

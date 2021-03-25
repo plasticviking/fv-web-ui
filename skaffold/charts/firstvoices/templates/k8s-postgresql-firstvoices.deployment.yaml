@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-firstvoices
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: postgresql-firstvoices
+      labels:
+        app: postgresql-firstvoices
+    spec:
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: postgresql-firstvoices-pv-claim
+      containers:
+        - name: postgresql-firstvoices
+          image: postgres:13-alpine
+          resources:
+            requests:
+              cpu: 1
+              memory: "4000M"
+            limits:
+              cpu: 6
+              memory: "16000M"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-firstvoices-credentials
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-firstvoices-credentials
+                  key: password
+            - name: POSTGRES_DB
+              value: 'fv'
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: pgdata
+              subPath: data
+  selector:
+    matchLabels:
+      app: postgresql-firstvoices

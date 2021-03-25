@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firstvoices
+spec:
+  replicas: 1
+  minReadySeconds: 20
+  template:
+    metadata:
+      name: firstvoices-pod
+      labels:
+        app: firstvoices
+    spec:
+      containers:
+        - name: firstvoices
+          image: {{ .Values.firstvoices.image }}
+          resources:
+            limits:
+              cpu: 4
+              memory: "18000M"
+          env:
+            - name: NUXEO_DB_TYPE
+              value: postgresql
+            - name: NUXEO_DB_HOST
+              value: postgresql-firstvoices
+            - name: NUXEO_DB_NAME
+              value: fv
+            - name: NUXEO_DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-firstvoices-credentials
+                  key: username
+            - name: NUXEO_DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgresql-firstvoices-credentials
+                  key: password
+          ports:
+            - name: http-in
+              containerPort: 8080
+            - name: java-debug
+              containerPort: 8787
+  selector:
+    matchLabels:
+      app: firstvoices
+

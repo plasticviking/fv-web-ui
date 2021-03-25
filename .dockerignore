@@ -1,1 +1,7 @@
-frontend/node_modules
+frontend
+microservice-frontend/node_modules
+django-backend
+venv
+**/target
+docker
+

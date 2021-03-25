@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: minio
+      labels:
+        app: minio
+    spec:
+      volumes:
+        - name: minio-exports
+          persistentVolumeClaim:
+            claimName: minio-pv-claim
+      containers:
+        - name: minio
+          image: minio/minio:latest
+          resources:
+            requests:
+              cpu: 10m
+              memory: "400M"
+            limits:
+              cpu: 1
+              memory: "1000M"
+          command:
+            - "/bin/sh"
+            - "-ce"
+            - "/usr/bin/docker-entrypoint.sh minio server /export"
+          ports:
+            - name: http
+              containerPort: 9000
+          env:
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-access
+                  key: access_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-access
+                  key: secret_key
+          volumeMounts:
+            - mountPath: "/export"
+              name: minio-exports
+  selector:
+    matchLabels:
+      app: minio

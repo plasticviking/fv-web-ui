@@ -1,0 +1,20 @@
+domainSuffix: .iron.mapleleaf.intranet # all created ingresses will be under this domain
+hostSuffix: -g2
+namespace: g1
+environment: g1
+
+
+djangoUploadMicroservice:
+  image: django-upload-microservice:latest
+frontendV1:
+  image: frontend-v1:latest
+frontendV2:
+  image: frontend-v2:latest
+frontendMicroservice:
+  image: frontend-microservice:latest
+firstvoices:
+  image: firstvoices:latest
+firstvoicesPostgresql:
+  pvc:
+    size: "10Gi"
+

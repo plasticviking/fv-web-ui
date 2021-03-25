@@ -1,0 +1,110 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-upload-microservice
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: django-upload-microservice
+      labels:
+        app: django-upload-microservice
+    spec:
+      containers:
+        - name: django-upload-microservice
+          image: {{ .Values.djangoUploadMicroservice.image }}
+          resources:
+            requests:
+              cpu: 2
+              memory: "400M"
+            limits:
+              cpu: 4
+              memory: "800M"
+          ports:
+            - containerPort: 8888
+          args:
+            - "python"
+            - "manage.py"
+            - "runserver"
+            - "0.0.0.0:8888"
+          env:
+            - name: MINIO_ENDPOINT
+              value: "minio{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}:80"
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-access
+                  key: access_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-access
+                  key: secret_key
+            - name: MINIO_BUCKET_NAME
+              value: 'fvupload'
+            - name: DATABASE_NAME
+              value: 'uploads'
+            - name: ALLOWED_HOST
+              value: "fv{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}"
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: django-upload-microservice-postgresql-credentials
+                  key: username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-upload-microservice-postgresql-credentials
+                  key: password
+            - name: DATABASE_HOST
+              value: 'postgresql-django-upload-microservice'
+            - name: DATABASE_PORT
+              value: '5432'
+      initContainers:
+        - name: wait-db
+          image: busybox:1.28
+          command: [ 'sh', '-c', "until nslookup postgresql-django-upload-microservice.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for db; sleep 2; done; sleep 10" ]
+        - name: migrate-db
+          image: {{ .Values.djangoUploadMicroservice.image }}
+          env:
+            - name: MINIO_ENDPOINT
+              value: "minio{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}:80"
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-access
+                  key: access_key
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-access
+                  key: secret_key
+            - name: MINIO_BUCKET_NAME
+              value: 'fvupload'
+            - name: DATABASE_NAME
+              value: 'uploads'
+            - name: ALLOWED_HOST
+              value: "fv{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}"
+            - name: DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: django-upload-microservice-postgresql-credentials
+                  key: username
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-upload-microservice-postgresql-credentials
+                  key: password
+            - name: DATABASE_HOST
+              value: 'postgresql-django-upload-microservice'
+            - name: DATABASE_PORT
+              value: '5432'
+          args:
+            - "python"
+            - "manage.py"
+            - "migrate"
+
+  selector:
+    matchLabels:
+      app: django-upload-microservice

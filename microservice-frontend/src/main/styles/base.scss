@@ -1,0 +1,52 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+
+main {
+  padding-left: 10vw;
+  padding-right: 10vw;
+}
+
+body {
+  font-size: 16px;
+  font-family: sans-serif;
+  color: black;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+
+}
+
+div.header {
+  background: maroon;
+  color: whitesmoke;
+  padding: 2rem 8px;
+}
+
+div.dropzone {
+  cursor: pointer;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+button {
+  margin-right: 1rem;
+  font-size: 20px;
+  padding: 0.8rem;
+}
+
+.token {
+  padding: 1rem 8px;
+  word-wrap: anywhere;
+  font-family: 'Source Code Pro Semibold';
+  border: 1px solid black;
+}
+

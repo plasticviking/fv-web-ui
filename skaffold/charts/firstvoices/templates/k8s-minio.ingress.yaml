@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1beta1
+kind: Ingress
+metadata:
+  name: minio
+  annotations:
+    # this needs to be 'public', not 'nginx', for newer versions of mk8s
+    kubernetes.io/ingress.class: public
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/proxy-buffering: "on"
+    nginx.ingress.kubernetes.io/client-body-buffer-size: "200m"
+    nginx.ingress.kubernetes.io/proxy-body-size: "200m"
+spec:
+  rules:
+    - host: minio{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              serviceName: minio
+              servicePort: 9000

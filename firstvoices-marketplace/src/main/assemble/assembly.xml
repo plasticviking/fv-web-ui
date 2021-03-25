@@ -46,6 +46,18 @@
           <artifact scope="provided"/>
         </excludes>
       </artifact:dependencies>
+
+      <artifact:file artifactId="jjwt-impl"/>
+      <artifact:dependencies artifactId="jjwt-impl">
+        <excludes>
+          <artifact scope="test"/>
+          <artifact scope="provided"/>
+        </excludes>
+      </artifact:dependencies>
+      <artifact:file artifactId="jjwt-api"/>
+      <artifact:file artifactId="jjwt-gson"/>
+      <artifact:file artifactId="gson"/>
+
     </copy>
 
     <nx:profile name="full-marketplace">

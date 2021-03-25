@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-microservice-demo
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: frontend-microservice-demo
+      labels:
+        app: frontend-microservice-demo
+    spec:
+      containers:
+        - name: frontend-microservice-demo
+          image: {{ .Values.frontendMicroservice.image }}
+          resources:
+            requests:
+              cpu: 1
+              memory: "800M"
+            limits:
+              cpu: 4
+              memory: "2000M"
+          env:
+            - name: API_BASE
+              value: "http://fv{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}/microservices/upload"
+            - name: TOKEN_URL
+              value: "http://fv{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}/nuxeo/token"
+            - name: NUXEO_API
+              value: "http://fv{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}/nuxeo/api"
+          args:
+            - "npm"
+            - "run"
+            - "start"
+          ports:
+            - containerPort: 5001
+  selector:
+    matchLabels:
+      app: frontend-microservice-demo

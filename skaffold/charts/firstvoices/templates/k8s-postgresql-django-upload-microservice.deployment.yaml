@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgresql-django-upload-microservice
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: postgresql-django-upload-microservice
+      labels:
+        app: postgresql-django-upload-microservice
+    spec:
+      volumes:
+        - name: pgdata
+          persistentVolumeClaim:
+            claimName: postgresql-django-upload-microservice-pv-claim
+      containers:
+        - name: postgresql-django-upload-microservice
+          image: postgres:13-alpine
+          resources:
+            requests:
+              cpu: 1
+              memory: "400M"
+            limits:
+              cpu: 2
+              memory: "400M"
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: django-upload-microservice-postgresql-credentials
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: django-upload-microservice-postgresql-credentials
+                  key: password
+            - name: POSTGRES_DB
+              value: 'uploads'
+          volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: pgdata
+              subPath: data
+  selector:
+    matchLabels:
+      app: postgresql-django-upload-microservice

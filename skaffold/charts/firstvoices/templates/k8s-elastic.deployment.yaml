@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: elastic
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  template:
+    metadata:
+      name: elastic-pod
+      labels:
+        app: elastic
+    spec:
+      volumes:
+       - name: elastic-storage
+         persistentVolumeClaim:
+           claimName: elastic-pv-claim
+      containers:
+        - name: elastic
+          image: docker.elastic.co/elasticsearch/elasticsearch:6.8.14
+          resources:
+            limits:
+              cpu: "400m"
+              memory: "4500M"
+          volumeMounts:
+            - mountPath: "/usr/share/elasticsearch/data"
+              name: elastic-storage
+          env:
+            - name: discovery.type
+              value: single-node
+            - name: cluster.name
+              value: elastic
+            - name: ES_JAVA_OPTS
+              value: "-Xms4000m -Xmx4000m"
+          ports:
+            - name: http
+              containerPort: 9200
+            - name: transport
+              containerPort: 9300
+  selector:
+    matchLabels:
+      app: elastic
