@@ -2,14 +2,14 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 /**
- * @summary ContentPresentation
+ * @summary KidsPresentation
  * @component
  *
  * @param {object} props
  *
  * @returns {node} jsx markup
  */
-function ContentPresentation({ heading, body }) {
+function KidsPresentation({ heading, body }) {
   return (
     <div className="flex justify-center">
       <section className="max-w-screen-xl py-4 px-4 lg:py-14 lg:px-24">
@@ -21,11 +21,11 @@ function ContentPresentation({ heading, body }) {
 }
 // PROPTYPES
 const { node } = PropTypes
-ContentPresentation.propTypes = {
+KidsPresentation.propTypes = {
   /** Heading will be wrapped in an H1 tag */
   heading: node,
   /** Body is meant to be used with WYSIWYG markup */
   body: node,
 }
 
-export default ContentPresentation
+export default KidsPresentation

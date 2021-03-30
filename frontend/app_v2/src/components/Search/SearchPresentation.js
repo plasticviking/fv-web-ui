@@ -38,7 +38,9 @@ function SearchPresentation({ currentFilter, siteTitle, error, filters, handleFi
   return (
     <>
       <section className="bg-gradient-to-b to-fv-turquoise from-fv-blue-light p-5">
-        <SearchInput.Container />
+        <div className="mx-auto lg:w-3/5">
+          <SearchInput.Container />
+        </div>
       </section>
       <div className="grid grid-cols-7 md:p-2">
         <div className="col-span-7 md:col-span-1 mt-2">

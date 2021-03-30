@@ -4,14 +4,14 @@ import { getMediaUrl } from 'common/urlHelpers'
 import HeroBackground from 'images/hero-background.jpg'
 import useGetSite from 'common/useGetSite'
 /**
- * @summary AboutData
+ * @summary PageData
  * @component
  *
  * @param {object} props
  * @param {function} props.children
  *
  */
-function AboutData() {
+function PageData() {
   const { title, logoId } = useGetSite()
   const logoUrl = getMediaUrl({ type: 'image', id: logoId, viewName: 'Small' })
   return {
@@ -62,8 +62,8 @@ function AboutData() {
 }
 // PROPTYPES
 // const { func } = PropTypes
-// AboutData.propTypes = {
+// PageData.propTypes = {
 //   children: func,
 // }
 
-export default AboutData
+export default PageData
