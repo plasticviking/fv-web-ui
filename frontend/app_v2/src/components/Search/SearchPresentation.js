@@ -1,20 +1,32 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { useLocation, Link } from 'react-router-dom'
 
 import DictionaryListPresentation from 'components/DictionaryList/DictionaryListPresentation'
 import SearchInput from 'components/SearchInput'
+import useIcon from 'common/useIcon'
 
 /**
  * @summary SearchPresentation
- * @version 1.0.1
  * @component
  *
  * @param {object} props
  *
  * @returns {node} jsx markup
  */
-function SearchPresentation({ currentFilter, siteTitle, error, filters, handleFilter, isLoading, items, actions }) {
+function SearchPresentation({
+  currentFilter,
+  siteTitle,
+  error,
+  filters,
+  handleFilter,
+  isLoading,
+  items,
+  actions,
+  searchTerm,
+}) {
   const wholeDomain = siteTitle === 'FirstVoices'
+  const location = useLocation()
 
   const getFilterListItems = () => {
     return filters.map((filter) => {
@@ -24,12 +36,22 @@ function SearchPresentation({ currentFilter, siteTitle, error, filters, handleFi
         <li
           key={filter.label}
           id={'SearchFilter' + filter.label}
-          className={`inline-block md:block md:m-5 p-2 flex-grow rounded-xl ${filterIsActiveClass}`}
-          onClick={() => {
-            handleFilter(filter.type)
-          }}
+          className={`inline-block transition duration-500 ease-in-out md:block md:my-2 md:mx-5 p-2 flex-grow rounded-xl capitalize cursor-pointer ${filterIsActiveClass}`}
         >
-          {filter.label} {filter.count ? `(${filter.count})` : null}
+          <Link
+            to={`${location.pathname}?q=${searchTerm}&docType=${filter.type}`}
+            onClick={() => {
+              handleFilter(filter.type)
+            }}
+          >
+            {currentFilter !== 'ALL' && filter.type === 'ALL' ? (
+              <>{useIcon('BackArrow', 'inline-flex pb-2 h-7 text-fv-turquoise fill-current')} Back to all results</>
+            ) : (
+              <>
+                {filter.label} {filter.count ? `(${filter.count})` : null}
+              </>
+            )}
+          </Link>
         </li>
       )
     })
@@ -42,12 +64,12 @@ function SearchPresentation({ currentFilter, siteTitle, error, filters, handleFi
           <SearchInput.Container />
         </div>
       </section>
-      <div className="grid grid-cols-7 md:p-2">
-        <div className="col-span-7 md:col-span-1 mt-2">
+      <div className="grid grid-cols-11 md:p-2">
+        <div className="col-span-11 md:col-span-2 mt-2">
           <h2 className="hidden md:block text-2xl ml-8">Filters</h2>
           <ul className="inline-block md:block list-none m-2 md:m-0 md:space-y-4 ">{getFilterListItems()}</ul>
         </div>
-        <div className="min-h-220 col-span-7 md:col-span-6">
+        <div className="min-h-220 col-span-11 md:col-span-9">
           <DictionaryListPresentation
             items={items}
             actions={actions}

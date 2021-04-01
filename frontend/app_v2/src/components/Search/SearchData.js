@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useQuery } from 'react-query'
-import { useHistory, useLocation } from 'react-router-dom'
+import { useLocation } from 'react-router-dom'
 
 import useGetSite from 'common/useGetSite'
 import searchApi from 'services/api/search'
+import { copy } from 'common/actionHelpers'
 
 /**
  * @summary SearchData
@@ -15,7 +16,6 @@ import searchApi from 'services/api/search'
  */
 function SearchData() {
   const { title, uid } = useGetSite()
-  const history = useHistory()
   const location = useLocation()
 
   // Extract search term from URL search params
@@ -29,8 +29,8 @@ function SearchData() {
 
   // Data fetch
   const response = useQuery(['search', location.search], () => searchApi.get(`${location.search}&ancestorId=${uid}`), {
-    // The query will not execute until the siteId exists
-    enabled: !!uid,
+    // The query will not execute until the siteId exists and a search term has been provided
+    enabled: !!uid && !!searchTerm,
   })
   const { data, isLoading, error } = response
 
@@ -47,10 +47,7 @@ function SearchData() {
     : []
 
   // Get Filters
-  const filters =
-    currentFilter !== 'ALL'
-      ? [{ type: 'ALL', label: 'Back to ALL', count: null }]
-      : [{ type: 'ALL', label: 'ALL', count: data?.statistics.resultCount }]
+  const filters = [{ type: 'ALL', label: 'All Results', count: data?.statistics.resultCount }]
   const countsByType = data?.statistics.countsByType ? data.statistics.countsByType : {}
 
   for (const [key, value] of Object.entries(countsByType)) {
@@ -68,40 +65,8 @@ function SearchData() {
   }
 
   const handleFilter = (filter) => {
-    if (searchTerm && filter && filter !== currentFilter) {
-      history.push({ pathname: 'search', search: `?q=${searchTerm}&docType=${filter}` })
-    }
     setCurrentFilter(filter)
   }
-
-  const actions = [
-    {
-      actionTitle: 'copy',
-      iconName: 'Copy',
-      confirmationMessage: 'Copied!',
-      clickHandler: function clickCopyHandler(str) {
-        // Create new element
-        const el = document.createElement('textarea')
-        // Set value (string to be copied)
-        el.value = str
-        // Set non-editable to avoid focus and move outside of view
-        el.setAttribute('readonly', '')
-        el.style = { position: 'absolute', left: '-9999px' }
-        document.body.appendChild(el)
-        // Select text inside element
-        el.select()
-        // Copy text to clipboard
-        document.execCommand('copy')
-        // Remove temporary element
-        document.body.removeChild(el)
-        //Set tooltip confirmation with timeout
-        document.getElementById(`copy-message-${str}`).style.display = 'contents'
-        setTimeout(function timeout() {
-          document.getElementById(`copy-message-${str}`).style.display = 'none'
-        }, 1000)
-      },
-    },
-  ]
 
   return {
     currentFilter,
@@ -111,7 +76,8 @@ function SearchData() {
     handleFilter,
     isLoading,
     items,
-    actions,
+    actions: [copy],
+    searchTerm,
   }
 }
 
