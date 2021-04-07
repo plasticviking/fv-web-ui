@@ -16,7 +16,6 @@ import AlphabetPresentationWidget from 'components/Alphabet/AlphabetPresentation
 function AlphabetContainer({ widgetView }) {
   const {
     characters,
-    error,
     isLoading,
     sitename,
     links,
@@ -24,11 +23,10 @@ function AlphabetContainer({ widgetView }) {
     selectedData,
     onVideoClick,
     videoIsOpen,
-  } = AlphabetData()
+  } = AlphabetData({ widgetView })
   return widgetView ? (
     <AlphabetPresentationWidget
       isLoading={isLoading}
-      error={error}
       characters={characters}
       onCharacterClick={onCharacterClick}
       selectedData={selectedData}
@@ -39,7 +37,6 @@ function AlphabetContainer({ widgetView }) {
   ) : (
     <AlphabetPresentation
       isLoading={isLoading}
-      error={error}
       characters={characters}
       sitename={sitename}
       selectedData={selectedData}
