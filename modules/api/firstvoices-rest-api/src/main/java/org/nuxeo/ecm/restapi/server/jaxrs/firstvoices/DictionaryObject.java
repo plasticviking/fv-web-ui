@@ -1,15 +1,8 @@
 package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
 import static ca.firstvoices.rest.data.SearchResults.SearchDomain;
-import ca.firstvoices.core.io.utils.StateUtils;
 import ca.firstvoices.rest.data.SearchResult;
 import ca.firstvoices.rest.data.SearchResults;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
@@ -23,25 +16,22 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.SearchHit;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
 import org.nuxeo.ecm.core.api.SortInfo;
 import org.nuxeo.ecm.webengine.model.WebObject;
-import org.nuxeo.ecm.webengine.model.impl.DefaultObject;
 import org.nuxeo.elasticsearch.api.ElasticSearchService;
 import org.nuxeo.elasticsearch.api.EsResult;
-import org.nuxeo.elasticsearch.fetcher.EsFetcher;
 import org.nuxeo.elasticsearch.query.NxQueryBuilder;
 import org.nuxeo.runtime.api.Framework;
 
-@WebObject(type = "customSearch")
+@WebObject(type = "dictionary")
 @Produces(MediaType.APPLICATION_JSON)
-public class SearchObject extends AbstractSearchlikeObject {
+public class DictionaryObject extends AbstractSearchlikeObject {
 
   @GET
-  @Path("")
+  @Path("{dialect}")
   public Response doSearch(
       @QueryParam(value = "q") String query, @QueryParam(value = "parentPath") String parent,
       @QueryParam(value = "ancestorId") String ancestorId,
