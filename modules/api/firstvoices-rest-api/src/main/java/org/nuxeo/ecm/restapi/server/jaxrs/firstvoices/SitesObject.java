@@ -166,6 +166,18 @@ public class SitesObject extends DefaultObject {
         site);
   }
 
+
+  @GET
+  @Path("sections/{site}/administration/joinRequests")
+  public Response findSiteSections(
+      @Context HttpServletRequest request, @PathParam("site") String site) {
+    Optional<String> dialectId = this.resolveDialectId(request, site);
+    return new SiteAdministrationDelegate(ctx.getCoreSession(),dialectId)
+        .listJoinRequests(request, site);
+
+  }
+
+
   @GET
   @Path("sections/{site}/membership")
   public Response getSiteMembership(
