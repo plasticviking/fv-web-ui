@@ -52,8 +52,6 @@ public class FVSiteJoinRequestUtilities {
       // the group
     }
 
-    String memberGroupName = null;
-
     // resolve member group names
     List<String> eligibleGroups = new ArrayList<>();
     for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
@@ -68,7 +66,7 @@ public class FVSiteJoinRequestUtilities {
       }
     }
 
-    return eligibleGroups.stream().anyMatch(g -> user.isMemberOf(g));
+    return eligibleGroups.stream().anyMatch(user::isMemberOf);
 
   }
 

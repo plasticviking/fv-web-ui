@@ -180,9 +180,7 @@ public class SitesObject extends DefaultObject {
     if (!callingUserHasLanguageAdministratorPermissions(dialectId.get())) {
       return Response.status(403).build();
     }
-    return new SiteAdministrationDelegate(ctx.getCoreSession(), dialectId).listJoinRequests(request,
-        site);
-
+    return new SiteAdministrationDelegate(ctx.getCoreSession(), dialectId).listJoinRequests();
   }
 
 
@@ -195,9 +193,8 @@ public class SitesObject extends DefaultObject {
     if (!callingUserHasLanguageAdministratorPermissions(dialectId.get())) {
       return Response.status(403).build();
     }
-    return new SiteAdministrationDelegate(ctx.getCoreSession(), dialectId).getJoinRequest(request,
-        site,
-        requestId);
+    return new SiteAdministrationDelegate(ctx.getCoreSession(),
+        dialectId).getJoinRequest(requestId);
   }
 
 
@@ -210,8 +207,8 @@ public class SitesObject extends DefaultObject {
     if (!callingUserHasLanguageAdministratorPermissions(dialectId.get())) {
       return Response.status(403).build();
     }
-    return new SiteAdministrationDelegate(ctx.getCoreSession(),
-        dialectId).updateJoinRequest(request, site, requestId, updateRequest);
+    return new SiteAdministrationDelegate(ctx.getCoreSession(), dialectId)
+        .updateJoinRequest(requestId, updateRequest);
   }
 
   // used for access control checks on administrative actions

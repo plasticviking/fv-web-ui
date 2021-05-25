@@ -112,11 +112,11 @@ public class FVRequestToJoinDialectAdminAction {
       }
 
       //validate params
-      if (!validTargetStatuses.stream().anyMatch(s -> s.equals(newStatus))) {
+      if (validTargetStatuses.stream().noneMatch(s -> s.equals(newStatus))) {
         throw new IllegalArgumentException("Invalid requested status");
       }
 
-      if (!validStartingStatuses.stream().anyMatch(s -> s.equals(joinRequestDocument.getProperty(
+      if (validStartingStatuses.stream().noneMatch(s -> s.equals(joinRequestDocument.getProperty(
           SITE_JOIN_REQUEST_SCHEMA,
           "status")))) {
         throw new IllegalArgumentException("Invalid starting status");

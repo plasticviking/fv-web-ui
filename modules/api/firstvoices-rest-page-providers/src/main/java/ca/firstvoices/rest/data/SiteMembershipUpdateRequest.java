@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class SiteMembershipUpdateRequest implements Serializable {
-  public static String ACCEPT = "ACCEPT";
-  public static String IGNORE = "IGNORE";
+  public static final String ACCEPT = "ACCEPT";
+  public static final String IGNORE = "IGNORE";
 
   private final String messageToUser;
   private final String newStatus;

@@ -4,12 +4,13 @@ import ca.firstvoices.operations.FVRequestToJoinDialectAdminAction;
 import ca.firstvoices.rest.data.AdminSiteJoinRequest;
 import ca.firstvoices.rest.data.AdminSiteJoinRequestList;
 import ca.firstvoices.rest.data.SiteMembershipUpdateRequest;
+import java.io.Serializable;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.core.Response;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
@@ -19,6 +20,7 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentModelList;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.query.sql.NXQL;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
 import org.nuxeo.runtime.api.Framework;
 
 
@@ -35,7 +37,7 @@ public class SiteAdministrationDelegate {
   /**
    * Language admin to get list of pending join request
    */
-  public Response listJoinRequests(HttpServletRequest request, String site) {
+  public Response listJoinRequests() {
     if (!dialectId.isPresent()) {
       return Response.status(404).build();
     }
@@ -50,7 +52,7 @@ public class SiteAdministrationDelegate {
   /**
    * Language admin get details of join request
    */
-  public Response getJoinRequest(HttpServletRequest request, String site, String requestId) {
+  public Response getJoinRequest(String requestId) {
 
     if (!dialectId.isPresent()) {
       return Response.status(404).build();
@@ -66,8 +68,7 @@ public class SiteAdministrationDelegate {
    * Language admin approve join request
    */
   public Response updateJoinRequest(
-      final HttpServletRequest request, final String site, final String requestId,
-      final SiteMembershipUpdateRequest joinRequest) {
+      final String requestId, final SiteMembershipUpdateRequest joinRequest) {
 
     if (!dialectId.isPresent()) {
       return Response.status(404).build();
@@ -91,30 +92,40 @@ public class SiteAdministrationDelegate {
     return Response.ok().build();
   }
 
-  private static AdminSiteJoinRequest mapper(DocumentModel d) {
-    AdminSiteJoinRequest e = new AdminSiteJoinRequest(
-        d.getId(),
-        d.getPropertyValue("fvjoinrequest:user").toString(),
-        "b",
-        "c",
-        ((GregorianCalendar) d.getPropertyValue("fvjoinrequest:requestTime")).getTime(),
-        Optional
-            .ofNullable(d.getPropertyValue("fvjoinrequest:status"))
-            .orElse("UNKNOWN")
-            .toString(),
-        Optional
-            .ofNullable(d.getPropertyValue("fvjoinrequest:interestReason"))
-            .orElse("")
-            .toString(),
-        Optional.ofNullable(d.getPropertyValue("fvjoinrequest:comment")).orElse("").toString(),
-        Optional
-            .ofNullable((Boolean) d.getPropertyValue("fvjoinrequest:communityMember"))
-            .orElse(false),
-        Optional
-            .ofNullable((Boolean) d.getPropertyValue("fvjoinrequest:languageTeam"))
-            .orElse(false));
+  private static Function<DocumentModel, AdminSiteJoinRequest> mapper() {
+    return (d) -> {
 
-    return e;
+      UserManager userManager = Framework.getService(UserManager.class);
+      Map<String, Serializable> searchParameters = new HashMap<>();
+      searchParameters.put("email", d.getPropertyValue("fvjoinrequest:user").toString());
+      DocumentModelList users = userManager.searchUsers(searchParameters, null);
+      if (users.size() != 1) {
+        throw new IllegalArgumentException("Expected exactly one user");
+      }
+      final DocumentModel user = users.get(0);
+
+      return new AdminSiteJoinRequest(
+          d.getId(),
+          d.getPropertyValue("fvjoinrequest:user").toString(),
+          Optional.ofNullable(user.getPropertyValue("user:firstName")).orElse("").toString(),
+          Optional.ofNullable(user.getPropertyValue("user:lastName")).orElse("").toString(),
+          ((GregorianCalendar) d.getPropertyValue("fvjoinrequest:requestTime")).getTime(),
+          Optional
+              .ofNullable(d.getPropertyValue("fvjoinrequest:status"))
+              .orElse("UNKNOWN")
+              .toString(),
+          Optional
+              .ofNullable(d.getPropertyValue("fvjoinrequest:interestReason"))
+              .orElse("")
+              .toString(),
+          Optional.ofNullable(d.getPropertyValue("fvjoinrequest:comment")).orElse("").toString(),
+          Optional
+              .ofNullable((Boolean) d.getPropertyValue("fvjoinrequest:communityMember"))
+              .orElse(false),
+          Optional
+              .ofNullable((Boolean) d.getPropertyValue("fvjoinrequest:languageTeam"))
+              .orElse(false));
+    };
   }
 
   private static class JoinRequestListQueryRunner extends UnrestrictedSessionRunner {
@@ -136,7 +147,7 @@ public class SiteAdministrationDelegate {
 
       this.result = new AdminSiteJoinRequestList(queryResult
           .stream()
-          .map(SiteAdministrationDelegate::mapper)
+          .map(mapper())
           .collect(Collectors.toList()));
     }
 
@@ -165,11 +176,9 @@ public class SiteAdministrationDelegate {
 
       this.result = queryResult
           .stream()
-          .map(SiteAdministrationDelegate::mapper)
+          .map(mapper())
           .findFirst()
-          .orElseThrow(() -> {
-            return new IllegalArgumentException("Not found");
-          });
+          .orElseThrow(() -> new IllegalArgumentException("Not found"));
     }
 
     public AdminSiteJoinRequest getResult() {
