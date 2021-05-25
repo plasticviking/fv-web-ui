@@ -5,6 +5,7 @@ import java.util.Date;
 
 public class AdminSiteJoinRequest implements Serializable {
 
+  private final String id;
   private final String requestUsername;
   private final String requestUserFirstName;
   private final String requestUserLastName;
@@ -16,10 +17,12 @@ public class AdminSiteJoinRequest implements Serializable {
   private final boolean languageTeamMember;
 
   public AdminSiteJoinRequest(
-      final String requestUsername, final String requestUserFirstName,
+      final String id, final String requestUsername, final String requestUserFirstName,
       final String requestUserLastName, final Date date, final String status,
       final String interestReason, final String comment, final boolean communityMember,
       final boolean languageTeamMember) {
+
+    this.id = id;
     this.requestUsername = requestUsername;
     this.requestUserFirstName = requestUserFirstName;
     this.requestUserLastName = requestUserLastName;
@@ -29,6 +32,11 @@ public class AdminSiteJoinRequest implements Serializable {
     this.comment = comment;
     this.communityMember = communityMember;
     this.languageTeamMember = languageTeamMember;
+
+  }
+
+  public String getId() {
+    return id;
   }
 
   public String getRequestUsername() {

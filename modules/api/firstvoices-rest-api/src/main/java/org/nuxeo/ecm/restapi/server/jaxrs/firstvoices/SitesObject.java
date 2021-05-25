@@ -5,9 +5,11 @@ import ca.firstvoices.rest.data.Site;
 import ca.firstvoices.rest.data.SiteList;
 import ca.firstvoices.rest.data.SiteMembershipRequest;
 import ca.firstvoices.rest.data.SiteMembershipStatus;
+import ca.firstvoices.rest.data.SiteMembershipUpdateRequest;
 import ca.firstvoices.rest.helpers.DialectMembershipHelper;
 import ca.firstvoices.rest.helpers.EtagHelper;
 import ca.firstvoices.rest.helpers.PageProviderHelper;
+import ca.firstvoices.utils.CustomSecurityConstants;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,8 +40,11 @@ import org.nuxeo.ecm.automation.features.PrincipalHelper;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.DocumentRef;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
 import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.ACL;
 import org.nuxeo.ecm.core.api.security.PermissionProvider;
 import org.nuxeo.ecm.core.api.security.SecurityConstants;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
@@ -169,12 +174,71 @@ public class SitesObject extends DefaultObject {
 
   @GET
   @Path("sections/{site}/administration/joinRequests")
-  public Response findSiteSections(
+  public Response listJoinRequests(
       @Context HttpServletRequest request, @PathParam("site") String site) {
     Optional<String> dialectId = this.resolveDialectId(request, site);
-    return new SiteAdministrationDelegate(ctx.getCoreSession(),dialectId)
-        .listJoinRequests(request, site);
+    if (!callingUserHasLanguageAdministratorPermissions(dialectId.get())) {
+      return Response.status(403).build();
+    }
+    return new SiteAdministrationDelegate(ctx.getCoreSession(), dialectId).listJoinRequests(request,
+        site);
 
+  }
+
+
+  @GET
+  @Path("sections/{site}/administration/joinRequests/{requestId}")
+  public Response getJoinRequest(
+      @Context HttpServletRequest request, @PathParam("site") String site,
+      @PathParam("requestId") String requestId) {
+    Optional<String> dialectId = this.resolveDialectId(request, site);
+    if (!callingUserHasLanguageAdministratorPermissions(dialectId.get())) {
+      return Response.status(403).build();
+    }
+    return new SiteAdministrationDelegate(ctx.getCoreSession(), dialectId).getJoinRequest(request,
+        site,
+        requestId);
+  }
+
+
+  @POST
+  @Path("sections/{site}/administration/joinRequests/{requestId}")
+  public Response updateJoinRequest(
+      @Context HttpServletRequest request, @PathParam("site") String site,
+      @PathParam("requestId") String requestId, SiteMembershipUpdateRequest updateRequest) {
+    Optional<String> dialectId = this.resolveDialectId(request, site);
+    if (!callingUserHasLanguageAdministratorPermissions(dialectId.get())) {
+      return Response.status(403).build();
+    }
+    return new SiteAdministrationDelegate(ctx.getCoreSession(),
+        dialectId).updateJoinRequest(request, site, requestId, updateRequest);
+  }
+
+  // used for access control checks on administrative actions
+  private boolean callingUserHasLanguageAdministratorPermissions(String dialectId) {
+    final NuxeoPrincipal callingUser = ctx.getPrincipal();
+    if (dialectId == null) {
+      throw new IllegalArgumentException("no dialect specified");
+    }
+
+    DocumentModel dialectDocument = ctx.getCoreSession().getDocument(new IdRef(dialectId));
+    if (dialectDocument == null) {
+      return false; // if we can't read it with our current permissions, we're definitely not an
+      // admin
+    }
+
+    String languageAdminGroupName = null;
+
+    // resolve admin group name
+    for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
+      String acePrincipal = ace.getUsername();
+
+      if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP) && ace.isGranted()) {
+        languageAdminGroupName = acePrincipal;
+      }
+    }
+
+    return callingUser.isMemberOf(languageAdminGroupName);
   }
 
 

@@ -36,6 +36,7 @@ import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
 import org.nuxeo.ecm.platform.usermanager.UserManager;
 
 
@@ -63,19 +64,41 @@ public class FVRequestToJoinDialect {
   public void run() {
     NuxeoPrincipal user = operationContext.getPrincipal();
 
-    final DocumentModel joinRequest = session.createDocumentModel("FVSiteJoinRequest");
-
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "user", user.getEmail());
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "dialect", dialect);
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "requestTime", new Date());
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "languageTeam", languageTeam);
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "communityMember", communityMember);
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "interestReason", interestReason);
-    joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "comment", dialect);
-
-    final DocumentModel joinRequestDocument = session.createDocument(joinRequest);
-    session.saveDocument(joinRequestDocument);
+    new JoinRequestor(session, dialect, user).runUnrestricted();
 
   }
 
+  private class JoinRequestor extends UnrestrictedSessionRunner {
+
+    private final String dialect;
+    private final NuxeoPrincipal user;
+
+    public JoinRequestor(CoreSession session, final String dialect, final NuxeoPrincipal user) {
+      super(session);
+      this.dialect = dialect;
+      this.user = user;
+    }
+
+    @Override
+    public void run() {
+
+      final DocumentModel joinRequest = session.createDocumentModel("FVSiteJoinRequest");
+
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "user", user.getEmail());
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "dialect", dialect);
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "requestTime", new Date());
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "languageTeam", languageTeam);
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "communityMember", communityMember);
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "interestReason", interestReason);
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "comment", comment);
+      joinRequest.setProperty(SITE_JOIN_REQUEST_SCHEMA, "status", "NEW");
+
+
+      final DocumentModel joinRequestDocument = session.createDocument(joinRequest);
+
+      session.saveDocument(joinRequestDocument);
+    }
+  }
+
 }
+

@@ -12,6 +12,7 @@
 		<operation class="ca.firstvoices.operations.FVUpdateUser" replace="true" />
 		<operation class="ca.firstvoices.operations.FVChangeUserGroupToDialectGroup" replace="true" />
 		<operation class="ca.firstvoices.operations.FVRequestToJoinDialect" replace="true" />
+		<operation class="ca.firstvoices.operations.FVRequestToJoinDialectAdminAction" replace="true" />
 	</extension>
 
 </component>
