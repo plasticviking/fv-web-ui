@@ -320,7 +320,22 @@ public class SitesObject extends DefaultObject {
     queryRunner.run();
 
     if (queryRunner.getPortalId() == null || queryRunner.getDialectId() == null) {
-      return Optional.empty();
+      UnrestrictedSessionRunner checkIdDirectly =
+          new UnrestrictedSessionRunner(ctx.getCoreSession()) {
+            @Override
+            public void run() {
+              DocumentModel res = this.session.getDocument(new IdRef(site));
+              if (!res.getType().equals("FVDialect")) {
+                throw new IllegalArgumentException("ID is not for a dialect");
+              }
+            }
+          };
+      try {
+        checkIdDirectly.runUnrestricted();
+        return Optional.of(site);
+      } catch (IllegalArgumentException e) {
+        return Optional.of(null);
+      }
     }
 
     return Optional.of(queryRunner.getDialectId());
