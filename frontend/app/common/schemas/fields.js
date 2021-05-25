@@ -138,6 +138,13 @@ const fields = {
     'fvuserinfo:community_member': t.maybe(t.Boolean),
     'fvuserinfo:language_team_member': t.maybe(t.Boolean),
   },
+  FVUserJoin: {
+    'fvuserinfo:requestedSpace': t.String,
+    'fvuserinfo:role': t.String,
+    'fvuserinfo:comment': t.maybe(t.String),
+    'fvuserinfo:community_member': t.maybe(t.Boolean),
+    'fvuserinfo:language_team_member': t.maybe(t.Boolean),
+  },
   FVLink: Object.assign({}, Dublincore, {
     'dc:description': t.maybe(t.String),
     'fvlink:url': t.maybe(t.String) /*,
