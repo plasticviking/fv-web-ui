@@ -27,7 +27,6 @@ import static ca.firstvoices.utils.FVRegistrationConstants.APPEND;
 import static ca.firstvoices.utils.FVRegistrationConstants.GROUP_SCHEMA;
 import static ca.firstvoices.utils.FVRegistrationConstants.MEMBERS;
 import static ca.firstvoices.utils.FVRegistrationConstants.REMOVE;
-
 import org.nuxeo.ecm.automation.core.util.StringList;
 import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
@@ -49,7 +48,9 @@ public class FVMoveUserToDialectServiceImpl implements FVMoveUserToDialectServic
           "placeNewUserInGroup: No sufficient privileges to modify group: " + groupName);
     }
 
-    if (terminateOnInvalidCredentials_NewUserHomeChange(session, userManager, newUsername,
+    if (terminateOnInvalidCredentials_NewUserHomeChange(session,
+        userManager,
+        newUsername,
         dialect.getId())) {
       throw new Exception(
           "placeNewUserInGroup: No sufficient privileges to modify user: " + newUsername);
@@ -60,15 +61,16 @@ public class FVMoveUserToDialectServiceImpl implements FVMoveUserToDialectServic
     systemPlaceNewUserInGroup(dialect, groupName, newUsername, session);
   }
 
-  public void systemPlaceNewUserInGroup(DocumentModel dialect, String groupName, String newUsername,
-      CoreSession session) throws Exception {
+  public void systemPlaceNewUserInGroup(
+      DocumentModel dialect, String groupName, String newUsername, CoreSession session)
+      throws Exception {
     CoreInstance.doPrivileged(session, s -> {
       moveUserBetweenGroups(dialect, newUsername, "members", groupName.toLowerCase());
     });
   }
 
-  public void moveUserBetweenGroups(DocumentModel dialect, String userName, String fromGroupName,
-      String toGroupName) {
+  public void moveUserBetweenGroups(
+      DocumentModel dialect, String userName, String fromGroupName, String toGroupName) {
     if (userManager == null) {
       userManager = Framework.getService(UserManager.class);
     }
@@ -93,18 +95,5 @@ public class FVMoveUserToDialectServiceImpl implements FVMoveUserToDialectServic
     }
   }
 
-  @Override
-  public void removeUserFromGroup(DocumentModel dialect, String fromGroupName) {
-    if (userManager == null) {
-      userManager = Framework.getService(UserManager.class);
-    }
-  }
-
-  @Override
-  public void addUserToGroup(DocumentModel dialect, String toGroupName) {
-    if (userManager == null) {
-      userManager = Framework.getService(UserManager.class);
-    }
-  }
 
 }

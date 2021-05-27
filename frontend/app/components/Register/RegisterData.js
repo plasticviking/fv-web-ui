@@ -82,13 +82,7 @@ function RegisterData({ children }) {
     setFormValue(properties)
     if (currentFormValue) {
       if (isLoggedIn) {
-        requestJoin({
-          siteId: selectn('fvuserinfo:requestedSpace', properties),
-          interestReason: selectn('fvuserinfo:role', properties),
-          communityMember: selectn('fvuserinfo:community_member', properties) || false,
-          languageTeam: selectn('fvuserinfo:language_team_member', properties) || false,
-          comment: selectn('fvuserinfo:comment', properties),
-        })
+        requestJoin({})
       } else {
         const currentUserRequest = {
           'entity-type': 'document',

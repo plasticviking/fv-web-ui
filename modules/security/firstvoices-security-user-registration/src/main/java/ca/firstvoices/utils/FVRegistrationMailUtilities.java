@@ -26,7 +26,6 @@ import static ca.firstvoices.utils.FVRegistrationConstants.NEW_TEAM_MEMBER_SELF_
 import static ca.firstvoices.utils.FVRegistrationConstants.NEW_USER_SELF_REGISTRATION_ACT;
 import static ca.firstvoices.utils.FVRegistrationConstants.REGISTRATION_DELETION_ACT;
 import static ca.firstvoices.utils.FVRegistrationConstants.REGISTRATION_EXPIRATION_ACT;
-
 import java.io.StringWriter;
 import java.util.Date;
 import java.util.HashMap;
@@ -81,8 +80,8 @@ public class FVRegistrationMailUtilities {
    * @param content
    * @throws Exception
    */
-  private void generateMail(String destination, String copy, String title, String content,
-      String bcc) throws Exception {
+  private void generateMail(
+      String destination, String copy, String title, String content, String bcc) throws Exception {
 
     InitialContext ic = new InitialContext();
     Session session = (Session) ic.lookup(getJavaMailJndiName());
@@ -162,8 +161,9 @@ public class FVRegistrationMailUtilities {
    * @param toStr
    * @throws Exception
    */
-  private void registrationMailSender(int variant, EmailContentAssembler prep,
-      Map<String, String> options, String toStr, String bcc) throws Exception {
+  private void registrationMailSender(
+      int variant, EmailContentAssembler prep, Map<String, String> options, String toStr,
+      String bcc) throws Exception {
     String title = prep.getEmailTitle(variant, options);
     String body = prep.getEmailBody(variant, options);
 
@@ -196,8 +196,8 @@ public class FVRegistrationMailUtilities {
    * @param toStr
    * @throws Exception
    */
-  public void registrationAdminMailSender(int variant, Map<String, String> options, String toStr,
-      String bcc) throws Exception {
+  public void registrationAdminMailSender(
+      int variant, Map<String, String> options, String toStr, String bcc) throws Exception {
     registrationMailSender(variant, new AdminMailContent(), options, toStr, bcc);
   }
 
@@ -213,8 +213,7 @@ public class FVRegistrationMailUtilities {
 
     // Source lookup (unrestricted)
     FVRegistrationUtilities.UnrestrictedSourceDocumentResolver usdr =
-        new FVRegistrationUtilities.UnrestrictedSourceDocumentResolver(
-        session, requestedSpaceId);
+        new FVRegistrationUtilities.UnrestrictedSourceDocumentResolver(session, requestedSpaceId);
     usdr.runUnrestricted();
 
     // Source document
@@ -307,7 +306,8 @@ public class FVRegistrationMailUtilities {
       if (baseRequest.endsWith("/nuxeo")) {
         baseRequest = baseRequest.substring(0, baseRequest.indexOf("/nuxeo"));
       }
-      options.put("appURL",
+      options.put(
+          "appURL",
           baseRequest + (StringUtils.isEmpty(fvContextPath) ? "" : ("/" + fvContextPath)));
       options.put("siteURL", siteURL);
 
