@@ -42,20 +42,22 @@ public class FVSiteJoinRequestUtilities {
 
   public static boolean isMember(CoreSession session, NuxeoPrincipal user, String dialect) {
 
+
     if (dialect == null) {
       throw new IllegalArgumentException("no dialect specified");
     }
 
-    DocumentModel dialectDocument = session.getDocument(new IdRef(dialect));
-    if (dialectDocument == null) {
-      return false; // if we can't read it with our current permissions, we're definitely not in
-      // the group
-    }
-
-    // resolve member group names
-    List<String> eligibleGroups = new ArrayList<>();
-
     try {
+
+      DocumentModel dialectDocument = session.getDocument(new IdRef(dialect));
+      if (dialectDocument == null) {
+        return false; // if we can't read it with our current permissions, we're definitely not in
+        // the group
+      }
+
+      // resolve member group names
+      List<String> eligibleGroups = new ArrayList<>();
+
 
       for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
         String acePrincipal = ace.getUsername();
@@ -64,17 +66,19 @@ public class FVSiteJoinRequestUtilities {
           eligibleGroups.add(acePrincipal);
         }
 
-        if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP) && ace.isGranted()) {
+        if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP)
+            && ace.isGranted()) {
           eligibleGroups.add(acePrincipal);
         }
       }
+
+      return eligibleGroups.stream().anyMatch(user::isMemberOf);
+
     } catch (Exception e) {
       // this is a little broad, but the Exceptions aren't checked and I am not sure which ones
       // can be thrown.
       return false;
     }
-
-    return eligibleGroups.stream().anyMatch(user::isMemberOf);
 
   }
 
