@@ -54,16 +54,24 @@ public class FVSiteJoinRequestUtilities {
 
     // resolve member group names
     List<String> eligibleGroups = new ArrayList<>();
-    for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
-      String acePrincipal = ace.getUsername();
 
-      if (acePrincipal.contains(CustomSecurityConstants.MEMBERS_GROUP) && ace.isGranted()) {
-        eligibleGroups.add(acePrincipal);
-      }
+    try {
 
-      if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP) && ace.isGranted()) {
-        eligibleGroups.add(acePrincipal);
+      for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
+        String acePrincipal = ace.getUsername();
+
+        if (acePrincipal.contains(CustomSecurityConstants.MEMBERS_GROUP) && ace.isGranted()) {
+          eligibleGroups.add(acePrincipal);
+        }
+
+        if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP) && ace.isGranted()) {
+          eligibleGroups.add(acePrincipal);
+        }
       }
+    } catch (Exception e) {
+      // this is a little broad, but the Exceptions aren't checked and I am not sure which ones
+      // can be thrown.
+      return false;
     }
 
     return eligibleGroups.stream().anyMatch(user::isMemberOf);
