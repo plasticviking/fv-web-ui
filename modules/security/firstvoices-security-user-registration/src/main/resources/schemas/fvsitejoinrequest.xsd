@@ -16,4 +16,8 @@
   <xs:element name="interestReason" type="xs:string" />
   <xs:element name="comment" type="xs:string"/>
 
+  <xs:element name="status" type="xs:string"/>
+
+  <xs:element name="messageToUser" type="xs:string"/>
+
 </xs:schema>
