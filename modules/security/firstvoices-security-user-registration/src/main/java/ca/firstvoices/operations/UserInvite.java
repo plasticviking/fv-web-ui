@@ -92,14 +92,12 @@ public class UserInvite {
 
     autoAccept = utilCommon.userInviteCondition(registrationRequest, session);
 
-    String registrationId = utilCommon.registrationCommonFinish(registrationService,
+    return utilCommon.registrationCommonFinish(registrationService,
         registrationRequest,
         info,
         comment,
         validationMethod,
         autoAccept,
         session);
-
-    return registrationId;
   }
 }

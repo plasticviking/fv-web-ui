@@ -60,7 +60,7 @@ public class FVOperationCredentialsVerification {
     return GLOBAL_ADMINISTRATOR_OR_SYSTEM;
   }
 
-  public static boolean terminateOnInvalidCredentials_NewUserHomeChange(
+  public static boolean newUserHomeChange(
       CoreSession session, UserManager userManager, String username, String dialectGUID) {
     try {
       NuxeoPrincipal invokingPrincipal = session.getPrincipal();
@@ -88,7 +88,7 @@ public class FVOperationCredentialsVerification {
     return false; // continue executing command - valid credentials
   }
 
-  public static boolean terminateOnInvalidCredentials_UserUpdate(
+  public static boolean userUpdate(
       CoreSession session, UserManager userManager, String username) {
     NuxeoPrincipal invokingPrincipal = session.getPrincipal();
 
@@ -118,7 +118,7 @@ public class FVOperationCredentialsVerification {
     return false; // continue executing command - valid credentials
   }
 
-  public static boolean terminateOnInvalidCredentials_GroupUpdate(
+  public static boolean groupUpdate(
       CoreSession session, String groupName) {
     NuxeoPrincipal invokingPrincipal = session.getPrincipal();
 

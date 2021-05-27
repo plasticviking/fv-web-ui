@@ -81,28 +81,33 @@ public class FVRegistrationMailUtilities {
    * @throws Exception
    */
   private void generateMail(
-      String destination, String copy, String title, String content, String bcc) throws Exception {
+      String destination, String copy, String title, String content, String bcc) {
 
-    InitialContext ic = new InitialContext();
-    Session session = (Session) ic.lookup(getJavaMailJndiName());
+    try {
 
-    MimeMessage msg = new MimeMessage(session);
-    msg.setFrom(new InternetAddress(session.getProperty("mail.from")));
-    msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destination, false));
+      InitialContext ic = new InitialContext();
+      Session session = (Session) ic.lookup(getJavaMailJndiName());
 
-    if (!StringUtils.isBlank(copy)) {
-      msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(copy, false));
+      MimeMessage msg = new MimeMessage(session);
+      msg.setFrom(new InternetAddress(session.getProperty("mail.from")));
+      msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destination, false));
+
+      if (!StringUtils.isBlank(copy)) {
+        msg.addRecipients(Message.RecipientType.CC, InternetAddress.parse(copy, false));
+      }
+
+      if (!StringUtils.isBlank(bcc)) {
+        msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false));
+      }
+
+      msg.setSubject(title, "UTF-8");
+      msg.setSentDate(new Date());
+      msg.setContent(content, "text/html; charset=utf-8");
+
+      Transport.send(msg);
+    } catch (NamingException | MessagingException e) {
+      log.error(e);
     }
-
-    if (!StringUtils.isBlank(bcc)) {
-      msg.addRecipients(Message.RecipientType.BCC, InternetAddress.parse(bcc, false));
-    }
-
-    msg.setSubject(title, "UTF-8");
-    msg.setSentDate(new Date());
-    msg.setContent(content, "text/html; charset=utf-8");
-
-    Transport.send(msg);
   }
 
   private String composeEmailString(Set<String> emailSet) {
@@ -163,31 +168,27 @@ public class FVRegistrationMailUtilities {
    */
   private void registrationMailSender(
       int variant, EmailContentAssembler prep, Map<String, String> options, String toStr,
-      String bcc) throws Exception {
+      String bcc) {
     String title = prep.getEmailTitle(variant, options);
     String body = prep.getEmailBody(variant, options);
 
-    try {
-      if (title != null && body != null) {
-        if (!toStr.isEmpty()) {
+    if (title != null && body != null) {
+      if (!toStr.isEmpty()) {
 
-          // IF bcc equals toStr - a language admin does not exist, and we are sending directly
-          // to super admins.
-          // Remove bcc, and mention something in the title
-          if (bcc.equals(toStr)) {
-            bcc = "";
-            title = "[NO-LANG-ADMIN] " + title;
-          }
-
-          generateMail(toStr, "", title, body, bcc);
-        } else {
-          generateMail(options.get("email"), "", title, body, bcc);
+        // IF bcc equals toStr - a language admin does not exist, and we are sending directly
+        // to super admins.
+        // Remove bcc, and mention something in the title
+        if (bcc.equals(toStr)) {
+          bcc = "";
+          title = "[NO-LANG-ADMIN] " + title;
         }
+
+        generateMail(toStr, "", title, body, bcc);
+      } else {
+        generateMail(options.get("email"), "", title, body, bcc);
       }
-    } catch (NamingException | MessagingException e) {
-      log.warn(e);
-      throw new NuxeoException("Error while sending mail", e);
     }
+
   }
 
   /**

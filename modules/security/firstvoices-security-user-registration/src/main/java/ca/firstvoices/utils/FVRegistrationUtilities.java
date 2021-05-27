@@ -63,7 +63,6 @@ public class FVRegistrationUtilities {
   private static final Log log = LogFactory.getLog(FVRegistrationUtilities.class);
 
   private FVUserRegistrationInfo userInfo;
-  private UserManager userManager;
 
   private FVRegistrationMailUtilities mailUtil = new FVRegistrationMailUtilities();
   private OperationContext ctx;
@@ -158,7 +157,6 @@ public class FVRegistrationUtilities {
    */
   public void registrationCommonSetup(
       DocumentModel registrationRequest, CoreSession session, UserManager userManager1) {
-    userManager = userManager1;
 
     userInfo = new FVUserRegistrationInfo();
 
@@ -191,27 +189,6 @@ public class FVRegistrationUtilities {
 
     userInfo.setGroups(preSetGroup);
 
-  }
-
-  /**
-   * @throws Exception
-   */
-  private void notificationEmailsAndReminderTasks(
-      DocumentModel dialect, DocumentModel ureg, int variant) throws Exception {
-    Map<String, String> options = new HashMap<>();
-    options.put("fName", (String) ureg.getPropertyValue("userinfo:firstName"));
-    options.put("lName", (String) ureg.getPropertyValue("userinfo:lastName"));
-    options.put("email", (String) ureg.getPropertyValue("userinfo:email"));
-
-    String adminTO = mailUtil.getLanguageAdministratorEmail(dialect);
-    String superAdminBCC = mailUtil.getSuperAdministratorEmail();
-
-    // If language does not have an administrator - send directly to super admin
-    if (adminTO.isEmpty()) {
-      adminTO = superAdminBCC;
-    }
-
-    mailUtil.registrationAdminMailSender(variant, options, adminTO, superAdminBCC);
   }
 
   /**

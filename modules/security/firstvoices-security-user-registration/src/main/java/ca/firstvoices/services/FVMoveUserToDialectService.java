@@ -24,12 +24,10 @@ import org.nuxeo.ecm.core.api.DocumentModel;
 
 public interface FVMoveUserToDialectService {
 
-  void placeNewUserInGroup(DocumentModel dialect, String groupName, String newUsername)
-      throws Exception;
+  void placeNewUserInGroup(DocumentModel dialect, String groupName, String newUsername);
 
   void moveUserBetweenGroups(
-      DocumentModel dialect, String userName, String fromGroupName, String toGroupName)
-      throws Exception;
+      DocumentModel dialect, String userName, String fromGroupName, String toGroupName);
 
 }
 
