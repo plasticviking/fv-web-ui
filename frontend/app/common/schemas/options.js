@@ -17,6 +17,7 @@ import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import FVButton from 'components/FVButton'
 import IntlService from 'common/services/IntlService'
+import ProviderHelpers from 'common/ProviderHelpers'
 
 const intl = IntlService.instance
 
@@ -67,6 +68,18 @@ const FVUserRegistrationTemplate = function template(locals) {
         <div className="col-md-6">{locals.inputs['userinfo:firstName']}</div>
         <div className="col-md-6">{locals.inputs['userinfo:lastName']}</div>
         <div className="col-md-6">{locals.inputs['userinfo:email']}</div>
+        <div className="col-md-6">{locals.inputs['fvuserinfo:ageGroup']}</div>
+        <div className="col-md-6" id="registration-requested-space">
+          {locals.inputs['fvuserinfo:requestedSpace']}
+        </div>
+        <div className="col-md-6">{locals.inputs['fvuserinfo:role']}</div>
+        <div className={classNames('col-md-12', { hidden: !selectedSiteLabel })}>
+          {locals.inputs['fvuserinfo:community_member']}
+        </div>
+        <div className={classNames('col-md-12', { hidden: !selectedSiteLabel })}>
+          {locals.inputs['fvuserinfo:language_team_member']}
+        </div>
+        <div className="col-md-12">{locals.inputs['fvuserinfo:comment']}</div>
       </fieldset>
     </div>
   )
@@ -78,6 +91,12 @@ const FVUserPreselectedTemplate = function template(locals) {
         <div className="col-md-6">{locals.inputs['userinfo:firstName']}</div>
         <div className="col-md-6">{locals.inputs['userinfo:lastName']}</div>
         <div className="col-md-6">{locals.inputs['userinfo:email']}</div>
+        <div className="col-md-6">{locals.inputs['fvuserinfo:ageGroup']}</div>
+        <div className={classNames('col-md-12', { hidden: true })}>{locals.inputs['fvuserinfo:requestedSpace']}</div>
+        <div className="col-md-6">{locals.inputs['fvuserinfo:role']}</div>
+        <div className="col-md-12">{locals.inputs['fvuserinfo:community_member']}</div>
+        <div className="col-md-12">{locals.inputs['fvuserinfo:language_team_member']}</div>
+        <div className="col-md-12">{locals.inputs['fvuserinfo:comment']}</div>
       </fieldset>
     </div>
   )
@@ -299,6 +318,50 @@ const FVUser = {
     'userinfo:email': {
       label: intl.trans('views.pages.explore.dialect.users.email_address', 'Email Address', 'first') + ' *',
       error: 'Please provide your email.',
+    },
+    'fvuserinfo:ageGroup': {
+      label: 'Age Group',
+    },
+    'fvuserinfo:requestedSpace': {
+      label:
+        intl.translate({
+          key: 'models.dialect_to_join',
+          default: 'Your FirstVoices community/language',
+        }) + ' *',
+      factory: SelectFactory,
+      attrs: {
+        queryId: 'dialect_titles_uids',
+        query: 'dialect_list',
+        label: 'Your FirstVoices community/language',
+        fancy: false,
+      },
+      error:
+        'Please choose a community portal/language to join. If you are not a member of a community, please skip registration and go straight to the "EXPLORE LANGUAGES" page',
+    },
+    'fvuserinfo:role': {
+      label: 'Why are you interested in FirstVoices?' + ' *',
+      factory: t.form.Select,
+      nullOption: { value: '', text: 'Choose the main reason:' },
+      options: ProviderHelpers.userRegistrationRoles,
+      error: "Please let us know or pick the 'other' option.",
+    },
+    'fvuserinfo:comment': {
+      label: 'Other Comments',
+      type: 'textarea',
+    },
+    'fvuserinfo:community_member': {
+      label: (
+        <span>
+          I am a member of the <strong id="community_member_name" /> community.
+        </span>
+      ),
+    },
+    'fvuserinfo:language_team_member': {
+      label: (
+        <span>
+          I am an authorized member of the <strong id="language_team_member_name" /> language team
+        </span>
+      ),
     },
   },
 }

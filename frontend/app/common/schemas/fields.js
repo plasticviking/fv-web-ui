@@ -129,9 +129,21 @@ const fields = {
   FVUser: {
     'userinfo:firstName': t.String,
     'userinfo:lastName': t.String,
-    'userinfo:email': Email
+    'userinfo:email': Email,
+    'fvuserinfo:requestedSpace': t.String,
+    'fvuserinfo:role': t.String,
+    'fvuserinfo:ageGroup': t.maybe(AgeRanges),
+    'fvuserinfo:phone': t.maybe(t.String),
+    'fvuserinfo:comment': t.maybe(t.String),
+    'fvuserinfo:community_member': t.maybe(t.Boolean),
+    'fvuserinfo:language_team_member': t.maybe(t.Boolean),
   },
   FVUserJoin: {
+    'fvuserinfo:requestedSpace': t.String,
+    'fvuserinfo:role': t.String,
+    'fvuserinfo:comment': t.maybe(t.String),
+    'fvuserinfo:community_member': t.maybe(t.Boolean),
+    'fvuserinfo:language_team_member': t.maybe(t.Boolean),
   },
   FVLink: Object.assign({}, Dublincore, {
     'dc:description': t.maybe(t.String),

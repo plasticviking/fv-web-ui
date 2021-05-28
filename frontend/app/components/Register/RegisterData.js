@@ -2,7 +2,7 @@ import { useRef, useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import selectn from 'selectn'
 
-import useDialect from 'dataSources/useDialect'
+import usePortal from 'dataSources/usePortal'
 import useIntl from 'dataSources/useIntl'
 import useLogin from 'dataSources/useLogin'
 import useUser from 'dataSources/useUser'
@@ -19,10 +19,10 @@ import ProviderHelpers from 'common/ProviderHelpers'
  *
  */
 function RegisterData({ children }) {
-  const { fetchDialect2, computeDialect2 } = useDialect()
+  const { fetchPortals, computePortals } = usePortal()
   const { intl } = useIntl()
   const { computeLogin } = useLogin()
-  const { selfregisterUser, computeUserSelfregister, requestJoin } = useUser()
+  const { selfregisterUser, computeUserSelfregister, requestMembership } = useUser()
 
   const isLoggedIn = computeLogin.success && computeLogin.isConnected
 
@@ -38,7 +38,7 @@ function RegisterData({ children }) {
 
   useEffect(() => {
     if (requestedSite) {
-      fetchDialect2(requestedSite)
+      fetchPortals({ area: 'sections' })
       setFormValue({ 'fvuserinfo:requestedSpace': requestedSite })
     }
   }, [requestedSite])
@@ -49,7 +49,6 @@ function RegisterData({ children }) {
     : Object.assign({}, selectn('FVUserRegistration', options))
 
   const registrationResponse = ProviderHelpers.getEntry(computeUserSelfregister, userRequest)
-  const dialectResponse = ProviderHelpers.getEntry(computeDialect2, requestedSite)
 
   useEffect(() => {
     if (selectn('success', registrationResponse)) {
@@ -61,10 +60,14 @@ function RegisterData({ children }) {
         })
       }
     }
-    if (selectn('success', dialectResponse)) {
-      setRequestedSiteTitle(selectn('response.title', dialectResponse))
+    if (selectn('success', computePortals)) {
+      const response = selectn('response', computePortals)
+      const portal = response.find((obj) => {
+        return obj.uid === requestedSite
+      })
+      setRequestedSiteTitle(portal.title)
     }
-  }, [registrationResponse, dialectResponse])
+  }, [registrationResponse, computePortals])
 
   const onRequestSaveForm = (event) => {
     // Prevent default behaviour
@@ -82,7 +85,13 @@ function RegisterData({ children }) {
     setFormValue(properties)
     if (currentFormValue) {
       if (isLoggedIn) {
-        requestJoin({})
+        requestMembership({
+          siteId: selectn('fvuserinfo:requestedSpace', properties),
+          interestReason: selectn('fvuserinfo:role', properties),
+          communityMember: selectn('fvuserinfo:community_member', properties) || false,
+          languageTeam: selectn('fvuserinfo:language_team_member', properties) || false,
+          comment: selectn('fvuserinfo:comment', properties),
+        })
       } else {
         const currentUserRequest = {
           'entity-type': 'document',
