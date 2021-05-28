@@ -39,9 +39,7 @@ public class FVSiteJoinRequestUtilities {
   private FVSiteJoinRequestUtilities() {
   }
 
-
   public static boolean isMember(CoreSession session, NuxeoPrincipal user, String dialect) {
-
 
     if (dialect == null) {
       throw new IllegalArgumentException("no dialect specified");
@@ -51,23 +49,24 @@ public class FVSiteJoinRequestUtilities {
 
       DocumentModel dialectDocument = session.getDocument(new IdRef(dialect));
       if (dialectDocument == null) {
-        return false; // if we can't read it with our current permissions, we're definitely not in
+        return false; // if we can't read it with our current permissions, we're
+        // definitely not in
         // the group
       }
 
       // resolve member group names
       List<String> eligibleGroups = new ArrayList<>();
 
-
       for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
         String acePrincipal = ace.getUsername();
 
-        if (acePrincipal.contains(CustomSecurityConstants.MEMBERS_GROUP) && ace.isGranted()) {
+        if (acePrincipal.contains(CustomSecurityConstants.MEMBERS_GROUP) && ace
+            .isGranted()) {
           eligibleGroups.add(acePrincipal);
         }
 
-        if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP)
-            && ace.isGranted()) {
+        if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP) && ace
+            .isGranted()) {
           eligibleGroups.add(acePrincipal);
         }
       }
@@ -75,17 +74,18 @@ public class FVSiteJoinRequestUtilities {
       return eligibleGroups.stream().anyMatch(user::isMemberOf);
 
     } catch (Exception e) {
-      // this is a little broad, but the Exceptions aren't checked and I am not sure which ones
+      // this is a little broad, but the Exceptions aren't checked and I am not sure
+      // which ones
       // can be thrown.
       return false;
     }
 
   }
 
-  public static boolean hasPendingRegistration(CoreSession session, String email, String dialect) {
-    PendingRegistrationChecker pendingRegistrationChecker = new PendingRegistrationChecker(session,
-        email,
-        dialect);
+  public static boolean hasPendingRegistration(CoreSession session, String email,
+      String dialect) {
+    PendingRegistrationChecker pendingRegistrationChecker = new PendingRegistrationChecker(
+        session, email, dialect);
     pendingRegistrationChecker.runUnrestricted();
     return pendingRegistrationChecker.isHasPending();
 
@@ -93,9 +93,9 @@ public class FVSiteJoinRequestUtilities {
 
   private static class PendingRegistrationChecker extends UnrestrictedSessionRunner {
 
-    private boolean hasPending = false;
     private final String email;
     private final String dialect;
+    private boolean hasPending = false;
 
     PendingRegistrationChecker(CoreSession session, final String email, final String dialect) {
       super(session);
@@ -108,9 +108,9 @@ public class FVSiteJoinRequestUtilities {
       // prevent duplicate join requests
       try (final IterableQueryResult queryResult = session.queryAndFetch(String.format(
           "SELECT * from"
-              + " FVSiteJoinRequest where fvjoinrequest:dialect = %s and fvjoinrequest:user = %s",
-          NXQL.escapeString(dialect),
-          NXQL.escapeString(email)), "NXQL")) {
+              + " FVSiteJoinRequest where fvjoinrequest:dialect = %s and "
+              + "fvjoinrequest:user = %s",
+          NXQL.escapeString(dialect), NXQL.escapeString(email)), "NXQL")) {
 
         if (queryResult.size() > 0) {
           this.hasPending = true;
