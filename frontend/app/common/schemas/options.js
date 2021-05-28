@@ -17,7 +17,6 @@ import ArrowForward from '@material-ui/icons/ArrowForward'
 import ArrowBack from '@material-ui/icons/ArrowBack'
 import FVButton from 'components/FVButton'
 import IntlService from 'common/services/IntlService'
-import ProviderHelpers from 'common/ProviderHelpers'
 
 const intl = IntlService.instance
 
