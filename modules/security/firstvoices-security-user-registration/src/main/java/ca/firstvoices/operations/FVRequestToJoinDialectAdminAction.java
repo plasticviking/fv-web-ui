@@ -1,0 +1,199 @@
+/*
+ *
+ *  *
+ *  * Copyright 2020 First People's Cultural Council
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  * you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  *     http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *  * /
+ *
+ */
+
+/*
+ * Contributors:
+ *     Kristof Subryan <vtr_monk@mac.com>
+ */
+
+package ca.firstvoices.operations;
+
+import static ca.firstvoices.utils.FVSiteJoinRequestUtilities.SITE_JOIN_REQUEST_SCHEMA;
+import ca.firstvoices.utils.CustomSecurityConstants;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.nuxeo.ecm.automation.OperationContext;
+import org.nuxeo.ecm.automation.core.Constants;
+import org.nuxeo.ecm.automation.core.annotations.Context;
+import org.nuxeo.ecm.automation.core.annotations.Operation;
+import org.nuxeo.ecm.automation.core.annotations.OperationMethod;
+import org.nuxeo.ecm.automation.core.annotations.Param;
+import org.nuxeo.ecm.core.api.CoreSession;
+import org.nuxeo.ecm.core.api.DocumentModel;
+import org.nuxeo.ecm.core.api.DocumentModelList;
+import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.NuxeoPrincipal;
+import org.nuxeo.ecm.core.api.UnrestrictedSessionRunner;
+import org.nuxeo.ecm.core.api.security.ACE;
+import org.nuxeo.ecm.core.api.security.ACL;
+import org.nuxeo.ecm.core.api.security.SecurityConstants;
+import org.nuxeo.ecm.platform.usermanager.UserManager;
+
+
+@Operation(id = FVRequestToJoinDialectAdminAction.ID,
+    category = Constants.CAT_USERS_GROUPS,
+    label = "Request to join dialect administrative action (approve, ignore)",
+    description = "Process approve/ignore requests on existing Request To Join documents")
+public class FVRequestToJoinDialectAdminAction {
+
+  public static final String ID = "LanguageAdmin.RequestToJoinDialectAction";
+
+  private final List<String> validStartingStatuses = Arrays.asList("NEW", "IGNORE");
+  private final List<String> validTargetStatuses = Arrays.asList("ACCEPT", "IGNORE");
+
+  @Context protected CoreSession session;
+
+  @Context protected UserManager userManager;
+
+  @Context protected OperationContext operationContext;
+
+  @Param(name = "requestId", required = true) protected String requestId;
+  @Param(name = "messageToUser", required = false) protected String messageToUser;
+  @Param(name = "newStatus", required = true) protected String newStatus;
+
+  @OperationMethod
+  public void run() {
+    NuxeoPrincipal user = operationContext.getPrincipal();
+    new JoinRequestAdminActionRunner(session,
+        user,
+        requestId,
+        newStatus,
+        messageToUser).runUnrestricted();
+  }
+
+  private class JoinRequestAdminActionRunner extends UnrestrictedSessionRunner {
+
+    private final String requestId;
+    private final String newStatus;
+    private final String messageToUser;
+    private final NuxeoPrincipal callingUser;
+
+
+    public JoinRequestAdminActionRunner(
+        CoreSession session, final NuxeoPrincipal callingUser, final String requestId,
+        final String newStatus, final String messageToUser) {
+      super(session);
+      this.callingUser = callingUser;
+      this.requestId = requestId;
+      this.newStatus = newStatus;
+      this.messageToUser = messageToUser;
+    }
+
+    @Override
+    public void run() {
+      DocumentModel joinRequestDocument = session.getDocument(new IdRef(requestId));
+
+      // check the join request for action actually exists
+      if (joinRequestDocument == null || !joinRequestDocument
+          .getType()
+          .equals("FVSiteJoinRequest")) {
+        throw new IllegalArgumentException();
+      }
+
+      //validate params
+      if (validTargetStatuses.stream().noneMatch(s -> s.equals(newStatus))) {
+        throw new IllegalArgumentException("Invalid requested status");
+      }
+
+      if (validStartingStatuses.stream().noneMatch(s -> s.equals(joinRequestDocument.getProperty(
+          SITE_JOIN_REQUEST_SCHEMA,
+          "status")))) {
+        throw new IllegalArgumentException("Invalid starting status");
+      }
+
+      //resolve target dialect
+      String dialectId = joinRequestDocument
+          .getProperty(SITE_JOIN_REQUEST_SCHEMA, "dialect")
+          .toString();
+
+      DocumentModel dialectDocument = session.getDocument(new IdRef(dialectId));
+      if (dialectDocument == null) {
+        throw new IllegalArgumentException("dialect not found");
+      }
+
+
+      String languageAdminGroupName = null;
+
+      // resolve target group(s) and admin group (to be used for adding the user and also for
+      // validating the access of the requestor
+      List<String> targetGroups = new ArrayList<>();
+      for (ACE ace : dialectDocument.getACP().getACL(ACL.LOCAL_ACL).getACEs()) {
+        String acePrincipal = ace.getUsername();
+
+        if (SecurityConstants.READ.equals(ace.getPermission())) {
+          if (acePrincipal.contains(CustomSecurityConstants.MEMBERS_GROUP) && ace.isGranted()) {
+            targetGroups.add(acePrincipal);
+          }
+        }
+
+        if (acePrincipal.contains(CustomSecurityConstants.LANGUAGE_ADMINS_GROUP)
+            && ace.isGranted()) {
+          languageAdminGroupName = acePrincipal;
+        }
+      }
+
+      if (languageAdminGroupName == null) {
+        throw new IllegalArgumentException("Cannot resolve language admin group");
+      }
+
+      // verify permission
+      if (!callingUser.isMemberOf(languageAdminGroupName)) {
+        throw new IllegalArgumentException("Insufficient access");
+      }
+
+
+      //resolve target user
+      String email = joinRequestDocument.getProperty(SITE_JOIN_REQUEST_SCHEMA, "user").toString();
+      Map<String, Serializable> userSearchCriteria = new HashMap<>();
+      userSearchCriteria.put("email", email);
+      DocumentModelList foundUsers = userManager.searchUsers(userSearchCriteria, null);
+      if (foundUsers.size() != 1) {
+        throw new IllegalArgumentException("ambiguous or nonexistent user");
+      }
+
+      final DocumentModel user = foundUsers.get(0);
+      final String username = (String) user.getProperty("user", "username");
+
+
+      // update target groups
+      for (String targetGroupName : targetGroups) {
+        DocumentModel groupDocument = userManager.getGroupModel(targetGroupName);
+        List<String> groupMembersList = (List<String>) groupDocument.getProperty("group",
+            "members");
+        groupMembersList.add(username);
+        groupDocument.setProperty("group", "members", groupMembersList);
+        userManager.updateGroup(groupDocument);
+      }
+
+      // update request document
+      joinRequestDocument.setProperty(SITE_JOIN_REQUEST_SCHEMA, "status", newStatus);
+      joinRequestDocument.setProperty(SITE_JOIN_REQUEST_SCHEMA, "messageToUser", messageToUser);
+      session.saveDocument(joinRequestDocument);
+
+
+    }
+  }
+
+}
+

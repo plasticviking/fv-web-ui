@@ -266,7 +266,7 @@ const REPORT_VIEW = {
       case: 'words',
     }) +
     ' | {$dialect_name}',
-  page: <Pages.PageDialectReportsView />,
+  page: <Pages.Reports />,
   extractPaths: true,
   redirects: [WORKSPACE_TO_SECTION_REDIRECT],
 }
@@ -446,7 +446,7 @@ const routes = [
   {
     path: ['register'],
     title: intl.translate({ key: 'register', default: 'Register', case: 'first' }),
-    page: <Pages.PageUsersRegister />,
+    page: <Pages.Register />,
   },
   {
     path: ['forgotpassword'],
@@ -528,7 +528,7 @@ const routes = [
         default: 'Registration',
         case: 'words',
       }),
-    page: <Pages.PageUsersRegister />,
+    page: <Pages.Register />,
     disableWorkspaceSectionNav: true,
     extractPaths: true,
   },
@@ -1120,7 +1120,7 @@ const routes = [
         default: 'Reports',
         case: 'words',
       }) + ' | {$dialect_name}',
-    page: <Pages.PageDialectReports />,
+    page: <Pages.Reports />,
     extractPaths: true,
     redirects: [WORKSPACE_TO_SECTION_REDIRECT],
   },
