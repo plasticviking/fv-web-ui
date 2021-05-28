@@ -1,6 +1,7 @@
 package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
 import ca.firstvoices.rest.data.SearchResults;
+import java.util.Optional;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -11,8 +12,10 @@ import javax.ws.rs.core.Response;
 import org.elasticsearch.common.unit.Fuzziness;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
+import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.nuxeo.ecm.webengine.model.WebObject;
 
 @WebObject(type = "dictionary")
@@ -23,6 +26,7 @@ public class DictionaryObject extends AbstractSearchlikeObject {
   @Path("{dialect}")
   public Response getDictionary(
       @QueryParam(value = "q") String query, @QueryParam(value = "ancestorId") String ancestorId,
+      @QueryParam(value = "docType") @DefaultValue("all") String docType,
       @QueryParam(value = "alphabetCharacter") String alphabetCharacter,
       @QueryParam(value = "kidsOnly") @DefaultValue("false") boolean kidsOnly,
       @QueryParam(value = "gamesOnly") @DefaultValue("false") boolean gamesOnly,
@@ -36,8 +40,8 @@ public class DictionaryObject extends AbstractSearchlikeObject {
     }
     final int offset = (from - 1) * perPage;
 
-    SearchResults.DocumentTypes documentTypes = SearchResults.DocumentTypes.WORD;
-    //documentTypesFromQueryString(docType);
+    SearchResults.DocumentTypes documentTypes = resolveDocumentTypesFromQueryString(docType);
+
 
     final SortOptions sortOptions = resolveSortOptionsFromQueryString(sortBy, sortAscending);
 
@@ -51,8 +55,11 @@ public class DictionaryObject extends AbstractSearchlikeObject {
         false));
 
     basicConstraints.must(typesQuery(documentTypes));
-    ancestryQuery(ancestorId).ifPresent(q -> basicConstraints.must(q));
-
+    Optional<WildcardQueryBuilder> ancestryContraints = ancestryQuery(ancestorId);
+    if (ancestryContraints.isPresent()) {
+      basicConstraints = basicConstraints.must(ancestryContraints.get());
+    }
+    
     QueryBuilder exactMatchQuery = QueryBuilders.multiMatchQuery(query,
         "ecm:fulltext_dictionary_all_field",
         "dc:title").analyzer("keyword").type(MultiMatchQueryBuilder.Type.PHRASE);
@@ -67,12 +74,25 @@ public class DictionaryObject extends AbstractSearchlikeObject {
         .fuzziness(Fuzziness.fromEdits(1))
         .transpositions(true);
 
-    QueryBuilder combinedLanguageQuery = QueryBuilders.boolQuery().should(languageQuery).should(
-        englishQuery).should(exactMatchQuery).minimumShouldMatch(1);
 
+    BoolQueryBuilder combinedLanguageQuery = QueryBuilders.boolQuery();
+    combinedLanguageQuery = combinedLanguageQuery.should(languageQuery);
+    combinedLanguageQuery = combinedLanguageQuery.should(englishQuery);
+    combinedLanguageQuery = combinedLanguageQuery.should(exactMatchQuery);
+
+    if (alphabetCharacter != null && alphabetCharacter.length() > 0) {
+      PrefixQueryBuilder alphabetQuery = QueryBuilders.prefixQuery("dc:title", alphabetCharacter);
+      combinedLanguageQuery = combinedLanguageQuery.must(alphabetQuery);
+    }
+
+    combinedLanguageQuery.minimumShouldMatch(1);
     QueryBuilder composedQuery = basicConstraints.must(combinedLanguageQuery);
 
-    runSearch(searchResults, composedQuery, perPage, offset, sortOptions,
+    runSearch(searchResults,
+        composedQuery,
+        perPage,
+        offset,
+        sortOptions,
         d -> query.equals(d.getTitle()));
 
     return Response.ok(searchResults).build();

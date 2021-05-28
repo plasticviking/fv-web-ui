@@ -2,6 +2,7 @@ package org.nuxeo.ecm.restapi.server.jaxrs.firstvoices;
 
 import static ca.firstvoices.rest.data.SearchResults.SearchDomain;
 import ca.firstvoices.rest.data.SearchResults;
+import java.util.Optional;
 import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -14,6 +15,7 @@ import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.MultiMatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.nuxeo.ecm.webengine.model.WebObject;
 
 @WebObject(type = "customSearch")
@@ -24,7 +26,6 @@ public class SearchObject extends AbstractSearchlikeObject {
   @Path("")
   public Response doSearch(
       @QueryParam(value = "q") String query,
-      @QueryParam(value = "parentPath") String parent,
       @QueryParam(value = "ancestorId") String ancestorId,
       @QueryParam(value = "docType") @DefaultValue("all") String docType,
       @QueryParam(value = "domain") @DefaultValue("both") String domain,
@@ -51,7 +52,10 @@ public class SearchObject extends AbstractSearchlikeObject {
         false));
 
     basicConstraints.must(typesQuery(documentTypes));
-    ancestryQuery(ancestorId).ifPresent(q -> basicConstraints.must(q));
+    Optional<WildcardQueryBuilder> ancestryContraints = ancestryQuery(ancestorId);
+    if (ancestryContraints.isPresent()) {
+      basicConstraints = basicConstraints.must(ancestryContraints.get());
+    }
 
     QueryBuilder exactMatchQuery = QueryBuilders.multiMatchQuery(query,
         "ecm:fulltext_dictionary_all_field",
