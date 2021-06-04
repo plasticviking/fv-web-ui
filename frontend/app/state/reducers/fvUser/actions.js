@@ -34,11 +34,11 @@ export const requestMembership = ({ siteId, interestReason, communityMember, lan
   return (dispatch) => {
     dispatch({
       type: FV_MEMBERSHIP_CREATE_START,
-      pathOrId: `api/v1/site/sections/${siteId}/membership`,
+      pathOrId: `api/v1/site/${siteId}/membership`,
       message: 'Request to join language site dispatched.',
     })
 
-    return DirectoryOperations.postToAPI(`${URLHelpers.getBaseURL()}api/v1/site/sections/${siteId}/membership`, {
+    return DirectoryOperations.postToAPIwithResponse(`${URLHelpers.getBaseURL()}api/v1/site/${siteId}/membership`, {
       interestReason,
       communityMember,
       languageTeam,
@@ -59,11 +59,11 @@ export const getMembershipStatus = ({ siteId }) => {
   return (dispatch) => {
     dispatch({
       type: FV_MEMBERSHIP_FETCH_START,
-      pathOrId: `api/v1/site/sections/${siteId}/membership`,
+      pathOrId: `api/v1/site/${siteId}/membership`,
       message: 'Membership status enquiry dispatched.',
     })
 
-    return DirectoryOperations.getFromApi(`${URLHelpers.getBaseURL()}api/v1/site/sections/${siteId}/membership`)
+    return DirectoryOperations.getFromAPI(`${URLHelpers.getBaseURL()}api/v1/site/${siteId}/membership`)
       .then((response) => {
         dispatch({ type: FV_MEMBERSHIP_FETCH_SUCCESS, message: response })
         return response
@@ -79,12 +79,12 @@ export const getJoinRequest = ({ siteId, requestId }) => {
   return (dispatch) => {
     dispatch({
       type: FV_JOIN_REQUEST_FETCH_START,
-      pathOrId: `api/v1/site/sections/${siteId}/administration/joinRequests`,
-      message: 'Request to join language site dispatched.',
+      pathOrId: `api/v1/site/${siteId}/administration/joinRequests`,
+      message: 'Request to get a join request dispatched.',
     })
 
     return DirectoryOperations.getFromAPI(
-      `${URLHelpers.getBaseURL()}api/v1/site/sections/${siteId}/administration/joinRequests/${requestId}`
+      `${URLHelpers.getBaseURL()}api/v1/site/${siteId}/administration/joinRequests/${requestId}`
     )
       .then((response) => {
         dispatch({ type: FV_JOIN_REQUEST_FETCH_SUCCESS, message: response })
@@ -101,13 +101,11 @@ export const getJoinRequests = ({ siteId }) => {
   return (dispatch) => {
     dispatch({
       type: FV_JOIN_REQUESTS_FETCH_START,
-      pathOrId: `api/v1/site/sections/${siteId}/administration`,
-      message: 'Request to join language site dispatched.',
+      pathOrId: `api/v1/site/${siteId}/administration`,
+      message: 'Request to get join requests dispatched.',
     })
 
-    return DirectoryOperations.getFromAPI(
-      `${URLHelpers.getBaseURL()}api/v1/site/sections/${siteId}/administration/joinRequests`
-    )
+    return DirectoryOperations.getFromAPI(`${URLHelpers.getBaseURL()}api/v1/site/${siteId}/administration/joinRequests`)
       .then((response) => {
         dispatch({ type: FV_JOIN_REQUESTS_FETCH_SUCCESS, message: response })
         return response
@@ -120,19 +118,20 @@ export const getJoinRequests = ({ siteId }) => {
 }
 
 // Value for newStatus can be 'ACCEPT' or 'IGNORE'
-export const postJoinRequest = ({ siteId, requestId, newStatus, messageToUser }) => {
+export const updateJoinRequest = ({ siteId, requestId, group, messageToUser, newStatus }) => {
   return (dispatch) => {
     dispatch({
       type: FV_JOIN_REQUEST_UPDATE_START,
-      pathOrId: `api/v1/site/sections/${siteId}/administration/joinRequests`,
-      message: 'Request to join language site dispatched.',
+      pathOrId: `api/v1/site/${siteId}/administration/joinRequests`,
+      message: 'Request to update a join request dispatched.',
     })
 
-    return DirectoryOperations.postToAPI(
-      `${URLHelpers.getBaseURL()}api/v1/site/sections/${siteId}/administration/joinRequests/${requestId}`,
+    return DirectoryOperations.postToAPIwithResponse(
+      `${URLHelpers.getBaseURL()}api/v1/site/${siteId}/administration/joinRequests/${requestId}`,
       {
         newStatus,
         messageToUser,
+        group,
       }
     )
       .then((response) => {

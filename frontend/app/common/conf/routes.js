@@ -444,9 +444,26 @@ const routes = [
     breadcrumbs: false,
   },
   {
+    path: ['join'],
+    title: intl.translate({ key: 'join', default: 'Join', case: 'first' }),
+    page: <Pages.Join />,
+    disableWorkspaceSectionNav: true,
+    redirects: [
+      {
+        condition: (params) => {
+          return selectn('isConnected', params.props.computeLogin) === false
+        },
+        target: () => {
+          window.location.href = '/nuxeo/logout?requestedUrl=login.jsp'
+        },
+      },
+    ],
+  },
+  {
     path: ['register'],
     title: intl.translate({ key: 'register', default: 'Register', case: 'first' }),
     page: <Pages.Register />,
+    disableWorkspaceSectionNav: true,
   },
   {
     path: ['forgotpassword'],
@@ -2465,6 +2482,14 @@ const routes = [
     path: ['dashboard', 'tasks'],
     title: intl.translate({ key: 'dashboard', default: 'Dashboard', case: 'first' }),
     page: <Pages.DashboardDetailTasksContainer />,
+    breadcrumbs: false,
+  },
+  {
+    siteTheme: WORKSPACES,
+    id: 'dashboard',
+    path: ['dashboard', 'membership'],
+    title: intl.translate({ key: 'dashboard', default: 'Dashboard', case: 'first' }),
+    page: <Pages.Membership />,
     breadcrumbs: false,
   },
   // Mentor-Apprentice Photo Project

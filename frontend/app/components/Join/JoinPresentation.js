@@ -4,18 +4,24 @@ import PropTypes from 'prop-types'
 import t from 'tcomb-form'
 
 import FVButton from 'components/FVButton'
-import FVLabel from 'components/FVLabel'
 import Link from 'components/Link'
 /**
- * @summary RegisterPresentation
+ * @summary JoinPresentation
  * @component
  *
  * @param {object} props
  *
  * @returns {node} jsx markup
  */
-function RegisterPresentation({ fvUserFields, fvUserOptions, formRef, formValue, onRequestSaveForm, serverResponse }) {
-  // Show success message
+function JoinPresentation({
+  fvUserFields,
+  fvUserOptions,
+  formRef,
+  formValue,
+  onRequestSaveForm,
+  requestedSiteTitle,
+  serverResponse,
+}) {
   let serverErrorMessage = ''
   if (serverResponse) {
     switch (serverResponse?.status) {
@@ -26,20 +32,30 @@ function RegisterPresentation({ fvUserFields, fvUserOptions, formRef, formValue,
           </div>
         )
         break
-
+      case 403:
+        return (
+          <div className="row" style={{ maxWidth: '968px', margin: '0 auto' }}>
+            <div style={{ padding: '0.5em', textAlign: 'center', marginTop: '50px' }}>
+              <div className={classNames('alert', 'alert-danger')} role="alert">
+                {serverResponse?.message}
+              </div>
+              <p>
+                <Link href="/explore/FV/sections/Data/">Go to public language sites</Link>.
+              </p>
+            </div>
+          </div>
+        )
       case 200:
         return (
-          <div className="row" style={{ marginTop: '15px' }}>
-            <div className={classNames('col-xs-12')}>
-              <h1>Thank you for registering for a FirstVoices account!</h1>
+          <div className="row" style={{ maxWidth: '968px', margin: '0 auto' }}>
+            <div style={{ padding: '0.5em', textAlign: 'center' }}>
+              <h1>Thank you for your request!</h1>
               <p>
-                You will be emailed a link to set your password. If you don&apos;t receive an email within a few
-                minutes, please check your junk folder.
+                Thank you for requesting to join the {requestedSiteTitle} language site as a member! Your request has
+                been sent to the {requestedSiteTitle} Language Team.
               </p>
-              <p>Your registration is not complete until you have set your password.</p>
               <p>
-                Go to our <Link href="/">home page</Link> or{' '}
-                <Link href="/explore/FV/sections/Data/">explore our community portals</Link>.
+                <Link href="/explore/FV/sections/Data/">Go to public language sites</Link>.
               </p>
             </div>
           </div>
@@ -51,11 +67,10 @@ function RegisterPresentation({ fvUserFields, fvUserOptions, formRef, formValue,
   return (
     <div className="row" style={{ maxWidth: '968px', margin: '0 auto' }}>
       <div style={{ padding: '0.5em', textAlign: 'center' }}>
-        <h1>Register for an account</h1>
+        <h1>Join the {requestedSiteTitle} language site</h1>
         <p>
-          Most language content on FirstVoices is already available to everyone without registration. You can browse
-          public content for different languages <Link href="/explore/FV/sections/Data">here</Link>. With a registered
-          FirstVoices account, you can request to join language sites as a member.
+          Membership of the {requestedSiteTitle} language site is intended for people from the {requestedSiteTitle}{' '}
+          language community. All requests to join are managed by the {requestedSiteTitle} Language Team.
         </p>
       </div>
       <form onSubmit={(event) => onRequestSaveForm(event)}>
@@ -66,7 +81,7 @@ function RegisterPresentation({ fvUserFields, fvUserOptions, formRef, formValue,
         </p>
         <div className="form-group">
           <FVButton variant="contained" onClick={(event) => onRequestSaveForm(event)} color="primary">
-            <FVLabel transKey="register" defaultStr="Register" />
+            Request To Join
           </FVButton>
         </div>
       </form>
@@ -74,15 +89,15 @@ function RegisterPresentation({ fvUserFields, fvUserOptions, formRef, formValue,
   )
 }
 // PROPTYPES
-const { bool, func, object } = PropTypes
-RegisterPresentation.propTypes = {
+const { func, object, string } = PropTypes
+JoinPresentation.propTypes = {
   fvUserFields: object.isRequired,
   fvUserOptions: object.isRequired,
   formRef: object.isRequired,
   formValue: object,
-  isLoggedIn: bool,
   onRequestSaveForm: func.isRequired,
+  requestedSiteTitle: string,
   serverResponse: object,
 }
 
-export default RegisterPresentation
+export default JoinPresentation

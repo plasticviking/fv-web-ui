@@ -6,16 +6,18 @@ import {
   getMembershipStatus as _getMembershipStatus,
   getJoinRequest as _getJoinRequest,
   getJoinRequests as _getJoinRequests,
-  postJoinRequest as _postJoinRequest,
+  updateJoinRequest as _updateJoinRequest,
 } from 'reducers/fvUser'
 function useUser() {
   const dispatch = useDispatch()
   return {
     computeJoinRequest: useSelector((state) => state.fvUser.computeJoinRequest),
     computeJoinRequests: useSelector((state) => state.fvUser.computeJoinRequests),
-    computeMembership: useSelector((state) => state.fvUser.computeMembership),
+    computeUpdateJoinRequest: useSelector((state) => state.fvUser.computeUpdateJoinRequest),
+    computeMembershipFetch: useSelector((state) => state.fvUser.computeMembershipFetch),
+    computeMembershipCreate: useSelector((state) => state.fvUser.computeMembershipCreate),
     computeUserDialects: useSelector((state) => state.fvUser.computeUserDialects),
-    computeUserSelfregister: useSelector((state) => state.fvUser.computeUserDialects),
+    computeUserSelfregister: useSelector((state) => state.fvUser.computeUserSelfregister),
     getJoinRequest: ({ siteId, requestId }) => {
       const dispatchObj = _getJoinRequest({ siteId, requestId })
       dispatch(dispatchObj)
@@ -24,8 +26,12 @@ function useUser() {
       const dispatchObj = _getJoinRequests({ siteId })
       dispatch(dispatchObj)
     },
-    postJoinRequest: ({ siteId, requestId, newStatus, messageToUser }) => {
-      const dispatchObj = _postJoinRequest({ siteId, requestId, newStatus, messageToUser })
+    approveJoinRequest: ({ siteId, requestId, group, messageToUser, newStatus = 'ACCEPT' }) => {
+      const dispatchObj = _updateJoinRequest({ siteId, requestId, group, newStatus, messageToUser })
+      dispatch(dispatchObj)
+    },
+    ignoreJoinRequest: ({ siteId, requestId, messageToUser, group = 'N/A', newStatus = 'IGNORE' }) => {
+      const dispatchObj = _updateJoinRequest({ siteId, requestId, group, newStatus, messageToUser })
       dispatch(dispatchObj)
     },
     getMembershipStatus: ({ siteId }) => {
