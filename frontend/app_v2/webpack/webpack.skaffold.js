@@ -2,7 +2,7 @@ const webpack = require('webpack')
 const alias = require('./webpack.alias')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const HtmlWebpackSkipAssetsPlugin = require('html-webpack-skip-assets-plugin').HtmlWebpackSkipAssetsPlugin
-const GitRevisionPlugin = require('git-revision-webpack-plugin')
+// const GitRevisionPlugin = require('git-revision-webpack-plugin')
 const { ModuleFederationPlugin } = require('webpack').container
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
@@ -130,7 +130,7 @@ module.exports = (env) => {
       }),
       new HtmlWebpackSkipAssetsPlugin({
         // Exclude reference to own remoteEntry in HTML output
-        skipAssets: ['assets/js/remoteEntry.' +  'skaffold' + '.js'],
+        skipAssets: ['assets/js/remoteEntry.' + 'skaffold' + '.js'],
       }),
       new CopyPlugin({
         patterns: [

@@ -77,7 +77,7 @@ module.exports = (env) => ({
       ],
       disableDotRule: true,
       // verbose: true
-    }
+    },
   },
 
   /**
