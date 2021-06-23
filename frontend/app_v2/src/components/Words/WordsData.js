@@ -1,11 +1,11 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { useInfiniteQuery } from 'react-query'
 import { useHistory, useLocation, useParams } from 'react-router-dom'
 
 import useGetSite from 'common/useGetSite'
 import { triggerError } from 'common/navigationHelpers'
 import useIntersectionObserver from 'common/useIntersectionObserver'
-import testApi from 'services/api/test'
+import dictionaryApi from 'services/api/dictionary'
 
 /**
  * @summary WordsData
@@ -16,31 +16,23 @@ import testApi from 'services/api/test'
  *
  */
 function WordsData() {
-  const { title } = useGetSite()
+  const { uid } = useGetSite()
   const location = useLocation()
   const history = useHistory()
   const { sitename } = useParams()
 
-  // Extract search term from URL search params
-  const searchTerm = new URLSearchParams(location.search).get('q') ? new URLSearchParams(location.search).get('q') : ''
-  const docTypeFilter = new URLSearchParams(location.search).get('docType')
-    ? new URLSearchParams(location.search).get('docType')
-    : 'ALL'
+  const query = location.search ? location.search : '?&docType=WORD&perPage=5&sortBy=entry'
 
-  // Local State
-  const [currentFilter, setCurrentFilter] = useState(docTypeFilter)
-
-  // Data fetch
-  //   const response = useQuery(['search', location.search], () => searchApi.get(`${location.search}&ancestorId=${uid}`), {
-  //     // The query will not execute until the siteId exists and a search term has been provided
-  //     enabled: !!uid && !!searchTerm,
-  //   })
-  //   const response = useQuery(['search', location.search], () => testApi.get())
-  //   const { data, error, isError, isLoading } = response
-
-  const response = useInfiniteQuery('words', ({ pageParam = 1 }) => testApi.get(pageParam), {
-    getNextPageParam: () => 2,
-  })
+  // Param options: perPage=100&page=1&kidsOnly=false&gamesOnly=false&sortBy=entry&docType=WORDS_AND_PHRASES&sortAscending=true&q=Appla&alphabetCharacter=A
+  const response = useInfiniteQuery(
+    ['words', query],
+    ({ pageParam = 1 }) => dictionaryApi.get({ sitename: uid, query: query, pageParam: pageParam }),
+    {
+      // The query will not execute until the siteId exists and a search term has been provided
+      enabled: !!uid,
+      getNextPageParam: (lastPage) => lastPage.nextPage,
+    }
+  )
 
   const { data, error, fetchNextPage, hasNextPage, isError, isFetchingNextPage, isLoading } = response
 
@@ -53,7 +45,7 @@ function WordsData() {
   if (isFetchingNextPage) {
     loadButtonLabel = 'Loading more...'
   } else if (hasNextPage) {
-    loadButtonLabel = 'Load More'
+    loadButtonLabel = 'Load more'
   } else {
     loadButtonLabel = 'Nothing more to load'
   }
@@ -67,38 +59,11 @@ function WordsData() {
   // Props needed for infinite scroll
   const infiniteScroll = { fetchNextPage, hasNextPage, isFetchingNextPage, loadButtonLabel, loadButtonRef }
 
-  // Get Filters
-  const filters = [{ type: 'ALL', label: 'All Results', count: data?.pages?.[0].statistics.resultCount }]
-  const countsByType = data?.pages?.[0].statistics.countsByType ? data.pages[0].statistics.countsByType : {}
-
-  for (const [key, value] of Object.entries(countsByType)) {
-    filters.push({ type: getType(key), label: key, count: value })
-  }
-
-  function getType(countKey) {
-    if (countKey === 'word' || countKey === 'phrase') {
-      return countKey.toUpperCase()
-    }
-    if (countKey === 'song' || countKey === 'story') {
-      return 'BOOK'
-    }
-    return 'ALL'
-  }
-
-  const handleFilter = (filter) => {
-    setCurrentFilter(filter)
-  }
-
   return {
-    currentFilter,
-    siteTitle: title ? title : 'FirstVoices',
-    filters,
-    handleFilter,
-    isLoading,
+    isLoading: isLoading || isError,
     items: data ? data : {},
     actions: ['copy'],
     moreActions: ['share'],
-    searchTerm,
     sitename,
     infiniteScroll,
   }

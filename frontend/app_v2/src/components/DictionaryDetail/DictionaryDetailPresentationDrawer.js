@@ -8,31 +8,31 @@ import useIcon from 'common/useIcon'
 import AudioMinimal from 'components/AudioMinimal'
 import ActionsMenu from 'components/ActionsMenu'
 /**
- * @summary DictionaryDetailPresentation
+ * @summary DictionaryDetailPresentationDrawer
  * @component
  *
  * @param {object} props
  *
  * @returns {node} jsx markup
  */
-function DictionaryDetailPresentation({ actions, moreActions, entry, sitename }) {
+function DictionaryDetailPresentationDrawer({ actions, moreActions, entry, sitename }) {
   const metaDataLableStyling = 'text-sm font-semibold uppercase text-fv-charcoal sm:w-40 sm:flex-shrink-0'
-  const metaDataContentStyling = 'text-sm text-black sm:mt-0 sm:ml-6 sm:col-span-2'
+  const metaDataContentStyling = 'text-sm text-black sm:mt-0 sm:ml-6'
   const noMedia = entry?.pictures?.length < 1 || entry?.videos?.length < 1 ? true : false
   const shortTitle = entry?.title.length < 20
   return (
     <div
       className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 md:mt-10 bg-white"
-      data-testid="DictionaryDetailPresentation"
+      data-testid="DictionaryDetailPresentationDrawer"
     >
-      <div className="grid grid-cols-8 gap-4">
-        <div id="WordDetails" className={`col-span-8 md:col-span-5 ${noMedia ? 'md:col-start-3' : ''}`}>
+      <div>
+        <div id="WordDetails">
           <section>
             <div className="ml-3 md:flex items-top">
               <span className={`font-bold ${shortTitle ? 'text-2xl md:text-4xl' : 'text-xl md:text-2xl'}`}>
                 {entry.title}
               </span>
-              <div className="my-2 md:my-0 md:mt-1 md:ml-4">
+              <div className="mt-1 ml-4">
                 <ActionsMenu.Container
                   docId={entry.id}
                   docTitle={entry.title}
@@ -48,7 +48,7 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
             <div className="ml-5">
               {/* Translations/Definitions */}
               {entry?.translations?.length > 0 && (
-                <div className="p-3">
+                <div className="px-3 mt-2">
                   <ol className="list-decimal">
                     {entry?.translations.map((translation, index) => (
                       <li key={index} className="p-0.5">
@@ -60,7 +60,7 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
               )}
               {/* Literal Translations - WORD ONLY */}
               {entry?.literalTranslations?.length > 0 && (
-                <div className="p-3">
+                <div className="px-3 mt-2">
                   <h4 className="text-left font-semibold text-sm uppercase text-fv-charcoal">Literal translation</h4>
                   <ol className="list-decimal">
                     {entry?.literalTranslations.map((translation, index) => (
@@ -74,7 +74,7 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
             </div>
             {/* Audio */}
             {entry?.audio.length > 0 && (
-              <div className="ml-3 text-fv-charcoal">
+              <div className="my-2 ml-3 text-fv-charcoal">
                 {entry.audio.map((audioFile, index) => (
                   <AudioMinimal.Container
                     key={`${audioFile.uid}_${index}`}
@@ -95,7 +95,7 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
           <section>
             {/* Related Phrases */}
             {entry?.relatedPhrases?.length > 0 && (
-              <div className="sm:flex p-3">
+              <div className="sm:flex p-2">
                 <table className="w-full">
                   <thead>
                     <tr>
@@ -128,7 +128,7 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
             )}
             {/* Related Words */}
             {entry?.relatedAssets?.length > 0 && (
-              <div className="sm:flex p-3">
+              <div className="sm:flex p-2">
                 <table className="w-full">
                   <thead>
                     <tr>
@@ -179,8 +179,55 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
               </div>
             )}
           </section>
+
+          {/* Pictures and Video */}
+          {noMedia ? null : (
+            <div id="WordMedia">
+              <ul className="inline-flex">
+                {entry?.pictures
+                  ? entry.pictures.map((picture, index) => (
+                      <li key={`${picture.uid}_${index}`} className="m-2">
+                        <div className="inline-flex rounded-lg overflow-hidden">
+                          <img
+                            className="flex-shrink-0 w-full h-auto"
+                            src={getMediaUrl({ type: 'gifOrImg', id: picture.uid })}
+                          />
+                        </div>
+                        <p className="ml-4 inline-flex text-sm font-medium text-gray-900 truncate">
+                          {picture?.['dc:title']}
+                        </p>
+                        <p className="ml-2 inline-flex text-sm font-medium text-gray-500">
+                          - {picture?.['dc:description']}
+                        </p>
+                      </li>
+                    ))
+                  : null}
+                {entry?.videos
+                  ? entry.videos.map((video, index) => (
+                      <li key={`${video.uid}_${index}`} className="m-2">
+                        <div className="inline-flex rounded-lg overflow-hidden">
+                          <video
+                            className="flex-shrink-0 w-full"
+                            src={getMediaUrl({ type: 'video', id: video.uid, viewName: 'Small' })}
+                            controls
+                          >
+                            Your browser does not support the video tag.
+                          </video>
+                        </div>
+                        <p className="ml-4 inline-flex text-sm font-medium text-gray-900 truncate">
+                          {video?.['dc:title']}
+                        </p>
+                        <p className="ml-2 inline-flex text-sm font-medium text-gray-500">
+                          - {video?.['dc:description']}
+                        </p>
+                      </li>
+                    ))
+                  : null}
+              </ul>
+            </div>
+          )}
           {/* Metadata */}
-          <section className="p-3">
+          <section className="p-3 mt-2">
             <h4 className="text-left mb-2 font-semibold text-lg uppercase text-fv-charcoal">Metadata</h4>
             {entry?.partOfSpeech && (
               <div className="sm:flex py-2">
@@ -246,63 +293,17 @@ function DictionaryDetailPresentation({ actions, moreActions, entry, sitename })
             )}
           </section>
         </div>
-        {/* Pictures and Video */}
-        {noMedia ? null : (
-          <div id="WordMedia" className="col-span-8 md:col-span-3 p-5 md:mt-5">
-            <ul>
-              {entry?.pictures
-                ? entry.pictures.map((picture, index) => (
-                    <li key={`${picture.uid}_${index}`} className="my-2">
-                      <div className="inline-flex rounded-lg overflow-hidden">
-                        <img
-                          className="flex-shrink-0 w-40 h-auto lg:w-full"
-                          src={getMediaUrl({ type: 'gifOrImg', id: picture.uid })}
-                        />
-                      </div>
-                      <p className="ml-4 inline-flex text-sm font-medium text-gray-900 truncate">
-                        {picture?.['dc:title']}
-                      </p>
-                      <p className="ml-2 inline-flex text-sm font-medium text-gray-500">
-                        - {picture?.['dc:description']}
-                      </p>
-                    </li>
-                  ))
-                : null}
-              {entry?.videos
-                ? entry.videos.map((video, index) => (
-                    <li key={`${video.uid}_${index}`} className="my-2">
-                      <div className="inline-flex rounded-lg overflow-hidden">
-                        <video
-                          className="flex-shrink-0 w-40 lg:w-full"
-                          src={getMediaUrl({ type: 'video', id: video.uid, viewName: 'Small' })}
-                          controls
-                        >
-                          Your browser does not support the video tag.
-                        </video>
-                      </div>
-                      <p className="ml-4 inline-flex text-sm font-medium text-gray-900 truncate">
-                        {video?.['dc:title']}
-                      </p>
-                      <p className="ml-2 inline-flex text-sm font-medium text-gray-500">
-                        - {video?.['dc:description']}
-                      </p>
-                    </li>
-                  ))
-                : null}
-            </ul>
-          </div>
-        )}
       </div>
     </div>
   )
 }
 // PROPTYPES
 const { array, object, string } = PropTypes
-DictionaryDetailPresentation.propTypes = {
+DictionaryDetailPresentationDrawer.propTypes = {
   actions: array,
   entry: object,
   moreActions: array,
   sitename: string,
 }
 
-export default DictionaryDetailPresentation
+export default DictionaryDetailPresentationDrawer

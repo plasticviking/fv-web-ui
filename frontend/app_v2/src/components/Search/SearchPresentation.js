@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { useLocation, Link } from 'react-router-dom'
 
-import DictionaryListPresentation from 'components/DictionaryList/DictionaryListPresentation'
+import SearchPresentationList from 'components/Search/SearchPresentationList'
 import SearchInput from 'components/SearchInput'
 import useIcon from 'common/useIcon'
 
@@ -49,9 +49,7 @@ function SearchPresentation({
             {currentFilter !== 'ALL' && filter.type === 'ALL' ? (
               <>{useIcon('BackArrow', 'inline-flex pb-2 h-7 text-primary fill-current')} Back to all results</>
             ) : (
-              <>
-                {filter.label} {filter.count ? `(${filter.count})` : null}
-              </>
+              <>{filter.label}</>
             )}
           </Link>
         </li>
@@ -72,7 +70,7 @@ function SearchPresentation({
           <ul className="inline-block md:block list-none m-2 md:m-0 md:space-y-4 ">{getFilterListItems()}</ul>
         </div>
         <div className="min-h-220 col-span-11 md:col-span-9">
-          <DictionaryListPresentation
+          <SearchPresentationList
             items={items}
             actions={actions}
             isLoading={isLoading}

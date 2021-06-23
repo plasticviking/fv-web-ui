@@ -5,6 +5,7 @@ import { useHistory, useLocation, useParams } from 'react-router-dom'
 import useGetSite from 'common/useGetSite'
 import searchApi from 'services/api/search'
 import { triggerError } from 'common/navigationHelpers'
+import { makePlural } from 'common/urlHelpers'
 
 /**
  * @summary SearchData
@@ -22,7 +23,7 @@ function SearchData() {
 
   // Extract search term from URL search params
   const searchTerm = new URLSearchParams(location.search).get('q') ? new URLSearchParams(location.search).get('q') : ''
-  const docTypeFilter = new URLSearchParams(location.search).get('docType')
+  const docType = new URLSearchParams(location.search).get('docType')
     ? new URLSearchParams(location.search).get('docType')
     : 'ALL'
   const domain = new URLSearchParams(location.search).get('domain')
@@ -30,26 +31,37 @@ function SearchData() {
     : 'BOTH'
 
   // Local State
-  const [currentFilter, setCurrentFilter] = useState(docTypeFilter)
+  const [currentFilter, setCurrentFilter] = useState(docType)
+  const [items, setItems] = useState([])
 
   // Data fetch
-  const response = useQuery(['search', location.search], () => searchApi.get(`${location.search}&ancestorId=${uid}`), {
-    // The query will not execute until the siteId exists and a search term has been provided
-    enabled: !!uid && !!searchTerm,
-  })
-  const { data, error, isError, isLoading } = response
+  const { data, error, isError, isLoading } = useQuery(
+    ['search', location.search],
+    () => searchApi.get(`${location.search}&ancestorId=${uid}`),
+    {
+      // The query will not execute until the siteId exists and a search term has been provided
+      enabled: !!uid && !!searchTerm,
+    }
+  )
 
   // DataAdaptor
-  const items = data?.results
-    ? data?.results.map((result) => {
-        if (!Array.isArray(result.translations)) {
-          const modifiedResult = Object.assign({}, result)
-          modifiedResult.translations = result.translations.translation ? [result.translations] : []
-          return modifiedResult
-        }
-        return result
-      })
-    : []
+  const dataAdaptor = (results) => {
+    const modifiedResults = results.map((result) => {
+      if (!Array.isArray(result.translations)) {
+        const modifiedResult = Object.assign({}, result)
+        modifiedResult.translations = result.translations.translation ? [result.translations] : []
+        return modifiedResult
+      }
+      return result
+    })
+    setItems(modifiedResults)
+  }
+
+  useEffect(() => {
+    if (data?.results) {
+      dataAdaptor(data.results)
+    }
+  }, [data])
 
   useEffect(() => {
     if (isError) triggerError(error, history)
@@ -60,7 +72,7 @@ function SearchData() {
   const countsByType = data?.statistics.countsByType ? data.statistics.countsByType : {}
 
   for (const [key, value] of Object.entries(countsByType)) {
-    filters.push({ type: getType(key), label: key, count: value })
+    filters.push({ type: getType(key), label: makePlural(key), count: value })
   }
 
   function getType(countKey) {
