@@ -16,6 +16,7 @@ import org.nuxeo.ecm.core.api.CoreInstance;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.api.DocumentModel;
 import org.nuxeo.ecm.core.api.IdRef;
+import org.nuxeo.ecm.core.api.PropertyException;
 import org.nuxeo.ecm.core.api.ScrollResult;
 import org.nuxeo.ecm.core.api.security.ACE;
 import org.nuxeo.ecm.core.api.security.ACL;
@@ -109,22 +110,28 @@ public class AudioFixOperation {
             }
           }
 
-          String[] relatedAudioIds = (String[]) wordDocument.getPropertyValue("fv:related_audio");
-          String[] proxiedAudioIds = (String[]) wordDocument
-              .getPropertyValue("fvproxy:proxied_audio");
 
-          String[] mergedAudioIdList;
+          String[] mergedAudioIdList = null;
 
-          if (relatedAudioIds != null && proxiedAudioIds != null) {
-            mergedAudioIdList = ArrayUtils.addAll(relatedAudioIds, proxiedAudioIds);
-          } else {
-            mergedAudioIdList = Optional.ofNullable(relatedAudioIds).orElse(proxiedAudioIds);
+          try {
+
+            String[] relatedAudioIds = (String[]) wordDocument.getPropertyValue("fv:related_audio");
+            String[] proxiedAudioIds = (String[]) wordDocument.getPropertyValue(
+                "fvproxy:proxied_audio");
+
+
+            if (relatedAudioIds != null && proxiedAudioIds != null) {
+              mergedAudioIdList = ArrayUtils.addAll(relatedAudioIds, proxiedAudioIds);
+            } else {
+              mergedAudioIdList = Optional.ofNullable(relatedAudioIds).orElse(proxiedAudioIds);
+            }
+
+            if (proxiedAudioIds != null) {
+              proxiedCount += proxiedAudioIds.length;
+            }
+          } catch (PropertyException e) {
+            // don't care
           }
-
-          if (proxiedAudioIds != null) {
-            proxiedCount += proxiedAudioIds.length;
-          }
-
 
 
           if (mergedAudioIdList != null) {
