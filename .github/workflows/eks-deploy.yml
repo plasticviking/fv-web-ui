@@ -10,10 +10,20 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+      - name: Restore skaffold cache
+        uses: actions/download-artifact@v2
+        with:
+          name: skaffold-cache
+          path: $HOME/.skaffold/cache
+
       - name: Install skaffold
         run: |
           curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
           sudo install skaffold /usr/local/bin/
+
+      - name: Install Helm
+        run: |
+          curl https://raw.githubusercontent.com/helm/master/scripts/get-helm-3 | bash
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -38,7 +48,6 @@ jobs:
           echo "verifying kube connectivity"
           kubectl get nodes
 
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
@@ -47,10 +56,14 @@ jobs:
       - name: Checkout working branch
         uses: actions/checkout@v2
 
-      - name: Build
+      - name: Build and Deploy
         run: |
           cd skaffold
           source awsdev.env
-          skaffold build
+          skaffold deploy
 
-
+      - name: Save skaffold cache
+        uses: actions/upload-artifact@v2
+        with:
+          name: skaffold-cache
+          path: $HOME/.skaffold/cache
