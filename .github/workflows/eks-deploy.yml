@@ -10,11 +10,13 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-      - name: Restore skaffold cache
-        uses: actions/download-artifact@v2
+
+      - name: Cache skaffold cache
+        id: cache-skaffold
+        uses: actions/cache@v1.1.2
         with:
-          name: skaffold-cache
-          path: $HOME/.skaffold/cache
+          path: ~/.cache
+          key: ${{ runner.os }}-${{ hashFiles('**/skaffold.yaml') }}
 
       - name: Install skaffold
         run: |
@@ -61,9 +63,3 @@ jobs:
           cd skaffold
           source awsdev.env
           skaffold deploy
-
-      - name: Save skaffold cache
-        uses: actions/upload-artifact@v2
-        with:
-          name: skaffold-cache
-          path: $HOME/.skaffold/cache
