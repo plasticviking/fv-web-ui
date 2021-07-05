@@ -10,17 +10,24 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+
+      - name: skaffold cache
+        id: cache-skaffold
+        uses: actions/cache@v1.1.2
+        with:
+          path: ~/.skaffold
+          key: ${{ runner.os }}-skaffoldcache
+
       - name: Install skaffold
         run: |
           curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
           sudo install skaffold /usr/local/bin/
-          skaffold version
 
-      - name: Install kubectl
+      - name: Install Helm
         run: |
-          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-          sudo install kubectl /usr/local/bin/
-          kubectl version
+          curl -LO https://get.helm.sh/helm-v3.6.2-linux-amd64.tar.gz
+          tar xzvf helm-v3.6.2-linux-amd64.tar.gz
+          sudo install linux-amd64/helm /usr/local/bin
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -29,17 +36,32 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ca-central-1
 
+      - name: Hydrate kubeconfig
+        env:
+          CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          mkdir $HOME/.kube
+          echo -n "$CONFIG_DATA" | base64 -d > $HOME/.kube/config
+          chmod 0400 $HOME/.kube/config
+
+      - name: Install kubectl
+        run: |
+          curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+          sudo install kubectl /usr/local/bin/
+          echo "version:"
+          kubectl version
+          echo "verifying kube connectivity"
+          kubectl get nodes
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      # Checkout the current working code base
-      - name: Checkout working branch
+      - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Load Environment
+      - name: Build and Deploy
         run: |
           cd skaffold
           source awsdev.env
-
-
+          skaffold run
