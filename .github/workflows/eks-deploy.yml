@@ -64,4 +64,4 @@ jobs:
         run: |
           cd skaffold
           source awsdev.env
-          skaffold deploy
+          skaffold run
