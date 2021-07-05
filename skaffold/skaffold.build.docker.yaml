@@ -1,0 +1,33 @@
+apiVersion: skaffold/v2beta13
+kind: Config
+profiles:
+  - name: docker-build
+    build:
+      tagPolicy:
+        customTemplate:
+          template: "docker-{{.HASH}}"
+          components:
+            - name: HASH
+              gitCommit: {}
+      local: {}
+      artifacts:
+        - image: database_restoration
+          context: dockerfiles/database
+          docker:
+            dockerfile: Dockerfile
+        - image: frontend-v1
+          context: ../frontend
+          docker:
+            dockerfile: Dockerfile-skaffold
+        - image: frontend-v2
+          context: ../frontend/app_v2
+          docker:
+            dockerfile: Dockerfile-skaffold
+        - image: firstvoices-skaffold
+          context: ../
+          docker:
+            dockerfile: Dockerfile-skaffold
+        - image: smtplogger
+          context:  dockerfiles/smtplogger
+          docker:
+            dockerfile: Dockerfile

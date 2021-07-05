@@ -1,9 +1,10 @@
-{{ if .Values.database.deploy }}
+{{ if .Values.database_restoration.deploy }}
 
 apiVersion: batch/v1
 kind: Job
 metadata:
   name: database-restore
+  namespace: {{ .Values.namespace }}
 spec:
   ttlSecondsAfterFinished: 1800
   backoffLimit: 3
@@ -16,7 +17,7 @@ spec:
           resources:
             limits:
               cpu: "250m"
-              memory: "1G"
+              memory: "500Mi"
           env:
             - name: 'PGUSER'
               valueFrom:

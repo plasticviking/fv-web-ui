@@ -2,6 +2,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: firstvoices
+  namespace: {{ .Values.namespace }}
 spec:
   selector:
     app: firstvoices
@@ -9,6 +10,8 @@ spec:
     - name: http-in
       port: 8080
       targetPort: 8080
+{{ if .Values.firstvoices.javaDebug }}
     - name: java-debug
       port: 8787
       targetPort: 8787
+{{ end }}

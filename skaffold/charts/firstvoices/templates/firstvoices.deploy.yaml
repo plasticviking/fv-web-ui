@@ -1,0 +1,72 @@
+{{- $cpu := dict "XS" "100m" "S" "250m" "M" "500m" "L" "1000m" "XL" "3000m" "XXL" "8000m" }}
+{{- $mem := dict "XS" "2000Mi" "S" "2400Mi" "M" "3800Mi" "L" "5600Mi" "XL" "8Gi" "XXL" "20Gi" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: firstvoices
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  progressDeadlineSeconds: 900 #slow startup sometimes on small nodes
+  strategy:
+    type: Recreate
+  minReadySeconds: 20
+  template:
+    metadata:
+      name: firstvoices-pod
+      labels:
+        app: firstvoices
+    spec:
+      volumes:
+        - name: nuxeo-config
+          configMap:
+            name: nuxeo-config
+            items:
+              - key: "nuxeo.conf"
+                path: "nuxeo.conf"
+              - key: "log4j2.xml"
+                path: "log4j2.xml"
+      {{ if .Values.elastic.deploy }}
+      initContainers:
+        - name: init-elastic
+          image: busybox:1.28
+          command: ['sh', '-c', "until nslookup elastic.$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace).svc.cluster.local; do echo waiting for elastic; sleep 2; done"]
+      {{ end }}
+      containers:
+        - name: firstvoices
+          image: {{ .Values.firstvoices.image }}
+          {{ if or (.Values.database.deploy) (.Values.database.useExternal)}}
+          env:
+            - name: NUXEO_DB_TYPE
+              value: postgresql
+          {{ end }}
+          ports:
+            - name: http-in
+              containerPort: 8080
+        {{ if .Values.firstvoices.javaDebug }}
+            - name: java-debug
+              containerPort: 8787
+        {{ end }}
+          resources:
+            requests:
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
+            limits:
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
+          volumeMounts:
+            - mountPath: "/opt/injected_config"
+              name: nuxeo-config
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /nuxeo/nodestatus
+            initialDelaySeconds: 20
+            failureThreshold: 50
+            successThreshold: 1
+            periodSeconds: 3
+  selector:
+    matchLabels:
+      app: firstvoices
+

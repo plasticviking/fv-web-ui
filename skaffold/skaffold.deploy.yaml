@@ -1,0 +1,41 @@
+apiVersion: skaffold/v2beta13
+kind: Config
+deploy:
+  helm:
+    releases:
+      - name: skaffold-helm-release
+        chartPath: ./charts/firstvoices
+        setValueTemplates:
+          domainSuffix: "{{.DOMAIN_SUFFIX}}"
+          ingress.class: "{{.INGRESS_CLASS}}"
+          database.deploy: "{{.DEPLOY_DATABASE}}"
+          database.useExternal: "{{.USE_EXTERNAL_DATABASE}}"
+          database.externalConfiguration.host: "{{.EXTERNAL_DATABASE_HOST}}"
+          database.externalConfiguration.port: "{{.EXTERNAL_DATABASE_PORT}}"
+          database.externalConfiguration.name: "{{.EXTERNAL_DATABASE_NAME}}"
+          database.externalConfiguration.username: "{{.EXTERNAL_DATABASE_USERNAME}}"
+          database.externalConfiguration.password: "{{.EXTERNAL_DATABASE_PASSWORD}}"
+          elastic.deploy: "{{.DEPLOY_ELASTIC}}"
+          elastic.useExternal: "{{.USE_EXTERNAL_ELASTIC}}"
+          elastic.externalConfiguration.url: "{{.EXTERNAL_ELASTIC_URL}}"
+          elastic.externalConfiguration.indexName: "{{.EXTERNAL_ELASTIC_INDEXNAME}}"
+          elastic.externalConfiguration.clusterName: "{{.EXTERNAL_ELASTIC_CLUSTERNAME}}"
+          smtplogger.deploy: "{{.DEPLOY_SMTPLOGGER}}"
+          smtp.useExternal: "{{.USE_EXTERNAL_SMTP}}"
+          smtp.mailFrom: "{{.SMTP_MAIL_FROM}}"
+          smtp.externalConfiguration.host: "{{.EXTERNAL_SMTP_HOST}}"
+          smtp.externalConfiguration.port: "{{.EXTERNAL_SMTP_PORT}}"
+          namespace: "{{.KUBERNETES_NAMESPACE}}"
+          resourceSizing: "{{.RESOURCE_SIZING}}"
+          storageClassName: "{{.STORAGE_CLASS_NAME}}"
+        artifactOverrides:
+          frontendV1:
+            image: frontend-v1
+          frontendV2:
+            image: frontend-v2
+          firstvoices:
+            image: firstvoices-skaffold
+          database_restoration:
+            image: database_restoration
+          smtplogger:
+            image: smtplogger

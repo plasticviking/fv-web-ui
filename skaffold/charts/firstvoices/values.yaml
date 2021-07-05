@@ -1,6 +1,6 @@
-domainSuffix: .fvgke.mapleleafsoftware.io # all created ingresses will be under this domain
-hostSuffix: -devtest
-environment: g1
+domainSuffix: .local
+hostSuffix: ""
+namespace: default
 
 frontendV1:
   image: frontend-v1:latest
@@ -8,29 +8,55 @@ frontendV2:
   image: frontend-v2:latest
 firstvoices:
   image: firstvoices-skaffold:latest
-  databaseGCloudSidecar: false
-  databaseGCloudSidecarParameters: ""
-  databaseHost: datacube2.mapleleaf.intranet
-
+  javaDebug: true
 database_restoration:
+  deploy: false
   image: database_restoration:latest
-
-elastic:
-  deploy: false
-database:
-  deploy: false
-  username: fv_ra
-  password: devdevdev
-  name: fv
-
-firstvoicesPostgresql:
-  pvc:
-    size: "20Gi"
-
-ingress:
-  configureForMk8s: true
-  useManagedCertificate: true
-
 smtplogger:
   deploy: true
   image: smtplogger:latest
+
+elastic:
+  deploy: false
+  useExternal: false
+  inClusterConfiguration:
+    pvc:
+      size: "25Gi"
+  externalConfiguration:
+    url: "http://some-elastic-server:80"
+    clusterName: elastic
+    indexName: nuxeo
+
+database:
+  deploy: false
+  useExternal: false
+  inClusterConfiguration:
+    pvc:
+      size: "40Gi"
+    name: fv
+    username: fv_ra
+    password: devdevdev
+  externalConfiguration:
+    host: "some-postgres-server"
+    port: 5432
+    name: fv
+    username: "sa"
+    password: "sa"
+
+smtp:
+  useExternal: false
+  mailFrom: "nuxeo@test"
+  externalConfiguration:
+    host: somewhere
+    port: 587
+
+ingress:
+  class: public
+  certManagerTLS: true
+
+
+# XS S M L XL XXL supported
+resourceSizing: M
+
+storageClassName: default
+

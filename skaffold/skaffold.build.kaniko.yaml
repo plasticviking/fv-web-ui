@@ -1,0 +1,78 @@
+apiVersion: skaffold/v2beta17
+kind: Config
+profiles:
+  - name: kaniko-build
+    build:
+      tagPolicy:
+        inputDigest: {}
+      cluster:
+        concurrency: 1
+        timeout: 120m
+        resources:
+          limits:
+            cpu: 1
+            ephemeralStorage: 10Gi
+            memory: 3Gi
+      artifacts:
+      - image: firstvoices-skaffold
+        context: ../
+        kaniko:
+          singleSnapshot: true
+          dockerfile: Dockerfile-skaffold
+          cache:
+            repo: ""
+      - image: database_restoration
+        context: dockerfiles/database
+        kaniko:
+          snapshotMode: redo
+          dockerfile: Dockerfile
+          cache:
+            repo: ""
+      - image: frontend-v1
+        context: ../frontend
+        kaniko:
+          snapshotMode: redo
+          dockerfile: Dockerfile-skaffold
+          cache:
+            repo: ""
+      - image: frontend-v2
+        context: ../frontend/app_v2
+        kaniko:
+          snapshotMode: redo
+          dockerfile: Dockerfile-skaffold
+          cache:
+            repo: ""
+      - image: smtplogger
+        context:  dockerfiles/smtplogger
+        kaniko:
+          singleSnapshot: true
+          dockerfile: Dockerfile
+          cache:
+            repo: ""
+  - name: m2-cached
+    # active caching for the m2 deps of firstvoices. requires pvc to exist in the build namespace.
+    patches:
+      - op: add
+        path: /build/cluster/volumes
+        value:
+          - name: m2-cache
+            persistentVolumeClaim:
+              claimName: m2-cache-claim
+      - op: add
+        path: /build/artifacts/0/kaniko/volumeMounts
+        value:
+          - name: m2-cache
+            mountPath: /root/.m2
+  - name: kaniko-apply-dockerconfig
+    # tell kaniko to look for a docker secret called kaniko-docker-cfg (not needed in AWS)
+    patches:
+      - op: add
+        path: /build/cluster/dockerConfig
+        value:
+          secretName: "kaniko-docker-cfg"
+  - name: kaniko-use-namespace
+    # build in namespace kaniko instead of default. namespace must exist.
+    patches:
+      - op: add
+        path: /build/cluster/namespace
+        value: kaniko
