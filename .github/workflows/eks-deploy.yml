@@ -20,7 +20,7 @@ jobs:
           CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         run: |
           mkdir $HOME/.kube
-          echo -n "$CONFIG_DATA" | base 64 -d > $HOME/.kube/config
+          echo -n "$CONFIG_DATA" | base64 -d > $HOME/.kube/config
 
       - name: Install kubectl
         run: |
