@@ -11,11 +11,11 @@ jobs:
 
     steps:
 
-      - name: Cache skaffold cache
+      - name: skaffold cache
         id: cache-skaffold
         uses: actions/cache@v1.1.2
         with:
-          path: ~/.cache
+          path: ~/.skaffold/cache
           key: ${{ runner.os }}-skaffold
 
       - name: Install skaffold
@@ -42,6 +42,7 @@ jobs:
         run: |
           mkdir $HOME/.kube
           echo -n "$CONFIG_DATA" | base64 -d > $HOME/.kube/config
+          chmod 0400 $HOME/.kube/config
 
       - name: Install kubectl
         run: |
@@ -56,8 +57,7 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      # Checkout the current working code base
-      - name: Checkout working branch
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Build and Deploy
