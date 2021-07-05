@@ -36,7 +36,7 @@ jobs:
           echo "version:"
           kubectl version
           echo "verifying kube connectivity"
-          kubetl get nodes
+          kubectl get nodes
 
 
       - name: Login to Amazon ECR
