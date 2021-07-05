@@ -17,7 +17,7 @@ jobs:
 
       - name: Hydrate kubeconfig
         env:
-          - CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+          CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
         run: |
           mkdir $HOME/.kube
           echo -n "$CONFIG_DATA" | base 64 -d > $HOME/.kube/config
