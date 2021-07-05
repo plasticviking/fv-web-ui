@@ -15,8 +15,8 @@ jobs:
         id: cache-skaffold
         uses: actions/cache@v1.1.2
         with:
-          path: ~/.skaffold/cache
-          key: ${{ runner.os }}-skaffold
+          path: ~/.skaffold
+          key: ${{ runner.os }}-skaffoldcache
 
       - name: Install skaffold
         run: |
