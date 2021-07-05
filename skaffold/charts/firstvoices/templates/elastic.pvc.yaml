@@ -3,10 +3,12 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: elastic-pvc
+  namespace: {{ .Values.namespace }}
 spec:
+  storageClassName: {{ .Values.storageClassName }}
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
-  {{ end }}
+      storage: {{ .Values.elastic.inClusterConfiguration.pvc.size }}
+{{ end }}

@@ -1,46 +1,36 @@
 {{ if .Values.database.deploy }}
+{{- $cpu := dict "XS" "100m" "S" "250m" "M" "500m" "L" "1000m" "XL" "2000m" "XXL" "6000m" }}
+{{- $mem := dict "XS" "400Mi" "S" "1000Mi" "M" "1200Mi" "L" "2500Mi" "XL" "6Gi" "XXL" "24Gi" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgresql-firstvoices
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   minReadySeconds: 5
+  strategy:
+    type: Recreate
   template:
     metadata:
       name: postgresql-firstvoices
       labels:
         app: postgresql-firstvoices
     spec:
-      serviceAccountName: gke-sql-sk2
       volumes:
         - name: pgdata
           persistentVolumeClaim:
             claimName: postgresql-firstvoices-pv-claim
-        - name: backups
-          persistentVolumeClaim:
-            claimName: db-snapshot-holder
       containers:
-        - name: cloud-sql-proxy
-          image: gcr.io/cloudsql-docker/gce-proxy:1.17
-          command:
-            - "/cloud_sql_proxy"
-            - {{ .Values.firstvoices.databaseGCloudSidecarParameters }}
-          securityContext:
-            runAsNonRoot: true
-          resources:
-            requests:
-              memory: "1Gi"
-              cpu:    "1"
         - name: postgresql-firstvoices
           image: postgres:13-alpine
           resources:
             requests:
-              cpu: 1
-              memory: "2000M"
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
             limits:
-              cpu: 2
-              memory: "2000M"
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
           ports:
             - containerPort: 5432
           env:
@@ -55,13 +45,11 @@ spec:
                   name: postgresql-firstvoices-credentials
                   key: password
             - name: POSTGRES_DB
-              value: 'fv'
+              value: {{ .Values.database.inClusterConfiguration.name }}
           volumeMounts:
             - mountPath: "/var/lib/postgresql/data"
               name: pgdata
               subPath: data
-            - mountPath: "/mnt/backups"
-              name: backups
   selector:
     matchLabels:
       app: postgresql-firstvoices

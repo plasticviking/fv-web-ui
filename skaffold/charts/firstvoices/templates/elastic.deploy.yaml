@@ -1,11 +1,17 @@
 {{ if .Values.elastic.deploy }}
+{{- $cpu := dict "XS" "250m" "S" "500m" "M" "500m" "L" "1000m" "XL" "3000m" "XXL" "8000m" }}
+{{- $mem := dict "XS" "1800Mi" "S" "2200Mi" "M" "3800Mi" "L" "5600Mi" "XL" "8Gi" "XXL" "20Gi" }}
+{{- $xmx := dict "XS" "1650m" "S" "1800m" "M" "3100m" "L" "5000m" "XL" "6900m" "XXL" "18000m" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: elastic
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   minReadySeconds: 5
+  strategy:
+    type: Recreate
   template:
     metadata:
       name: elastic-pod
@@ -35,9 +41,12 @@ spec:
         - name: elastic
           image: docker.elastic.co/elasticsearch/elasticsearch:6.8.14
           resources:
+            requests:
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
             limits:
-              cpu: 4
-              memory: "4800M"
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
           volumeMounts:
             - mountPath: "/usr/share/elasticsearch/data"
               name: elastic-storage
@@ -46,20 +55,24 @@ spec:
               path: /
               port: 9200
             initialDelaySeconds: 10
-            periodSeconds: 120
+            successThreshold: 1
+            failureThreshold: 100
+            periodSeconds: 5
           readinessProbe:
             httpGet:
               path: /
               port: 9200
-            initialDelaySeconds: 3
-            periodSeconds: 15
+            initialDelaySeconds: 10
+            successThreshold: 1
+            failureThreshold: 100
+            periodSeconds: 5
           env:
             - name: discovery.type
               value: single-node
             - name: cluster.name
               value: elastic
             - name: ES_JAVA_OPTS
-              value: "-Xms4000m -Xmx4000m"
+              value: "-Xms{{get $xmx .Values.resourceSizing}} -Xmx{{get $xmx .Values.resourceSizing}}"
           ports:
             - name: http
               containerPort: 9200

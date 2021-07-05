@@ -13,9 +13,7 @@ RUN ["/usr/local/bin/mvn-entrypoint.sh", "mvn", "install", "-DskipTests", "-T1.5
 
 FROM nuxeo:10.10
 
-COPY skaffold/dockerfiles/firstvoices/nuxeo.conf /docker-entrypoint-initnuxeo.d/nuxeo.conf
 COPY skaffold/dockerfiles/firstvoices/setup.sh /docker-entrypoint-initnuxeo.d/setup.sh
-COPY skaffold/dockerfiles/firstvoices/log4j2.xml /opt/nuxeo/server/lib/log4j2.xml
 
 USER root
 
@@ -30,4 +28,8 @@ COPY skaffold/dockerfiles/firstvoices/nuxeo-jsf-ui-10.10.0 /opt/nuxeo/server/tmp
 COPY skaffold/dockerfiles/firstvoices/nuxeo-platform-user-registration-1.9.4 /opt/nuxeo/server/tmp/
 COPY skaffold/dockerfiles/firstvoices/saml2-authentication-1.4.3 /opt/nuxeo/server/tmp/
 
+COPY skaffold/dockerfiles/firstvoices/docker-entrypoint.sh /
+RUN ["chmod", "+x", "/docker-entrypoint.sh"]
+
 COPY --from=builder opt/src/firstvoices-marketplace/target/firstvoices-marketplace-package-latest.zip /opt/nuxeo/server/tmp/
+

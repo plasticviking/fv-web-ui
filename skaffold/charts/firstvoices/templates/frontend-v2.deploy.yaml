@@ -1,0 +1,50 @@
+{{- $cpu := dict "XS" "250m" "S" "500m" "M" "1000m" "L" "1000m" "XL" "1000m" "XXL" "1000m" }}
+{{- $mem := dict "XS" "1800Mi" "S" "1800Mi" "M" "1800Mi" "L" "2500Mi" "XL" "2500Mi" "XXL" "2500Mi" }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-v2
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: 1
+  minReadySeconds: 5
+  progressDeadlineSeconds: 1200 #webpack build can be very slow on XS size
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      name: frontend-v2
+      labels:
+        app: frontend-v2
+    spec:
+      containers:
+        - name: frontend-v2
+          image: {{ .Values.frontendV2.image }}
+          readinessProbe:
+            httpGet:
+              port: 8080
+              path: /
+            # this is really long to account for the slow webpack build with small cpu allocations
+            initialDelaySeconds: 10
+            failureThreshold: 50
+            successThreshold: 1
+            periodSeconds: 3
+          resources:
+            requests:
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
+            limits:
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
+          args:
+            - "npm"
+            - "run"
+            - "startInSkaffold"
+          env:
+            - name: PUBLIC_PATH
+              value: "v2{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}"
+          ports:
+            - containerPort: 8080
+  selector:
+    matchLabels:
+      app: frontend-v2

@@ -1,10 +1,18 @@
+{{- $cpu := dict "XS" "50m" "S" "100m" "M" "250m" "L" "250m" "XL" "500m" "XXL" "2000m" }}
+{{- $mem := dict "XS" "300Mi" "S" "300Mi" "M" "300Mi" "L" "500Mi" "XL" "500Mi" "XXL" "1000Mi" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: envoy
+  namespace: {{ .Values.namespace }}
 spec:
   replicas: 1
   minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
   template:
     metadata:
       name: envoy-pod
@@ -32,9 +40,12 @@ spec:
             initialDelaySeconds: 5
             periodSeconds: 120
           resources:
+            requests:
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
             limits:
-              cpu: "1"
-              memory: "400M"
+              cpu: {{ get $cpu .Values.resourceSizing }}
+              memory: {{ get $mem .Values.resourceSizing }}
           ports:
             - name: admin
               containerPort: 9901

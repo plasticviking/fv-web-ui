@@ -1,11 +1,23 @@
-{{ if .Values.ingress.configureForMk8s }}
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: envoy
+  namespace: {{ .Values.namespace }}
   annotations:
-    kubernetes.io/ingress.class: public
+    kubernetes.io/ingress.class: {{ .Values.ingress.class }}
+    {{ if .Values.ingress.certManagerTLS }}
+    cert-manager.io/cluster-issuer: letsencrypt
+    nginx.ingress.kubernetes.io/force-ssl-redirect: 'true'
+    {{ end }}
+
 spec:
+  {{ if .Values.ingress.certManagerTLS }}
+  tls:
+    - hosts:
+        - fv{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}
+        - v2{{ .Values.hostSuffix }}{{ .Values.domainSuffix }}
+      secretName: envoy-tls
+  {{ end }}
   defaultBackend:
     service:
       name: envoy
@@ -32,4 +44,3 @@ spec:
                 name: envoy
                 port:
                   number: 10000
-  {{ end }}
