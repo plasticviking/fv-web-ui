@@ -15,10 +15,21 @@ jobs:
           curl -Lo skaffold https://storage.googleapis.com/skaffold/releases/latest/skaffold-linux-amd64
           sudo install skaffold /usr/local/bin/
 
+      - name: Hydrate kubeconfig
+        env:
+          - CONFIG_DATA: ${{ secrets.KUBE_CONFIG }}
+        run: |
+          mkdir $HOME/.kube
+          echo -n "$CONFIG_DATA" | base 64 -d > $HOME/.kube/config
+
       - name: Install kubectl
         run: |
           curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
           sudo install kubectl /usr/local/bin/
+          echo "version:"
+          kubectl version
+          echo "verifying kube connectivity"
+          kubetl get nodes
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -35,9 +46,10 @@ jobs:
       - name: Checkout working branch
         uses: actions/checkout@v2
 
-      - name: Load Environment
+      - name: Build
         run: |
           cd skaffold
           source awsdev.env
+          skaffold build
 
 
