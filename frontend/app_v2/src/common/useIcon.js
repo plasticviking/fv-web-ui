@@ -1,13 +1,16 @@
 import React from 'react'
 
 import About from 'common/icons/About'
+import Alphabet from 'common/icons/Alphabet'
 import Audio from 'common/icons/Audio'
 import BackArrow from 'common/icons/BackArrow'
-
+import Categories from 'common/icons/Categories'
 import Checkmark from 'common/icons/Checkmark'
 import ChevronDown from 'common/icons/ChevronDown'
 import ChevronLeft from 'common/icons/ChevronLeft'
 import ChevronRight from 'common/icons/ChevronRight'
+import ChevronUp from 'common/icons/ChevronUp'
+import ChevronUpDown from 'common/icons/ChevronUpDown'
 import Close from 'common/icons/Close'
 import Copy from 'common/icons/Copy'
 import Dictionary from 'common/icons/Dictionary'
@@ -53,14 +56,16 @@ function useIcon(iconName, iconStyling) {
   const styling = iconStyling ? iconStyling : 'fill-current h-12 w-8'
   const icons = {
     About,
+    Alphabet,
     Audio,
     BackArrow,
-    Story,
-    Word,
+    Categories,
     Checkmark,
     ChevronDown,
     ChevronLeft,
     ChevronRight,
+    ChevronUp,
+    ChevronUpDown,
     Close,
     Copy,
     Dictionary,
@@ -81,20 +86,22 @@ function useIcon(iconName, iconStyling) {
     Login,
     Mail,
     More,
-    Song,
     Pause,
     PauseCircle,
+    Phrase,
     PlaceHolder,
     Play,
     PlayCircle,
-    Phrase,
     Resources,
     Search,
+    Song,
     Spinner,
+    Story,
     TimesCircle,
     Twitter,
     UnfoldMore,
     WebShare,
+    Word,
     Youtube,
   }
   const iconFile = icons[iconName]

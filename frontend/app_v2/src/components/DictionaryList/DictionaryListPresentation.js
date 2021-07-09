@@ -22,7 +22,17 @@ import Phrase from 'components/Phrase'
  * @returns {node} jsx markup
  */
 
-function DictionaryListPresentation({ actions, infiniteScroll, isLoading, items, moreActions, sitename, showType }) {
+function DictionaryListPresentation({
+  actions,
+  infiniteScroll,
+  isLoading,
+  items,
+  moreActions,
+  onSortByClick,
+  sitename,
+  showType,
+  sorting,
+}) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedItem, setselectedItem] = useState({})
   const { isFetchingNextPage, fetchNextPage, hasNextPage, loadButtonLabel, loadButtonRef } = infiniteScroll
@@ -59,6 +69,19 @@ function DictionaryListPresentation({ actions, infiniteScroll, isLoading, items,
     }
   }
 
+  const getIcon = (field) => {
+    if (!sorting) {
+      return useIcon('', 'inline-flex h-6 fill-current')
+    }
+    if (sorting?.sortBy === field && sorting?.sortAscending === true) {
+      return useIcon('ChevronDown', 'inline-flex h-6 fill-current')
+    }
+    if (sorting?.sortBy === field && sorting?.sortAscending === false) {
+      return useIcon('ChevronUp', 'inline-flex h-6 fill-current')
+    }
+    return useIcon('ChevronUpDown', 'inline-flex h-6 fill-current')
+  }
+
   function handleItemClick(item) {
     if (item.type === 'word' || item.type === 'phrase') {
       setselectedItem(item)
@@ -76,17 +99,23 @@ function DictionaryListPresentation({ actions, infiniteScroll, isLoading, items,
               <table className="min-w-full divide-y divide-gray-300">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-fv-charcoal-light uppercase tracking-wider"
-                    >
-                      Entry
+                    <th scope="col" className="px-6 py-3">
+                      <button
+                        onClick={() => onSortByClick('entry')}
+                        className="flex items-center text-left text-xs font-medium text-fv-charcoal-light tracking-wider"
+                      >
+                        <div className="inline-flex">ENTRY</div>
+                        {getIcon('entry')}
+                      </button>
                     </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-fv-charcoal-light uppercase tracking-wider"
-                    >
-                      Translation
+                    <th scope="col" className="px-6 py-3">
+                      <button
+                        onClick={() => onSortByClick('translation')}
+                        className="flex items-center text-left text-xs font-medium text-fv-charcoal-light tracking-wider"
+                      >
+                        <div className="inline-flex">TRANSLATION</div>
+                        {getIcon('translation')}
+                      </button>
                     </th>
                     {showType && (
                       <th
@@ -174,16 +203,11 @@ function DictionaryListPresentation({ actions, infiniteScroll, isLoading, items,
                 </tbody>
               </table>
             </div>
-            <div>
-              <button
-                ref={loadButtonRef}
-                className={'px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-primary text-white'}
-                onClick={() => fetchNextPage()}
-                disabled={!hasNextPage || isFetchingNextPage}
-              >
-                {loadButtonLabel}
-              </button>
-            </div>
+          </div>
+          <div className={'p-3 text-center text-fv-charcoal font-semibold'}>
+            <button ref={loadButtonRef} onClick={() => fetchNextPage()} disabled={!hasNextPage || isFetchingNextPage}>
+              {loadButtonLabel}
+            </button>
           </div>
         </div>
       ) : (
@@ -197,13 +221,14 @@ function DictionaryListPresentation({ actions, infiniteScroll, isLoading, items,
 }
 
 // PROPTYPES
-const { array, bool, object, string } = PropTypes
+const { array, bool, func, object, string } = PropTypes
 DictionaryListPresentation.propTypes = {
   actions: array,
   infiniteScroll: object,
   isLoading: bool,
   items: object,
   moreActions: array,
+  onSortByClick: func,
   showType: bool,
   sitename: string,
 }
