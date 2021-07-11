@@ -1,11 +1,15 @@
 {
-  "parser": "babel-eslint",
+  "parser": "@babel/eslint-parser",
   "parserOptions": {
+    "requireConfigFile": false,
+    "babelOptions": {
+      "presets": ["@babel/preset-react"]
+    },
     "ecmaFeatures": {
       "jsx": true
     }
   },
-  "plugins": ["react", "cypress"],
+  "plugins": ["react", "@babel", "cypress"],
   "extends": ["eslint:recommended", "plugin:react/recommended"],
   "settings": {
     "react": {

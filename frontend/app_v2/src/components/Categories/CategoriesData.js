@@ -6,7 +6,6 @@ import { useQuery } from 'react-query'
 import useGetSite from 'common/useGetSite'
 import api from 'services/api'
 import { triggerError } from 'common/navigationHelpers'
-import { makePlural } from 'common/urlHelpers'
 
 /**
  * @summary CategoriesData
@@ -32,7 +31,7 @@ function CategoriesData() {
   const { status, isLoading, error, isError, data } = response
 
   const [categoriesToShow, setCategoriesToShow] = useState([])
-  const [filter, setFilter] = useState('WORDS_AND_PHRASES')
+  const [filter, setFilter] = useState('WORD_AND_PHRASE')
 
   function filterCategoriesByType(category) {
     return category?.type === filter
@@ -55,7 +54,7 @@ function CategoriesData() {
         ...category,
         children: getChildren(category.id),
       }))
-      if (filter === 'WORDS' || filter === 'PHRASES') {
+      if (filter === 'WORD' || filter === 'PHRASE') {
         const filteredCategories = categoriesInclChildren.filter(filterCategoriesByType)
         setCategoriesToShow(filteredCategories)
       } else {
@@ -69,9 +68,9 @@ function CategoriesData() {
   }, [isError])
 
   const tabs = [
-    { label: 'WORDS', icon: 'Word', value: 'WORDS', current: filter === 'WORDS' },
-    { label: 'PHRASES', icon: 'Phrase', value: 'PHRASES', current: filter === 'PHRASES' },
-    { label: 'ALL', icon: 'All', value: 'WORDS_AND_PHRASES', current: filter === 'WORDS_AND_PHRASES' },
+    { label: 'WORDS', icon: 'Word', value: 'WORD', current: filter === 'WORD' },
+    { label: 'PHRASES', icon: 'Phrase', value: 'PHRASE', current: filter === 'PHRASE' },
+    { label: 'ALL', icon: 'All', value: 'WORD_AND_PHRASE', current: filter === 'WORD_AND_PHRASE' },
   ]
 
   return {
